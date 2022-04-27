@@ -13,7 +13,7 @@ const Button = tw.button`
   w-14
   h-8
   sm:top-0 sm:bottom-auto sm:right-0 sm:left-auto
-  dark:bg-white/10 bg-slate-800/20
+  dark:bg-white/10 bg-slate-800/20 dark:text-slate-400/60
 `;
 
 const Dot = tw.div`

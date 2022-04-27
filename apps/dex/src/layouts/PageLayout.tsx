@@ -11,7 +11,7 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
         <nav className="flex items-center p-4 bg-slate-200 dark:bg-gray-900 gap-2">
           {props.breadcrumbs.map((crumb, index) => (
             <span
-              className="py-0.5 px-2 rounded bg-gray-400/30 text-gray-900 dark:text-gray-300"
+              className="py-0.5 px-2 rounded text-gray-900 dark:text-gray-400"
               key={index}
             >
               {crumb}
@@ -19,7 +19,7 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
           ))}
         </nav>
       )}
-      {props.children}
+      <div className="p-6 sm:p-12">{props.children}</div>
     </>
   );
 };
