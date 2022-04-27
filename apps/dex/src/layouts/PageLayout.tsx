@@ -6,9 +6,9 @@ type Props = {
 
 const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
   return (
-    <div>
+    <>
       {props.breadcrumbs && (
-        <nav className="flex items-center p-4 bg-slate-900 gap-2">
+        <nav className="flex items-center p-4 bg-gray-900 gap-2">
           {props.breadcrumbs.map((crumb, index) => (
             <span
               className="p-1` px-1.5 rounded bg-gray-800 text-gray-300"
@@ -20,7 +20,7 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
         </nav>
       )}
       {props.children}
-    </div>
+    </>
   );
 };
 

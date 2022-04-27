@@ -1,11 +1,9 @@
-import React from "react";
+import React, { FC, PropsWithChildren } from "react";
 
-const Footer = () => {
+const Footer: FC<PropsWithChildren<{}>> = (props) => {
   return (
-    <footer className="p-4 grid place-items-center">
-      <p>
-        made with <span className="text-red-500">❤</span> by sif core team
-      </p>
+    <footer className="p-8 grid place-items-center">
+      <p className="text-center">{props.children}</p>
     </footer>
   );
 };

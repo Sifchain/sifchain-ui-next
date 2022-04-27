@@ -17,8 +17,8 @@ const MainLayout: FC<Props> = (props) => {
       )}
       <div className="min-h-screen bg-slate-100 flex dark:bg-slate-900 dark:text-slate-100">
         <Aside />
-        <section className="grid flex-1 bg-slate-200 dark:bg-slate-800">
-          <main>{props.children}</main>
+        <section className="flex flex-col flex-1">
+          <main className="flex-1 border">{props.children}</main>
           <Footer />
         </section>
       </div>
