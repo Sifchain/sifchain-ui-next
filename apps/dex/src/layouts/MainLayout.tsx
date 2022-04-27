@@ -15,10 +15,10 @@ const MainLayout: FC<Props> = (props) => {
           <title>{props.title}</title>
         </Head>
       )}
-      <div className="min-h-screen bg-slate-100 flex dark:bg-slate-900 dark:text-slate-100">
+      <div className="min-h-screen bg-slate-100 flex dark:bg-slate-900/95 dark:text-slate-100  subpixel-antialiased">
         <Aside />
         <section className="flex flex-col flex-1">
-          <main className="flex-1 border">{props.children}</main>
+          <main className="flex-1">{props.children}</main>
           <Footer />
         </section>
       </div>
