@@ -1,5 +1,4 @@
 node_modules
 .turbo
 .pnpm-debug.log
-.vscode
 .DS_STORE
