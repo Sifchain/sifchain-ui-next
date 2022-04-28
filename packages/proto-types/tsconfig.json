@@ -1,0 +1,9 @@
+{
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "exactOptionalPropertyTypes": false,
+    "declaration": true
+  },
+  "include": ["src"]
+}
