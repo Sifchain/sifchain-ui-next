@@ -1,0 +1,27 @@
+{
+  "name": "@sifchain/stargate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cosmjs/math": "^0.28.4",
+    "@cosmjs/proto-signing": "^0.28.4",
+    "@cosmjs/stargate": "^0.28.4",
+    "@cosmjs/tendermint-rpc": "^0.28.4",
+    "@sifchain/proto-types": "workspace:*",
+    "inflection": "^1.13.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node16-strictest-esm": "^1.0.1",
+    "@types/inflection": "^1.13.0",
+    "@types/jest": "^27.4.1",
+    "degit": "^2.8.4",
+    "jest": "^28.0.2",
+    "ts-proto": "^1.110.4"
+  }
+}
