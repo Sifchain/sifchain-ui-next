@@ -1,6 +1,6 @@
 {
   "name": "sifchain",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@changesets/cli": "^2.22.0",
     "turbo": "^1.2.5"
   }
 }
