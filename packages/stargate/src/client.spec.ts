@@ -43,11 +43,11 @@ describe("Sifchain's client", async () => {
             signer: "signerAddress",
             nativeAssetAmount: Decimal.fromUserInput(
               "44",
-              rowan.decimals,
+              rowan.decimals.toNumber(),
             ).toString(),
             externalAssetAmount: Decimal.fromUserInput(
               "68.5464",
-              juno.decimals,
+              juno.decimals.toNumber(),
             ).toString(),
           },
         },
