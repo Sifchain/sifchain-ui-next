@@ -35,7 +35,8 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set snapshot version
+        run: pnpm -r exec npm version 0.0.0-snapshot.$(git rev-parse --short HEAD) --git-tag-version=false
+
       - name: Publish snapshot
-        run: |
-          pnpm -r exec npm version 0.0.0-snapshot.$(git rev-parse --short HEAD) --git-tag-version=false
-          pnpm -r publish --no-git-checks --tag snapshot --access public
+        run: pnpm -r publish --no-git-checks --tag snapshot --access public
