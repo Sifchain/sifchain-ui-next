@@ -15,6 +15,10 @@ jobs:
           node-version: 16.x
           cache: pnpm
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - run: pnpm install
