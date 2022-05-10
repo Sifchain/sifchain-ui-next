@@ -61,10 +61,12 @@ importers:
     specifiers:
       '@tsconfig/node16-strictest-esm': ^1.0.1
       degit: ^2.8.4
+      long: ^5.2.0
       protobufjs: ^6.11.2
       ts-proto: ^1.110.4
       typescript: ^4.6.3
     dependencies:
+      long: 5.2.0
       protobufjs: 6.11.2
     devDependencies:
       '@tsconfig/node16-strictest-esm': 1.0.1
@@ -3828,6 +3830,10 @@ packages:
 
   /long/4.0.0:
     resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
+
+  /long/5.2.0:
+    resolution: {integrity: sha512-9RTUNjK60eJbx3uz+TEGF7fUr29ZDxR5QzXcyDpeSfeH28S9ycINflOgOlppit5U+4kNTe83KQnMEerw7GmE8w==}
+    dev: false
 
   /loose-envify/1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}

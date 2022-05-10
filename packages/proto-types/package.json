@@ -27,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "long": "^5.2.0",
     "protobufjs": "^6.11.2"
   },
   "devDependencies": {
