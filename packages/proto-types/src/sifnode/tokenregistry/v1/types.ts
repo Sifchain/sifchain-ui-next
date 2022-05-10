@@ -102,7 +102,7 @@ export interface Registry {
 }
 
 export interface RegistryEntry {
-  decimals: number;
+  decimals: Long;
   denom: string;
   baseDenom: string;
   path: string;
@@ -293,7 +293,7 @@ export const Registry = {
 
 function createBaseRegistryEntry(): RegistryEntry {
   return {
-    decimals: 0,
+    decimals: Long.ZERO,
     denom: "",
     baseDenom: "",
     path: "",
@@ -317,7 +317,7 @@ export const RegistryEntry = {
     message: RegistryEntry,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.decimals !== 0) {
+    if (!message.decimals.isZero()) {
       writer.uint32(16).int64(message.decimals);
     }
     if (message.denom !== "") {
@@ -378,7 +378,7 @@ export const RegistryEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          message.decimals = longToNumber(reader.int64() as Long);
+          message.decimals = reader.int64() as Long;
           break;
         case 3:
           message.denom = reader.string();
@@ -442,7 +442,9 @@ export const RegistryEntry = {
 
   fromJSON(object: any): RegistryEntry {
     return {
-      decimals: isSet(object.decimals) ? Number(object.decimals) : 0,
+      decimals: isSet(object.decimals)
+        ? Long.fromString(object.decimals)
+        : Long.ZERO,
       denom: isSet(object.denom) ? String(object.denom) : "",
       baseDenom: isSet(object.baseDenom) ? String(object.baseDenom) : "",
       path: isSet(object.path) ? String(object.path) : "",
@@ -480,7 +482,7 @@ export const RegistryEntry = {
   toJSON(message: RegistryEntry): unknown {
     const obj: any = {};
     message.decimals !== undefined &&
-      (obj.decimals = Math.round(message.decimals));
+      (obj.decimals = (message.decimals || Long.ZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.baseDenom !== undefined && (obj.baseDenom = message.baseDenom);
     message.path !== undefined && (obj.path = message.path);
@@ -515,7 +517,10 @@ export const RegistryEntry = {
     object: I,
   ): RegistryEntry {
     const message = createBaseRegistryEntry();
-    message.decimals = object.decimals ?? 0;
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.ZERO;
     message.denom = object.denom ?? "";
     message.baseDenom = object.baseDenom ?? "";
     message.path = object.path ?? "";
@@ -669,17 +674,6 @@ export const AdminAccounts = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
 type Builtin =
   | Date
   | Function
@@ -691,6 +685,8 @@ type Builtin =
 
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -706,13 +702,6 @@ export type Exact<P, I extends P> = P extends Builtin
         Exclude<keyof I, KeysOfUnion<P>>,
         never
       >;
-
-function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -6,14 +6,14 @@ export const protobufPackage = "sifnode.clp.v1";
 
 /** Params - used for initializing default parameter for clp at genesis */
 export interface Params {
-  minCreatePoolThreshold: number;
+  minCreatePoolThreshold: Long;
 }
 
 export interface RewardParams {
   /** in blocks */
-  liquidityRemovalLockPeriod: number;
+  liquidityRemovalLockPeriod: Long;
   /** in blocks */
-  liquidityRemovalCancelPeriod: number;
+  liquidityRemovalCancelPeriod: Long;
   rewardPeriods: RewardPeriod[];
   /** start time of the current (or last) reward period */
   rewardPeriodStartTime: string;
@@ -28,15 +28,15 @@ export interface PmtpRateParams {
 
 export interface PmtpParams {
   pmtpPeriodGovernanceRate: string;
-  pmtpPeriodEpochLength: number;
-  pmtpPeriodStartBlock: number;
-  pmtpPeriodEndBlock: number;
+  pmtpPeriodEpochLength: Long;
+  pmtpPeriodStartBlock: Long;
+  pmtpPeriodEndBlock: Long;
 }
 
 export interface RewardPeriod {
   rewardPeriodId: string;
-  rewardPeriodStartBlock: number;
-  rewardPeriodEndBlock: number;
+  rewardPeriodStartBlock: Long;
+  rewardPeriodEndBlock: Long;
   rewardPeriodAllocation: string;
   rewardPeriodPoolMultipliers: PoolMultiplier[];
   rewardPeriodDefaultMultiplier: string;
@@ -48,7 +48,7 @@ export interface PoolMultiplier {
 }
 
 function createBaseParams(): Params {
-  return { minCreatePoolThreshold: 0 };
+  return { minCreatePoolThreshold: Long.UZERO };
 }
 
 export const Params = {
@@ -56,7 +56,7 @@ export const Params = {
     message: Params,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.minCreatePoolThreshold !== 0) {
+    if (!message.minCreatePoolThreshold.isZero()) {
       writer.uint32(8).uint64(message.minCreatePoolThreshold);
     }
     return writer;
@@ -70,9 +70,7 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.minCreatePoolThreshold = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.minCreatePoolThreshold = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -85,29 +83,35 @@ export const Params = {
   fromJSON(object: any): Params {
     return {
       minCreatePoolThreshold: isSet(object.minCreatePoolThreshold)
-        ? Number(object.minCreatePoolThreshold)
-        : 0,
+        ? Long.fromString(object.minCreatePoolThreshold)
+        : Long.UZERO,
     };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.minCreatePoolThreshold !== undefined &&
-      (obj.minCreatePoolThreshold = Math.round(message.minCreatePoolThreshold));
+      (obj.minCreatePoolThreshold = (
+        message.minCreatePoolThreshold || Long.UZERO
+      ).toString());
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = createBaseParams();
-    message.minCreatePoolThreshold = object.minCreatePoolThreshold ?? 0;
+    message.minCreatePoolThreshold =
+      object.minCreatePoolThreshold !== undefined &&
+      object.minCreatePoolThreshold !== null
+        ? Long.fromValue(object.minCreatePoolThreshold)
+        : Long.UZERO;
     return message;
   },
 };
 
 function createBaseRewardParams(): RewardParams {
   return {
-    liquidityRemovalLockPeriod: 0,
-    liquidityRemovalCancelPeriod: 0,
+    liquidityRemovalLockPeriod: Long.UZERO,
+    liquidityRemovalCancelPeriod: Long.UZERO,
     rewardPeriods: [],
     rewardPeriodStartTime: "",
   };
@@ -118,10 +122,10 @@ export const RewardParams = {
     message: RewardParams,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.liquidityRemovalLockPeriod !== 0) {
+    if (!message.liquidityRemovalLockPeriod.isZero()) {
       writer.uint32(8).uint64(message.liquidityRemovalLockPeriod);
     }
-    if (message.liquidityRemovalCancelPeriod !== 0) {
+    if (!message.liquidityRemovalCancelPeriod.isZero()) {
       writer.uint32(16).uint64(message.liquidityRemovalCancelPeriod);
     }
     for (const v of message.rewardPeriods) {
@@ -141,14 +145,10 @@ export const RewardParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityRemovalLockPeriod = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.liquidityRemovalLockPeriod = reader.uint64() as Long;
           break;
         case 2:
-          message.liquidityRemovalCancelPeriod = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.liquidityRemovalCancelPeriod = reader.uint64() as Long;
           break;
         case 4:
           message.rewardPeriods.push(
@@ -169,11 +169,11 @@ export const RewardParams = {
   fromJSON(object: any): RewardParams {
     return {
       liquidityRemovalLockPeriod: isSet(object.liquidityRemovalLockPeriod)
-        ? Number(object.liquidityRemovalLockPeriod)
-        : 0,
+        ? Long.fromString(object.liquidityRemovalLockPeriod)
+        : Long.UZERO,
       liquidityRemovalCancelPeriod: isSet(object.liquidityRemovalCancelPeriod)
-        ? Number(object.liquidityRemovalCancelPeriod)
-        : 0,
+        ? Long.fromString(object.liquidityRemovalCancelPeriod)
+        : Long.UZERO,
       rewardPeriods: Array.isArray(object?.rewardPeriods)
         ? object.rewardPeriods.map((e: any) => RewardPeriod.fromJSON(e))
         : [],
@@ -186,13 +186,13 @@ export const RewardParams = {
   toJSON(message: RewardParams): unknown {
     const obj: any = {};
     message.liquidityRemovalLockPeriod !== undefined &&
-      (obj.liquidityRemovalLockPeriod = Math.round(
-        message.liquidityRemovalLockPeriod,
-      ));
+      (obj.liquidityRemovalLockPeriod = (
+        message.liquidityRemovalLockPeriod || Long.UZERO
+      ).toString());
     message.liquidityRemovalCancelPeriod !== undefined &&
-      (obj.liquidityRemovalCancelPeriod = Math.round(
-        message.liquidityRemovalCancelPeriod,
-      ));
+      (obj.liquidityRemovalCancelPeriod = (
+        message.liquidityRemovalCancelPeriod || Long.UZERO
+      ).toString());
     if (message.rewardPeriods) {
       obj.rewardPeriods = message.rewardPeriods.map((e) =>
         e ? RewardPeriod.toJSON(e) : undefined,
@@ -209,9 +209,16 @@ export const RewardParams = {
     object: I,
   ): RewardParams {
     const message = createBaseRewardParams();
-    message.liquidityRemovalLockPeriod = object.liquidityRemovalLockPeriod ?? 0;
+    message.liquidityRemovalLockPeriod =
+      object.liquidityRemovalLockPeriod !== undefined &&
+      object.liquidityRemovalLockPeriod !== null
+        ? Long.fromValue(object.liquidityRemovalLockPeriod)
+        : Long.UZERO;
     message.liquidityRemovalCancelPeriod =
-      object.liquidityRemovalCancelPeriod ?? 0;
+      object.liquidityRemovalCancelPeriod !== undefined &&
+      object.liquidityRemovalCancelPeriod !== null
+        ? Long.fromValue(object.liquidityRemovalCancelPeriod)
+        : Long.UZERO;
     message.rewardPeriods =
       object.rewardPeriods?.map((e) => RewardPeriod.fromPartial(e)) || [];
     message.rewardPeriodStartTime = object.rewardPeriodStartTime ?? "";
@@ -307,9 +314,9 @@ export const PmtpRateParams = {
 function createBasePmtpParams(): PmtpParams {
   return {
     pmtpPeriodGovernanceRate: "",
-    pmtpPeriodEpochLength: 0,
-    pmtpPeriodStartBlock: 0,
-    pmtpPeriodEndBlock: 0,
+    pmtpPeriodEpochLength: Long.ZERO,
+    pmtpPeriodStartBlock: Long.ZERO,
+    pmtpPeriodEndBlock: Long.ZERO,
   };
 }
 
@@ -321,13 +328,13 @@ export const PmtpParams = {
     if (message.pmtpPeriodGovernanceRate !== "") {
       writer.uint32(10).string(message.pmtpPeriodGovernanceRate);
     }
-    if (message.pmtpPeriodEpochLength !== 0) {
+    if (!message.pmtpPeriodEpochLength.isZero()) {
       writer.uint32(16).int64(message.pmtpPeriodEpochLength);
     }
-    if (message.pmtpPeriodStartBlock !== 0) {
+    if (!message.pmtpPeriodStartBlock.isZero()) {
       writer.uint32(24).int64(message.pmtpPeriodStartBlock);
     }
-    if (message.pmtpPeriodEndBlock !== 0) {
+    if (!message.pmtpPeriodEndBlock.isZero()) {
       writer.uint32(32).int64(message.pmtpPeriodEndBlock);
     }
     return writer;
@@ -344,13 +351,13 @@ export const PmtpParams = {
           message.pmtpPeriodGovernanceRate = reader.string();
           break;
         case 2:
-          message.pmtpPeriodEpochLength = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodEpochLength = reader.int64() as Long;
           break;
         case 3:
-          message.pmtpPeriodStartBlock = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodStartBlock = reader.int64() as Long;
           break;
         case 4:
-          message.pmtpPeriodEndBlock = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodEndBlock = reader.int64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -366,14 +373,14 @@ export const PmtpParams = {
         ? String(object.pmtpPeriodGovernanceRate)
         : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
-        ? Number(object.pmtpPeriodEpochLength)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodEpochLength)
+        : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
-        ? Number(object.pmtpPeriodStartBlock)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodStartBlock)
+        : Long.ZERO,
       pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Number(object.pmtpPeriodEndBlock)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodEndBlock)
+        : Long.ZERO,
     };
   },
 
@@ -382,11 +389,17 @@ export const PmtpParams = {
     message.pmtpPeriodGovernanceRate !== undefined &&
       (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
     message.pmtpPeriodEpochLength !== undefined &&
-      (obj.pmtpPeriodEpochLength = Math.round(message.pmtpPeriodEpochLength));
+      (obj.pmtpPeriodEpochLength = (
+        message.pmtpPeriodEpochLength || Long.ZERO
+      ).toString());
     message.pmtpPeriodStartBlock !== undefined &&
-      (obj.pmtpPeriodStartBlock = Math.round(message.pmtpPeriodStartBlock));
+      (obj.pmtpPeriodStartBlock = (
+        message.pmtpPeriodStartBlock || Long.ZERO
+      ).toString());
     message.pmtpPeriodEndBlock !== undefined &&
-      (obj.pmtpPeriodEndBlock = Math.round(message.pmtpPeriodEndBlock));
+      (obj.pmtpPeriodEndBlock = (
+        message.pmtpPeriodEndBlock || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -395,9 +408,21 @@ export const PmtpParams = {
   ): PmtpParams {
     const message = createBasePmtpParams();
     message.pmtpPeriodGovernanceRate = object.pmtpPeriodGovernanceRate ?? "";
-    message.pmtpPeriodEpochLength = object.pmtpPeriodEpochLength ?? 0;
-    message.pmtpPeriodStartBlock = object.pmtpPeriodStartBlock ?? 0;
-    message.pmtpPeriodEndBlock = object.pmtpPeriodEndBlock ?? 0;
+    message.pmtpPeriodEpochLength =
+      object.pmtpPeriodEpochLength !== undefined &&
+      object.pmtpPeriodEpochLength !== null
+        ? Long.fromValue(object.pmtpPeriodEpochLength)
+        : Long.ZERO;
+    message.pmtpPeriodStartBlock =
+      object.pmtpPeriodStartBlock !== undefined &&
+      object.pmtpPeriodStartBlock !== null
+        ? Long.fromValue(object.pmtpPeriodStartBlock)
+        : Long.ZERO;
+    message.pmtpPeriodEndBlock =
+      object.pmtpPeriodEndBlock !== undefined &&
+      object.pmtpPeriodEndBlock !== null
+        ? Long.fromValue(object.pmtpPeriodEndBlock)
+        : Long.ZERO;
     return message;
   },
 };
@@ -405,8 +430,8 @@ export const PmtpParams = {
 function createBaseRewardPeriod(): RewardPeriod {
   return {
     rewardPeriodId: "",
-    rewardPeriodStartBlock: 0,
-    rewardPeriodEndBlock: 0,
+    rewardPeriodStartBlock: Long.UZERO,
+    rewardPeriodEndBlock: Long.UZERO,
     rewardPeriodAllocation: "",
     rewardPeriodPoolMultipliers: [],
     rewardPeriodDefaultMultiplier: "",
@@ -421,10 +446,10 @@ export const RewardPeriod = {
     if (message.rewardPeriodId !== "") {
       writer.uint32(10).string(message.rewardPeriodId);
     }
-    if (message.rewardPeriodStartBlock !== 0) {
+    if (!message.rewardPeriodStartBlock.isZero()) {
       writer.uint32(16).uint64(message.rewardPeriodStartBlock);
     }
-    if (message.rewardPeriodEndBlock !== 0) {
+    if (!message.rewardPeriodEndBlock.isZero()) {
       writer.uint32(24).uint64(message.rewardPeriodEndBlock);
     }
     if (message.rewardPeriodAllocation !== "") {
@@ -450,12 +475,10 @@ export const RewardPeriod = {
           message.rewardPeriodId = reader.string();
           break;
         case 2:
-          message.rewardPeriodStartBlock = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.rewardPeriodStartBlock = reader.uint64() as Long;
           break;
         case 3:
-          message.rewardPeriodEndBlock = longToNumber(reader.uint64() as Long);
+          message.rewardPeriodEndBlock = reader.uint64() as Long;
           break;
         case 4:
           message.rewardPeriodAllocation = reader.string();
@@ -482,11 +505,11 @@ export const RewardPeriod = {
         ? String(object.rewardPeriodId)
         : "",
       rewardPeriodStartBlock: isSet(object.rewardPeriodStartBlock)
-        ? Number(object.rewardPeriodStartBlock)
-        : 0,
+        ? Long.fromString(object.rewardPeriodStartBlock)
+        : Long.UZERO,
       rewardPeriodEndBlock: isSet(object.rewardPeriodEndBlock)
-        ? Number(object.rewardPeriodEndBlock)
-        : 0,
+        ? Long.fromString(object.rewardPeriodEndBlock)
+        : Long.UZERO,
       rewardPeriodAllocation: isSet(object.rewardPeriodAllocation)
         ? String(object.rewardPeriodAllocation)
         : "",
@@ -508,9 +531,13 @@ export const RewardPeriod = {
     message.rewardPeriodId !== undefined &&
       (obj.rewardPeriodId = message.rewardPeriodId);
     message.rewardPeriodStartBlock !== undefined &&
-      (obj.rewardPeriodStartBlock = Math.round(message.rewardPeriodStartBlock));
+      (obj.rewardPeriodStartBlock = (
+        message.rewardPeriodStartBlock || Long.UZERO
+      ).toString());
     message.rewardPeriodEndBlock !== undefined &&
-      (obj.rewardPeriodEndBlock = Math.round(message.rewardPeriodEndBlock));
+      (obj.rewardPeriodEndBlock = (
+        message.rewardPeriodEndBlock || Long.UZERO
+      ).toString());
     message.rewardPeriodAllocation !== undefined &&
       (obj.rewardPeriodAllocation = message.rewardPeriodAllocation);
     if (message.rewardPeriodPoolMultipliers) {
@@ -531,8 +558,16 @@ export const RewardPeriod = {
   ): RewardPeriod {
     const message = createBaseRewardPeriod();
     message.rewardPeriodId = object.rewardPeriodId ?? "";
-    message.rewardPeriodStartBlock = object.rewardPeriodStartBlock ?? 0;
-    message.rewardPeriodEndBlock = object.rewardPeriodEndBlock ?? 0;
+    message.rewardPeriodStartBlock =
+      object.rewardPeriodStartBlock !== undefined &&
+      object.rewardPeriodStartBlock !== null
+        ? Long.fromValue(object.rewardPeriodStartBlock)
+        : Long.UZERO;
+    message.rewardPeriodEndBlock =
+      object.rewardPeriodEndBlock !== undefined &&
+      object.rewardPeriodEndBlock !== null
+        ? Long.fromValue(object.rewardPeriodEndBlock)
+        : Long.UZERO;
     message.rewardPeriodAllocation = object.rewardPeriodAllocation ?? "";
     message.rewardPeriodPoolMultipliers =
       object.rewardPeriodPoolMultipliers?.map((e) =>
@@ -610,17 +645,6 @@ export const PoolMultiplier = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
 type Builtin =
   | Date
   | Function
@@ -632,6 +656,8 @@ type Builtin =
 
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -647,13 +673,6 @@ export type Exact<P, I extends P> = P extends Builtin
         Exclude<keyof I, KeysOfUnion<P>>,
         never
       >;
-
-function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

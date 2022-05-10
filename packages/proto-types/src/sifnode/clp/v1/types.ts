@@ -26,13 +26,13 @@ export interface LiquidityProvider {
 }
 
 export interface LiquidityUnlock {
-  requestHeight: number;
+  requestHeight: Long;
   units: string;
 }
 
 export interface PmtpEpoch {
-  epochCounter: number;
-  blockCounter: number;
+  epochCounter: Long;
+  blockCounter: Long;
 }
 
 export interface WhiteList {
@@ -342,7 +342,7 @@ export const LiquidityProvider = {
 };
 
 function createBaseLiquidityUnlock(): LiquidityUnlock {
-  return { requestHeight: 0, units: "" };
+  return { requestHeight: Long.ZERO, units: "" };
 }
 
 export const LiquidityUnlock = {
@@ -350,7 +350,7 @@ export const LiquidityUnlock = {
     message: LiquidityUnlock,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.requestHeight !== 0) {
+    if (!message.requestHeight.isZero()) {
       writer.uint32(8).int64(message.requestHeight);
     }
     if (message.units !== "") {
@@ -367,7 +367,7 @@ export const LiquidityUnlock = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.requestHeight = longToNumber(reader.int64() as Long);
+          message.requestHeight = reader.int64() as Long;
           break;
         case 2:
           message.units = reader.string();
@@ -383,8 +383,8 @@ export const LiquidityUnlock = {
   fromJSON(object: any): LiquidityUnlock {
     return {
       requestHeight: isSet(object.requestHeight)
-        ? Number(object.requestHeight)
-        : 0,
+        ? Long.fromString(object.requestHeight)
+        : Long.ZERO,
       units: isSet(object.units) ? String(object.units) : "",
     };
   },
@@ -392,7 +392,7 @@ export const LiquidityUnlock = {
   toJSON(message: LiquidityUnlock): unknown {
     const obj: any = {};
     message.requestHeight !== undefined &&
-      (obj.requestHeight = Math.round(message.requestHeight));
+      (obj.requestHeight = (message.requestHeight || Long.ZERO).toString());
     message.units !== undefined && (obj.units = message.units);
     return obj;
   },
@@ -401,14 +401,17 @@ export const LiquidityUnlock = {
     object: I,
   ): LiquidityUnlock {
     const message = createBaseLiquidityUnlock();
-    message.requestHeight = object.requestHeight ?? 0;
+    message.requestHeight =
+      object.requestHeight !== undefined && object.requestHeight !== null
+        ? Long.fromValue(object.requestHeight)
+        : Long.ZERO;
     message.units = object.units ?? "";
     return message;
   },
 };
 
 function createBasePmtpEpoch(): PmtpEpoch {
-  return { epochCounter: 0, blockCounter: 0 };
+  return { epochCounter: Long.ZERO, blockCounter: Long.ZERO };
 }
 
 export const PmtpEpoch = {
@@ -416,10 +419,10 @@ export const PmtpEpoch = {
     message: PmtpEpoch,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.epochCounter !== 0) {
+    if (!message.epochCounter.isZero()) {
       writer.uint32(8).int64(message.epochCounter);
     }
-    if (message.blockCounter !== 0) {
+    if (!message.blockCounter.isZero()) {
       writer.uint32(16).int64(message.blockCounter);
     }
     return writer;
@@ -433,10 +436,10 @@ export const PmtpEpoch = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.epochCounter = longToNumber(reader.int64() as Long);
+          message.epochCounter = reader.int64() as Long;
           break;
         case 2:
-          message.blockCounter = longToNumber(reader.int64() as Long);
+          message.blockCounter = reader.int64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -449,20 +452,20 @@ export const PmtpEpoch = {
   fromJSON(object: any): PmtpEpoch {
     return {
       epochCounter: isSet(object.epochCounter)
-        ? Number(object.epochCounter)
-        : 0,
+        ? Long.fromString(object.epochCounter)
+        : Long.ZERO,
       blockCounter: isSet(object.blockCounter)
-        ? Number(object.blockCounter)
-        : 0,
+        ? Long.fromString(object.blockCounter)
+        : Long.ZERO,
     };
   },
 
   toJSON(message: PmtpEpoch): unknown {
     const obj: any = {};
     message.epochCounter !== undefined &&
-      (obj.epochCounter = Math.round(message.epochCounter));
+      (obj.epochCounter = (message.epochCounter || Long.ZERO).toString());
     message.blockCounter !== undefined &&
-      (obj.blockCounter = Math.round(message.blockCounter));
+      (obj.blockCounter = (message.blockCounter || Long.ZERO).toString());
     return obj;
   },
 
@@ -470,8 +473,14 @@ export const PmtpEpoch = {
     object: I,
   ): PmtpEpoch {
     const message = createBasePmtpEpoch();
-    message.epochCounter = object.epochCounter ?? 0;
-    message.blockCounter = object.blockCounter ?? 0;
+    message.epochCounter =
+      object.epochCounter !== undefined && object.epochCounter !== null
+        ? Long.fromValue(object.epochCounter)
+        : Long.ZERO;
+    message.blockCounter =
+      object.blockCounter !== undefined && object.blockCounter !== null
+        ? Long.fromValue(object.blockCounter)
+        : Long.ZERO;
     return message;
   },
 };
@@ -714,17 +723,6 @@ export const EventPolicy = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
 type Builtin =
   | Date
   | Function
@@ -736,6 +734,8 @@ type Builtin =
 
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -751,13 +751,6 @@ export type Exact<P, I extends P> = P extends Builtin
         Exclude<keyof I, KeysOfUnion<P>>,
         never
       >;
-
-function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

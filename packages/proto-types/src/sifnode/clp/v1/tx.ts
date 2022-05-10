@@ -61,9 +61,9 @@ export interface MsgModifyPmtpRatesResponse {}
 export interface MsgUpdatePmtpParams {
   signer: string;
   pmtpPeriodGovernanceRate: string;
-  pmtpPeriodEpochLength: number;
-  pmtpPeriodStartBlock: number;
-  pmtpPeriodEndBlock: number;
+  pmtpPeriodEpochLength: Long;
+  pmtpPeriodStartBlock: Long;
+  pmtpPeriodEndBlock: Long;
 }
 
 export interface MsgUpdatePmtpParamsResponse {}
@@ -96,9 +96,9 @@ export interface MsgUnlockLiquidityResponse {}
 export interface MsgUpdateRewardsParamsRequest {
   signer: string;
   /** in blocks */
-  liquidityRemovalLockPeriod: number;
+  liquidityRemovalLockPeriod: Long;
   /** in blocks */
-  liquidityRemovalCancelPeriod: number;
+  liquidityRemovalCancelPeriod: Long;
 }
 
 export interface MsgUpdateRewardsParamsResponse {}
@@ -109,6 +109,21 @@ export interface MsgAddRewardPeriodRequest {
 }
 
 export interface MsgAddRewardPeriodResponse {}
+
+export interface MsgSetSymmetryThreshold {
+  signer: string;
+  threshold: string;
+}
+
+export interface MsgSetSymmetryThresholdResponse {}
+
+export interface MsgCancelUnlock {
+  signer: string;
+  externalAsset?: Asset;
+  units: string;
+}
+
+export interface MsgCancelUnlockResponse {}
 
 function createBaseMsgUpdateStakingRewardParams(): MsgUpdateStakingRewardParams {
   return { signer: "", minter: "", params: "" };
@@ -936,9 +951,9 @@ function createBaseMsgUpdatePmtpParams(): MsgUpdatePmtpParams {
   return {
     signer: "",
     pmtpPeriodGovernanceRate: "",
-    pmtpPeriodEpochLength: 0,
-    pmtpPeriodStartBlock: 0,
-    pmtpPeriodEndBlock: 0,
+    pmtpPeriodEpochLength: Long.ZERO,
+    pmtpPeriodStartBlock: Long.ZERO,
+    pmtpPeriodEndBlock: Long.ZERO,
   };
 }
 
@@ -953,13 +968,13 @@ export const MsgUpdatePmtpParams = {
     if (message.pmtpPeriodGovernanceRate !== "") {
       writer.uint32(18).string(message.pmtpPeriodGovernanceRate);
     }
-    if (message.pmtpPeriodEpochLength !== 0) {
+    if (!message.pmtpPeriodEpochLength.isZero()) {
       writer.uint32(24).int64(message.pmtpPeriodEpochLength);
     }
-    if (message.pmtpPeriodStartBlock !== 0) {
+    if (!message.pmtpPeriodStartBlock.isZero()) {
       writer.uint32(32).int64(message.pmtpPeriodStartBlock);
     }
-    if (message.pmtpPeriodEndBlock !== 0) {
+    if (!message.pmtpPeriodEndBlock.isZero()) {
       writer.uint32(40).int64(message.pmtpPeriodEndBlock);
     }
     return writer;
@@ -979,13 +994,13 @@ export const MsgUpdatePmtpParams = {
           message.pmtpPeriodGovernanceRate = reader.string();
           break;
         case 3:
-          message.pmtpPeriodEpochLength = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodEpochLength = reader.int64() as Long;
           break;
         case 4:
-          message.pmtpPeriodStartBlock = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodStartBlock = reader.int64() as Long;
           break;
         case 5:
-          message.pmtpPeriodEndBlock = longToNumber(reader.int64() as Long);
+          message.pmtpPeriodEndBlock = reader.int64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -1002,14 +1017,14 @@ export const MsgUpdatePmtpParams = {
         ? String(object.pmtpPeriodGovernanceRate)
         : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
-        ? Number(object.pmtpPeriodEpochLength)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodEpochLength)
+        : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
-        ? Number(object.pmtpPeriodStartBlock)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodStartBlock)
+        : Long.ZERO,
       pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Number(object.pmtpPeriodEndBlock)
-        : 0,
+        ? Long.fromString(object.pmtpPeriodEndBlock)
+        : Long.ZERO,
     };
   },
 
@@ -1019,11 +1034,17 @@ export const MsgUpdatePmtpParams = {
     message.pmtpPeriodGovernanceRate !== undefined &&
       (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
     message.pmtpPeriodEpochLength !== undefined &&
-      (obj.pmtpPeriodEpochLength = Math.round(message.pmtpPeriodEpochLength));
+      (obj.pmtpPeriodEpochLength = (
+        message.pmtpPeriodEpochLength || Long.ZERO
+      ).toString());
     message.pmtpPeriodStartBlock !== undefined &&
-      (obj.pmtpPeriodStartBlock = Math.round(message.pmtpPeriodStartBlock));
+      (obj.pmtpPeriodStartBlock = (
+        message.pmtpPeriodStartBlock || Long.ZERO
+      ).toString());
     message.pmtpPeriodEndBlock !== undefined &&
-      (obj.pmtpPeriodEndBlock = Math.round(message.pmtpPeriodEndBlock));
+      (obj.pmtpPeriodEndBlock = (
+        message.pmtpPeriodEndBlock || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -1033,9 +1054,21 @@ export const MsgUpdatePmtpParams = {
     const message = createBaseMsgUpdatePmtpParams();
     message.signer = object.signer ?? "";
     message.pmtpPeriodGovernanceRate = object.pmtpPeriodGovernanceRate ?? "";
-    message.pmtpPeriodEpochLength = object.pmtpPeriodEpochLength ?? 0;
-    message.pmtpPeriodStartBlock = object.pmtpPeriodStartBlock ?? 0;
-    message.pmtpPeriodEndBlock = object.pmtpPeriodEndBlock ?? 0;
+    message.pmtpPeriodEpochLength =
+      object.pmtpPeriodEpochLength !== undefined &&
+      object.pmtpPeriodEpochLength !== null
+        ? Long.fromValue(object.pmtpPeriodEpochLength)
+        : Long.ZERO;
+    message.pmtpPeriodStartBlock =
+      object.pmtpPeriodStartBlock !== undefined &&
+      object.pmtpPeriodStartBlock !== null
+        ? Long.fromValue(object.pmtpPeriodStartBlock)
+        : Long.ZERO;
+    message.pmtpPeriodEndBlock =
+      object.pmtpPeriodEndBlock !== undefined &&
+      object.pmtpPeriodEndBlock !== null
+        ? Long.fromValue(object.pmtpPeriodEndBlock)
+        : Long.ZERO;
     return message;
   },
 };
@@ -1487,8 +1520,8 @@ export const MsgUnlockLiquidityResponse = {
 function createBaseMsgUpdateRewardsParamsRequest(): MsgUpdateRewardsParamsRequest {
   return {
     signer: "",
-    liquidityRemovalLockPeriod: 0,
-    liquidityRemovalCancelPeriod: 0,
+    liquidityRemovalLockPeriod: Long.UZERO,
+    liquidityRemovalCancelPeriod: Long.UZERO,
   };
 }
 
@@ -1500,10 +1533,10 @@ export const MsgUpdateRewardsParamsRequest = {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
-    if (message.liquidityRemovalLockPeriod !== 0) {
+    if (!message.liquidityRemovalLockPeriod.isZero()) {
       writer.uint32(16).uint64(message.liquidityRemovalLockPeriod);
     }
-    if (message.liquidityRemovalCancelPeriod !== 0) {
+    if (!message.liquidityRemovalCancelPeriod.isZero()) {
       writer.uint32(24).uint64(message.liquidityRemovalCancelPeriod);
     }
     return writer;
@@ -1523,14 +1556,10 @@ export const MsgUpdateRewardsParamsRequest = {
           message.signer = reader.string();
           break;
         case 2:
-          message.liquidityRemovalLockPeriod = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.liquidityRemovalLockPeriod = reader.uint64() as Long;
           break;
         case 3:
-          message.liquidityRemovalCancelPeriod = longToNumber(
-            reader.uint64() as Long,
-          );
+          message.liquidityRemovalCancelPeriod = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -1544,11 +1573,11 @@ export const MsgUpdateRewardsParamsRequest = {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
       liquidityRemovalLockPeriod: isSet(object.liquidityRemovalLockPeriod)
-        ? Number(object.liquidityRemovalLockPeriod)
-        : 0,
+        ? Long.fromString(object.liquidityRemovalLockPeriod)
+        : Long.UZERO,
       liquidityRemovalCancelPeriod: isSet(object.liquidityRemovalCancelPeriod)
-        ? Number(object.liquidityRemovalCancelPeriod)
-        : 0,
+        ? Long.fromString(object.liquidityRemovalCancelPeriod)
+        : Long.UZERO,
     };
   },
 
@@ -1556,13 +1585,13 @@ export const MsgUpdateRewardsParamsRequest = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.liquidityRemovalLockPeriod !== undefined &&
-      (obj.liquidityRemovalLockPeriod = Math.round(
-        message.liquidityRemovalLockPeriod,
-      ));
+      (obj.liquidityRemovalLockPeriod = (
+        message.liquidityRemovalLockPeriod || Long.UZERO
+      ).toString());
     message.liquidityRemovalCancelPeriod !== undefined &&
-      (obj.liquidityRemovalCancelPeriod = Math.round(
-        message.liquidityRemovalCancelPeriod,
-      ));
+      (obj.liquidityRemovalCancelPeriod = (
+        message.liquidityRemovalCancelPeriod || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -1571,9 +1600,16 @@ export const MsgUpdateRewardsParamsRequest = {
   ): MsgUpdateRewardsParamsRequest {
     const message = createBaseMsgUpdateRewardsParamsRequest();
     message.signer = object.signer ?? "";
-    message.liquidityRemovalLockPeriod = object.liquidityRemovalLockPeriod ?? 0;
+    message.liquidityRemovalLockPeriod =
+      object.liquidityRemovalLockPeriod !== undefined &&
+      object.liquidityRemovalLockPeriod !== null
+        ? Long.fromValue(object.liquidityRemovalLockPeriod)
+        : Long.UZERO;
     message.liquidityRemovalCancelPeriod =
-      object.liquidityRemovalCancelPeriod ?? 0;
+      object.liquidityRemovalCancelPeriod !== undefined &&
+      object.liquidityRemovalCancelPeriod !== null
+        ? Long.fromValue(object.liquidityRemovalCancelPeriod)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1749,6 +1785,246 @@ export const MsgAddRewardPeriodResponse = {
   },
 };
 
+function createBaseMsgSetSymmetryThreshold(): MsgSetSymmetryThreshold {
+  return { signer: "", threshold: "" };
+}
+
+export const MsgSetSymmetryThreshold = {
+  encode(
+    message: MsgSetSymmetryThreshold,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.threshold !== "") {
+      writer.uint32(18).string(message.threshold);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgSetSymmetryThreshold {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetSymmetryThreshold();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.threshold = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetSymmetryThreshold {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      threshold: isSet(object.threshold) ? String(object.threshold) : "",
+    };
+  },
+
+  toJSON(message: MsgSetSymmetryThreshold): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.threshold !== undefined && (obj.threshold = message.threshold);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThreshold>, I>>(
+    object: I,
+  ): MsgSetSymmetryThreshold {
+    const message = createBaseMsgSetSymmetryThreshold();
+    message.signer = object.signer ?? "";
+    message.threshold = object.threshold ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSetSymmetryThresholdResponse(): MsgSetSymmetryThresholdResponse {
+  return {};
+}
+
+export const MsgSetSymmetryThresholdResponse = {
+  encode(
+    _: MsgSetSymmetryThresholdResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgSetSymmetryThresholdResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetSymmetryThresholdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetSymmetryThresholdResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSetSymmetryThresholdResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThresholdResponse>, I>>(
+    _: I,
+  ): MsgSetSymmetryThresholdResponse {
+    const message = createBaseMsgSetSymmetryThresholdResponse();
+    return message;
+  },
+};
+
+function createBaseMsgCancelUnlock(): MsgCancelUnlock {
+  return { signer: "", externalAsset: undefined, units: "" };
+}
+
+export const MsgCancelUnlock = {
+  encode(
+    message: MsgCancelUnlock,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.externalAsset !== undefined) {
+      Asset.encode(message.externalAsset, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.units !== "") {
+      writer.uint32(26).string(message.units);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelUnlock {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgCancelUnlock();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.externalAsset = Asset.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.units = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCancelUnlock {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      externalAsset: isSet(object.externalAsset)
+        ? Asset.fromJSON(object.externalAsset)
+        : undefined,
+      units: isSet(object.units) ? String(object.units) : "",
+    };
+  },
+
+  toJSON(message: MsgCancelUnlock): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.externalAsset !== undefined &&
+      (obj.externalAsset = message.externalAsset
+        ? Asset.toJSON(message.externalAsset)
+        : undefined);
+    message.units !== undefined && (obj.units = message.units);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlock>, I>>(
+    object: I,
+  ): MsgCancelUnlock {
+    const message = createBaseMsgCancelUnlock();
+    message.signer = object.signer ?? "";
+    message.externalAsset =
+      object.externalAsset !== undefined && object.externalAsset !== null
+        ? Asset.fromPartial(object.externalAsset)
+        : undefined;
+    message.units = object.units ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgCancelUnlockResponse(): MsgCancelUnlockResponse {
+  return {};
+}
+
+export const MsgCancelUnlockResponse = {
+  encode(
+    _: MsgCancelUnlockResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgCancelUnlockResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgCancelUnlockResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCancelUnlockResponse {
+    return {};
+  },
+
+  toJSON(_: MsgCancelUnlockResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlockResponse>, I>>(
+    _: I,
+  ): MsgCancelUnlockResponse {
+    const message = createBaseMsgCancelUnlockResponse();
+    return message;
+  },
+};
+
 export interface Msg {
   RemoveLiquidity(
     request: MsgRemoveLiquidity,
@@ -1780,6 +2056,12 @@ export interface Msg {
   UpdateStakingRewardParams(
     request: MsgUpdateStakingRewardParams,
   ): Promise<MsgUpdateStakingRewardParamsResponse>;
+  SetSymmetryThreshold(
+    request: MsgSetSymmetryThreshold,
+  ): Promise<MsgSetSymmetryThresholdResponse>;
+  CancelUnlockLiquidity(
+    request: MsgCancelUnlock,
+  ): Promise<MsgCancelUnlockResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1798,6 +2080,8 @@ export class MsgClientImpl implements Msg {
     this.ModifyPmtpRates = this.ModifyPmtpRates.bind(this);
     this.UpdatePmtpParams = this.UpdatePmtpParams.bind(this);
     this.UpdateStakingRewardParams = this.UpdateStakingRewardParams.bind(this);
+    this.SetSymmetryThreshold = this.SetSymmetryThreshold.bind(this);
+    this.CancelUnlockLiquidity = this.CancelUnlockLiquidity.bind(this);
   }
   RemoveLiquidity(
     request: MsgRemoveLiquidity,
@@ -1950,6 +2234,34 @@ export class MsgClientImpl implements Msg {
       MsgUpdateStakingRewardParamsResponse.decode(new _m0.Reader(data)),
     );
   }
+
+  SetSymmetryThreshold(
+    request: MsgSetSymmetryThreshold,
+  ): Promise<MsgSetSymmetryThresholdResponse> {
+    const data = MsgSetSymmetryThreshold.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.clp.v1.Msg",
+      "SetSymmetryThreshold",
+      data,
+    );
+    return promise.then((data) =>
+      MsgSetSymmetryThresholdResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  CancelUnlockLiquidity(
+    request: MsgCancelUnlock,
+  ): Promise<MsgCancelUnlockResponse> {
+    const data = MsgCancelUnlock.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.clp.v1.Msg",
+      "CancelUnlockLiquidity",
+      data,
+    );
+    return promise.then((data) =>
+      MsgCancelUnlockResponse.decode(new _m0.Reader(data)),
+    );
+  }
 }
 
 interface Rpc {
@@ -1959,17 +2271,6 @@ interface Rpc {
     data: Uint8Array,
   ): Promise<Uint8Array>;
 }
-
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
 
 type Builtin =
   | Date
@@ -1982,6 +2283,8 @@ type Builtin =
 
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -1997,13 +2300,6 @@ export type Exact<P, I extends P> = P extends Builtin
         Exclude<keyof I, KeysOfUnion<P>>,
         never
       >;
-
-function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
