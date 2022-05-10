@@ -24,15 +24,16 @@ jobs:
       - run: pnpm install
       - run: pnpm build
 
-      - name: Create PR or Publish release
-        uses: changesets/action@v1
-        id: changesets
-        with:
-          commit: "chore: update versions"
-          title: "chore: update versions"
-          publish: pnpm changeset publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Only create snapshot for now, re-enable once the dex is released
+      # - name: Create PR or Publish release
+      #   uses: changesets/action@v1
+      #   id: changesets
+      #   with:
+      #     commit: "chore: update versions"
+      #     title: "chore: update versions"
+      #     publish: pnpm changeset publish
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish snapshot
         run: |
