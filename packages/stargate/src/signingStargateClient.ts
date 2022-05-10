@@ -32,7 +32,7 @@ import {
   convertToSnakeCaseDeep,
   createAminoTypeNameFromProtoTypeUrl,
 } from "./legacyUtils";
-import type { SifchainEncodeObject } from "./messages";
+import type { CosmosEncodeObject, SifEncodeObject } from "./messages";
 
 const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx];
 
@@ -113,7 +113,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   override simulate(
     signerAddress: string,
-    messages: readonly SifchainEncodeObject[],
+    messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
     memo: string | undefined,
   ) {
     return super.simulate(signerAddress, messages, memo);
@@ -121,7 +121,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   override sign(
     signerAddress: string,
-    messages: readonly SifchainEncodeObject[],
+    messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
     fee: StdFee,
     memo: string,
     explicitSignerData?: SignerData,
@@ -131,7 +131,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   override signAndBroadcast(
     signerAddress: string,
-    messages: readonly SifchainEncodeObject[],
+    messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
     fee: number | StdFee | "auto",
     memo?: string,
   ) {
