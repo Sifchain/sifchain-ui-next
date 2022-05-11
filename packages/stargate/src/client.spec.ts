@@ -5,12 +5,12 @@ import { PoolsReq } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import { createQueryClient } from "./queryClient";
 import { SifSigningStargateClient } from "./signingStargateClient";
 
-describe("Sifchain's client", async () => {
-  const queryClients = await createQueryClient(
-    "https://rpc-testnet.sifchain.finance",
-  );
-
+describe("Sifchain's client", () => {
   test("query client", async () => {
+    const queryClients = await createQueryClient(
+      "https://rpc-testnet.sifchain.finance",
+    );
+
     expect(() =>
       queryClients.clp.getPools(PoolsReq.fromPartial({})),
     ).not.toThrowError();
@@ -18,6 +18,9 @@ describe("Sifchain's client", async () => {
 
   // TODO: setup integration test
   test.skip("signing client", async () => {
+    const queryClients = await createQueryClient(
+      "https://rpc-testnet.sifchain.finance",
+    );
     const tokenEntries = await queryClients.tokenRegistry
       .entries({})
       .then((x) => x.registry?.entries);
