@@ -5,6 +5,10 @@
   "description": "Sifchain UI component library and utilities",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
+  "files": [
+    "src",
+    "tailwind.config.preset.js"
+  ],
   "dependencies": {
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
