@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { formatNumberAsCurrency } from "~/lib/formatters";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
@@ -50,6 +51,19 @@ const Aside = () => {
     </button>
   );
 
+  const rowanStats = [
+    {
+      id: "tvl",
+      icon: require("~/assets/icons/lock-icon.svg"),
+      label: <>{formatNumberAsCurrency(999999999)} TVL</>,
+    },
+    {
+      id: "price",
+      icon: require("~/assets/icons/rowan-icon.svg"),
+      label: <>{formatNumberAsCurrency(0.99)} / ROWAN</>,
+    },
+  ];
+
   return (
     <aside
       className={clsx(
@@ -63,7 +77,7 @@ const Aside = () => {
         },
       )}
     >
-      <div className="grid gap-8">
+      <div className="flex flex-col gap-8 h-full">
         {handleBtn}
         <section className="w-full grid place-items-center py-8 md:py-10 gap-2">
           <Logo />
@@ -72,30 +86,51 @@ const Aside = () => {
         <section>
           <ConnectButton />
         </section>
-        <nav>
-          <ul className="grid gap-2">
-            {MENU_ITEMS.map(({ title, href, icon }) => (
-              <li key={title} className="grid gap-2">
-                <Link href={href}>
-                  <a
-                    role="navigation"
-                    className={clsx(
-                      "flex items-center gap-4 p-2 hover:bg-sifgray-600 rounded-md",
-                      {
-                        "bg-sifgray-800": currentPath === href,
-                      },
-                    )}
-                  >
-                    <Image src={icon} />
-                    <span className="text-sifgray-200 font-semibold text-sm">
-                      {title}
-                    </span>
-                  </a>
-                </Link>
+        <section className="flex flex-1">
+          <nav className="w-full">
+            <ul className="grid gap-2">
+              {MENU_ITEMS.map(({ title, href, icon }) => (
+                <li key={title} className="grid gap-2">
+                  <Link href={href}>
+                    <a
+                      role="navigation"
+                      className={clsx(
+                        "flex items-center gap-4 p-2 hover:bg-sifgray-600 rounded-md",
+                        {
+                          "bg-sifgray-800": currentPath === href,
+                        },
+                      )}
+                    >
+                      <span className="h-6 w-6 grid place-items-center">
+                        <Image src={icon} />
+                      </span>
+                      <span className="text-sifgray-200 font-semibold text-sm">
+                        {title}
+                      </span>
+                    </a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+        <section>
+          <ul>
+            {rowanStats.map(({ id, icon, label }) => (
+              <li
+                key={id}
+                className="flex flex-row items-center gap-2 tracking-widest p-2"
+              >
+                <span className="h-6 w-6 grid place-items-center mr-1">
+                  <Image src={icon} />
+                </span>
+                <span className="text-sifgray-200 font-semibold text-sm">
+                  {label}
+                </span>
               </li>
             ))}
           </ul>
-        </nav>
+        </section>
       </div>
     </aside>
   );
