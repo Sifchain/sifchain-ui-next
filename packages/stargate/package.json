@@ -2,7 +2,8 @@
   "name": "@sifchain/stargate",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/commonjs/index.js",
+  "module": "build/module/index.js",
   "scripts": {
     "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
   },
