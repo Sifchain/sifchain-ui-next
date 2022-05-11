@@ -8,7 +8,7 @@ import { useTheme } from "../hooks/useTheme";
 const Button = tw.button`
   flex items-center
   fixed bottom-0 left-0 right-auto
-  p-1 m-2 bg-zinc-800/10 
+  p-1 m-2 
   rounded-full
   w-14
   h-8

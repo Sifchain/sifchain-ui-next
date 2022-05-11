@@ -1,3 +1,3 @@
 # Apps
 
-- dex - Sifhcins Decentralized Exchange Frontend
+- dex - Sifchain's Decentralized Exchange Frontend
