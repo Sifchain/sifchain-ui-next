@@ -1,6 +1,5 @@
 {
   "name": "@sifchain/proto-types",
-  "type": "module",
   "version": "0.0.0",
   "description": "",
   "files": [
@@ -8,8 +7,8 @@
   ],
   "exports": {
     "./*": {
-      "import": "./build/module/*",
-      "require": "./build/commonjs/*"
+      "import": "./build/module/*.js",
+      "require": "./build/commonjs/*.js"
     }
   },
   "typesVersions": {
