@@ -1,6 +1,5 @@
-import React from "react";
-import MainLayout from "../layouts/MainLayout";
-import PageLayout from "../layouts/PageLayout";
+import MainLayout from "~/layouts/MainLayout";
+import PageLayout from "~/layouts/PageLayout";
 
 const SwapPage = () => {
   return (

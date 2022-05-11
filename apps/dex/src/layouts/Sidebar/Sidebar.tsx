@@ -1,23 +1,33 @@
-import clsx from "clsx";
-import React, { useState } from "react";
 import { ChevronRightIcon } from "@heroicons/react/outline";
 import { Logo } from "@sifchain/ui";
-import Link from "next/link";
+import clsx from "clsx";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
-const MENU_ITEMS = [
+export const MENU_ITEMS = [
   {
     title: "Swap",
     href: "/swap",
-    icon: require("../assets/icons/swap-icon.svg"),
+    icon: require("~/assets/icons/swap-icon.svg"),
   },
   {
-    title: "Assets",
-    href: "/assets",
-    icon: require("../assets/icons/assets-icon.svg"),
+    title: "Balance",
+    href: "/balances",
+    icon: require("~/assets/icons/balance-icon.svg"),
+  },
+  {
+    title: "Pools",
+    href: "/pools",
+    icon: require("~/assets/icons/pools-icon.svg"),
+  },
+  {
+    title: "Changelog",
+    href: "/changelog",
+    icon: require("~/assets/icons/changelog-icon.svg"),
   },
 ];
 
