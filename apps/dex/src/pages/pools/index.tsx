@@ -5,8 +5,8 @@ import PageLayout from "~/layouts/PageLayout";
 
 const Pools: NextPage = () => {
   return (
-    <MainLayout>
-      <PageLayout>Pools</PageLayout>
+    <MainLayout title="Pools">
+      <PageLayout breadcrumbs={["/ Pools "]}>Pools Page</PageLayout>
     </MainLayout>
   );
 };

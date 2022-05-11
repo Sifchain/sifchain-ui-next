@@ -40,7 +40,7 @@ const Aside = () => {
       onClick={() => setOpen(!isOpen)}
       className={clsx(
         "h-8 w-8 p-1 rounded-r-md bg-slate-600 absolute top-1.5 sm:top-16 right-0 translate-x-[100%]",
-        "transition-transform",
+        "transition-transform md:hidden",
         {
           "translate-x-0 bg-white -scale-x-[1] text-gray-900": isOpen,
         },
@@ -55,7 +55,7 @@ const Aside = () => {
       className={clsx(
         [
           "fixed w-full md:max-w-xs h-screen transition-transform ease",
-          "bg-gray-900 p-4 sm:shadow-lg shadow-slate-900",
+          "bg-sifgray-900 p-4 sm:shadow-lg shadow-slate-900",
         ],
         {
           "-translate-x-[100%]": !isOpen,
@@ -80,14 +80,16 @@ const Aside = () => {
                   <a
                     role="navigation"
                     className={clsx(
-                      "flex items-center gap-4 p-2 hover:bg-slate-800 rounded-md",
+                      "flex items-center gap-4 p-2 hover:bg-sifgray-600 rounded-md",
                       {
-                        "bg-gray-800": currentPath === href,
+                        "bg-sifgray-800": currentPath === href,
                       },
                     )}
                   >
-                    <Image src={icon} className="h-6 w-6" />
-                    <span className="text-white font-semibold">{title}</span>
+                    <Image src={icon} />
+                    <span className="text-sifgray-200 font-semibold text-sm">
+                      {title}
+                    </span>
                   </a>
                 </Link>
               </li>
