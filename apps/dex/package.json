@@ -9,28 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
+    "@sifchain/ui": "workspace:*",
     "clsx": "^1.1.1",
-    "next": "12.1.5",
+    "next": "12.1.6",
     "ramda": "^0.28.0",
     "react": "18.1.0",
-    "react-dom": "18.1.0",
-    "@sifchain/ui": "workspace:*"
+    "react-dom": "18.1.0"
   },
   "devDependencies": {
     "@types/node": "17.0.29",
     "@types/react": "18.0.8",
     "@types/react-dom": "18.0.0",
-    "autoprefixer": "^10.4.5",
-    "eslint": "8.14.0",
-    "eslint-config-next": "12.1.5",
+    "autoprefixer": "^10.4.7",
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6",
     "next-transpile-modules": "9.0.0",
-    "postcss": "^8.4.12",
+    "postcss": "^8.4.13",
     "prettier": "^2.6.2",
     "prettier-plugin-tailwindcss": "^0.1.10",
-    "tsconfig": "workspace:*",
     "tailwind-styled-components": "^2.1.7",
     "tailwindcss": "^3.0.24",
-    "typescript": "4.6.3"
+    "tsconfig": "workspace:*",
+    "typescript": "4.6.4"
   }
 }
