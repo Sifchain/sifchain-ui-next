@@ -12,14 +12,14 @@ describe("Sifchain's client", async () => {
 
   test("query client", async () => {
     expect(() =>
-      queryClients.clp.GetPools(PoolsReq.fromPartial({})),
+      queryClients.clp.getPools(PoolsReq.fromPartial({})),
     ).not.toThrowError();
   });
 
   // TODO: setup integration test
   test.skip("signing client", async () => {
     const tokenEntries = await queryClients.tokenRegistry
-      .Entries({})
+      .entries({})
       .then((x) => x.registry?.entries);
 
     const rowan = tokenEntries?.find((x) => x.denom === "rowan")!;

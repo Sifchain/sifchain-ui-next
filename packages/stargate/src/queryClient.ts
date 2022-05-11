@@ -20,9 +20,27 @@ const setupBareExtension =
   ) =>
   (base: QueryClient) => {
     const rpc = createProtobufRpcClient(base);
+    const baseClient = new client(rpc);
+
+    const clientWithUncapitalizedMethods = Object.fromEntries(
+      Object.getOwnPropertyNames(Object.getPrototypeOf(baseClient))
+        .filter((x) => x !== "constructor")
+        .filter((x) => typeof (baseClient as any)[x] === "function")
+        .map((x) => [
+          x[0]?.toLowerCase() + x.slice(1),
+          ((baseClient as any)[x] as Function).bind(baseClient),
+        ]),
+    ) as {
+      [P in keyof TClient as P extends string
+        ? Uncapitalize<P>
+        : P]: TClient[P];
+    };
+
     return {
-      [moduleName]: new client(rpc),
-    } as { [P in StringLiteral<TModule>]: TClient };
+      [moduleName]: clientWithUncapitalizedMethods,
+    } as {
+      [P in StringLiteral<TModule>]: typeof clientWithUncapitalizedMethods;
+    };
   };
 
 export const createQueryClient = async (url: string) =>
