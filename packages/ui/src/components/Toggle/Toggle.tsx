@@ -2,12 +2,12 @@ import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 import { FC, useState } from "react";
 
-export type Props = {
+export type ToggleProps = {
   checked: boolean;
   onChange: (checked: boolean) => void;
 };
 
-export const Toggle: FC<Props> = (props) => {
+export const Toggle: FC<ToggleProps> = (props) => {
   return (
     <Switch
       checked={props.checked}
