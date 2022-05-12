@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { formatNumberAsCurrency } from "~/lib/formatters";
+import { formatNumberAsCurrency } from "@sifchain/ui";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
@@ -55,12 +55,12 @@ const Aside = () => {
   const rowanStats = [
     {
       id: "tvl",
-      icon: require("~/assets/icons/lock-icon.svg"),
+      icon: require("@sifchain/ui/assets/icons/lock-icon.svg"),
       label: <>{formatNumberAsCurrency(999999999)} TVL</>,
     },
     {
       id: "price",
-      icon: require("~/assets/icons/rowan-icon.svg"),
+      icon: require("@sifchain/ui/assets/icons/rowan-icon.svg"),
       label: <>{formatNumberAsCurrency(0.99)} / ROWAN</>,
     },
   ];

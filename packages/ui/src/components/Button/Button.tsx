@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import { FC } from "react";
 
-export type Props = JSX.IntrinsicElements["button"] & {
+export type ButtonProps = JSX.IntrinsicElements["button"] & {
   size?: "xs" | "sm" | "md" | "lg";
   variant?: "primary" | "secondary" | "tertiary";
 };
 
-const Button: FC<Props> = (props) => (
+export const Button: FC<ButtonProps> = (props) => (
   <button
     {...props}
     className={clsx("bg-sifgray-200 rounded-lg place-items-center", {
@@ -25,5 +25,3 @@ const Button: FC<Props> = (props) => (
 Button.defaultProps = {
   size: "md",
 };
-
-export default Button;

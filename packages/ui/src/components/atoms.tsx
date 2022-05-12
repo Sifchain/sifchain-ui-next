@@ -1,10 +1,6 @@
 import { FC } from "react";
 import tw from "tailwind-styled-components";
 
-export const Button = tw.button`
-    px-3 py-2 rounded-lg bg-indigo-500 text-white
-`;
-
 export const Logo: FC<JSX.IntrinsicElements["svg"]> = (props) => (
   <svg
     width="46"

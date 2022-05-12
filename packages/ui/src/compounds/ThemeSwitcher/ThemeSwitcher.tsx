@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { FC } from "react";
 import tw from "tailwind-styled-components";
 
-import { useTheme } from "~/hooks/useTheme";
+import { useTheme } from "../../hooks/useTheme";
 
 const Button = tw.button`
   flex items-center
@@ -27,7 +27,7 @@ const Slider = tw.div`
   transition-transform duration-600
 `;
 
-const ThemeSwitcher: FC = () => {
+export const ThemeSwitcher: FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   const Icon = theme.mode === "dark" ? MoonIcon : SunIcon;
@@ -51,5 +51,3 @@ const ThemeSwitcher: FC = () => {
     </Button>
   );
 };
-
-export default ThemeSwitcher;

@@ -5,6 +5,12 @@ export const currencyFormatter = Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
+/**
+ * Formats a number as currency.
+ *
+ * @param number - number to format
+ * @returns formatted currency
+ */
 export function formatNumberAsCurrency(number: number): string {
   return currencyFormatter.format(number);
 }

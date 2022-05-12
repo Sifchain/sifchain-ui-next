@@ -68,5 +68,3 @@ export const Toggle: FC<Props> = (props) => {
     </Switch>
   );
 };
-
-export default Toggle;
