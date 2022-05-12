@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --scope=@sifchain/dex",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ui:storybook": "pnpm -C ./packages/ui run storybook "
+    "ui:storybook": "pnpm -C ./packages/ui run storybook ",
+    "docs:dev": "pnpm -C ./apps/docs dev"
   },
   "keywords": [],
   "author": "",

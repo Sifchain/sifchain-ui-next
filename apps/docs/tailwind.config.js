@@ -1,5 +1,10 @@
+const sifchainPreset = require("@sifchain/ui/tailwind.config.preset");
+
+/**
+ * @type {import("tailwindcss/tailwind-config").TailwindConfig}
+ */
 module.exports = {
-  preset: [require("@sifchain/ui/tailwind.config.preset.js")],
+  presets: [sifchainPreset],
   content: [
     "./theme.config.js",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
