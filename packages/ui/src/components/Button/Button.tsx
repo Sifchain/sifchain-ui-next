@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { FC } from "react";
 
-type Props = JSX.IntrinsicElements["button"] & {
+export type Props = JSX.IntrinsicElements["button"] & {
   primary?: boolean;
   size?: "xs" | "sm" | "md" | "lg";
 };

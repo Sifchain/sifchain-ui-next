@@ -1,9 +1,10 @@
-import clsx from "clsx";
-import SunIcon from "@heroicons/react/outline/SunIcon";
 import MoonIcon from "@heroicons/react/outline/MoonIcon";
+import SunIcon from "@heroicons/react/outline/SunIcon";
+import clsx from "clsx";
+import { FC } from "react";
 import tw from "tailwind-styled-components";
 
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "~/hooks/useTheme";
 
 const Button = tw.button`
   flex items-center
@@ -26,7 +27,7 @@ const Slider = tw.div`
   transition-transform duration-600
 `;
 
-export const ThemeSwitcher = () => {
+const ThemeSwitcher: FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   const Icon = theme.mode === "dark" ? MoonIcon : SunIcon;
@@ -50,3 +51,5 @@ export const ThemeSwitcher = () => {
     </Button>
   );
 };
+
+export default ThemeSwitcher;

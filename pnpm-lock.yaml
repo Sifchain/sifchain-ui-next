@@ -164,6 +164,7 @@ importers:
       '@storybook/builder-vite': ^0.1.33
       '@storybook/react': ^6.4.22
       '@storybook/testing-library': ^0.0.11
+      '@tailwindcss/forms': ^0.5.1
       '@tailwindcss/typography': ^0.5.2
       '@types/react': ^18.0.9
       '@types/react-dom': ^18.0.3
@@ -193,6 +194,7 @@ importers:
       '@storybook/builder-vite': 0.1.33_tntbyaimxmpetkyahqieeppnbm
       '@storybook/react': 6.4.22_yilycw67vxrdl6kbipgk4mtera
       '@storybook/testing-library': 0.0.11_ef5jwxihqo6n7gxfmzogljlgcm
+      '@tailwindcss/forms': 0.5.1
       '@tailwindcss/typography': 0.5.2
       '@types/react': 18.0.9
       '@types/react-dom': 18.0.3
@@ -4284,6 +4286,14 @@ packages:
       store2: 2.13.2
     transitivePeerDependencies:
       - '@types/react'
+    dev: true
+
+  /@tailwindcss/forms/0.5.1:
+    resolution: {integrity: sha512-QSwsFORnC2BAP0lRzQkz1pw+EzIiiPdk4e27vGQjyXkwJPeC7iLIRVndJzf9CJVbcrrIcirb/TfxF3gRTyFEVA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
+    dependencies:
+      mini-svg-data-uri: 1.4.4
     dev: true
 
   /@tailwindcss/typography/0.5.2:
@@ -11622,6 +11632,11 @@ packages:
   /min-indent/1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
+    dev: true
+
+  /mini-svg-data-uri/1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
     dev: true
 
   /minimalistic-assert/1.0.1:
