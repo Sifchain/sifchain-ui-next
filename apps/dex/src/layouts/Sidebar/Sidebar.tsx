@@ -68,7 +68,7 @@ const Aside = () => {
     <aside
       className={clsx(
         [
-          "fixed w-full md:max-w-xs h-screen transition-transform ease",
+          "fixed w-full md:max-w-[288px] h-screen transition-transform ease",
           "bg-sifgray-900 p-4 sm:shadow-lg shadow-slate-900",
         ],
         {
