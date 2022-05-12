@@ -2,15 +2,16 @@ import clsx from "clsx";
 import { FC } from "react";
 
 export type Props = JSX.IntrinsicElements["button"] & {
-  primary?: boolean;
   size?: "xs" | "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "tertiary";
 };
 
 const Button: FC<Props> = (props) => (
   <button
     {...props}
-    className={clsx("bg-slate-300 rounded-lg place-items-center", {
-      "bg-indigo-500 text-white": props.primary,
+    className={clsx("bg-sifgray-200 rounded-lg place-items-center", {
+      "bg-zinc-600 dark:bg-slate-300 text-sifgray-50":
+        props.variant === "primary",
       "text-xs py-1 px-1.5": props.size === "xs",
       "text-sm py-1.5 px-2.5": props.size === "sm",
       "text-base py-2 px-3": props.size === "md",
@@ -22,7 +23,6 @@ const Button: FC<Props> = (props) => (
 );
 
 Button.defaultProps = {
-  primary: false,
   size: "md",
 };
 

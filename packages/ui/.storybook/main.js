@@ -1,12 +1,9 @@
+/**
+ * @type {import("storybook/builder-vite").StorybookViteConfig}
+ */
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   framework: "@storybook/react",
-  features: {
-    storyStoreV7: true,
-  },
-  core: {
-    builder: "@storybook/builder-vite",
-  },
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
