@@ -69,6 +69,7 @@ importers:
       eslint: 8.15.0
       eslint-config-next: 12.1.6
       next: 12.1.6
+      next-transpile-modules: 9.0.0
       nextra: ^1.1.0
       nextra-theme-docs: ^1.2.6
       postcss: ^8.4.13
@@ -90,6 +91,7 @@ importers:
       autoprefixer: 10.4.7_postcss@8.4.13
       eslint: 8.15.0
       eslint-config-next: 12.1.6_6vdljae35l7howjttefzzsim3e
+      next-transpile-modules: 9.0.0
       postcss: 8.4.13
       tailwindcss: 3.0.24
       typescript: 4.6.4
