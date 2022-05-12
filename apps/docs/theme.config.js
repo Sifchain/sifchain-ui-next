@@ -2,7 +2,7 @@
 export default {
   projectLink: "https://github.com/sifchain/sifchain-ui-next", // GitHub link in the navbar
   docsRepositoryBase:
-    "https://github.com/Sifchain/sifchain-ui-next/tree/main/apps/dex", // base URL for the docs repository
+    "https://github.com/Sifchain/sifchain-ui-next/tree/main/apps/docs", // base URL for the docs repository
   titleSuffix: " – Sifchain UI",
   nextLinks: true,
   prevLinks: true,
