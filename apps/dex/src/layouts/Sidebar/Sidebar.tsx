@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+
 import { formatNumberAsCurrency } from "~/lib/formatters";
 
 const ENV = process.env.APP_ENV ?? "betanet";
@@ -13,22 +14,22 @@ export const MENU_ITEMS = [
   {
     title: "Swap",
     href: "/swap",
-    icon: require("~/assets/icons/swap-icon.svg"),
+    icon: require("@sifchain/ui/assets/icons/swap-icon.svg"),
   },
   {
     title: "Balance",
     href: "/balances",
-    icon: require("~/assets/icons/balance-icon.svg"),
+    icon: require("@sifchain/ui/assets/icons/balance-icon.svg"),
   },
   {
     title: "Pools",
     href: "/pools",
-    icon: require("~/assets/icons/pools-icon.svg"),
+    icon: require("@sifchain/ui/assets/icons/pools-icon.svg"),
   },
   {
     title: "Changelog",
     href: "/changelog",
-    icon: require("~/assets/icons/changelog-icon.svg"),
+    icon: require("@sifchain/ui/assets/icons/changelog-icon.svg"),
   },
 ];
 

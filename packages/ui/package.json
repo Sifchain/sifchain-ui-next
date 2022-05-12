@@ -7,6 +7,7 @@
   "types": "./src/index.tsx",
   "files": [
     "src",
+    "assets",
     "tailwind.config.preset.js"
   ],
   "dependencies": {
