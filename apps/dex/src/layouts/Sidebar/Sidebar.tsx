@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { formatNumberAsCurrency } from "@sifchain/ui";
+import { formatNumberAsCurrency } from "@sifchain/ui/src/utils";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
@@ -81,7 +81,11 @@ const Aside = () => {
       <div className="flex flex-col gap-8 h-full">
         {handleBtn}
         <section className="w-full grid place-items-center py-8 md:py-10 gap-2">
-          <Logo />
+          <Link href="/">
+            <a className="flex items-center">
+              <Logo />
+            </a>
+          </Link>
           <span className="text-white font-mono uppercase">{ENV}</span>
         </section>
         <section>
