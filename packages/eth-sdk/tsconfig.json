@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "declaration": true
+  },
+  "include": ["src"],
+  "exclude": ["src/eth-sdk/config.ts", "src/generated", "**/*.spec.ts"]
+}
