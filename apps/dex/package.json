@@ -11,6 +11,8 @@
   "dependencies": {
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
+    "@sifchain/stargate": "workspace:*",
+    "@sifchain/proto-types": "workspace:*",
     "@sifchain/ui": "workspace:*",
     "clsx": "^1.1.1",
     "ky": "^0.30.0",
