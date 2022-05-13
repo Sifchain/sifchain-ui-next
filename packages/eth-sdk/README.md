@@ -1,5 +1,13 @@
 # @sifchain/eth-sdk
 
+## Installation
+
+```sh
+yarn add @sifchain/eth-sdk@snapshot
+```
+
+## Example usage
+
 ```ts
 import { getTestnetSdk } from "@sifchain/eth-sdk";
 import { ethers } from "ethers";
