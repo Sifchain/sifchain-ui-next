@@ -74,7 +74,7 @@ const Aside = () => {
         ],
         {
           "-translate-x-[100%]": !isOpen,
-          "md:block md:relative": isOpen,
+          "md:sticky md:top-0": isOpen,
         },
       )}
     >
@@ -100,9 +100,9 @@ const Aside = () => {
                     <a
                       role="navigation"
                       className={clsx(
-                        "flex items-center gap-4 p-2 hover:bg-sifgray-600 rounded-md",
+                        "flex items-center gap-4 p-2 hover:bg-sifgray-800 hover:opacity-80 rounded-md transition-all",
                         {
-                          "bg-sifgray-800": currentPath === href,
+                          "bg-sifgray-600": currentPath === href,
                         },
                       )}
                     >

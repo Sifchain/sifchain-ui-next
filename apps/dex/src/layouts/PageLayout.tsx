@@ -30,7 +30,7 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
           </span>
         </nav>
       )}
-      <div className="p-6 sm:p-8">{props.children}</div>
+      <div className="p-6">{props.children}</div>
     </>
   );
 };
