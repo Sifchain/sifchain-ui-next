@@ -1,5 +1,4 @@
 import { FC } from "react";
-// import tw from "tailwind-styled-components";
 
 export const Logo: FC<JSX.IntrinsicElements["svg"]> = (props) => (
   <svg
