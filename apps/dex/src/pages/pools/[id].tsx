@@ -11,7 +11,14 @@ const PoolDetails: NextPage = () => {
 
   return (
     <MainLayout title={`Pools - ${queryId}`}>
-      <PageLayout heading={`Pools - ${queryId}`}>
+      <PageLayout
+        withBackNavigation
+        heading={
+          <>
+            Pools / <span className="text-sifgray-50">{queryId}</span>
+          </>
+        }
+      >
         Pool Details - {queryId}
       </PageLayout>
     </MainLayout>
