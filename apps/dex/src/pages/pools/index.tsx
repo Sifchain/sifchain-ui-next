@@ -1,7 +1,7 @@
 import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
 import { NextPage } from "next";
 import Link from "next/link";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 
 import usePoolsQuery from "~/domains/clp/hooks/usePools";
 import MainLayout from "~/layouts/MainLayout";
@@ -10,14 +10,20 @@ import PageLayout from "~/layouts/PageLayout";
 const Pools: NextPage = () => {
   const { data: poolsRes, isLoading, isSuccess } = usePoolsQuery();
 
+  const enhancedPools = useMemo(() => {
+    return poolsRes?.pools.map((pool) => ({
+      ...pool,
+    }));
+  }, [poolsRes]);
+
   return (
     <MainLayout title="Pools">
       <PageLayout heading="Pools">
         {isLoading && <p>Loading pools...</p>}
         {isSuccess && (
           <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {poolsRes?.pools.map((pool) => (
-              <PoolItem pool={pool} />
+            {enhancedPools?.map((pool) => (
+              <PoolItem key={pool.externalAsset?.symbol} pool={pool} />
             ))}
           </ul>
         )}
