@@ -5,7 +5,7 @@ import PageLayout from "~/layouts/PageLayout";
 const AssetsPage: NextPage = () => {
   return (
     <MainLayout title="Balances">
-      <PageLayout breadcrumbs={["/ Balances"]}>Balances Page</PageLayout>
+      <PageLayout heading="Balances">Balances Page</PageLayout>
     </MainLayout>
   );
 };

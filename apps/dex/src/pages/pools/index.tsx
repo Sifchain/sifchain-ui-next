@@ -12,7 +12,7 @@ const Pools: NextPage = () => {
 
   return (
     <MainLayout title="Pools">
-      <PageLayout breadcrumbs={["/ Pools "]}>
+      <PageLayout heading="Pools">
         {isLoading && <p>Loading pools...</p>}
         {isSuccess && (
           <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">

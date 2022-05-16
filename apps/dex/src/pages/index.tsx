@@ -14,7 +14,7 @@ const Home: NextPage = () => {
 
   return (
     <MainLayout>
-      <PageLayout breadcrumbs={["/ home"]}></PageLayout>
+      <PageLayout heading="Home"></PageLayout>
     </MainLayout>
   );
 };

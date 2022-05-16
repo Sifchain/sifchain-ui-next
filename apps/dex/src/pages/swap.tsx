@@ -4,7 +4,7 @@ import PageLayout from "~/layouts/PageLayout";
 const SwapPage = () => {
   return (
     <MainLayout title="Swap">
-      <PageLayout breadcrumbs={["/ Swap"]}>Swap Page</PageLayout>
+      <PageLayout heading="Swap">Swap Page</PageLayout>
     </MainLayout>
   );
 };

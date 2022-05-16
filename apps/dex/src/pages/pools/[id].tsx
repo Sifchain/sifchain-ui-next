@@ -11,7 +11,9 @@ const PoolDetails: NextPage = () => {
 
   return (
     <MainLayout title={`Pools - ${queryId}`}>
-      <PageLayout>Pool Details - {queryId}</PageLayout>
+      <PageLayout heading={`Pools - ${queryId}`}>
+        Pool Details - {queryId}
+      </PageLayout>
     </MainLayout>
   );
 };
