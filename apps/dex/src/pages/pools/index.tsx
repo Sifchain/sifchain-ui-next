@@ -1,6 +1,9 @@
+import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
 import { NextPage } from "next";
-import usePoolsQuery from "~/domains/clp/hooks/usePools";
+import Link from "next/link";
+import { FC } from "react";
 
+import usePoolsQuery from "~/domains/clp/hooks/usePools";
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
@@ -14,12 +17,7 @@ const Pools: NextPage = () => {
         {isSuccess && (
           <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
             {poolsRes?.pools.map((pool) => (
-              <li
-                key={pool.externalAsset?.symbol}
-                className="p-4 rounded-lg bg-sifgray-900"
-              >
-                ROWAN/{pool.externalAsset?.symbol.toUpperCase()}
-              </li>
+              <PoolItem pool={pool} />
             ))}
           </ul>
         )}
@@ -27,5 +25,13 @@ const Pools: NextPage = () => {
     </MainLayout>
   );
 };
+
+const PoolItem: FC<{ pool: Pool }> = ({ pool }) => (
+  <Link href={`/pools/${pool.externalAsset?.symbol}`}>
+    <li className="p-4 rounded-lg bg-sifgray-900">
+      ROWAN/{pool.externalAsset?.symbol.toUpperCase()}
+    </li>
+  </Link>
+);
 
 export default Pools;

@@ -1,0 +1,6 @@
+import { DexEnvironment } from ".";
+
+export default <DexEnvironment>{
+  kind: "devnet",
+  sifnodeUrl: "https://rpc-devnet.sifchain.finance",
+};
