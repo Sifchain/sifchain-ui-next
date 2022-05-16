@@ -10,10 +10,9 @@ const ChangelogPage = () => {
   return (
     <MainLayout>
       <PageLayout heading="Changelog">
-        <ReactMarkdown
-          className="prose dark:prose-invert prose-sm max-h-[calc(100vh-200px)] overflow-y-scroll no-scrollbar"
-          children={changelogRes ?? ""}
-        />
+        <ReactMarkdown className="prose dark:prose-invert prose-sm max-h-[calc(100vh-200px)] overflow-y-scroll no-scrollbar">
+          {changelogRes ?? ""}
+        </ReactMarkdown>
       </PageLayout>
     </MainLayout>
   );
