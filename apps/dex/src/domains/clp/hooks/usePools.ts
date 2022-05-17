@@ -11,9 +11,12 @@ export default function usePoolsQuery() {
   });
 
   const indexedByExternalSymbol = useMemo(() => {
-    if (!data) return {};
+    if (!data?.pools) {
+      return {};
+    }
+
     return indexBy(({ externalAsset }) => externalAsset?.symbol, data.pools);
-  }, [data]);
+  }, [data?.pools]);
 
   return {
     ...query,

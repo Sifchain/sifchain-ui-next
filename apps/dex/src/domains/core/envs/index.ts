@@ -7,6 +7,7 @@ export type EnvironmentKind = "mainnet" | "testnet" | "devnet" | "localnet";
 export type DexEnvironment = {
   kind: EnvironmentKind;
   sifnodeUrl: string;
+  vanirUrl: string;
 };
 
 export function useDexEnvironment() {

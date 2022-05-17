@@ -1,12 +1,11 @@
 import ky from "ky";
-import { ENDPOINTS, EvnKind } from "./config";
 
 export type Response<T = any> = {
   statusCode: number;
   body: T;
 };
 
-export type PoolStat = {
+export type PoolStats = {
   symbol: string;
   priceToken: number;
   poolDepth: number;
@@ -23,14 +22,17 @@ export type PoolStat = {
   poolApr: number;
 };
 
-export type TokenStatsResponse = {
+export type TokenStatsResponseBody = {
   rowanUSD: string;
-  pools: PoolStat[];
+  pools: PoolStats[];
 };
 
-export default function createClient(env: EvnKind) {
-  const prefixUrl = ENDPOINTS[env];
-
+/**
+ *
+ * @param prefixUrl
+ * @returns
+ */
+export function createClient(prefixUrl: string) {
   const baseClient = ky.extend({ prefixUrl });
 
   return {
@@ -38,8 +40,10 @@ export default function createClient(env: EvnKind) {
     async getTokenStats() {
       try {
         const result = await baseClient
-          .get("/asset/tokenStats")
-          .json<Response<{}>>();
+          .get("asset/tokenStats")
+          .json<Response<TokenStatsResponseBody>>();
+
+        return result.body;
       } catch (error) {
         throw error;
       }
