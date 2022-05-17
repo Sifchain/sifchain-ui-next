@@ -8,12 +8,7 @@ export default function useQueryClient() {
 
   return useQuery(
     ["sif-vanir-client", env?.kind],
-    () => {
-      console.log("creating client", env?.vanirUrl);
-      if (!env) return;
-
-      return createClient(env.vanirUrl);
-    },
+    () => createClient(env?.vanirUrl ?? ""),
     {
       enabled: isSuccess && typeof env?.vanirUrl === "string",
     },

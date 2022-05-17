@@ -28,7 +28,7 @@ export type TokenStatsResponseBody = {
 };
 
 /**
- *
+ * Vanit Http Client
  * @param prefixUrl
  * @returns
  */
