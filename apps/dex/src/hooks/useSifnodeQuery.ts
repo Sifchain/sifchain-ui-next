@@ -1,6 +1,6 @@
 import { createQueryClient } from "@sifchain/stargate";
 import { ArgumentTypes, ValueOfRecord } from "rambda";
-import { useQuery } from "react-query";
+import { useQuery, UseQueryOptions } from "react-query";
 import useQueryClient from "./useQueryClient";
 
 type Client = Awaited<ReturnType<typeof createQueryClient>>;
@@ -52,13 +52,24 @@ export function createHandlers(client: PublicClient) {
   return handlers;
 }
 
+/**
+ * Generic hook to access signode queries, with type inference
+ *
+ * @param message {string}
+ * @param args {any}
+ * @returns
+ */
 export default function useSifnodeQuery<
   T extends L1,
   P extends keyof PublicClient[T],
+  M = PublicClient[T][P],
+  F = M extends () => any ? ReturnType<M> : never,
+  Res = Awaited<F>,
 >(
   // @ts-ignore
   message: `${T}.${P}`,
-  ...args: ArgumentTypes<PublicClient[T][P]>
+  args: ArgumentTypes<PublicClient[T][P]>,
+  options: Partial<UseQueryOptions<Res, unknown, Res>> = {},
 ) {
   const { data: client } = useQueryClient();
 
@@ -75,7 +86,11 @@ export default function useSifnodeQuery<
       return await method(...args);
     },
     {
-      enabled: Boolean(client),
+      ...options,
+      enabled:
+        typeof options.enabled === "boolean"
+          ? options.enabled && Boolean(client)
+          : Boolean(client),
     },
   );
 }
