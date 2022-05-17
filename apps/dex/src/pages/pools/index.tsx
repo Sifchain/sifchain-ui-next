@@ -19,16 +19,14 @@ const Pools: NextPage = () => {
   return (
     <MainLayout title="Pools">
       <PageLayout heading="Pools">
-        <div className="grid pr-6 max-h-[calc(100vh-200px)] overflow-y-scroll">
-          {isLoading && <p>Loading pools...</p>}
-          {isSuccess && (
-            <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-              {enhancedPools?.map((pool) => (
-                <PoolItem key={pool.externalAsset?.symbol} pool={pool} />
-              ))}
-            </ul>
-          )}
-        </div>
+        {isLoading && <p>Loading pools...</p>}
+        {isSuccess && (
+          <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            {enhancedPools?.map((pool) => (
+              <PoolItem key={pool.externalAsset?.symbol} pool={pool} />
+            ))}
+          </ul>
+        )}
       </PageLayout>
     </MainLayout>
   );

@@ -14,3 +14,13 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
+::-webkit-scrollbar-track {
+  @apply rounded bg-transparent;
+}
