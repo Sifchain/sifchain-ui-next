@@ -41,10 +41,10 @@ const Aside = () => {
     <button
       onClick={() => setOpen(!isOpen)}
       className={clsx(
-        "h-8 w-8 p-1 rounded-r-md bg-slate-600 absolute top-1.5 sm:top-16 right-0 translate-x-[100%]",
-        "transition-transform md:hidden",
+        "h-8 w-8 p-1 rounded-r-md bg-slate-600 absolute top-1.5 sm:top-16 right-0 translate-x-[90%]",
+        "transition-transform z-30 md:hidden opacity-20 hover:opacity-100",
         {
-          "translate-x-0 bg-white -scale-x-[1] text-gray-900": isOpen,
+          "-translate-x-0 bg-white -scale-x-[1] text-gray-900": isOpen,
         },
       )}
     >
