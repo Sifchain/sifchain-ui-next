@@ -1,9 +1,9 @@
 import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
+import { PoolStats } from "@sifchain/vanir";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FC, useMemo } from "react";
 
-import { PoolStats } from "~/lib/vanir";
 import usePoolsQuery from "~/domains/clp/hooks/usePools";
 import usePoolStatsQuery from "~/domains/clp/hooks/usePoolStats";
 import MainLayout from "~/layouts/MainLayout";
