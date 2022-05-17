@@ -145,12 +145,6 @@ importers:
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
 
-  packages/eth-sdk/build/commonjs/generated:
-    specifiers: {}
-
-  packages/eth-sdk/build/module/generated:
-    specifiers: {}
-
   packages/eth-sdk/src/generated:
     specifiers: {}
 

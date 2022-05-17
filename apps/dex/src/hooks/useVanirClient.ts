@@ -3,7 +3,7 @@ import { useDexEnvironment } from "~/domains/core/envs";
 
 import { createClient } from "~/lib/vanir";
 
-export default function useQueryClient() {
+export default function useVanirClient() {
   const { data: env, isSuccess } = useDexEnvironment();
 
   return useQuery(

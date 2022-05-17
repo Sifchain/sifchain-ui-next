@@ -8,7 +8,11 @@ export default function useQueryClient() {
 
   return useQuery(
     ["sif-query-client", env?.kind],
-    () => createQueryClient(env?.sifnodeUrl ?? ""),
+    () => {
+      const client = createQueryClient(env?.sifnodeUrl ?? "");
+
+      return client;
+    },
     {
       enabled: Boolean(env?.sifnodeUrl),
     },

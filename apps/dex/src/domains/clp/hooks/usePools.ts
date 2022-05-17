@@ -1,14 +1,10 @@
 import { useMemo } from "react";
-import { useQuery } from "react-query";
 import { indexBy } from "rambda";
 
-import useQueryClient from "~/hooks/useQueryClient";
+import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export default function usePoolsQuery() {
-  const { data: client, isSuccess } = useQueryClient();
-  const { data, ...query } = useQuery("pools", () => client?.clp.getPools({}), {
-    enabled: isSuccess,
-  });
+  const { data, ...query } = useSifnodeQuery("clp.getPools", {});
 
   const indexedByExternalSymbol = useMemo(() => {
     if (!data?.pools) {
