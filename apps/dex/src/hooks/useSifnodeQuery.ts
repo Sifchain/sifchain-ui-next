@@ -67,9 +67,12 @@ export default function useSifnodeQuery<
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  message: `${T}.${P}`,
+  message: MessageKey | `${T}.${P}`,
   args: ArgumentTypes<PublicClient[T][P]>,
-  options: Partial<UseQueryOptions<Res, unknown, Res>> = {},
+  options: Omit<
+    UseQueryOptions<Res, unknown, Res>,
+    "queryKey" | "queryFn"
+  > = {},
 ) {
   const { data: client } = useQueryClient();
 
@@ -86,7 +89,10 @@ export default function useSifnodeQuery<
       return await method(...args);
     },
     {
-      ...options,
+      refetchOnMount: Boolean(options.refetchOnMount),
+      retry: options.retry,
+      staleTime: options.staleTime,
+      cacheTime: options.cacheTime,
       enabled:
         typeof options.enabled === "boolean"
           ? options.enabled && Boolean(client)
