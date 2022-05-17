@@ -14,6 +14,7 @@
     "@sifchain/proto-types": "workspace:*",
     "@sifchain/stargate": "workspace:*",
     "@sifchain/ui": "workspace:*",
+    "@sifchain/vanir": "workspace:*",
     "@walletconnect/client": "2.0.0-beta.26",
     "@walletconnect/cosmos-provider": "2.0.0-beta.26",
     "@walletconnect/ethereum-provider": "2.0.0-beta.26",
