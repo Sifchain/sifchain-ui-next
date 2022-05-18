@@ -13,7 +13,7 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
 
   return (
     <>
-      <header className="flex items-center p-2 bg-slate-200 dark:bg-sifgray-900 gap-2">
+      <header className="md:flex items-center p-2 bg-slate-200 dark:bg-sifgray-900 gap-2">
         {props.heading && (
           <nav className="flex items-center gap-2">
             {props.withBackNavigation && (

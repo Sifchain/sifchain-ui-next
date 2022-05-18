@@ -140,7 +140,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
     <>
       <label
         className={clsx("block relative transition-opacity", props.className, {
-          hidden: isOpen,
+          "opacity-0 pointer-events-none": isOpen,
         })}
         aria-hidden={!isOpen}
       >
@@ -148,7 +148,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
         <input
           className={clsx(
             inputClassName,
-            "!border-sifgray-700 !bg-sifgray-750 !text-sifgray-50 rounded-xl",
+            "!border-sifgray-700 !bg-sifgray-750 !text-sifgray-50 rounded-xl opacity-90 hover:opacity-100",
           )}
           placeholder={props.placeholder}
           onClick={setIsOpen.bind(null, true)}
