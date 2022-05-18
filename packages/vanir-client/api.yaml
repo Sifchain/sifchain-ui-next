@@ -1,0 +1,1145 @@
+openapi: 3.0.0
+info:
+  title: Sichain API
+  version: 0.0.5
+servers:
+  # Added by API Auto Mocking Plugin
+  - url: http://localhost:8080
+  - url: https://data.sifchain.finance/beta
+    description: AWS API Gateway
+
+tags:
+  - name: Pools
+    description: Contains all endpoints for pool details
+  - name: Validators
+    description: Contains all endpoints for Validators
+  # - name: Peggy
+  #   description: Cointains all endpoints for Peggy
+  - name: Assets
+    description: Contains all endpoints for Assets
+  - name: Network
+    description: Contains all endpoints for Network Info
+  - name: Stats
+    description: Contains all endpoints for Stats Info
+paths:
+  /pool:
+    get:
+      tags:
+        - Pools
+      operationId: getPools
+      responses:
+        "200":
+          description: This endpoint gets all available Pools information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolsResponse"
+      x-swagger-router-controller: Pools
+  /pool/{symbol}:
+    get:
+      tags:
+        - Pools
+      operationId: getPool
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Display individual Pool info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Pools
+
+  /luca/{symbol}:
+    get:
+      tags:
+        - Pools
+      operationId: getLuca
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Display individual Pool info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Pools
+
+  /pool/{symbol}/liquidityProvider:
+    get:
+      tags:
+        - Pools
+      operationId: getLiquidityProviders
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description:
+            Displays all current Liquidity Providers for the specified
+            Pool
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getLiquidityProvidersResponse"
+      x-swagger-router-controller: Pools
+  /pool/{symbol}/liquidityProvider/{lpAddress}:
+    get:
+      tags:
+        - Pools
+      operationId: getLiquidityProvider
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: lpAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description:
+            Displays single Liquidity Provider information for the specified
+            Pool
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getLiquidityProviderResponse"
+      x-swagger-router-controller: Pools
+  /pool/{symbol}/liquidityProvider/{lpAddress}/share:
+    get:
+      tags:
+        - Pools
+      operationId: getPoolShare
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: lpAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets pool share for given Liquidity Provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoolShareResponse"
+      x-swagger-router-controller: Pools
+  /validator:
+    get:
+      tags:
+        - Validators
+      operationId: getValidators
+      responses:
+        "200":
+          description: This endpoint gets information for all Validators.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetValidatorsResponse"
+      x-swagger-router-controller: Validators
+  /validator/{validatorAddress}:
+    get:
+      tags:
+        - Validators
+      operationId: getValidator
+      parameters:
+        - name: validatorAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets Validator information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetValidatorResponse"
+      x-swagger-router-controller: Validators
+  /validator/{validatorAddress}/delegator:
+    get:
+      tags:
+        - Validators
+      operationId: getDelegators
+      parameters:
+        - name: validatorAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets Validator Delegator information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDelegatorsResponse"
+      x-swagger-router-controller: Validators
+  /validator/delegator/{delegatorAddress}:
+    get:
+      tags:
+        - Validators
+      operationId: getDelegator
+      parameters:
+        - name: delegatorAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets specific Delegator information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDelegatorResponse"
+      x-swagger-router-controller: Validators
+  /validator/inactiveValidators:
+    get:
+      tags:
+        - Validators
+      operationId: getInactiveValidators
+      responses:
+        "200":
+          description: This end point gets all inactive validators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getInactiveValidatorsResponse"
+      x-swagger-router-controller: Validators
+  /validator/delegator/totalStaked:
+    get:
+      tags:
+        - Validators
+      operationId: getTotalStakedByDelegators
+      responses:
+        "200":
+          description: This end point gets total token amount delegated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTotalStakedByDelegatorsResponse"
+      x-swagger-router-controller: Validators
+  /validator/stakingRewards:
+    get:
+      tags:
+        - Stats
+      operationId: getStakingRewards
+      responses:
+        "200":
+          description: This end point gets staking rewards rate.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rate:
+                    type: string
+                    description: The staking rewards rate.
+      x-swagger-router-controller: Stats
+  #   /peggy/peggedAssets:
+  #     get:
+  #       tags:
+  #       - Peggy
+  #       operationId: getPeggedAssets
+  #       parameters:
+  #       - name: key
+  #         in: query
+  #         required: true
+  #         style: form
+  #         explode: false
+  #         schema:
+  #           type: string
+  #       responses:
+  #         "200":
+  #           description: This endpoint gets pegged assets.
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 type: array
+  #                 items:
+  #                   $ref: '#/components/schemas/getPeggedAssetsResponse'
+  #       x-swagger-router-controller: Peggy
+  /asset:
+    get:
+      tags:
+        - Assets
+      summary: Get details on available crypto currencies.
+      description:
+        This endpoint is to provide a summary for each currency available
+        on the exchange.
+      operationId: getAssets
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getAssetsResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Assets
+  /asset/{symbol}:
+    get:
+      tags:
+        - Assets
+      operationId: getTokenValue
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets USD value of token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetTokenValueResponse"
+      x-swagger-router-controller: Assets
+  /asset/totalSupply:
+    get:
+      tags:
+        - Stats
+      operationId: getTotalSupply
+      responses:
+        "200":
+          description: This end point gets total supply of Rowan.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTotalSupplyResponse"
+      x-swagger-router-controller: Stats
+  /asset/cmcTotalSupply:
+    get:
+      tags:
+        - Stats
+      operationId: cmcTotalSupply
+      responses:
+        "200":
+          description: This end point gets total supply of Rowan as a string.
+          content:
+            application/json:
+              schema:
+                type: string
+      x-swagger-router-controller: Stats
+  /asset/circulatingsupply:
+    get:
+      tags:
+        - Stats
+      description: This end point gets the total circulating supply of Rowan.
+      operationId: getCirculatingSupply
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getCirculatingSupplyResponse"
+      x-swagger-router-controller: Stats
+  /asset/cmcCirculatingSupply:
+    get:
+      tags:
+        - Stats
+      description: This end point gets the total circulating supply of Rowan as a string.
+      operationId: cmcCirculatingSupply
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+      x-swagger-router-controller: Stats
+  /asset/tokenStats:
+    get:
+      tags:
+        - Assets
+      description: This end point gets the statistics of tokens
+      operationId: getTokenStats
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTokenStatsResponse"
+      x-swagger-router-controller: Assets
+
+  /asset/tokenStatsPMTP:
+    get:
+      tags:
+        - Assets
+      description: This end point gets the statistics of tokens
+      operationId: getTokenStatsPMTP
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getTokenStatsResponse"
+      x-swagger-router-controller: Assets
+
+  /network:
+    get:
+      tags:
+        - Network
+      operationId: getNetworkInfo
+      responses:
+        "200":
+          description: This end point gets network information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getNetworkResponse"
+      x-swagger-router-controller: Network
+
+  /network/dispensation/{type}:
+    get:
+      tags:
+        - Network
+      operationId: getDispensation
+      parameters:
+        - name: type
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dispensation List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Network
+
+  /network/rewardConfig/{type}:
+    get:
+      tags:
+        - Network
+      operationId: getRewardConfig
+      parameters:
+        - name: type
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reward Configuration Setting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Network
+
+  /network/{symbol}/netChange/{lpAddress}:
+    get:
+      tags:
+        - Network
+      operationId: getNetChange
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: lpAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Displays net gain or loss for a liquidity provider with specified address and token symbol
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getLiquidityProviderResponse"
+      x-swagger-router-controller: Network
+
+  /dailyPrice:
+    get:
+      tags:
+        - Network
+      operationId: getDailyPrice
+      responses:
+        "200":
+          description: This end point gets daily OHLC ticker data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getDailyPriceResponse"
+      x-swagger-router-controller: Network
+
+  /cmcTotalDailyVolume:
+    get:
+      tags:
+        - Network
+      operationId: cmcTotalDailyVolume
+      responses:
+        "200":
+          description: This end point gets the total volume of Rowan for the last 24 hours.
+          content:
+            application/json:
+              schema:
+                type: string
+      x-swagger-router-controller: Network
+
+  /historicalPrice/{symbol}:
+    get:
+      tags:
+        - Network
+      description: This end point gets daily OHLC ticker data.
+      operationId: getHistoricalPrice
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getHistoricalPriceResponse"
+      x-swagger-router-controller: Network
+
+  /summary:
+    get:
+      tags:
+        - Network
+      summary: Get an overview of market data for all tickers and all markets.
+      description:
+        The summary endpoint is to provide an overview of market data for
+        all tickers and all market pairs on the exchange.
+      operationId: getSummary
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getSummaryResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+  /cmcsummary:
+    get:
+      tags:
+        - Network
+      summary: Get an overview of market data for all tickers and all markets.
+      description:
+        The summary endpoint is to provide an overview of market data for
+        all tickers and all market pairs on the exchange.
+      operationId: getCmcSummary
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getSummaryResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+  /trade/{market_pair}:
+    get:
+      tags:
+        - Trades
+      summary: Get recently completed trades for a given market (24 hours)
+      description:
+        The trades endpoint is to return data on all recently completed
+        trades for a given market pair.
+      operationId: getTrades
+      parameters:
+        - name: market_pair
+          in: path
+          description: A pair such as “eth_usdt”. Must be seperated by an underscore and in the format {base}_{target}.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getTradeResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Trades
+
+  /trade/{token}/tx_vol/{type}:
+    get:
+      tags:
+        - Trades
+      summary: Get the ranks of trading competition
+      description: This endpoint returns result based on volume or txns
+      operationId: getCompetitionRanksByToken
+      parameters:
+        - name: token
+          in: path
+          description: token
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: type
+          in: path
+          description: Competition type.  Either vol or tx.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getTradeResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Trades
+
+  /trade/tx_vol/{type}:
+    get:
+      tags:
+        - Trades
+      summary: Get the ranks of trading competition
+      description: This endpoint returns result based on volume or txns
+      operationId: getCompetitionRanks
+      parameters:
+        - name: type
+          in: path
+          description: Competition type.  Either vol or tx.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getTradeResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Trades
+
+  /network/rewardPay/{address}:
+    get:
+      tags:
+        - Network
+      summary: Get the reward payout info
+      description: This endpoint returns reward based liquidity events
+      operationId: getRewardUser
+      parameters:
+        - name: address
+          in: path
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reward Payout Amount
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+components:
+  schemas:
+    getPoolsResponse:
+      type: object
+      properties:
+        externalAsset:
+          $ref: "#/components/schemas/externalAsset"
+        nativeAsset:
+          $ref: "#/components/schemas/nativeAsset"
+        poolUnits:
+          type: string
+          example: "123456"
+    getPoolResponse:
+      type: object
+      properties:
+        Pool:
+          $ref: "#/components/schemas/getPoolsResponse"
+        clpModuleAddress:
+          type: string
+        height:
+          type: string
+    getLiquidityProvidersResponse:
+      type: object
+      properties:
+        units:
+          type: string
+        address:
+          type: string
+      example:
+        units: "123456"
+        address: "jk32l4j3l4j3l2j4l324jlhggfv3"
+    getLiquidityProviderResponse:
+      type: object
+      properties:
+        LiquidityProvider:
+          $ref: "#/components/schemas/getLiquidityProvidersResponse"
+        externalAsset:
+          $ref: "#/components/schemas/externalAsset"
+        nativeAsset:
+          $ref: "#/components/schemas/nativeAsset"
+        height:
+          type: string
+    PoolShareResponse:
+      type: object
+      properties:
+        poolShare:
+          type: string
+      example:
+        poolShare: "0.800828190461011502065957"
+    GetValidatorsResponse:
+      type: array
+      items:
+        type: object
+      properties:
+        validatorAddress:
+          type: string
+        commissionRate:
+          type: string
+      example:
+        commissionRate: "0.80082819046101150206595775671303272247314453125"
+        validatorAddress: sifj890868767868969837739example
+    GetValidatorResponse:
+      type: object
+      properties:
+        validatorAddress:
+          type: string
+        name:
+          type: string
+        stakedAmount:
+          type: string
+        selfDelegation:
+          type: string
+        externalDelegation:
+          type: string
+        unclaimedRewards:
+          type: string
+        isSlashed:
+          type: boolean
+        balance:
+          type: string
+        performance:
+          type: string
+          description: Validator uptime percentage over last 30 days
+      example:
+        stakedAmount: "0.80082819046101150206595775671303272247314453125"
+        performance: "2.3021358869347654518833223846741020679473876953125"
+        isSlashed: true
+        balance: "5.63737665663332876420099637471139430999755859375"
+        validatorAddress: validatorAddress
+        name: name
+        externalDelegation: "1.46581298050294517310021547018550336360931396484375"
+        unclaimedRewards: "5.962133916683182377482808078639209270477294921875"
+        selfDelegation: "6.02745618307040320615897144307382404804229736328125"
+    GetDelegatorsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          delegatorAddress:
+            type: string
+          delegationTotal:
+            type: string
+        example:
+          delegatorAddress: sifj890868767868969837739example
+          delegationTotal: "0.80082819046101150206595775671303272247314453125"
+    GetDelegatorResponse:
+      type: object
+      properties:
+        validatorAddress:
+          type: string
+        validatorName:
+          type: string
+        delegationTotal:
+          type: string
+        unclaimedRewards:
+          type: string
+        isSlashed:
+          type: boolean
+        performance:
+          type: string
+          description: Validator uptime percentage over last 30 days
+      example:
+        performance: "1.46581298050294517310021547018550336360931396484375"
+        isSlashed: true
+        validatorAddress: sifj890868767868969837739example
+        validatorName: validatorName
+        delegationTotal: "0.80082819046101150206595775671303272247314453125"
+        unclaimedRewards: "6.02745618307040320615897144307382404804229736328125"
+    getAssetsResponse:
+      type: object
+      properties:
+        symbol:
+          type: string
+        name:
+          type: string
+          description: Full name of cryptocurrency.
+        canWithdraw:
+          type: boolean
+          description: Identifies whether withdrawals are enabled or disabled.
+        canDeposit:
+          type: boolean
+          description: Identifies whether deposits are enabled or disabled.
+    GetTokenValueResponse:
+      type: object
+      properties:
+        symbol:
+          type: string
+        priceInUSDC:
+          type: string
+        priceInRowan:
+          type: string
+      example:
+        symbol: symbol
+        priceInUSDC: "0.80082819046101150206595775671303272247314453125"
+        priceInRowan: "6.02745618307040320615897144307382404804229736328125"
+    getInactiveValidatorsResponse:
+      type: object
+      properties:
+        inactiveValidator:
+          type: string
+          example: "abcuiyi88y, yuy7112zy"
+      example:
+        inactiveValidator: inactiveValidator
+    getTotalStakedByDelegatorsResponse:
+      type: object
+      properties:
+        amountDelegated:
+          type: string
+      example:
+        amountDelegated: "0.80082819046101150206595775671303272247314453125"
+    getPeggedAssetsResponse:
+      type: object
+      properties:
+        tokenName:
+          type: string
+          example: USD
+        value:
+          type: string
+          example: "120.5"
+    getTotalSupplyResponse:
+      type: object
+      properties:
+        denom:
+          type: string
+          example: "rowan"
+        amount:
+          type: string
+          example: "1000000000000000000000000000"
+    getTokenStatsResponse:
+      type: object
+      properties:
+        rowanUSD:
+          type: string
+        pools:
+          type: array
+          items:
+            type: object
+            properties:
+              symbol:
+                type: string
+              priceToken:
+                type: number
+              poolDepth:
+                type: number
+              poolTVL:
+                type: number
+              volume:
+                type: number
+              arb:
+                type: number
+              dailySwapFees:
+                type: number
+              poolBalance:
+                type: number
+              poolBalanceInRowan:
+                type: number
+              accruedNumBlocksRewards:
+                type: number
+              rewardPeriodNativeDistributed:
+                type: number
+              blocksPerYear:
+                type: number
+              rewardApr:
+                type: number
+              poolApr:
+                type: number
+    getCirculatingSupplyResponse:
+      type: object
+      properties:
+        denom:
+          type: string
+          example: "rowan"
+        amount:
+          type: string
+          example: "76121765689399231786235494"
+    getNetworkResponse:
+      type: object
+      properties:
+        totalRowanStaked:
+          type: string
+          example: "120"
+        totalUSDStaked:
+          type: string
+          example: "120"
+        blockReward:
+          type: string
+          example: "120"
+        averageBlockTime:
+          type: string
+          example: "120"
+        averageFee:
+          type: string
+          example: "120"
+        totalUsers:
+          type: string
+          example: "abcuiyi88y, yuy7112zy"
+        networkBondingTime:
+          type: string
+          example: "245"
+        validatorMinimumBondAmount:
+          type: string
+          example: "10"
+        delegatorMinimumBondAmount:
+          type: string
+          example: "10"
+    getDailyPriceResponse:
+      type: object
+      properties:
+        tickerid:
+          type: string
+          example: "leash_rowan"
+        base_currency:
+          type: string
+          example: "leash"
+        target_currency:
+          type: string
+          example: "rowan"
+        last_price:
+          type: string
+          example: "4903.9466783618955"
+        base_volume:
+          type: string
+          example: "1284.3708362610455"
+        target_volume:
+          type: string
+          example: "115901.14717083503"
+        bid:
+          type: string
+          example: "4894.1387850051715"
+        ask:
+          type: string
+          example: "14903.94667836189550"
+        high:
+          type: string
+          example: "4903.9466783618955"
+        low:
+          type: string
+          example: "4903.9466783618955"
+    getHistoricalPriceResponse:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds.
+        priceInRowan:
+          type: string
+        priceInUSDC:
+          type: string
+    getSummaryResponse:
+      type: object
+      properties:
+        tradingPairs:
+          type: string
+          description:
+            "Identifier of a ticker with delimiter to separate base/quote,\
+            \ eg. BTC-USD (Price of BTC is quoted in USD)"
+          example: ETC_BTC
+        baseCurrency:
+          type: string
+          description: "Symbol/currency code of base currency, eg. BTC"
+        targetCurrency:
+          type: string
+          description: "Symbol/currency code of target currency, eg. USD"
+        lastPrice:
+          type: string
+          description:
+            Last transacted price of base currency based on given quote
+            currency
+        baseVolume:
+          type: string
+          description: 24-hr volume of market pair denoted in BASE currency
+        targetVolume:
+          type: string
+          description: 24-hr volume of market pair denoted in Target currency
+        priceChangePercent24H:
+          type: string
+          description: 24-hr % price change of market pair
+        highestPrice24H:
+          type: string
+          description:
+            Highest price of base currency based on given quote currency
+            in the last 24-hrs
+        lowestPrice24H:
+          type: string
+          description:
+            Lowest price of base currency based on given quote currency
+            in the last 24-hrs
+        lowestAsk:
+          type: string
+          description: Lowest Ask price of base currency based on given quote currency
+        highestBid:
+          type: string
+          description: Highest bid price of base currency based on given quote currency
+    getTradeResponse:
+      type: object
+      properties:
+        tradeId:
+          type: string
+          description:
+            A unique ID associated with the trade for the currency pair
+            transaction
+        price:
+          type: string
+          description: Last transacted price of base currency based on given quote currency. (same as baseVolume)
+        baseVolume:
+          type: string
+          description: Transaction amount in BASE currency.
+        targetVolume:
+          type: string
+          description: Transaction amount in TARGET currency.
+        baseToken:
+          type: string
+          description: Symbol of base token.
+        targetToken:
+          type: string
+          description: Symbol of target token.
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds for when the transaction occurred.
+        type:
+          type: string
+          description: Type of trade. Sifcahin does not have Buy or Sell trades. We Swap.
+          example: Swap
+    externalAsset:
+      type: object
+      properties:
+        symbol:
+          type: string
+        balance:
+          type: string
+      example:
+        symbol: USDC
+        balance: "12345556"
+    nativeAsset:
+      type: object
+      properties:
+        symbol:
+          type: string
+          default: ROWAN
+        balance:
+          type: string
+      example:
+        symbol: ROWAN
+        balance: "12345556"
