@@ -22,7 +22,7 @@ const PositionIndicator: FC<{
   const leftOffset = (props.itemWidth - props.padding) * props.selectedIndex;
 
   return (
-    <div
+    <label
       className="absolute bg-sifgray-600 transition-all rounded translate-x-0 duration-200"
       style={{
         width: props.itemWidth,
@@ -39,7 +39,7 @@ export function Tabs<T = any>(props: TabsProps<T>) {
   const [containerWidth, setContainerWidth] = useState(0);
 
   return (
-    <div
+    <label
       ref={(x) => {
         if (x && x.clientWidth !== containerWidth) {
           setContainerWidth(x.clientWidth);
@@ -72,6 +72,6 @@ export function Tabs<T = any>(props: TabsProps<T>) {
           {item.label}
         </button>
       ))}
-    </div>
+    </label>
   );
 }

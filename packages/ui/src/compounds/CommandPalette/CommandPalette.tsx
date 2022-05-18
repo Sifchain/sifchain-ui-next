@@ -155,10 +155,10 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
+            <label className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
           </Transition.Child>
 
-          <div className="fixed inset-0 z-10 overflow-y-auto p-4">
+          <label className="fixed inset-0 z-10 overflow-y-auto p-4">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -170,14 +170,14 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
             >
               <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden rounded-xl bg-sifgray-900 shadow-2xl transition-all">
                 <Combobox onChange={() => {}} value={""}>
-                  <div className="relative">
+                  <label className="relative">
                     {searchIcon}
                     <Combobox.Input
                       className={inputClassName}
                       placeholder={props.placeholder}
                       onChange={(event) => setQuery(event.target.value)}
                     />
-                  </div>
+                  </label>
 
                   {(query === "" || filteredProjects.length > 0) && (
                     <Combobox.Options
@@ -275,7 +275,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                   )}
 
                   {query !== "" && filteredProjects.length === 0 && (
-                    <div className="py-14 px-6 text-center sm:px-14">
+                    <label className="py-14 px-6 text-center sm:px-14">
                       <FolderIcon
                         className="mx-auto h-6 w-6 text-sifgray-300"
                         aria-hidden="true"
@@ -284,12 +284,12 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                         We couldn't find any projects with that term. Please try
                         again.
                       </p>
-                    </div>
+                    </label>
                   )}
                 </Combobox>
               </Dialog.Panel>
             </Transition.Child>
-          </div>
+          </label>
         </Dialog>
       </Transition.Root>
     </>

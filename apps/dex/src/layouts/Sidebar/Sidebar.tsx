@@ -1,5 +1,5 @@
-import { ChevronRightIcon } from "@heroicons/react/outline";
-import { Logo } from "@sifchain/ui";
+import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
+import { Logo, ThemeSwitcher } from "@sifchain/ui";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -119,22 +119,36 @@ const Aside = () => {
             </ul>
           </nav>
         </section>
-        <section>
-          <ul>
+        <section className="grid gap-2 md:gap-4">
+          <ul className="grid">
             {rowanStats.map(({ id, icon, label }) => (
-              <li
-                key={id}
-                className="flex flex-row items-center gap-2 tracking-widest p-2"
-              >
-                <span className="h-6 w-6 grid place-items-center mr-1">
+              <li key={id} className="flex items-center gap-3 p-2">
+                <span className="h-6 w-6 grid place-items-center">
                   <Image src={icon} />
                 </span>
-                <span className="text-sifgray-200 font-semibold text-sm">
+                <span className="text-sifgray-200 font-semibold text-sm tracking-widest">
                   {label}
                 </span>
               </li>
             ))}
           </ul>
+          <label
+            className="flex items-center justify-between p-2"
+            role="button"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid place-items-center text-sifgray-50">
+                <MoonIcon className="h-6 w-6 scale-90 origin-center" />
+              </span>
+              <span className="text-sifgray-200 font-semibold text-sm tracking-widest">
+                Dark mode
+              </span>
+            </div>
+            <ThemeSwitcher />
+          </label>
+          <div className="text-center text-sm text-sifgray-300 font-mono p-1">
+            v2.2.105 © {new Date().getFullYear()} Sifchain
+          </div>
         </section>
       </div>
     </aside>

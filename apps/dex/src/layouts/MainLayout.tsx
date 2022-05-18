@@ -22,7 +22,6 @@ const MainLayout: FC<Props> = (props) => {
           <title>Sichain Dex - {props.title}</title>
         </Head>
       )}
-      <ThemeSwitcher />
       <Shell>
         <Sidebar />
         <main className="flex-1 flex flex-col max-h-screen">

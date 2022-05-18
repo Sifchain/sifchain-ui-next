@@ -7,7 +7,7 @@ import tw from "tailwind-styled-components";
 import { useTheme } from "../../hooks/useTheme";
 
 const Button = tw.button`
-  flex items-center p-1 m-2 rounded-full w-14 h-8
+  flex items-center p-1 rounded-full w-14 h-8
   bg-slate-800/20 dark:bg-white/10 dark:text-slate-400/60
 `;
 
