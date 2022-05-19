@@ -1,6 +1,6 @@
+import { indexBy } from "rambda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { indexBy } from "rambda";
 
 import useVanirClient from "~/hooks/useVanirClient";
 

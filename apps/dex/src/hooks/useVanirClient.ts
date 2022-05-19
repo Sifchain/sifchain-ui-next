@@ -1,7 +1,7 @@
-import { useQuery } from "react-query";
-import { useDexEnvironment } from "~/domains/core/envs";
-
 import { createClient } from "@sifchain/vanir-client";
+import { useQuery } from "react-query";
+
+import { useDexEnvironment } from "~/domains/core/envs";
 
 export default function useVanirClient() {
   const { data: env, isSuccess } = useDexEnvironment();
