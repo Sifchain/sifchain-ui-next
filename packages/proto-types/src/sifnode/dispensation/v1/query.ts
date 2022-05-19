@@ -146,7 +146,7 @@ export const QueryAllDistributionsResponse = {
       distributions: Array.isArray(object?.distributions)
         ? object.distributions.map((e: any) => Distribution.fromJSON(e))
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
@@ -303,7 +303,7 @@ export const QueryRecordsByDistributionNameResponse = {
       distributionRecords: isSet(object.distributionRecords)
         ? DistributionRecords.fromJSON(object.distributionRecords)
         : undefined,
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
@@ -445,7 +445,7 @@ export const QueryRecordsByRecipientAddrResponse = {
       distributionRecords: isSet(object.distributionRecords)
         ? DistributionRecords.fromJSON(object.distributionRecords)
         : undefined,
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
@@ -581,7 +581,7 @@ export const QueryClaimsResponse = {
       claims: Array.isArray(object?.claims)
         ? object.claims.map((e: any) => UserClaim.fromJSON(e))
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 

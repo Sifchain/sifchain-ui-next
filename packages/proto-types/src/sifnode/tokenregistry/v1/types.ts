@@ -443,7 +443,7 @@ export const RegistryEntry = {
   fromJSON(object: any): RegistryEntry {
     return {
       decimals: isSet(object.decimals)
-        ? Long.fromString(object.decimals)
+        ? Long.fromValue(object.decimals)
         : Long.ZERO,
       denom: isSet(object.denom) ? String(object.denom) : "",
       baseDenom: isSet(object.baseDenom) ? String(object.baseDenom) : "",

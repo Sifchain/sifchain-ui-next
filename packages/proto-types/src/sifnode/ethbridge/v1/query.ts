@@ -108,12 +108,12 @@ export const QueryEthProphecyRequest = {
   fromJSON(object: any): QueryEthProphecyRequest {
     return {
       ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromString(object.ethereumChainId)
+        ? Long.fromValue(object.ethereumChainId)
         : Long.ZERO,
       bridgeContractAddress: isSet(object.bridgeContractAddress)
         ? String(object.bridgeContractAddress)
         : "",
-      nonce: isSet(object.nonce) ? Long.fromString(object.nonce) : Long.ZERO,
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.ZERO,
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
       tokenContractAddress: isSet(object.tokenContractAddress)
         ? String(object.tokenContractAddress)

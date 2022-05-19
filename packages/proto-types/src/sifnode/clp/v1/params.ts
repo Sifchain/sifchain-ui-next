@@ -83,7 +83,7 @@ export const Params = {
   fromJSON(object: any): Params {
     return {
       minCreatePoolThreshold: isSet(object.minCreatePoolThreshold)
-        ? Long.fromString(object.minCreatePoolThreshold)
+        ? Long.fromValue(object.minCreatePoolThreshold)
         : Long.UZERO,
     };
   },
@@ -169,10 +169,10 @@ export const RewardParams = {
   fromJSON(object: any): RewardParams {
     return {
       liquidityRemovalLockPeriod: isSet(object.liquidityRemovalLockPeriod)
-        ? Long.fromString(object.liquidityRemovalLockPeriod)
+        ? Long.fromValue(object.liquidityRemovalLockPeriod)
         : Long.UZERO,
       liquidityRemovalCancelPeriod: isSet(object.liquidityRemovalCancelPeriod)
-        ? Long.fromString(object.liquidityRemovalCancelPeriod)
+        ? Long.fromValue(object.liquidityRemovalCancelPeriod)
         : Long.UZERO,
       rewardPeriods: Array.isArray(object?.rewardPeriods)
         ? object.rewardPeriods.map((e: any) => RewardPeriod.fromJSON(e))
@@ -373,13 +373,13 @@ export const PmtpParams = {
         ? String(object.pmtpPeriodGovernanceRate)
         : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
-        ? Long.fromString(object.pmtpPeriodEpochLength)
+        ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
-        ? Long.fromString(object.pmtpPeriodStartBlock)
+        ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO,
       pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Long.fromString(object.pmtpPeriodEndBlock)
+        ? Long.fromValue(object.pmtpPeriodEndBlock)
         : Long.ZERO,
     };
   },
@@ -505,10 +505,10 @@ export const RewardPeriod = {
         ? String(object.rewardPeriodId)
         : "",
       rewardPeriodStartBlock: isSet(object.rewardPeriodStartBlock)
-        ? Long.fromString(object.rewardPeriodStartBlock)
+        ? Long.fromValue(object.rewardPeriodStartBlock)
         : Long.UZERO,
       rewardPeriodEndBlock: isSet(object.rewardPeriodEndBlock)
-        ? Long.fromString(object.rewardPeriodEndBlock)
+        ? Long.fromValue(object.rewardPeriodEndBlock)
         : Long.UZERO,
       rewardPeriodAllocation: isSet(object.rewardPeriodAllocation)
         ? String(object.rewardPeriodAllocation)
