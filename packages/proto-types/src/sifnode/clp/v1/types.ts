@@ -383,7 +383,7 @@ export const LiquidityUnlock = {
   fromJSON(object: any): LiquidityUnlock {
     return {
       requestHeight: isSet(object.requestHeight)
-        ? Long.fromString(object.requestHeight)
+        ? Long.fromValue(object.requestHeight)
         : Long.ZERO,
       units: isSet(object.units) ? String(object.units) : "",
     };
@@ -452,10 +452,10 @@ export const PmtpEpoch = {
   fromJSON(object: any): PmtpEpoch {
     return {
       epochCounter: isSet(object.epochCounter)
-        ? Long.fromString(object.epochCounter)
+        ? Long.fromValue(object.epochCounter)
         : Long.ZERO,
       blockCounter: isSet(object.blockCounter)
-        ? Long.fromString(object.blockCounter)
+        ? Long.fromValue(object.blockCounter)
         : Long.ZERO,
     };
   },

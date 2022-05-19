@@ -1017,13 +1017,13 @@ export const MsgUpdatePmtpParams = {
         ? String(object.pmtpPeriodGovernanceRate)
         : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
-        ? Long.fromString(object.pmtpPeriodEpochLength)
+        ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
-        ? Long.fromString(object.pmtpPeriodStartBlock)
+        ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO,
       pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Long.fromString(object.pmtpPeriodEndBlock)
+        ? Long.fromValue(object.pmtpPeriodEndBlock)
         : Long.ZERO,
     };
   },
@@ -1573,10 +1573,10 @@ export const MsgUpdateRewardsParamsRequest = {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
       liquidityRemovalLockPeriod: isSet(object.liquidityRemovalLockPeriod)
-        ? Long.fromString(object.liquidityRemovalLockPeriod)
+        ? Long.fromValue(object.liquidityRemovalLockPeriod)
         : Long.UZERO,
       liquidityRemovalCancelPeriod: isSet(object.liquidityRemovalCancelPeriod)
-        ? Long.fromString(object.liquidityRemovalCancelPeriod)
+        ? Long.fromValue(object.liquidityRemovalCancelPeriod)
         : Long.UZERO,
     };
   },

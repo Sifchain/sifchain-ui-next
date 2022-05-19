@@ -144,7 +144,7 @@ export const MsgLock = {
       amount: isSet(object.amount) ? String(object.amount) : "",
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
       ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromString(object.ethereumChainId)
+        ? Long.fromValue(object.ethereumChainId)
         : Long.ZERO,
       ethereumReceiver: isSet(object.ethereumReceiver)
         ? String(object.ethereumReceiver)
@@ -304,7 +304,7 @@ export const MsgBurn = {
       amount: isSet(object.amount) ? String(object.amount) : "",
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
       ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromString(object.ethereumChainId)
+        ? Long.fromValue(object.ethereumChainId)
         : Long.ZERO,
       ethereumReceiver: isSet(object.ethereumReceiver)
         ? String(object.ethereumReceiver)
