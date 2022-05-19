@@ -3,8 +3,6 @@ info:
   title: Sichain API
   version: 0.0.5
 servers:
-  # Added by API Auto Mocking Plugin
-  - url: http://localhost:8080
   - url: https://data.sifchain.finance/beta
     description: AWS API Gateway
 

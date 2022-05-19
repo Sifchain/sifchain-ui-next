@@ -1,5 +1,5 @@
+import { PoolsRes } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
-import type { PoolStats } from "@sifchain/vanir";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FC, useMemo } from "react";
@@ -41,7 +41,7 @@ const Pools: NextPage = () => {
   );
 };
 
-const PoolItem: FC<{ pool: Pool; stats?: PoolStats }> = ({ pool, stats }) => (
+const PoolItem: FC<{ pool: Pool; stats?: PoolsRes }> = ({ pool, stats }) => (
   <Link href={`/pools/${pool.externalAsset?.symbol}`}>
     <li
       className="p-4 rounded-lg bg-sifgray-900 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden"
