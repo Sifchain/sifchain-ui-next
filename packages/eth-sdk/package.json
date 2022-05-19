@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "build/commonjs/index.js",
-  "module": "build/module/index.js",
+  "exports": {
+    "import": "./build/module/index.js",
+    "require": "./build/commonjs/index.js"
+  },
   "scripts": {
     "codegen": "rm -rf src/eth-sdk/abis && rm -rf src/generated && pnpm eth-sdk -p src/eth-sdk",
     "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module && cp -r src/generated build/module/generated && cp -r src/generated build/commonjs/generated"
