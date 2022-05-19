@@ -4,6 +4,7 @@
   "private": true,
   "description": "",
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev --scope=@sifchain/dex",
     "lint": "turbo run lint",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
     "prettier": "^2.5.1",
-    "turbo": "^1.2.8"
+    "turbo": "^1.2.8",
+    "husky": "^8.0.0"
   }
 }
