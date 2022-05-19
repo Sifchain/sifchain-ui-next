@@ -1,5 +1,5 @@
 import { createClient } from "@sifchain/vanir-client";
-import { ArgumentTypes, ValueOfRecord } from "rambda";
+import { ArgumentTypes } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
 import { SafeKeyof } from "~/lib/type-utils";
@@ -17,12 +17,12 @@ type PublicModuleKey = keyof VanirPublicClient;
 type L1 = PublicModuleKey;
 type L2 = SafeKeyof<VanirClient[L1]>;
 
-export type MessageKey = `${L1}.${L2}`;
+export type QueryKey = `${L1}.${L2}`;
 
 /**
  * Generic hook to access Vanir queries, with type inference
  *
- * @param message {string}
+ * @param query {string}
  * @param args {any}
  * @returns
  */
@@ -34,7 +34,7 @@ export default function useVanirQuery<
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  message: MessageKey | `${T}.${P}`,
+  query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
   options: Omit<
     UseQueryOptions<Res, unknown, Res>,
@@ -44,10 +44,10 @@ export default function useVanirQuery<
   const { data: client } = useVanirClient();
 
   return useQuery(
-    [message],
+    [query],
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {
-      const [moduleName, methodName] = message.split(".") as [T, P];
+      const [moduleName, methodName] = query.split(".") as [T, P];
 
       // @ts-ignore
       const method = client[moduleName][methodName] as VanirPublicClient[T][P];
