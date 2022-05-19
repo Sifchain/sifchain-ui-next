@@ -12,8 +12,7 @@
     "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0",
     "url": "^0.11.0"

@@ -8,8 +8,7 @@
     "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@cosmjs/math": "^0.28.4",
     "@cosmjs/proto-signing": "^0.28.4",
