@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "description": "",
   "files": [
-    "build"
+    "build",
+    "cosmos",
+    "gogoproto",
+    "google",
+    "sifnode"
   ],
   "exports": {
     "./*": {
