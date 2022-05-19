@@ -8,14 +8,14 @@ export default function usePoolsQuery() {
   const { data: client, isSuccess } = useVanirClient();
   const { data, ...query } = useQuery(
     "pool-stats",
-    () => client?.getTokenStats(),
+    () => client?.assets.getTokenStats(),
     {
       enabled: isSuccess && Boolean(client),
     },
   );
 
   const indexedBySymbol = useMemo(() => {
-    if (!data) {
+    if (!data?.pools) {
       return {};
     }
 
