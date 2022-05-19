@@ -3,7 +3,7 @@ import { ArgumentTypes, ValueOfRecord } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
 import { SafeKeyof } from "~/lib/type-utils";
-import useQueryClient from "./useQueryClient";
+import useVanirClient from "./useVanirClient";
 
 export type VanirClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -41,7 +41,7 @@ export default function useVanirQuery<
     "queryKey" | "queryFn"
   > = {},
 ) {
-  const { data: client } = useQueryClient();
+  const { data: client } = useVanirClient();
 
   return useQuery(
     [message],
