@@ -1,18 +1,10 @@
 import { indexBy } from "rambda";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
 
-import useVanirClient from "~/hooks/useVanirClient";
+import useVanirQuery from "~/hooks/useVanirQuery";
 
 export default function usePoolsQuery() {
-  const { data: client, isSuccess } = useVanirClient();
-  const { data, ...query } = useQuery(
-    "pool-stats",
-    () => client?.assets.getTokenStats(),
-    {
-      enabled: isSuccess && Boolean(client),
-    },
-  );
+  const { data, ...query } = useVanirQuery("assets.getTokenStats", []);
 
   const indexedBySymbol = useMemo(() => {
     if (!data?.pools) {
