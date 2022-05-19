@@ -360,10 +360,10 @@ export const DistributionRecord = {
         ? object.coins.map((e: any) => Coin.fromJSON(e))
         : [],
       distributionStartHeight: isSet(object.distributionStartHeight)
-        ? Long.fromString(object.distributionStartHeight)
+        ? Long.fromValue(object.distributionStartHeight)
         : Long.ZERO,
       distributionCompletedHeight: isSet(object.distributionCompletedHeight)
-        ? Long.fromString(object.distributionCompletedHeight)
+        ? Long.fromValue(object.distributionCompletedHeight)
         : Long.ZERO,
       authorizedRunner: isSet(object.authorizedRunner)
         ? String(object.authorizedRunner)

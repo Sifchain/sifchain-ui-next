@@ -414,7 +414,7 @@ export const MsgRunDistribution = {
         ? distributionTypeFromJSON(object.distributionType)
         : 0,
       distributionCount: isSet(object.distributionCount)
-        ? Long.fromString(object.distributionCount)
+        ? Long.fromValue(object.distributionCount)
         : Long.ZERO,
     };
   },

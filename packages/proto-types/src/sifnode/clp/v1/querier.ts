@@ -224,7 +224,7 @@ export const PoolRes = {
       clpModuleAddress: isSet(object.clpModuleAddress)
         ? String(object.clpModuleAddress)
         : "",
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
@@ -381,7 +381,7 @@ export const PoolsRes = {
       clpModuleAddress: isSet(object.clpModuleAddress)
         ? String(object.clpModuleAddress)
         : "",
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
       pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
         : undefined,
@@ -564,7 +564,7 @@ export const LiquidityProviderRes = {
       externalAssetBalance: isSet(object.externalAssetBalance)
         ? String(object.externalAssetBalance)
         : "",
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
@@ -726,7 +726,7 @@ export const AssetListRes = {
       assets: Array.isArray(object?.assets)
         ? object.assets.map((e: any) => Asset.fromJSON(e))
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
       pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
         : undefined,
@@ -901,7 +901,7 @@ export const LiquidityProviderDataRes = {
             LiquidityProviderData.fromJSON(e),
           )
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
       pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
         : undefined,
@@ -1080,7 +1080,7 @@ export const LiquidityProviderListRes = {
             LiquidityProvider.fromJSON(e),
           )
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
       pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
         : undefined,
@@ -1249,7 +1249,7 @@ export const LiquidityProvidersRes = {
             LiquidityProvider.fromJSON(e),
           )
         : [],
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
       pagination: isSet(object.pagination)
         ? PageResponse.fromJSON(object.pagination)
         : undefined,
@@ -1625,7 +1625,7 @@ export const PmtpParamsRes = {
       pmtpEpoch: isSet(object.pmtpEpoch)
         ? PmtpEpoch.fromJSON(object.pmtpEpoch)
         : undefined,
-      height: isSet(object.height) ? Long.fromString(object.height) : Long.ZERO,
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 

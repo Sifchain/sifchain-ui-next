@@ -3772,10 +3772,10 @@ export const UninterpretedOption = {
         ? String(object.identifierValue)
         : "",
       positiveIntValue: isSet(object.positiveIntValue)
-        ? Long.fromString(object.positiveIntValue)
+        ? Long.fromValue(object.positiveIntValue)
         : Long.UZERO,
       negativeIntValue: isSet(object.negativeIntValue)
-        ? Long.fromString(object.negativeIntValue)
+        ? Long.fromValue(object.negativeIntValue)
         : Long.ZERO,
       doubleValue: isSet(object.doubleValue) ? Number(object.doubleValue) : 0,
       stringValue: isSet(object.stringValue)
