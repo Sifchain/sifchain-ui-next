@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const CRYPTO_ORG_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.CRYPTO_ORG,
+  network: "crypto-org",
   displayName: "Crypto.org",
   blockExplorerUrl: "https://crypto.org/explorer/",
   nativeAssetSymbol: "basecro",

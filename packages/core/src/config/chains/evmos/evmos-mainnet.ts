@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const EVMOS_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.EVMOS,
+  network: "evmos",
   displayName: "EVMOS",
   blockExplorerUrl: "https://evmos.bigdipper.live",
   nativeAssetSymbol: "aevmos",

@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const CERBERUS_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.CERBERUS,
+  network: "cerberus",
   displayName: "Cerberus",
   blockExplorerUrl: "https://www.mintscan.io/cerberus",
   nativeAssetSymbol: "ucrbrus",

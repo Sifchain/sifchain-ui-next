@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const CHIHUAHUA_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.CHIHUAHUA,
+  network: "chihuahua",
   displayName: "Chihuahua",
   blockExplorerUrl: "https://www.mintscan.io/chihuahua",
   nativeAssetSymbol: "uhuahua",

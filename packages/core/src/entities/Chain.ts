@@ -1,10 +1,10 @@
 import { ChainInfo } from "@keplr-wallet/types";
 
 import { IAsset } from "./Asset";
-import { Network } from "./Network";
+import { NetworkKind } from "./Network";
 
 export type BaseChainConfig = {
-  network: Network;
+  network: NetworkKind;
   hidden?: boolean;
   chainId: string;
   displayName: string;
@@ -29,11 +29,11 @@ export type IBCChainConfig = BaseChainConfig & {
 
 export type ChainConfig = IBCChainConfig | EthChainConfig;
 
-export type NetworkChainConfigLookup = Record<Network, ChainConfig>;
+export type NetworkChainConfigLookup = Record<NetworkKind, ChainConfig>;
 
 export interface Chain {
   chainConfig: ChainConfig;
-  network: Network;
+  network: NetworkKind;
   displayName: string;
   nativeAsset: IAsset;
   assets: IAsset[];

@@ -1,4 +1,4 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { NetworkKind, IBCChainConfig } from "../../../entities";
 
 export const SECRET_MAINNET: IBCChainConfig = {
   chainType: "ibc",

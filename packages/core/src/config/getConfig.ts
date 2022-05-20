@@ -111,25 +111,25 @@ export function getConfig(
     localnet: parseConfig(
       localnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv[NetworkEnv.LOCALNET],
+      chainConfigByNetworkEnv"localnet",
       peggyCompatibleCosmosBaseDenoms,
     ),
     devnet: parseConfig(
       devnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv[NetworkEnv.DEVNET],
+      chainConfigByNetworkEnv"devnet",
       peggyCompatibleCosmosBaseDenoms,
     ),
     testnet: parseConfig(
       testnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv[NetworkEnv.TESTNET],
+      chainConfigByNetworkEnv"testnet",
       peggyCompatibleCosmosBaseDenoms,
     ),
     mainnet: parseConfig(
       mainnnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv[NetworkEnv.MAINNET],
+      chainConfigByNetworkEnv"mainnet",
       peggyCompatibleCosmosBaseDenoms,
     ),
   };

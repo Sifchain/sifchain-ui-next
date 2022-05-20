@@ -1,7 +1,7 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const AKASH_TESTNET: IBCChainConfig = {
-  network: Network.AKASH,
+  network: "akash",
   chainType: "ibc",
   displayName: "Akash",
   blockExplorerUrl: "https://testnet.akash.aneka.io",

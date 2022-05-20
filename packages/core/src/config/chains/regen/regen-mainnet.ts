@@ -1,4 +1,4 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { NetworkKind, IBCChainConfig } from "../../../entities";
 
 export const REGEN_MAINNET: IBCChainConfig = {
   chainType: "ibc",
