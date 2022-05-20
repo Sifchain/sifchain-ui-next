@@ -6,12 +6,17 @@ import { FC, useMemo } from "react";
 
 import usePoolsQuery from "~/domains/clp/hooks/usePools";
 import usePoolStatsQuery from "~/domains/clp/hooks/usePoolStats";
+import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
 const Pools: NextPage = () => {
   const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
   const { indexedBySymbol, ...statsQuery } = usePoolStatsQuery();
+
+  const { data: registry } = useTokenRegistryQuery();
+
+  console.log({ registry });
 
   const enhancedPools = useMemo(() => {
     return poolsRes?.pools.map((pool) => ({
