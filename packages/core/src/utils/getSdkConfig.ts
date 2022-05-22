@@ -1,4 +1,5 @@
-import { profileLookup, getConfig, NetworkEnv } from "../";
+import { profileLookup, NetworkEnv } from "../config/getEnv";
+import { getConfig } from "../config/getConfig";
 
 export const getSdkConfig = (params: { environment: NetworkEnv }) => {
   const { tag, ethAssetTag, sifAssetTag } = profileLookup[params.environment];

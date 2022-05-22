@@ -1,7 +1,7 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const COSMOSHUB_MAINNET: IBCChainConfig = {
-  network: Network.COSMOSHUB,
+  network: "cosmoshub",
   chainType: "ibc",
   displayName: "Cosmoshub",
   blockExplorerUrl: "https://mintscan.io/cosmos",

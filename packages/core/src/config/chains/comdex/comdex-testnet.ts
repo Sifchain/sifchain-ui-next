@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const COMDEX_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.COMDEX,
+  network: "comdex",
   displayName: "Comdex",
   blockExplorerUrl: "https://www.mintscan.io/comdex",
   nativeAssetSymbol: "ucmdx",

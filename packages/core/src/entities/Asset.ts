@@ -1,11 +1,11 @@
-import { Network } from "./Network";
+import { NetworkKind } from "./Network";
 
 export type IAsset = {
   address?: string;
   decimals: number;
   imageUrl?: string;
   name: string;
-  network: Network;
+  network: NetworkKind;
   symbol: string;
   unitDenom?: string;
   ibcDenom?: string;
@@ -13,7 +13,7 @@ export type IAsset = {
   lowercasePrefixLength?: number;
   label?: string;
   hasDarkIcon?: boolean;
-  homeNetwork: Network;
+  homeNetwork: NetworkKind;
   decommissioned?: boolean;
   decommissionReason?: string;
 };
@@ -32,7 +32,6 @@ function isAsset(value: any): value is IAsset {
  * @deprecated should only use as factory and not as throwable cache lookup
  */
 function _Asset(symbol: string): ReadonlyAsset;
-
 function _Asset(asset: IAsset): ReadonlyAsset;
 function _Asset(assetOrSymbol: IAsset | string): ReadonlyAsset;
 function _Asset(assetOrSymbol: any): ReadonlyAsset {

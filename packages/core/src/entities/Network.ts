@@ -1,28 +1,56 @@
-export const enum Network {
-  SIFCHAIN = "sifchain",
-  ETHEREUM = "ethereum",
+export type NetworkKind =
+  | "sifchain"
+  | "ethereum"
   // The rest... sort by name
-  AKASH = "akash",
-  BAND = "band",
-  COSMOSHUB = "cosmoshub",
-  CRYPTO_ORG = "crypto-org",
-  IRIS = "iris",
-  IXO = "ixo",
-  JUNO = "juno",
-  LIKECOIN = "likecoin",
-  OSMOSIS = "osmosis",
-  PERSISTENCE = "persistence",
-  REGEN = "regen",
-  SENTINEL = "sentinel",
-  TERRA = "terra",
-  EMONEY = "emoney",
-  EVMOS = "evmos",
-  STARNAME = "starname",
-  BITSONG = "bitsong",
-  CERBERUS = "cerberus",
-  COMDEX = "comdex",
-  CHIHUAHUA = "chihuahua",
-  KI = "ki",
-  STARGAZE = "stargaze",
-  SECRET = "secret",
-}
+  | "akash"
+  | "band"
+  | "cosmoshub"
+  | "crypto-org"
+  | "iris"
+  | "ixo"
+  | "juno"
+  | "likecoin"
+  | "osmosis"
+  | "persistence"
+  | "regen"
+  | "sentinel"
+  | "terra"
+  | "emoney"
+  | "evmos"
+  | "starname"
+  | "bitsong"
+  | "cerberus"
+  | "comdex"
+  | "chihuahua"
+  | "ki"
+  | "stargaze"
+  | "secret";
+
+export const ACTIVE_NETWORKS = new Set<NetworkKind>([
+  "sifchain",
+  "ethereum",
+  // The rest... sort by name
+  "akash",
+  "band",
+  "cosmoshub",
+  "crypto-org",
+  "iris",
+  "ixo",
+  "juno",
+  "likecoin",
+  "osmosis",
+  "persistence",
+  "regen",
+  "sentinel",
+  "terra",
+  "emoney",
+  "evmos",
+  "starname",
+  "bitsong",
+  "cerberus",
+  "comdex",
+  "chihuahua",
+  "ki",
+  "stargaze",
+  "secret",
+]);

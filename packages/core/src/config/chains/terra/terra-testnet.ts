@@ -1,4 +1,4 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { NetworkKind, IBCChainConfig } from "../../../entities";
 
 export const TERRA_TESTNET: IBCChainConfig = {
   network: Network.TERRA,

@@ -218,11 +218,11 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
     amounts: amounts as [external: IAssetAmount, native: IAssetAmount],
 
     get externalAmount() {
-      return amounts[0];
+      return amounts[0] as IAssetAmount;
     },
 
     get nativeAmount() {
-      return amounts[1];
+      return amounts[1] as IAssetAmount;
     },
 
     get nativeSwapPrice() {

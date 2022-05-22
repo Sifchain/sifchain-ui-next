@@ -1,4 +1,4 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { NetworkKind, IBCChainConfig } from "../../../entities";
 
 export const STARNAME_MAINNET: IBCChainConfig = {
   chainType: "ibc",
@@ -56,4 +56,3 @@ export const STARNAME_MAINNET: IBCChainConfig = {
     features: ["stargate", "ibc-transfer"],
   },
 };
-

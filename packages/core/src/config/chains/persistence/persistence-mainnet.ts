@@ -1,4 +1,4 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { NetworkKind, IBCChainConfig } from "../../../entities";
 
 export const PERSISTENCE_MAINNET: IBCChainConfig = {
   network: Network.PERSISTENCE,
