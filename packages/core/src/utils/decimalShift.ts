@@ -1,5 +1,5 @@
 import { IAmount, IAsset, AssetAmount } from "../entities";
-import { AmountNotAssetAmount, format, trimMantissa } from "./format";
+import { AmountNotAssetAmount, format } from "./format";
 
 /**
  * Function to shift the magnitude of a string without using any Math libs
@@ -20,7 +20,7 @@ export function decimalShift(decimal: string, shift: number) {
   // Eg, "12.34" > ['12','34']
   const [origCharacter, origMantissa] = unsignedDecimal.split(".");
 
-  const dotIndex = origCharacter.length;
+  const dotIndex = String(origCharacter).length;
   const targetIndex = dotIndex + shift;
 
   // Significand is all the digits "1234"
@@ -68,7 +68,7 @@ export function fromBaseUnits(integer: string, asset: IAsset): string {
  * @returns string with everything before the decimal point
  */
 export function floorDecimal(decimal: string) {
-  return decimal.split(".")[0];
+  return String(decimal.split(".")[0]);
 }
 
 /**

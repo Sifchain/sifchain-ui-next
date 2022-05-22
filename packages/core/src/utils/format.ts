@@ -1,7 +1,8 @@
+import numbro from "numbro";
+
+import { IAsset } from "../entities";
 import { Amount, IAmount } from "../entities/Amount";
 import { IAssetAmount } from "../entities/AssetAmount";
-import numbro from "numbro";
-import { IAsset } from "../entities";
 import { decimalShift, toBaseUnits } from "./decimalShift";
 
 type IFormatOptionsBase = {
@@ -93,7 +94,7 @@ function isDynamicMantissa(
 function isOptionsWithFixedMantissa(
   options: IFormatOptionsFixedMantissa | IFormatOptions,
 ): options is IFormatOptionsFixedMantissa {
-  return options.shorthand || !isDynamicMantissa(options.mantissa);
+  return options.shorthand || !isDynamicMantissa(options["mantissa"]);
 }
 
 /**
@@ -215,12 +216,12 @@ export function format<T extends IAmount>(
     postfix = "%";
   }
 
-  if (typeof options.mantissa === "number") {
-    decimal = applyMantissa(decimal, options.mantissa);
+  if (typeof options["mantissa"] === "number") {
+    decimal = applyMantissa(decimal, options["mantissa"]);
   }
 
-  if (options.trimMantissa) {
-    decimal = trimMantissa(decimal, options.trimMantissa === "integer");
+  if (options["trimMantissa"]) {
+    decimal = trimMantissa(decimal, options["trimMantissa"] === "integer");
   }
 
   if (options.separator) {
@@ -237,7 +238,7 @@ export function trimMantissa(decimal: string, integer = false) {
 function applySeparator(decimal: string) {
   const parts = decimal.split(".");
   return new Intl.NumberFormat("en-us", {
-    maximumFractionDigits: parts.length < 2 ? 0 : parts[1].length,
+    maximumFractionDigits: parts.length < 2 ? 0 : String(parts[1]).length,
   }).format(+decimal);
   // return [char.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","), mant].join(".");
 }

@@ -1,4 +1,4 @@
-import { TransactionStatus, ErrorCode, getErrorMessage } from "../";
+import { TransactionStatus, ErrorCode, getErrorMessage } from "../entities";
 
 // returns contextual inflrmation based on ethereum tx failure
 export function parseEthereumTxFailure(txFailure: {

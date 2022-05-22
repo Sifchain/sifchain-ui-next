@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "declaration": true,
+    "exactOptionalPropertyTypes": false,
+    "importsNotUsedAsValues": "remove",
+    "noImplicitOverride": false,
+    "noUnusedParameters": false,
+    "strictPropertyInitialization": false,
+    "downlevelIteration": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src"],
+  "exclude": ["**/*.spec.ts"]
+}

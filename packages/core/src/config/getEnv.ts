@@ -3,12 +3,12 @@ import { AppCookies } from "./AppCookies";
 
 export type NetworkEnv = "localnet" | "devnet" | "testnet" | "mainnet";
 
-export const NETWORK_ENVS: NetworkEnv[] = [
+export const NETWORK_ENVS: Set<NetworkEnv> = new Set<NetworkEnv>([
   "localnet",
   "devnet",
   "testnet",
   "mainnet",
-];
+]);
 
 type AssetTag = `${NetworkKind}.${NetworkEnv}`;
 
@@ -74,7 +74,7 @@ export function getNetworkEnv(hostname: string) {
 }
 
 export function isNetworkEnvSymbol(a: any): a is NetworkEnv {
-  return NETWORK_ENVS.includes(a);
+  return NETWORK_ENVS.has(a);
 }
 
 type GetEnvArgs = {

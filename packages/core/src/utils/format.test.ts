@@ -1,7 +1,8 @@
-import { AssetAmount, Network } from "../entities";
+import { describe, test, expect } from "vitest";
+
 import { Amount } from "../entities/Amount";
 import { Asset } from "../entities/Asset";
-import { round, format, IFormatOptions } from "./format";
+import { round, format } from "./format";
 
 type Test = {
   only?: boolean;
@@ -18,8 +19,8 @@ function mockAsset(decimals: number) {
     displaySymbol: "FOO",
     label: "cFOO",
     name: "Foo",
-    network: Network.ETHEREUM,
-    homeNetwork: Network.ETHEREUM,
+    network: "ethereum",
+    homeNetwork: "ethereum",
   });
 }
 

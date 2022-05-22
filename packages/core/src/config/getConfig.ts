@@ -20,20 +20,20 @@ import {
   CoreConfig,
   AssetConfig,
 } from "../utils/parseConfig";
-import { Network, IAsset } from "../entities";
+import { NetworkKind, IAsset, ACTIVE_NETWORKS } from "../entities";
 import { NetworkEnv } from "./getEnv";
 import { chainConfigByNetworkEnv } from "./chains";
 
 type ConfigMap = Record<NetworkEnv, ReturnType<typeof parseConfig>>;
 
-type ChainNetwork = `${Network}.${NetworkEnv}`;
+type ChainNetwork = `${NetworkKind}.${NetworkEnv}`;
 
 type AssetMap = Record<ChainNetwork, IAsset[]>;
 
 export type AppConfig = ReturnType<typeof parseConfig>; // Will include other injectables
 
 export function getConfig(
-  applicationNetworkEnv: NetworkEnv = NetworkEnv.LOCALNET,
+  applicationNetworkEnv: NetworkEnv = "localnet",
   sifchainAssetTag: ChainNetwork = "sifchain.localnet",
   ethereumAssetTag: ChainNetwork = "ethereum.localnet",
 ): AppConfig {
@@ -64,7 +64,7 @@ export function getConfig(
   const sifchainAssets = assetMap[sifchainAssetTag] || [];
   const ethereumAssets = assetMap[ethereumAssetTag] || [];
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env["NODE_ENV"] === "development") {
     console.log(
       "Using development config",
       applicationNetworkEnv,
@@ -79,8 +79,8 @@ export function getConfig(
 
   const allAssets = [...sifchainAssets, ...ethereumAssets];
 
-  Object.values(Network)
-    .filter((n) => n !== Network.ETHEREUM && n !== Network.SIFCHAIN)
+  [...ACTIVE_NETWORKS]
+    .filter((n) => n !== "ethereum" && n !== "sifchain")
     .forEach((n) => {
       allAssets.push(
         ...sifchainAssets.map((a) => ({
@@ -111,25 +111,25 @@ export function getConfig(
     localnet: parseConfig(
       localnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv"localnet",
+      chainConfigByNetworkEnv["localnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     devnet: parseConfig(
       devnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv"devnet",
+      chainConfigByNetworkEnv["devnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     testnet: parseConfig(
       testnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv"testnet",
+      chainConfigByNetworkEnv["testnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     mainnet: parseConfig(
       mainnnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv"mainnet",
+      chainConfigByNetworkEnv["mainnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
   };

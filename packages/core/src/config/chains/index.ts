@@ -32,7 +32,7 @@ export type ChainConfigByNetworkEnv = Record<
 >;
 
 export const chainConfigByNetworkEnv = Object.fromEntries(
-  NETWORK_ENVS.map((env) => {
+  [...NETWORK_ENVS].map((env) => {
     return [
       env,
       <Record<NetworkKind, ChainConfig>>{
