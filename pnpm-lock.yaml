@@ -16898,6 +16898,22 @@ packages:
         optional: true
     dependencies:
       react: 18.1.0
+<<<<<<< HEAD
+=======
+
+  /sucrase/3.21.0:
+    resolution: {integrity: sha512-FjAhMJjDcifARI7bZej0Bi1yekjWQHoEvWIXhLPwDhC6O4iZ5PtGb86WV56riW87hzpgB13wwBKO9vKAiWu5VQ==}
+    engines: {node: '>=8'}
+    hasBin: true
+    dependencies:
+      commander: 4.1.1
+      glob: 7.1.6
+      lines-and-columns: 1.2.4
+      mz: 2.7.0
+      pirates: 4.0.5
+      ts-interface-checker: 0.1.13
+    dev: true
+>>>>>>> ab4a50d (feat: migrate core cofigs, utils & entities)
 
   /sucrase/3.21.0:
     resolution: {integrity: sha512-FjAhMJjDcifARI7bZej0Bi1yekjWQHoEvWIXhLPwDhC6O4iZ5PtGb86WV56riW87hzpgB13wwBKO9vKAiWu5VQ==}
