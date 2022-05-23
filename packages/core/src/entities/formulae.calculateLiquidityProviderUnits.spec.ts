@@ -1,7 +1,8 @@
-import { calculatePoolUnits } from "./formulae";
+import { expect, test } from "vitest";
 
-import tables from "../../../test/test-tables/pool_units_after_upgrade.json";
+import tables from "../../test/test-tables/pool_units_after_upgrade.json";
 import { Amount, IAmount } from "./Amount";
+import { calculatePoolUnits } from "./formulae";
 
 // Use this list to only run specific tests
 const filterList: number[] = [];

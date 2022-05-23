@@ -1,7 +1,8 @@
 import { calculateSwapResult } from "./formulae";
 import { Amount } from "./Amount";
 
-import tests from "../../../test/test-tables/singleswap_result.json";
+import tests from "../../test/test-tables/singleswap_result.json";
+import { expect, test } from "vitest";
 
 tests.SingleSwapResult.forEach(({ x, X, Y, expected }: any) => {
   test(`Swapping ${x}, expecting ${expected}`, () => {

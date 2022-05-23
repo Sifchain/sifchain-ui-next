@@ -25,6 +25,7 @@ SOFTWARE.
 
 import { Fraction } from "./Fraction";
 import JSBI from "jsbi";
+import { describe, expect, it, test } from "vitest";
 
 test("it should be able to handle whole integars", () => {
   const f = new Fraction("100");

@@ -1,8 +1,9 @@
-import { getTestingTokens } from "../test/utils/getTestingToken";
+import { describe, expect, test } from "vitest";
+
+import { getTestingTokens } from "../../test/utils/getTestingToken";
 import { Asset } from "./Asset";
 import { AssetAmount } from "./AssetAmount";
-import { Network } from "./Network";
-import { Pool, CompositePool } from "./Pool";
+import { CompositePool, Pool } from "./Pool";
 
 describe("Pool", () => {
   const [ATK, BTK, ETH, ROWAN] = getTestingTokens([

@@ -1,3 +1,5 @@
+import { expect, test } from "vitest";
+
 import { parseTxFailure } from "./parseTxFailure";
 
 // possibly slightly redundant test for coverage

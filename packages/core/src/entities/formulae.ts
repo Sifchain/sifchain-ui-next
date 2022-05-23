@@ -63,8 +63,6 @@ function abs(num: IAmount) {
   return num;
 }
 
-const TEN_THOUSAND = Amount("10000");
-
 export function calculateWithdrawal({
   poolUnits,
   nativeAssetBalance,
@@ -82,7 +80,7 @@ export function calculateWithdrawal({
 }) {
   let unitsToClaim = Amount("0");
   if (!wBasisPoints.equalTo("0")) {
-    unitsToClaim = lpUnits.divide(TEN_THOUSAND.divide(wBasisPoints));
+    unitsToClaim = lpUnits.divide(Amount("10000").divide(wBasisPoints));
   }
 
   let poolUnitsOverUnitsToClaim = Amount("0");
@@ -109,10 +107,14 @@ export function calculateWithdrawal({
       ? Amount("0")
       : asymmetry.lessThan("0")
       ? externalAssetBalance.divide(
-          poolUnits.divide(unitsToClaim.divide(TEN_THOUSAND.divide(asymmetry))),
+          poolUnits.divide(
+            unitsToClaim.divide(Amount("10000").divide(asymmetry)),
+          ),
         )
       : nativeAssetBalance.divide(
-          poolUnits.divide(unitsToClaim.divide(TEN_THOUSAND.divide(asymmetry))),
+          poolUnits.divide(
+            unitsToClaim.divide(Amount("10000").divide(asymmetry)),
+          ),
         ),
   );
 

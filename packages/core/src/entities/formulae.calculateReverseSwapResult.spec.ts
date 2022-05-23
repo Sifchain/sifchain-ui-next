@@ -1,8 +1,9 @@
+import { expect, test } from "vitest";
 import { Amount } from "./Amount";
 
 import { calculateReverseSwapResult } from "./formulae";
 
-const ReverseSwapAmounts = [
+const TEST_CASES = [
   {
     expected: "99999999999999999999999999",
     X: "1000000000000000000000000000",
@@ -47,9 +48,9 @@ const ReverseSwapAmounts = [
   },
 ];
 
-ReverseSwapAmounts.forEach(({ S, X, Y, expected }: any) => {
+TEST_CASES.forEach(({ S, X, Y, expected }) => {
   const x = calculateReverseSwapResult(Amount(S), Amount(X), Amount(Y));
-  test("", () => {
+  test(`calculateReverseSwapResult(S: ${S}, X: ${X}, Y: ${Y})`, () => {
     expect(x.toBigInt().toString()).toBe(expected);
   });
 });

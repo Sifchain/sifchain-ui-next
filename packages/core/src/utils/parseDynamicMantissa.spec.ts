@@ -1,3 +1,5 @@
+import { expect, test } from "vitest";
+
 import { Amount } from "../entities";
 import { getMantissaFromDynamicMantissa } from "./format";
 

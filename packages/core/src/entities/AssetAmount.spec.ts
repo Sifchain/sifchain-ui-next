@@ -1,8 +1,9 @@
 import JSBI from "jsbi";
-import { AssetAmount } from "./AssetAmount";
-import { Asset } from "./Asset";
+import { beforeEach, describe, expect, test } from "vitest";
+
 import { Amount } from "./Amount";
-import { Network } from "./Network";
+import { Asset } from "./Asset";
+import { AssetAmount } from "./AssetAmount";
 
 describe("AssetAmount", () => {
   beforeEach(() => {

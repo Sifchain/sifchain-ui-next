@@ -30,7 +30,7 @@ export function parseTxFailure(txFailure: {
   transactionHash: string;
   rawLog?: string;
 }): TransactionStatus {
-  if (txFailure.rawLog) {
+  if (txFailure.rawLog && process.env["NODE_ENV"] === "development") {
     console.log({ "txFailure.rawLog": txFailure.rawLog });
   }
   // TODO: synchronise with backend and use error codes at the service level
