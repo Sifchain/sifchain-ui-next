@@ -4,13 +4,9 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
 import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { ascend, descend, sortWith } from "ramda";
 import { FC } from "react";
-import { useQuery } from "react-query";
 
-import usePoolsQuery from "~/domains/clp/hooks/usePools";
-import usePoolStatsQuery from "~/domains/clp/hooks/usePoolStats";
-import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import useEnhancedPoolsQuery from "~/domains/clp/hooks/useEnhancedPoolsQuery";
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
@@ -37,65 +33,6 @@ const Pools: NextPage = () => {
     </MainLayout>
   );
 };
-
-function useEnhancedPoolsQuery() {
-  const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
-  const statsQuery = usePoolStatsQuery();
-  const registryQuery = useTokenRegistryQuery();
-
-  const derivedQuery = useQuery(
-    "enhanced-pools",
-    () => {
-      if (!poolsRes || !statsQuery.data || !registryQuery.data) {
-        return;
-      }
-
-      const filtered = poolsRes.pools
-        .map((pool) => {
-          const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
-          const asset = externalAssetSymbol
-            ? registryQuery.indexedBySymbol[externalAssetSymbol] ??
-              registryQuery.indexedIBCDenom[externalAssetSymbol]
-            : undefined;
-
-          const stats = asset
-            ? statsQuery.indexedBySymbol[asset?.symbol.toLowerCase()] ??
-              statsQuery.indexedBySymbol[asset?.displaySymbol.toLowerCase()]
-            : undefined;
-
-          return {
-            ...pool,
-            stats: stats as GetTokenStatsResponsePools,
-            asset: asset as IAsset,
-          };
-        })
-        .filter((pool) => Boolean(pool.asset) && Boolean(pool.stats));
-
-      return sortWith(
-        [
-          descend((x) => x.stats.poolTVL ?? 0),
-          ascend((x) => x.asset.displaySymbol ?? 0),
-        ],
-        filtered,
-      );
-    },
-    {
-      enabled:
-        poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
-    },
-  );
-
-  return {
-    ...derivedQuery,
-    isLoading:
-      poolsQuery.isLoading ||
-      statsQuery.isLoading ||
-      registryQuery.isLoading ||
-      registryQuery.isLoading,
-    isSuccess:
-      poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
-  };
-}
 
 const PoolItem: FC<{
   pool: Pool;
