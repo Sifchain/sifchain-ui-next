@@ -14,10 +14,10 @@ describe("AssetAmount", () => {
       label: "ETH",
       displaySymbol: "ETH",
       name: "Ethereum",
-      network: Network.ETHEREUM,
+      network: "ethereum",
       symbol: "eth",
       imageUrl: "http://fooo",
-      homeNetwork: Network.ETHEREUM,
+      homeNetwork: "ethereum",
     });
   });
 

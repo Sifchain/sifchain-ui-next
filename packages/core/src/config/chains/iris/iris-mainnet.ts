@@ -1,7 +1,7 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const IRIS_MAINNET: IBCChainConfig = {
-  network: Network.IRIS,
+  network: "iris",
   chainType: "ibc",
   displayName: "IRISnet",
   blockExplorerUrl: "https://irishub.iobscan.io/",

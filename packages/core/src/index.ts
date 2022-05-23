@@ -1,3 +1,3 @@
 export * from "./entities";
 export * from "./utils";
-export * from "./config/getConfig";
+export * from "./config";

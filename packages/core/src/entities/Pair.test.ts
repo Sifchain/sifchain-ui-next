@@ -1,7 +1,7 @@
+import { describe, expect, test } from "vitest";
 import { Asset } from "./Asset";
 import { AssetAmount } from "./AssetAmount";
 
-import { Network } from "./Network";
 import { Pair } from "./Pair";
 
 describe("Pair", () => {
@@ -12,8 +12,8 @@ describe("Pair", () => {
     displaySymbol: "ATK",
     name: "AppleToken",
     address: "123",
-    network: Network.ETHEREUM,
-    homeNetwork: Network.ETHEREUM,
+    network: "ethereum",
+    homeNetwork: "ethereum",
   });
   const BTK = Asset({
     decimals: 18,
@@ -22,8 +22,8 @@ describe("Pair", () => {
     displaySymbol: "BTK",
     name: "BananaToken",
     address: "1234",
-    network: Network.ETHEREUM,
-    homeNetwork: Network.ETHEREUM,
+    network: "ethereum",
+    homeNetwork: "ethereum",
   });
   const ETH = Asset({
     decimals: 18,
@@ -31,8 +31,8 @@ describe("Pair", () => {
     displaySymbol: "ETH",
     label: "ETH",
     name: "Ethereum",
-    network: Network.ETHEREUM,
-    homeNetwork: Network.ETHEREUM,
+    network: "ethereum",
+    homeNetwork: "ethereum",
   });
   const ROWAN = Asset({
     decimals: 18,
@@ -40,8 +40,8 @@ describe("Pair", () => {
     displaySymbol: "ROWAN",
     label: "ROWAN",
     name: "Rowan",
-    network: Network.SIFCHAIN,
-    homeNetwork: Network.ETHEREUM,
+    network: "sifchain",
+    homeNetwork: "ethereum",
   });
 
   test("contains()", () => {

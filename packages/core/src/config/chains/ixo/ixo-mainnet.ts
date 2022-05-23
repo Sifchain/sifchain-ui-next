@@ -1,8 +1,8 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const IXO_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.IXO,
+  network: "ixo",
   displayName: "IXO",
   blockExplorerUrl: "https://proxies.sifchain.finance/api/impacthub-3/rest",
   nativeAssetSymbol: "uixo",
@@ -20,14 +20,8 @@ export const IXO_MAINNET: IBCChainConfig = {
       coinDecimals: 6,
       // coinImageUrl: "https://dhj8dql1kzq2v.cloudfront.net/white/ixo.png",
     },
-    walletUrl:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/#/ixo/stake"
-        : "http://localhost:8081/#/ixo/stake",
-    walletUrlForStaking:
-      process.env.NODE_ENV === "production"
-        ? "https://wallet.keplr.app/#/ixo/stake"
-        : "http://localhost:8081/#/ixo/stake",
+    walletUrl: "https://wallet.keplr.app/#/ixo/stake",
+    walletUrlForStaking: "https://wallet.keplr.app/#/ixo/stake",
     bip44: {
       coinType: 118,
     },

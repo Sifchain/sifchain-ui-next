@@ -1,7 +1,7 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const LIKECOIN_TESTNET: IBCChainConfig = {
-  network: Network.LIKECOIN,
+  network: "likecoin",
   chainType: "ibc",
   displayName: "LikeCoin",
   blockExplorerUrl: "https://likecoin.bigdipper.live/",

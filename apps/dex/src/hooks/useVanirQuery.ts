@@ -53,7 +53,9 @@ export default function useVanirQuery<
       const method = client[moduleName][methodName] as VanirPublicClient[T][P];
 
       // @ts-ignore
-      return await method(...args);
+      const result = await method(...args);
+
+      return result.body;
     },
     {
       refetchOnMount: Boolean(options.refetchOnMount),

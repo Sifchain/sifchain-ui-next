@@ -22,6 +22,7 @@ importers:
     specifiers:
       '@headlessui/react': ^1.6.1
       '@heroicons/react': ^1.0.6
+      '@sifchain/core': workspace:*
       '@sifchain/proto-types': workspace:*
       '@sifchain/stargate': workspace:*
       '@sifchain/ui': workspace:*
@@ -58,6 +59,7 @@ importers:
     dependencies:
       '@headlessui/react': 1.6.1_ef5jwxihqo6n7gxfmzogljlgcm
       '@heroicons/react': 1.0.6_react@18.1.0
+      '@sifchain/core': link:../../packages/core
       '@sifchain/proto-types': link:../../packages/proto-types
       '@sifchain/stargate': link:../../packages/stargate
       '@sifchain/ui': link:../../packages/ui

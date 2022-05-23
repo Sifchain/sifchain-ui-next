@@ -20,13 +20,13 @@ export type IAsset = {
 
 type ReadonlyAsset = Readonly<IAsset>;
 
-const ASSET_MAP_STORAGE_KEY = "@@assetMap";
-
 function isAsset(value: any): value is IAsset {
   return (
     typeof value?.symbol === "string" && typeof value?.decimals === "number"
   );
 }
+
+const ASSET_MAP = new Map<string, ReadonlyAsset>();
 
 /**
  * @deprecated should only use as factory and not as throwable cache lookup
@@ -35,33 +35,27 @@ function _Asset(symbol: string): ReadonlyAsset;
 function _Asset(asset: IAsset): ReadonlyAsset;
 function _Asset(assetOrSymbol: IAsset | string): ReadonlyAsset;
 function _Asset(assetOrSymbol: any): ReadonlyAsset {
-  const rawMapString = sessionStorage.getItem(ASSET_MAP_STORAGE_KEY);
-  const assetMap = JSON.parse(rawMapString ?? JSON.stringify({})) as Record<
-    string,
-    ReadonlyAsset
-  >;
-
   // If it is an asset then cache it and return it
   if (isAsset(assetOrSymbol)) {
     const key = assetOrSymbol.symbol.toLowerCase();
 
     // prevent overriding of existing rowan asset
-    if (key in assetMap && key === "rowan") {
+    if (ASSET_MAP.has(key) && key === "rowan") {
       return assetOrSymbol;
     }
 
-    assetMap[key] = {
+    ASSET_MAP.set(key, {
       ...assetOrSymbol,
       displaySymbol: assetOrSymbol.displaySymbol || assetOrSymbol.symbol,
-    };
-
-    sessionStorage.setItem(ASSET_MAP_STORAGE_KEY, JSON.stringify(assetMap));
+    });
 
     return assetOrSymbol;
   }
 
   // Return it from cache
-  const found = assetOrSymbol ? assetMap[assetOrSymbol.toLowerCase()] : false;
+  const found = assetOrSymbol
+    ? ASSET_MAP.get(assetOrSymbol.toLowerCase())
+    : false;
 
   if (!found) {
     throw new Error(

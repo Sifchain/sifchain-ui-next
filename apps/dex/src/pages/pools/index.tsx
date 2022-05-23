@@ -1,8 +1,11 @@
-import { PoolsRes } from "@sifchain/proto-types/sifnode/clp/v1/querier";
+import { IAsset } from "@sifchain/core";
 import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
+import { formatNumberAsCurrency } from "@sifchain/ui";
+import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { NextPage } from "next";
 import Link from "next/link";
-import { FC, useMemo } from "react";
+import { FC } from "react";
+import { useQuery } from "react-query";
 
 import usePoolsQuery from "~/domains/clp/hooks/usePools";
 import usePoolStatsQuery from "~/domains/clp/hooks/usePoolStats";
@@ -11,24 +14,7 @@ import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
 const Pools: NextPage = () => {
-  const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
-  const { indexedBySymbol, ...statsQuery } = usePoolStatsQuery();
-
-  const { data: registry } = useTokenRegistryQuery();
-
-  console.log({ registry });
-
-  const enhancedPools = useMemo(() => {
-    return poolsRes?.pools.map((pool) => ({
-      ...pool,
-      stats: pool.externalAsset
-        ? indexedBySymbol[pool.externalAsset.symbol]
-        : undefined,
-    }));
-  }, [poolsRes, indexedBySymbol]);
-
-  const isLoading = poolsQuery.isLoading || statsQuery.isLoading;
-  const isSuccess = poolsQuery.isSuccess && statsQuery.isSuccess;
+  const { data: enhancedPools, isLoading, isSuccess } = useEnhancedPools();
 
   return (
     <MainLayout title="Pools">
@@ -37,7 +23,12 @@ const Pools: NextPage = () => {
         {isSuccess && (
           <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
             {enhancedPools?.map((pool) => (
-              <PoolItem key={pool.externalAsset?.symbol} pool={pool} />
+              <PoolItem
+                key={pool.externalAsset?.symbol}
+                pool={pool}
+                stats={pool.stats}
+                asset={pool.asset}
+              />
             ))}
           </ul>
         )}
@@ -46,16 +37,99 @@ const Pools: NextPage = () => {
   );
 };
 
-const PoolItem: FC<{ pool: Pool; stats?: PoolsRes }> = ({ pool, stats }) => (
-  <Link href={`/pools/${pool.externalAsset?.symbol}`}>
-    <li
-      className="p-4 rounded-lg bg-sifgray-900 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden"
-      role="button"
-    >
-      ROWAN/{pool.externalAsset?.symbol.toUpperCase()}
-      <div>{JSON.stringify(stats)}</div>
-    </li>
-  </Link>
-);
+function useEnhancedPools() {
+  const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
+  const statsQuery = usePoolStatsQuery();
+  const registryQuery = useTokenRegistryQuery();
+
+  const derivedQuery = useQuery(
+    "enhanced-pools",
+    () => {
+      return poolsRes?.pools
+        .map((pool) => {
+          const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
+          const asset = externalAssetSymbol
+            ? registryQuery.indexedBySymbol[externalAssetSymbol] ??
+              registryQuery.indexedIBCDenom[externalAssetSymbol]
+            : undefined;
+
+          const stats = asset
+            ? statsQuery.indexedBySymbol[asset?.symbol.toLowerCase()] ??
+              statsQuery.indexedBySymbol[asset?.displaySymbol.toLowerCase()]
+            : undefined;
+
+          return {
+            ...pool,
+            stats: stats,
+            asset: asset as IAsset,
+          };
+        })
+        .filter((pool) => Boolean(pool.asset));
+    },
+    {
+      enabled:
+        poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
+    },
+  );
+
+  return {
+    ...derivedQuery,
+    isLoading:
+      poolsQuery.isLoading ||
+      statsQuery.isLoading ||
+      registryQuery.isLoading ||
+      registryQuery.isLoading,
+    isSuccess:
+      poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
+  };
+}
+
+const PoolItem: FC<{
+  pool: Pool;
+  asset: IAsset;
+  stats?: GetTokenStatsResponsePools;
+}> = ({ pool, asset, stats }) => {
+  const statSummary = [
+    {
+      label: "Total liquidity",
+      value: formatNumberAsCurrency(stats?.poolTVL ?? 0),
+    },
+    {
+      label: "Trading volume",
+      value: formatNumberAsCurrency(stats?.volume ?? 0),
+    },
+    {
+      label: "Pool APR",
+      value: `${(stats?.poolApr ?? 0).toFixed(2)}%`,
+    },
+    {
+      label: "Arb opportunitt",
+      value: `${(stats?.arb ?? 0).toFixed(2)}%`,
+    },
+  ];
+  return (
+    <Link href={`/pools/${asset?.symbol}`}>
+      <li
+        className="p-4 rounded-lg bg-sifgray-900 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
+        role="button"
+      >
+        <div className="flex gap-2 items-center">
+          <div className="h-6 w-6 text-2xl rounded-full bg-white grid place-items-center overflow-hidden ring ring-black">
+            <img className="h-[1em] w-[1em]" src={asset.imageUrl} />
+          </div>
+          {asset.symbol.toUpperCase()}
+        </div>
+        <ul className="grid gap-1">
+          {statSummary.map((stat) => (
+            <div key={stat.label} className="flex justify-between">
+              <span className="text-gray-500">{stat.label}</span>
+              <span className="text-gray-50">{stat.value}</span>
+            </div>
+          ))}
+        </ul>
+      </li>
+    </Link>
+  );
+};
 
 export default Pools;

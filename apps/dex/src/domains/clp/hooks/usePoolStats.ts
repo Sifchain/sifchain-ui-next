@@ -11,7 +11,7 @@ export default function usePoolsQuery() {
       return {};
     }
 
-    return indexBy((x) => x.symbol, data.pools);
+    return indexBy((x) => x.symbol?.toLowerCase(), data.pools);
   }, [data?.pools]);
 
   return {

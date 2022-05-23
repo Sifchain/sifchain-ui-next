@@ -1,7 +1,7 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const SIFCHAIN_TESTNET: IBCChainConfig = {
-  network: Network.SIFCHAIN,
+  network: "sifchain",
   chainType: "ibc",
   displayName: "Sifchain",
   blockExplorerUrl: "https://www.mintscan.io/sifchain",

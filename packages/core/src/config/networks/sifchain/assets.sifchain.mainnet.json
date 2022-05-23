@@ -52,7 +52,8 @@
       "network": "sifchain",
       "symbol": "cbnt",
       "displaySymbol": "bnt",
-      "homeNetwork": "ethereum"
+      "homeNetwork": "ethereum",
+      "hasDarkIcon": true
     },
     {
       "decimals": 18,

@@ -1,8 +1,8 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const SENTINEL_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.SENTINEL,
+  network: "sentinel",
   displayName: "Sentinel",
   blockExplorerUrl: "https://explorer.sentinel.co/",
   nativeAssetSymbol: "udvpn",

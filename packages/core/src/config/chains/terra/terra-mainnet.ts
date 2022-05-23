@@ -1,7 +1,7 @@
-import { NetworkKind, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const TERRA_MAINNET: IBCChainConfig = {
-  network: Network.TERRA,
+  network: "terra",
   chainType: "ibc",
   displayName: "Terra",
   blockExplorerUrl: "https://finder.terra.money/mainnet/",
