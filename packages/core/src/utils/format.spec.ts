@@ -4,15 +4,15 @@ import { Amount } from "../entities/Amount";
 import { Asset } from "../entities/Asset";
 import { round, format } from "./format";
 
-type Test = {
+type TestCase = {
   only?: boolean;
   skip?: boolean;
   input: string;
   expected: string;
 };
 
-function mockAsset(decimals: number) {
-  return Asset({
+const createMockAsset = (decimals: number) =>
+  Asset({
     symbol: "foo",
     decimals,
     address: "12345678",
@@ -22,7 +22,6 @@ function mockAsset(decimals: number) {
     network: "ethereum",
     homeNetwork: "ethereum",
   });
-}
 
 describe("round", () => {
   test("rounding", () => {
@@ -31,7 +30,14 @@ describe("round", () => {
 });
 
 describe("format", () => {
-  const tests: Test[] = [
+  const dynamicMantissaConfig = {
+    1: 6, // < 1 show 6 decimals
+    1000: 4, // < 1000 show 4 decimals
+    100000: 2, // < 100000 show 2 decimals
+    infinity: 0, // otherwise show 0 decimals
+  };
+
+  const testCases: TestCase[] = [
     {
       input: format(Amount("100000000000"), { mantissa: 2, separator: true }),
       expected: `100,000,000,000`,
@@ -45,20 +51,20 @@ describe("format", () => {
       expected: `100.000000b`,
     },
     {
-      input: format(Amount("990000000000000000"), mockAsset(18), {
+      input: format(Amount("990000000000000000"), createMockAsset(18), {
         mantissa: 6,
       }),
       expected: `0.990000`,
     },
     {
-      input: format(Amount("990000000000000000"), mockAsset(18), {
+      input: format(Amount("990000000000000000"), createMockAsset(18), {
         mantissa: 6,
         trimMantissa: true,
       }),
       expected: `0.99`,
     },
     {
-      input: format(Amount("999999800000000000"), mockAsset(18), {
+      input: format(Amount("999999800000000000"), createMockAsset(18), {
         mantissa: 7,
       }),
 
@@ -85,7 +91,7 @@ describe("format", () => {
       expected: `12.345 %`,
     },
     {
-      input: format(Amount("-990000000000000000"), mockAsset(18), {
+      input: format(Amount("-990000000000000000"), createMockAsset(18), {
         mantissa: 6,
         trimMantissa: true,
       }),
@@ -94,7 +100,7 @@ describe("format", () => {
     {
       input: format(
         Amount("999999800000000000"),
-        mockAsset(18),
+        createMockAsset(18),
 
         { mantissa: 7, shorthand: true, forceSign: true },
       ),
@@ -143,7 +149,7 @@ describe("format", () => {
       expected: `N/A`,
     },
     {
-      input: format(Amount("100000000000000000000"), mockAsset(18), {
+      input: format(Amount("100000000000000000000"), createMockAsset(18), {
         mantissa: 18,
       }),
       expected: `100.000000000000000000`,
@@ -153,43 +159,33 @@ describe("format", () => {
     // We should tokenize all these as reusable options based on the
     // design language we choose instead of use them inline
     //   eg `format(amount, formatters.GENERAL_DYNAMIC)`
-    ...(() => {
-      const dynamicMantissa = {
-        1: 6, // < 1 show 6 decimals
-        1000: 4, // < 1000 show 4 decimals
-        100000: 2, // < 100000 show 2 decimals
-        infinity: 0, // otherwise show 0 decimals
-      };
-      return [
-        {
-          input: format(Amount("0.12345678"), {
-            mantissa: dynamicMantissa,
-          }),
-          expected: "0.123457",
-        },
-        {
-          input: format(Amount("100.12345678"), {
-            mantissa: dynamicMantissa,
-          }),
-          expected: "100.1235",
-        },
-        {
-          input: format(Amount("5000.12345678"), {
-            mantissa: dynamicMantissa,
-          }),
-          expected: "5000.12",
-        },
-        {
-          input: format(Amount("500000.12345678"), {
-            mantissa: dynamicMantissa,
-          }),
-          expected: "500000",
-        },
-      ];
-    })(),
+    {
+      input: format(Amount("0.12345678"), {
+        mantissa: dynamicMantissaConfig,
+      }),
+      expected: "0.123457",
+    },
+    {
+      input: format(Amount("100.12345678"), {
+        mantissa: dynamicMantissaConfig,
+      }),
+      expected: "100.1235",
+    },
+    {
+      input: format(Amount("5000.12345678"), {
+        mantissa: dynamicMantissaConfig,
+      }),
+      expected: "5000.12",
+    },
+    {
+      input: format(Amount("500000.12345678"), {
+        mantissa: dynamicMantissaConfig,
+      }),
+      expected: "500000",
+    },
   ];
 
-  tests.forEach(({ only, skip, input, expected }) => {
+  testCases.forEach(({ only, skip, input, expected }) => {
     const tester = only ? test.only : skip ? test.skip : test;
     tester(expected, () => expect(input).toBe(expected));
   });
@@ -204,11 +200,11 @@ describe("format", () => {
     // because we are not using JSX there is a chance that we accidentally send undefined or null to format
 
     expect(() => {
-      format(undefined as any, mockAsset(18));
+      format(undefined as any, createMockAsset(18));
     }).not.toThrow();
 
     expect(() => {
-      format(null as any, mockAsset(18));
+      format(null as any, createMockAsset(18));
     }).not.toThrow();
 
     expect(() => {

@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
+    "test": "turbo run test",
     "dev": "turbo run dev --scope=@sifchain/dex",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

@@ -2,7 +2,7 @@ import { Asset, IAssetAmount } from "../../src";
 import localnetEthereumAssets from "../../src/config/networks/ethereum/assets.ethereum.localnet.json";
 import localnelSifchainAssets from "../../src/config/networks/sifchain/assets.sifchain.localnet.json";
 
-import { parseAssets } from "../../src/utils/parseConfig";
+import { AssetConfig, parseAssets } from "../../src/utils/parseConfig";
 
 const assets = [
   ...localnetEthereumAssets.assets,
@@ -10,9 +10,8 @@ const assets = [
 ];
 
 export function getTestingToken(tokenSymbol: string) {
-  const supportedTokens = parseAssets(assets as any[]).map((asset) => {
-    Asset.set(asset.symbol, asset);
-    return asset;
+  const supportedTokens = parseAssets(assets as AssetConfig[]).map((asset) => {
+    return Asset(asset);
   });
 
   const asset = supportedTokens.find(

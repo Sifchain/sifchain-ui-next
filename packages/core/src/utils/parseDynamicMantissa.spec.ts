@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { Amount } from "../entities";
 import { getMantissaFromDynamicMantissa } from "./format";
@@ -10,16 +10,22 @@ const mantissaRange = {
   infinity: 0,
 };
 
-test("", () => {
-  expect(getMantissaFromDynamicMantissa(Amount("500000"), mantissaRange)).toBe(
-    0,
-  );
+type TestCase = [amount: string, expected: number];
 
-  expect(getMantissaFromDynamicMantissa(Amount("10000"), mantissaRange)).toBe(
-    0,
-  );
-  expect(getMantissaFromDynamicMantissa(Amount("9999"), mantissaRange)).toBe(2);
-  expect(getMantissaFromDynamicMantissa(Amount("1000"), mantissaRange)).toBe(2);
-  expect(getMantissaFromDynamicMantissa(Amount("999"), mantissaRange)).toBe(4);
-  expect(getMantissaFromDynamicMantissa(Amount("0.5"), mantissaRange)).toBe(6);
+const TEST_CASES: TestCase[] = [
+  ["500000", 0],
+  ["10000", 0],
+  ["9999", 2],
+  ["999", 4],
+  ["0.5", 6],
+];
+
+describe("parseDynamicMantissa", () => {
+  TEST_CASES.forEach(([amount, expected]) => {
+    test("getMantissaFromDynamicMantissa", () => {
+      expect(
+        getMantissaFromDynamicMantissa(Amount(amount), mantissaRange),
+      ).toBe(expected);
+    });
+  });
 });

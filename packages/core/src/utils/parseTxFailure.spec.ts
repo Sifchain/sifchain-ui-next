@@ -1,50 +1,68 @@
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
+import { TransactionStatus } from "../entities/Transaction";
 
 import { parseTxFailure } from "./parseTxFailure";
 
-// possibly slightly redundant test for coverage
-test("parseTxFailure", () => {
-  expect(
-    parseTxFailure({
+type TestCase = [
+  txFailure: {
+    transactionHash: string;
+    rawLog?: string;
+  },
+  expected: TransactionStatus,
+];
+
+const TEST_CASES: TestCase[] = [
+  [
+    {
       transactionHash: "123",
       rawLog: "",
-    }),
-  ).toMatchObject({
-    hash: "123",
-    memo: "There was an unknown failure",
-    state: "failed",
-  });
-
-  expect(
-    parseTxFailure({
+    },
+    {
+      hash: "123",
+      memo: "There was an unknown failure",
+      state: "failed",
+    },
+  ],
+  [
+    {
       transactionHash: "123",
       rawLog: "something was below expected",
-    }),
-  ).toMatchObject({
-    hash: "123",
-    memo: "Your transaction has failed - Received amount is below expected",
-    state: "failed",
-  });
-
-  expect(
-    parseTxFailure({
+    },
+    {
+      hash: "123",
+      memo: "Your transaction has failed - Received amount is below expected",
+      state: "failed",
+    },
+  ],
+  [
+    {
       transactionHash: "123",
       rawLog: "yegads swap_failed!",
-    }),
-  ).toMatchObject({
-    hash: "123",
-    memo: "Your transaction has failed",
-    state: "failed",
-  });
-
-  expect(
-    parseTxFailure({
+    },
+    {
+      hash: "123",
+      memo: "Your transaction has failed",
+      state: "failed",
+    },
+  ],
+  [
+    {
       transactionHash: "123",
       rawLog: "your Request rejected!",
-    }),
-  ).toMatchObject({
-    hash: "123",
-    memo: "You have rejected the transaction",
-    state: "rejected",
+    },
+
+    {
+      hash: "123",
+      memo: "You have rejected the transaction",
+      state: "rejected",
+    },
+  ],
+];
+
+describe("parseTxFailure", () => {
+  TEST_CASES.forEach(([txFailure, expected]) => {
+    test("parseTxFailure", () => {
+      expect(parseTxFailure(txFailure)).toMatchObject(expected);
+    });
   });
 });
