@@ -103,8 +103,14 @@ const PoolItem: FC<{
       value: `${(stats?.poolApr ?? 0).toFixed(2)}%`,
     },
     {
-      label: "Arb opportunitt",
-      value: `${(stats?.arb ?? 0).toFixed(2)}%`,
+      label: "Arb opportunity",
+      value: (
+        <span
+          className={Number(stats?.arb) > 0 ? "text-green-500" : "text-red-500"}
+        >
+          {(stats?.arb ?? 0).toFixed(2)}%
+        </span>
+      ),
     },
   ];
   return (
@@ -117,7 +123,7 @@ const PoolItem: FC<{
           <div className="h-6 w-6 text-2xl rounded-full bg-white grid place-items-center overflow-hidden ring ring-black">
             <img className="h-[1em] w-[1em]" src={asset.imageUrl} />
           </div>
-          {asset.symbol.toUpperCase()}
+          {asset.displaySymbol.toUpperCase()}
         </div>
         <ul className="grid gap-1">
           {statSummary.map((stat) => (
