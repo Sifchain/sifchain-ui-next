@@ -4,6 +4,7 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
 import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { NextPage } from "next";
 import Link from "next/link";
+import { ascend, descend, sortWith } from "ramda";
 import { FC } from "react";
 import { useQuery } from "react-query";
 
@@ -14,7 +15,7 @@ import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
 const Pools: NextPage = () => {
-  const { data: enhancedPools, isLoading, isSuccess } = useEnhancedPools();
+  const { data: enhancedPools, isLoading, isSuccess } = useEnhancedPoolsQuery();
 
   return (
     <MainLayout title="Pools">
@@ -37,7 +38,7 @@ const Pools: NextPage = () => {
   );
 };
 
-function useEnhancedPools() {
+function useEnhancedPoolsQuery() {
   const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
   const statsQuery = usePoolStatsQuery();
   const registryQuery = useTokenRegistryQuery();
@@ -45,7 +46,11 @@ function useEnhancedPools() {
   const derivedQuery = useQuery(
     "enhanced-pools",
     () => {
-      return poolsRes?.pools
+      if (!poolsRes || !statsQuery.data || !registryQuery.data) {
+        return;
+      }
+
+      const filtered = poolsRes.pools
         .map((pool) => {
           const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
           const asset = externalAssetSymbol
@@ -60,11 +65,19 @@ function useEnhancedPools() {
 
           return {
             ...pool,
-            stats: stats,
+            stats: stats as GetTokenStatsResponsePools,
             asset: asset as IAsset,
           };
         })
-        .filter((pool) => Boolean(pool.asset));
+        .filter((pool) => Boolean(pool.asset) && Boolean(pool.stats));
+
+      return sortWith(
+        [
+          descend((x) => x.stats.poolTVL ?? 0),
+          ascend((x) => x.asset.displaySymbol ?? 0),
+        ],
+        filtered,
+      );
     },
     {
       enabled:

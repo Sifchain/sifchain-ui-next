@@ -28,6 +28,7 @@ importers:
       '@sifchain/ui': workspace:*
       '@sifchain/vanir-client': workspace:*
       '@types/node': 17.0.29
+      '@types/ramda': ^0.28.13
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.0
       '@walletconnect/client': 2.0.0-beta.26
@@ -46,6 +47,7 @@ importers:
       prettier: ^2.6.2
       prettier-plugin-tailwindcss: ^0.1.10
       rambda: ^7.1.4
+      ramda: ^0.28.0
       react: 18.1.0
       react-cookie: ^4.1.1
       react-dom: 18.1.0
@@ -73,6 +75,7 @@ importers:
       ky: 0.30.0
       next: 12.1.6_ef5jwxihqo6n7gxfmzogljlgcm
       rambda: 7.1.4
+      ramda: 0.28.0
       react: 18.1.0
       react-cookie: 4.1.1_react@18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -81,6 +84,7 @@ importers:
       react-query: 3.39.0_ef5jwxihqo6n7gxfmzogljlgcm
     devDependencies:
       '@types/node': 17.0.29
+      '@types/ramda': 0.28.13
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.0
       autoprefixer: 10.4.7_postcss@8.4.14
@@ -5536,6 +5540,12 @@ packages:
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
+    dev: true
+
+  /@types/ramda/0.28.13:
+    resolution: {integrity: sha512-ugnamgmaRzB6yontWxKh9kVstbO5gbdNGcbmcZI0U4d9S0fmN/VYCbxVm4crMAkRvMyfO4u+VIjH/G2Fyk04aA==}
+    dependencies:
+      ts-toolbelt: 6.15.5
     dev: true
 
   /@types/react-dom/18.0.0:
@@ -15370,7 +15380,6 @@ packages:
 
   /ramda/0.28.0:
     resolution: {integrity: sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==}
-    dev: true
 
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -17570,6 +17579,10 @@ packages:
       protobufjs: 6.11.2
       ts-poet: 4.11.0
       ts-proto-descriptors: 1.6.0
+    dev: true
+
+  /ts-toolbelt/6.15.5:
+    resolution: {integrity: sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==}
     dev: true
 
   /tsconfig-paths/3.14.1:
