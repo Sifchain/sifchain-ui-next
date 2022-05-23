@@ -70,9 +70,12 @@ const PoolItem: FC<{
         role="button"
       >
         <div className="flex gap-2 items-center">
-          <div className="h-6 w-6 text-2xl rounded-full bg-white grid place-items-center overflow-hidden ring ring-black">
-            <img className="h-[1em] w-[1em]" src={asset.imageUrl} />
-          </div>
+          <div
+            className="h-6 w-6 text-2xl rounded-full bg-white grid place-items-center bg-cover bg-center overflow-hidden ring ring-black"
+            style={{
+              backgroundImage: `url(${asset?.imageUrl})`,
+            }}
+          />
           {asset.displaySymbol.toUpperCase()}
         </div>
         <ul className="grid gap-1">
