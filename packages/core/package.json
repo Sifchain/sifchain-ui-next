@@ -1,6 +1,7 @@
 {
   "name": "@sifchain/core",
   "version": "0.0.1",
+  "private": true,
   "description": "core modules for sifchain",
   "files": [
     "dist/"
