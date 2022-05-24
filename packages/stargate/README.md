@@ -119,7 +119,7 @@ await sifClient.exportIBCTokens(
   DEFAULT_FEE,
 );
 
-await sifClient.exportTokensToEth(
+await sifClient.sendTokensToEth(
   "from_sif_address",
   "to_eth_address",
   {

@@ -216,7 +216,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
-  async exportTokensToEth(
+  async sendTokensToEth(
     senderAddress: string,
     recipientAddress: string,
     transferAmount: Coin,
