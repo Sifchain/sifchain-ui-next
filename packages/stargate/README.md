@@ -10,15 +10,9 @@ yarn add @sifchain/stargate@snapshot
 
 ## Example usage
 
-```ts
-import {
-  createQueryClient,
-  DEFAULT_FEE,
-  SifSigningStargateClient,
-} from "@sifchain/stargate";
-import { Decimal } from "@cosmjs/math";
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+### Query the blockchain
 
+```ts
 const queryClients = await createQueryClient(
   "https://rpc-testnet.sifchain.finance",
 );
@@ -26,7 +20,11 @@ const queryClients = await createQueryClient(
 const response = await queryClients.clp.getPools({});
 
 response.pools.forEach((pool) => console.log(pool));
+```
 
+### Sign and broadcast transactions
+
+```ts
 const tokenEntries = await queryClients.tokenRegistry
   .entries({})
   .then((x) => x.registry?.entries);
@@ -77,6 +75,60 @@ signingClient.signAndBroadcast(
       },
     },
   ],
+  DEFAULT_FEE,
+);
+```
+
+### Import & export tokens
+
+```ts
+const sifClient = await SifSigningStargateClient.connectWithSigner(
+  "https://rpc-testnet.sifchain.finance",
+  wallet,
+);
+
+const junoClient = await SifningStargateClient.connectWithSigner(
+  "juno_rpc",
+  wallet,
+);
+
+await sifClient.importIBCTokens(
+  junoClient,
+  "from_juno_address",
+  "to_sif_address",
+  {
+    denom: "ujuno",
+    amount: Decimal.fromUserInput("1.0", 6).toString(),
+  },
+  "transfer",
+  undefined,
+  undefined,
+  DEFAULT_FEE,
+);
+
+await sifClient.exportIBCTokens(
+  "from_sif_address",
+  "to_juno_address",
+  {
+    denom: "ibc/some_hash_from_token_registry",
+    amount: Decimal.fromUserInput("1.0", 6).toString(),
+  },
+  "transfer",
+  undefined,
+  undefined,
+  DEFAULT_FEE,
+);
+
+await sifClient.exportTokensToEth(
+  "from_sif_address",
+  "to_eth_address",
+  {
+    denom: "rowan",
+    amount: Decimal.fromUserInput("1.0", 18).toString(),
+  },
+  // ropsten chain id
+  0x3,
+  undefined,
   DEFAULT_FEE,
 );
 ```
