@@ -87,7 +87,7 @@ const sifClient = await SifSigningStargateClient.connectWithSigner(
   wallet,
 );
 
-const junoClient = await SifningStargateClient.connectWithSigner(
+const junoClient = await SigningStargateClient.connectWithSigner(
   "juno_rpc",
   wallet,
 );
