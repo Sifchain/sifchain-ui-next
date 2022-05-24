@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { indexBy, prop } from "rambda";
 
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
-import useAssets from "~/domains/assets/hooks/useAssets";
+import useAssetsQuery from "~/domains/assets/hooks/useAssets";
 
 export default function useTokenRegistryQuery() {
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
@@ -10,21 +10,15 @@ export default function useTokenRegistryQuery() {
     staleTime: 60000 * 5, // 5 minutes
   });
 
-  const assets = useAssets("mainnet");
+  const { indexedBySymbol, ...assetsQeuery } = useAssetsQuery("sifchain");
 
   const entries = useMemo(() => {
-    if (!data?.registry?.entries) {
+    if (!data?.registry?.entries || !indexedBySymbol) {
       return [];
     }
 
-    const indexedBySymbol = indexBy(prop("symbol"), assets);
-    const indexedByIBCDenom = indexBy(prop("ibcDenom"), assets);
-
     const filteredEntries = data?.registry?.entries
-      .map(
-        (entry) =>
-          indexedBySymbol[entry.denom] ?? indexedByIBCDenom[entry.baseDenom],
-      )
+      .map((entry) => indexedBySymbol[entry.denom])
       .filter(Boolean);
 
     return filteredEntries;
@@ -35,16 +29,20 @@ export default function useTokenRegistryQuery() {
       return {
         indexedBySymbol: {},
         indexedByDisplaySymbol: {},
-        indexedIBCDenom: {},
       };
     }
 
     return {
       indexedBySymbol: indexBy(prop("symbol"), entries),
       indexedByDisplaySymbol: indexBy(prop("displaySymbol"), entries),
-      indexedIBCDenom: indexBy(prop("ibcDenom"), entries),
     };
   }, [entries, query.isSuccess]);
 
-  return { data: entries, ...query, ...indices };
+  return {
+    data: entries,
+    ...query,
+    ...indices,
+    isSuccess: query.isSuccess || assetsQeuery.isSuccess,
+    isLoading: query.isLoading || assetsQeuery.isLoading,
+  };
 }

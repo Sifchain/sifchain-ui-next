@@ -7,6 +7,7 @@ export type DexEnvironment = {
   kind: NetworkEnv;
   sifnodeUrl: string;
   vanirUrl: string;
+  registryUrl: string;
 };
 
 export function useDexEnvironment() {
