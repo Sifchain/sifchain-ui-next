@@ -19,7 +19,8 @@
     "@cosmjs/tendermint-rpc": "^0.28.4",
     "@sifchain/proto-types": "workspace:*",
     "cosmjs-types": "^0.5.0",
-    "inflection": "^1.13.2"
+    "inflection": "^1.13.2",
+    "long": "^5.2.0"
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "^1.0.1",

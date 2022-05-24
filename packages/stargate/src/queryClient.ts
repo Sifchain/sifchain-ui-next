@@ -6,7 +6,7 @@ import {
   setupStakingExtension,
   setupTxExtension,
 } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { HttpEndpoint, Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { QueryClientImpl as ClpQueryClient } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import { QueryClientImpl as DispensationQueryClient } from "@sifchain/proto-types/sifnode/dispensation/v1/query";
 import { QueryClientImpl as EthBridgeQueryClient } from "@sifchain/proto-types/sifnode/ethbridge/v1/query";
@@ -43,9 +43,9 @@ const setupBareExtension =
     };
   };
 
-export const createQueryClient = async (url: string) =>
+const createQueryClientFromTmClient = (tmClient: Tendermint34Client) =>
   QueryClient.withExtensions(
-    await Tendermint34Client.connect(url),
+    tmClient,
     setupAuthExtension,
     setupBankExtension,
     setupStakingExtension,
@@ -55,3 +55,20 @@ export const createQueryClient = async (url: string) =>
     setupBareExtension("ethBridge", EthBridgeQueryClient),
     setupBareExtension("tokenRegistry", TokenRegistryQueryClient),
   );
+
+const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>
+  createQueryClientFromTmClient(await Tendermint34Client.connect(endpoint));
+
+export type SifQueryClient = ReturnType<typeof createQueryClientFromTmClient>;
+
+export function createQueryClient(
+  endpoint: string | HttpEndpoint,
+): Promise<SifQueryClient>;
+export function createQueryClient(tmClient: Tendermint34Client): SifQueryClient;
+export function createQueryClient(
+  endpointOrTmClient: string | HttpEndpoint | Tendermint34Client,
+): any {
+  return endpointOrTmClient instanceof Tendermint34Client
+    ? createQueryClientFromTmClient(endpointOrTmClient)
+    : createQueryClientFromEndpoint(endpointOrTmClient);
+}
