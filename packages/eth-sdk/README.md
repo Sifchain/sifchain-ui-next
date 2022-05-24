@@ -18,16 +18,16 @@ const defaultSigner = ethers.Wallet.createRandom().connect(testnetProvider);
 const sdk = getTestnetSdk(defaultSigner);
 
 const lockTransaction = await sdk.peggy.bridgeBank.lock(
-  "some_address",
-  "token_symbol",
+  "cosmos_recipient_address",
+  "erc20_token_address",
   1_000_000,
 );
 
 await lockTransaction.wait();
 
 const burnTransaction = await sdk.peggy.bridgeBank.burn(
-  "some_address",
-  "token_symbol",
+  "cosmos_recipient_address",
+  "erc20_token_address",
   1_000_000,
 );
 
