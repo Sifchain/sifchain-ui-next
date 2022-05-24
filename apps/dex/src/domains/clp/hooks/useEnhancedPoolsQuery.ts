@@ -23,8 +23,7 @@ export default function useEnhancedPoolsQuery() {
         .map((pool) => {
           const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
           const asset = externalAssetSymbol
-            ? registryQuery.indexedBySymbol[externalAssetSymbol] ??
-              registryQuery.indexedIBCDenom[externalAssetSymbol]
+            ? registryQuery.indexedBySymbol[externalAssetSymbol]
             : undefined;
 
           const stats = asset
@@ -57,10 +56,7 @@ export default function useEnhancedPoolsQuery() {
   return {
     ...derivedQuery,
     isLoading:
-      poolsQuery.isLoading ||
-      statsQuery.isLoading ||
-      registryQuery.isLoading ||
-      registryQuery.isLoading,
+      poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading,
     isSuccess:
       poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
   };
