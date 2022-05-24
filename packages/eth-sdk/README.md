@@ -32,4 +32,13 @@ const burnTransaction = await sdk.peggy.bridgeBank.burn(
 );
 
 await burnTransaction.wait();
+
+// convenience method for sending tokens to Cosmos
+const burnOrLockTransaction = await sdk.peggy.sendTokensToCosmos(
+  "cosmos_recipient_address",
+  "erc20_token_address",
+  ethers.utils.parseEther("1.0"),
+);
+
+await burnOrLockTransaction.wait();
 ```
