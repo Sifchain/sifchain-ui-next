@@ -1,4 +1,5 @@
 import {
+  Coin,
   GeneratedType,
   isTsProtoGeneratedType,
   OfflineSigner,
@@ -26,6 +27,8 @@ import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/t
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
+import Long from "long";
 import { DEFAULT_GAS_PRICE } from "./fees";
 import {
   convertToCamelCaseDeep,
@@ -33,6 +36,7 @@ import {
   createAminoTypeNameFromProtoTypeUrl,
 } from "./legacyUtils";
 import type { CosmosEncodeObject, SifEncodeObject } from "./messages";
+import { createQueryClient, SifQueryClient } from "./queryClient";
 
 const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx];
 
@@ -97,6 +101,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(undefined, signer, options);
   }
 
+  private readonly sifQueryClient: SifQueryClient | undefined;
+
   protected constructor(
     tmClient: Tendermint34Client | undefined,
     signer: OfflineSigner,
@@ -109,6 +115,9 @@ export class SifSigningStargateClient extends SigningStargateClient {
       gasPrice: DEFAULT_GAS_PRICE,
       ...options,
     });
+
+    this.sifQueryClient =
+      tmClient !== undefined ? createQueryClient(tmClient) : undefined;
   }
 
   override simulate(
@@ -136,5 +145,131 @@ export class SifSigningStargateClient extends SigningStargateClient {
     memo?: string,
   ) {
     return super.signAndBroadcast(signerAddress, messages, fee, memo);
+  }
+
+  protected override getQueryClient() {
+    return this.sifQueryClient;
+  }
+
+  protected override forceGetQueryClient() {
+    if (this.sifQueryClient === undefined) {
+      throw new Error(
+        "Query client not available. You cannot use online functionality in offline mode.",
+      );
+    }
+
+    return this.sifQueryClient;
+  }
+
+  async exportIBCTokens(
+    senderAddress: string,
+    recipientAddress: string,
+    transferAmount: Coin,
+    sourcePort: string | undefined = "transfer",
+    timeoutHeight: Height | undefined,
+    timeoutTimestamp: number | undefined,
+    fee: StdFee | "auto" | number,
+    memo?: string,
+  ) {
+    const registry = await this.forceGetTokenRegistryEntry(
+      transferAmount.denom,
+    );
+
+    return this.sendIbcTokens(
+      senderAddress,
+      recipientAddress,
+      transferAmount,
+      sourcePort,
+      registry.ibcChannelId,
+      timeoutHeight,
+      timeoutTimestamp,
+      fee,
+      memo,
+    );
+  }
+
+  async importIBCTokens(
+    counterPartySigningStargateClient: SigningStargateClient,
+    senderAddress: string,
+    recipientAddress: string,
+    transferAmount: Coin,
+    sourcePort: string | undefined = "transfer",
+    timeoutHeight: Height | undefined,
+    timeoutTimestamp: number | undefined,
+    fee: StdFee | "auto" | number,
+    memo?: string,
+  ) {
+    const registry = await this.forceGetTokenRegistryEntry(
+      transferAmount.denom,
+    );
+
+    return counterPartySigningStargateClient.sendIbcTokens(
+      senderAddress,
+      recipientAddress,
+      transferAmount,
+      sourcePort,
+      registry.ibcCounterpartyChannelId,
+      timeoutHeight,
+      timeoutTimestamp,
+      fee,
+      memo,
+    );
+  }
+
+  async exportTokensToEth(
+    senderAddress: string,
+    recipientAddress: string,
+    transferAmount: Coin,
+    // default values from old sdk
+    // 0x1 is mainnet 0x3 is ropsten
+    ethChainId: number | string = 0x1,
+    ethFee: string = "35370000000000000",
+    fee: StdFee | "auto" | number,
+    memo?: string,
+  ) {
+    return this.signAndBroadcast(
+      senderAddress,
+      [
+        {
+          typeUrl: this.isBridgedEthToken(transferAmount)
+            ? "/sifnode.ethbridge.v1.MsgBurn"
+            : "/sifnode.ethbridge.v1.MsgLock",
+          value: {
+            cosmosSender: senderAddress,
+            amount: transferAmount.amount,
+            symbol: transferAmount.denom,
+            ethereumChainId: Long.fromValue(ethChainId),
+            ethereumReceiver: recipientAddress,
+            cethAmount: ethFee,
+          },
+        },
+      ],
+      fee,
+      memo,
+    );
+  }
+
+  private async forceGetTokenRegistryEntry(denom: string) {
+    const tokenRegistryEntries =
+      await this.forceGetQueryClient().tokenRegistry.entries({});
+
+    const registry = tokenRegistryEntries.registry?.entries.find(
+      (x) => x.denom === denom,
+    );
+
+    if (registry === undefined) {
+      throw new Error("Coin not in token registry");
+    }
+
+    return registry;
+  }
+
+  // TODO: only keep sifBridge check once we migrated to Peggy2
+  private isBridgedEthToken(coin: Coin) {
+    return (
+      coin.denom !== "rowan" &&
+      !coin.denom.startsWith("ibc/") &&
+      (coin.denom.startsWith("c") || coin.denom.startsWith("sifBridge"))
+    );
   }
 }
