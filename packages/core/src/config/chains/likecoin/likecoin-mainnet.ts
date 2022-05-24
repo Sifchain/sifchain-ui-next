@@ -1,7 +1,7 @@
-import { IBCChainConfig, Network } from "../../../";
+import { IBCChainConfig } from "../../../";
 
 export const LIKECOIN_MAINNET: IBCChainConfig = {
-  network: Network.LIKECOIN,
+  network: "likecoin",
   chainType: "ibc",
   displayName: "LikeCoin",
   blockExplorerUrl: "https://likecoin.bigdipper.live/",

@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const STARGAZE_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.STARGAZE,
+  network: "stargaze",
   displayName: "Stargaze",
   blockExplorerUrl: "https://www.mintscan.io/stargaze",
   nativeAssetSymbol: "ustarx",

@@ -14,11 +14,6 @@ export type PublicSifnodeClient = Pick<
 
 type PublicModuleKey = keyof PublicSifnodeClient;
 
-type L1 = PublicModuleKey;
-type L2 = SafeKeyof<SifnodeClient[L1]>;
-
-export type QueryKey = `${L1}.${L2}`;
-
 /**
  * Generic hook to access Sifnode's queries, with type inference
  *
@@ -27,14 +22,14 @@ export type QueryKey = `${L1}.${L2}`;
  * @returns
  */
 export default function useSifnodeQuery<
-  T extends L1,
+  T extends PublicModuleKey,
   P extends keyof PublicSifnodeClient[T],
   M = PublicSifnodeClient[T][P],
   F = M extends () => any ? ReturnType<M> : never,
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  query: QueryKey | `${T}.${P}`,
+  query: `${T}.${P}`,
   args: ArgumentTypes<PublicSifnodeClient[T][P]>,
   options: Omit<
     UseQueryOptions<Res, unknown, Res>,

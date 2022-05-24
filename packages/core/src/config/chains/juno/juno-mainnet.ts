@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const JUNO_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.JUNO,
+  network: "juno",
   displayName: "Juno",
   blockExplorerUrl: "http://junoscan.com",
   nativeAssetSymbol: "ujuno",

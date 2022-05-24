@@ -1,8 +1,9 @@
-import { getTestingTokens } from "../test/utils/getTestingToken";
+import { describe, expect, test } from "vitest";
+
+import { getTestingTokens } from "../../test/utils/getTestingToken";
 import { Asset } from "./Asset";
 import { AssetAmount } from "./AssetAmount";
-import { Network } from "./Network";
-import { Pool, CompositePool } from "./Pool";
+import { CompositePool, Pool } from "./Pool";
 
 describe("Pool", () => {
   const [ATK, BTK, ETH, ROWAN] = getTestingTokens([
@@ -299,8 +300,8 @@ describe("Pool", () => {
           name: "AppleToken",
           displaySymbol: "ATK",
           address: "123",
-          network: Network.ETHEREUM,
-          homeNetwork: Network.ETHEREUM,
+          network: "ethereum",
+          homeNetwork: "ethereum",
         }),
         btk: Asset({
           decimals: 18,
@@ -309,8 +310,8 @@ describe("Pool", () => {
           label: "BTK",
           name: "BananaToken",
           address: "1234",
-          network: Network.ETHEREUM,
-          homeNetwork: Network.ETHEREUM,
+          network: "ethereum",
+          homeNetwork: "ethereum",
         }),
         rowan: Asset({
           decimals: 18,
@@ -319,8 +320,8 @@ describe("Pool", () => {
           label: "ROWAN",
           name: "Rowan",
           address: "1234",
-          network: Network.ETHEREUM,
-          homeNetwork: Network.ETHEREUM,
+          network: "ethereum",
+          homeNetwork: "ethereum",
         }),
         eth: Asset({
           decimals: 18,
@@ -329,8 +330,8 @@ describe("Pool", () => {
           label: "ETH",
           name: "Ethereum",
           address: "1234",
-          network: Network.ETHEREUM,
-          homeNetwork: Network.ETHEREUM,
+          network: "ethereum",
+          homeNetwork: "ethereum",
         }),
       };
       const pair1 = new Pool(

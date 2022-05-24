@@ -1,8 +1,9 @@
 import JSBI from "jsbi";
+import { beforeEach, describe, expect, test } from "vitest";
 import { Amount, isAmount } from "./Amount";
 import { Asset } from "./Asset";
 import { AssetAmount } from "./AssetAmount";
-import { Network } from "./Network";
+
 beforeEach(() => {
   // TODO: Add this to the test utils
   Asset({
@@ -11,10 +12,10 @@ beforeEach(() => {
     label: "ETH",
     name: "Ethereum",
     displaySymbol: "ETH",
-    network: Network.ETHEREUM,
+    network: "ethereum",
     symbol: "eth",
     imageUrl: "http://fooo",
-    homeNetwork: Network.ETHEREUM,
+    homeNetwork: "ethereum",
   });
 });
 describe("Amount", () => {

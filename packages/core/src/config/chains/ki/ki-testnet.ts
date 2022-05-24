@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const KI_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.KI,
+  network: "ki",
   displayName: "Ki",
   blockExplorerUrl: "https://www.mintscan.io/ki",
   nativeAssetSymbol: "uxki",

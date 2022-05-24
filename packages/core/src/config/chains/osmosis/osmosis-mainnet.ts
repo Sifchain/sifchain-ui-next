@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const OSMOSIS_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.OSMOSIS,
+  network: "cosmoshub",
   displayName: "Osmosis",
   blockExplorerUrl: "https://www.mintscan.io/osmosis",
   nativeAssetSymbol: "uosmo",

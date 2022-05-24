@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
+    "@sifchain/core": "workspace:*",
     "@sifchain/proto-types": "workspace:*",
     "@sifchain/stargate": "workspace:*",
     "@sifchain/ui": "workspace:*",
@@ -24,6 +25,7 @@
     "ky": "^0.30.0",
     "next": "12.1.6",
     "rambda": "^7.1.4",
+    "ramda": "^0.28.0",
     "react": "18.1.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.1.0",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "17.0.29",
+    "@types/ramda": "^0.28.13",
     "@types/react": "18.0.8",
     "@types/react-dom": "18.0.0",
     "autoprefixer": "^10.4.7",

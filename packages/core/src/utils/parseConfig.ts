@@ -1,5 +1,9 @@
-import { Network, NetworkChainConfigLookup, IAsset, Asset } from "../entities";
-import { getMetamaskProvider } from "../clients/wallets/ethereum/getMetamaskProvider";
+import {
+  NetworkChainConfigLookup,
+  IAsset,
+  Asset,
+  NetworkKind,
+} from "../entities";
 
 type BaseAssetConfig = {
   name: string;
@@ -8,8 +12,8 @@ type BaseAssetConfig = {
   decimals: number;
   label?: string;
   imageUrl?: string;
-  network: Network;
-  homeNetwork: Network;
+  network: NetworkKind;
+  homeNetwork: NetworkKind;
 };
 
 type TokenConfig = BaseAssetConfig & {
@@ -20,11 +24,16 @@ type CoinConfig = BaseAssetConfig & {};
 
 export type AssetConfig = CoinConfig | TokenConfig;
 
+// TODO: not implemented yet
+function getMetamaskProvider() {
+  throw new Error("Not implemented");
+}
+
 /**
  * Convert asset config to label with appropriate capitalization
  */
 function parseLabel(a: AssetConfig) {
-  if (a.network === Network.SIFCHAIN) {
+  if (a.network === "sifchain") {
     return a.symbol.indexOf("c") === 0
       ? "c" + a.symbol.slice(1).toUpperCase()
       : a.symbol.toUpperCase();

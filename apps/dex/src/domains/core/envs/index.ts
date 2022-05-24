@@ -1,11 +1,10 @@
+import { NetworkEnv } from "@sifchain/core";
 import { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 
-export type EnvironmentKind = "mainnet" | "testnet" | "devnet" | "localnet";
-
 export type DexEnvironment = {
-  kind: EnvironmentKind;
+  kind: NetworkEnv;
   sifnodeUrl: string;
   vanirUrl: string;
 };

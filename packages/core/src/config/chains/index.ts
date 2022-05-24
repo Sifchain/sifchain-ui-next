@@ -1,5 +1,4 @@
-import { NetworkEnv } from "../getEnv";
-import { Network } from "../../entities";
+import { NetworkEnv, NETWORK_ENVS } from "../getEnv";
 import ethereum from "./ethereum";
 import sifchain from "./sifchain";
 import cosmoshub from "./cosmoshub";
@@ -25,38 +24,44 @@ import ki from "./ki";
 import stargaze from "./stargaze";
 import evmos from "./evmos";
 import secret from "./secret";
+import { ChainConfig, NetworkKind } from "../../entities";
+
+export type ChainConfigByNetworkEnv = Record<
+  NetworkEnv,
+  Record<NetworkKind, ChainConfig>
+>;
 
 export const chainConfigByNetworkEnv = Object.fromEntries(
-  Object.values(NetworkEnv).map((env) => {
+  [...NETWORK_ENVS].map((env) => {
     return [
-      env as NetworkEnv,
-      {
-        [Network.SIFCHAIN]: sifchain[env],
-        [Network.COSMOSHUB]: cosmoshub[env],
-        [Network.IRIS]: iris[env],
-        [Network.AKASH]: akash[env],
-        [Network.SENTINEL]: sentinel[env],
-        [Network.ETHEREUM]: ethereum[env],
-        [Network.CRYPTO_ORG]: cryptoOrg[env],
-        [Network.OSMOSIS]: osmosis[env],
-        [Network.PERSISTENCE]: persistence[env],
-        [Network.REGEN]: regen[env],
-        [Network.TERRA]: terra[env],
-        [Network.JUNO]: juno[env],
-        [Network.IXO]: ixo[env],
-        [Network.BAND]: band[env],
-        [Network.BITSONG]: bitsong[env],
-        [Network.LIKECOIN]: likecoin[env],
-        [Network.EMONEY]: emoney[env],
-        [Network.EVMOS]: evmos[env],
-        [Network.STARNAME]: starname[env],
-        [Network.CERBERUS]: cerberus[env],
-        [Network.CHIHUAHUA]: chihuahua[env],
-        [Network.COMDEX]: comdex[env],
-        [Network.KI]: ki[env],
-        [Network.STARGAZE]: stargaze[env],
-        [Network.SECRET]: secret[env],
+      env,
+      <Record<NetworkKind, ChainConfig>>{
+        sifchain: sifchain[env],
+        cosmoshub: cosmoshub[env],
+        iris: iris[env],
+        akash: akash[env],
+        sentinel: sentinel[env],
+        ethereum: ethereum[env],
+        "crypto-org": cryptoOrg[env],
+        osmosis: osmosis[env],
+        persistence: persistence[env],
+        regen: regen[env],
+        terra: terra[env],
+        juno: juno[env],
+        ixo: ixo[env],
+        band: band[env],
+        bitsong: bitsong[env],
+        likecoin: likecoin[env],
+        emoney: emoney[env],
+        evmos: evmos[env],
+        starname: starname[env],
+        cerberus: cerberus[env],
+        chihuahua: chihuahua[env],
+        comdex: comdex[env],
+        ki: ki[env],
+        stargaze: stargaze[env],
+        secret: secret[env],
       },
     ];
   }),
-);
+) as ChainConfigByNetworkEnv;

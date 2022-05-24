@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const EMONEY_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.EMONEY,
+  network: "emoney",
   displayName: "e-Money",
   blockExplorerUrl: "https://emoney.bigdipper.live",
   nativeAssetSymbol: "ungm",

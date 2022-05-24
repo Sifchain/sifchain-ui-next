@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const REGEN_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.REGEN,
+  network: "regen",
   displayName: "Regen",
   blockExplorerUrl: "https://regen.aneka.io/",
   nativeAssetSymbol: "uregen",

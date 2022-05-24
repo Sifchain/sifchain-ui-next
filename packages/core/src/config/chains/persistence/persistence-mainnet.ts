@@ -1,7 +1,7 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const PERSISTENCE_MAINNET: IBCChainConfig = {
-  network: Network.PERSISTENCE,
+  network: "persistence",
   chainType: "ibc",
   displayName: "Persistence",
   blockExplorerUrl: "https://explorer.persistence.one/",

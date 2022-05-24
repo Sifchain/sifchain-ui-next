@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import useVanirQuery from "~/hooks/useVanirQuery";
 
-export default function usePoolsQuery() {
+export default function usePoolStatsQuery() {
   const { data, ...query } = useVanirQuery("assets.getTokenStats", []);
 
   const indexedBySymbol = useMemo(() => {
@@ -11,7 +11,7 @@ export default function usePoolsQuery() {
       return {};
     }
 
-    return indexBy((x) => x.symbol, data.pools);
+    return indexBy((x) => x.symbol?.toLowerCase(), data.pools);
   }, [data?.pools]);
 
   return {

@@ -1,11 +1,11 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const BAND_TESTNET: IBCChainConfig = {
   chainType: "ibc",
   displayName: "Band Protocol",
   blockExplorerUrl: "https://cosmoscan.io/",
   nativeAssetSymbol: "uband",
-  network: Network.BAND,
+  network: "band",
   chainId: "band-laozi-testnet4",
   rpcUrl: "https://proxies.sifchain.finance/api/band-laozi-testnet4/rpc",
   restUrl: "https://proxies.sifchain.finance/api/band-laozi-testnet4/rest",

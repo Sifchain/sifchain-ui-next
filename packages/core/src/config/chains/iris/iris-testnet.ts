@@ -1,11 +1,11 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const IRIS_TESTNET: IBCChainConfig = {
   chainType: "ibc",
   displayName: "IRISNet",
   blockExplorerUrl: "https://nyancat.iobscan.io/",
   nativeAssetSymbol: "unyan",
-  network: Network.IRIS,
+  network: "iris",
   chainId: "irissif-1",
   rpcUrl: "https://proxies.sifchain.finance/api/irissif-1/rpc",
   restUrl: "https://proxies.sifchain.finance/api/irissif-1/rest",

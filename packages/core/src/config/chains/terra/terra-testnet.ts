@@ -1,7 +1,7 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const TERRA_TESTNET: IBCChainConfig = {
-  network: Network.TERRA,
+  network: "terra",
   chainType: "ibc",
   displayName: "Terra",
   blockExplorerUrl: "https://finder.terra.money/testnet/",

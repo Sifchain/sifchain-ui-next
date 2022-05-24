@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const BITSONG_TESTNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.BITSONG,
+  network: "bitsong",
   displayName: "Bitsong",
   blockExplorerUrl: "https://www.mintscan.io/bitsong",
   nativeAssetSymbol: "ubtsg",

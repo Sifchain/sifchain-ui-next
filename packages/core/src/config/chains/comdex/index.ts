@@ -1,11 +1,10 @@
-import { NetworkEnv } from "../../getEnv";
 import { NetEnvChainConfigLookup } from "../NetEnvChainConfigLookup";
 
 import { COMDEX_TESTNET } from "./comdex-testnet";
 
 export default <NetEnvChainConfigLookup>{
-  [NetworkEnv.LOCALNET]: COMDEX_TESTNET,
-  [NetworkEnv.DEVNET]: COMDEX_TESTNET,
-  [NetworkEnv.TESTNET]: COMDEX_TESTNET,
-  [NetworkEnv.MAINNET]: COMDEX_TESTNET,
+  localnet: COMDEX_TESTNET,
+  devnet: COMDEX_TESTNET,
+  testnet: COMDEX_TESTNET,
+  mainnet: COMDEX_TESTNET,
 };

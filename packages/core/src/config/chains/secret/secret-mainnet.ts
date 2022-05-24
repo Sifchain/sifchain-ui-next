@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const SECRET_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.SECRET,
+  network: "secret",
   displayName: "Secret",
   blockExplorerUrl: "https://www.mintscan.io/secret",
   nativeAssetSymbol: "uscrt",

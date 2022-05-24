@@ -1,8 +1,8 @@
-import { Network, IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "../../../entities";
 
 export const STARNAME_MAINNET: IBCChainConfig = {
   chainType: "ibc",
-  network: Network.STARNAME,
+  network: "starname",
   displayName: "Starname",
   blockExplorerUrl: "https://www.mintscan.io/starname",
   nativeAssetSymbol: "uiov",
@@ -56,4 +56,3 @@ export const STARNAME_MAINNET: IBCChainConfig = {
     features: ["stargate", "ibc-transfer"],
   },
 };
-
