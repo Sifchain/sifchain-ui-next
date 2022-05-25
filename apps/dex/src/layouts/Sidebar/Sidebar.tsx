@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
+import useRowanPriceQuery from "~/domains/clp/hooks/useRowanPrice";
+import useTVLQuery from "~/domains/clp/hooks/useTVL";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
@@ -53,16 +55,26 @@ const Aside = () => {
     </button>
   );
 
+  const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
+  const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
+    useRowanPriceQuery();
+
   const rowanStats = [
     {
       id: "tvl",
       icon: require("@sifchain/ui/assets/icons/lock-icon.svg"),
-      label: <>{formatNumberAsCurrency(999999999)} TVL</>,
+      label: <>{isLoadingTVL ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
     },
     {
       id: "price",
       icon: require("@sifchain/ui/assets/icons/rowan-icon.svg"),
-      label: <>{formatNumberAsCurrency(0.99)} / ROWAN</>,
+      label: (
+        <>
+          {" "}
+          {isLoadingRowanPrice ? "..." : formatNumberAsCurrency(rowanPrice)} /
+          ROWAN
+        </>
+      ),
     },
   ];
 
