@@ -7,7 +7,7 @@ import Link from "next/link";
 import { FC } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 
-import useEnhancedPoolsQuery from "~/domains/clp/hooks/useEnhancedPoolsQuery";
+import { useEnhancedPoolsQuery } from "~/domains/clp/hooks";
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 

@@ -3,11 +3,11 @@ import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { ascend, descend, sortWith } from "ramda";
 import { useQuery } from "react-query";
 
-import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
-import usePoolsQuery from "./usePools";
-import usePoolStatsQuery from "./usePoolStats";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { usePoolsQuery } from "./usePools";
+import { usePoolStatsQuery } from "./usePoolStats";
 
-export default function useEnhancedPoolsQuery() {
+export function useEnhancedPoolsQuery() {
   const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
   const statsQuery = usePoolStatsQuery();
   const registryQuery = useTokenRegistryQuery();

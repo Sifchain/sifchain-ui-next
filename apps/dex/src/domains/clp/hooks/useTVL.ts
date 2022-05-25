@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import usePoolStatsQuery from "./usePoolStats";
+import { usePoolStatsQuery } from "./usePoolStats";
 
-export default function useTVLQuery() {
+export function useTVLQuery() {
   const { data: poolStats, ...poolStatsQuery } = usePoolStatsQuery();
 
   const tvl = useMemo(

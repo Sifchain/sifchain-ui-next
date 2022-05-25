@@ -8,8 +8,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
-import useRowanPriceQuery from "~/domains/clp/hooks/useRowanPrice";
-import useTVLQuery from "~/domains/clp/hooks/useTVL";
+import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
