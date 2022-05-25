@@ -10,16 +10,16 @@ const INITIAL_STATE: Theme = {
   mode: "dark",
 };
 
-export function useTheme() {
+export function useTheme(defaultTheme: Mode = "dark") {
   const [theme, setTheme] = useState(INITIAL_STATE);
 
   const toggleTheme = useCallback(() => {
-    const nextMode = theme.mode === "dark" ? "light" : "dark";
-    setTheme((previous) => ({
-      ...previous,
-      mode: nextMode,
-    }));
+    const nextMode: Mode = theme.mode === "dark" ? "light" : "dark";
+
+    setTheme((previous) => ({ ...previous, mode: nextMode }));
+
     document.body.classList.toggle("dark");
+
     localStorage.setItem("theme", nextMode);
   }, [theme.mode, setTheme]);
 
@@ -32,8 +32,7 @@ export function useTheme() {
   }, [theme.mode]);
 
   useEffect(() => {
-    const nextMode =
-      localStorage.getItem("theme") === "dark" ? "dark" : "light";
+    const nextMode = (localStorage.getItem("theme") || defaultTheme) as Mode;
 
     setTheme({ mode: nextMode });
   }, []);
