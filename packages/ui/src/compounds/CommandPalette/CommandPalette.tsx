@@ -250,10 +250,10 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                     </span>
                                     {active && (
                                       <div className="flex items-center gap-2">
-                                        <button className="border p-1 px-1.5 rounded flex-none text-gray-400">
+                                        <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
                                           Balance
                                         </button>
-                                        <button className="border p-1 px-1.5 rounded flex-none text-gray-400">
+                                        <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
                                           Pool
                                         </button>
                                       </div>
