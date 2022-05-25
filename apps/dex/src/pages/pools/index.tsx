@@ -5,6 +5,7 @@ import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FC } from "react";
+import AssetIcon from "~/compounds/AssetIcon";
 
 import useEnhancedPoolsQuery from "~/domains/clp/hooks/useEnhancedPoolsQuery";
 import MainLayout from "~/layouts/MainLayout";
@@ -64,18 +65,13 @@ const PoolItem: FC<{
     },
   ];
   return (
-    <Link href={`/pools/${asset?.symbol}`}>
+    <Link href={`/pools/${asset?.displaySymbol}`}>
       <li
         className="p-4 rounded-lg bg-sifgray-900 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
         role="button"
       >
         <div className="flex gap-2 items-center">
-          <div
-            className="h-6 w-6 text-2xl rounded-full bg-white grid place-items-center bg-cover bg-center overflow-hidden ring ring-black"
-            style={{
-              backgroundImage: `url(${asset?.imageUrl})`,
-            }}
-          />
+          <AssetIcon network="sifchain" symbol={asset.symbol} size="md" />
           {asset.displaySymbol.toUpperCase()}
         </div>
         <ul className="grid gap-1">

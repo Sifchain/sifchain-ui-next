@@ -2,6 +2,7 @@ import {
   ComponentProps,
   FC,
   Fragment,
+  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -18,19 +19,23 @@ export type CommandPaletteEntry = {
   label: string;
   categoryId?: string;
   url?: string;
+  icon?: ReactNode;
 };
 
 export type CommandPaletteCategory = {
   id: string;
   label: string;
-  icon: (props: ComponentProps<"svg">) => JSX.Element;
+  icon: ReactNode | ((props: ComponentProps<"svg">) => JSX.Element);
 };
 
 export type QuickActionEntry = {
   label: string;
   shortcut: string;
   url?: string;
-  icon: (props: ComponentProps<"svg">) => JSX.Element;
+  icon:
+    | JSX.Element
+    | ReactNode
+    | ((props: ComponentProps<"svg">) => JSX.Element);
 };
 
 export type CommandPaletteProps = {
@@ -40,6 +45,7 @@ export type CommandPaletteProps = {
   categories: { id: string; label: string }[];
   entries: CommandPaletteEntry[];
   quickActions: QuickActionEntry[];
+  isOpen?: boolean;
   /**
    * used for persisting recent queries to sessionStorage
    */
@@ -112,7 +118,14 @@ const TwSearchIcon = tw(SearchIcon)`
 `;
 
 export const CommandPalette: FC<CommandPaletteProps> = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(props.isOpen ?? false);
+
+  useEffect(() => {
+    setIsOpen((prev) =>
+      // only if explicitlty
+      props.isOpen === true ? true : props.isOpen === false ? false : prev,
+    );
+  }, []);
 
   const [recents, addRecent] = useRecentEntries([], {
     key: "recent-entries",
@@ -140,7 +153,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
     <>
       <label
         className={clsx("block relative transition-opacity", props.className, {
-          "opacity-0 pointer-events-none": isOpen,
+          "opacity-50 pointer-events-none": isOpen,
         })}
         aria-hidden={!isOpen}
       >
@@ -187,7 +200,12 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden rounded-xl bg-sifgray-900 shadow-2xl transition-all">
+              <Dialog.Panel
+                className={`
+                  m-auto mt-[10vh] md:mt-[25vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 
+                  overflow-hidden rounded-xl bg-sifgray-900 shadow-2xl transition-all
+                `}
+              >
                 <Combobox onChange={props.onChange} value={props.value}>
                   <label className="relative">
                     <TwSearchIcon className="top-0" aria-hidden="true" />
@@ -216,7 +234,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                             (entry) => (
                               <Combobox.Option
                                 key={entry.id}
-                                value={entry}
+                                value={entry.id}
                                 className={({ active }) =>
                                   clsx(
                                     "flex cursor-default select-none items-center rounded-md px-3 py-2",
@@ -226,22 +244,19 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                               >
                                 {({ active }) => (
                                   <>
-                                    <FolderIcon
-                                      className={clsx(
-                                        "h-6 w-6 flex-none",
-                                        active
-                                          ? "text-white"
-                                          : "text-sifgray-300",
-                                      )}
-                                      aria-hidden="true"
-                                    />
+                                    {entry.icon}
                                     <span className="ml-3 flex-auto truncate">
                                       {entry.label}
                                     </span>
                                     {active && (
-                                      <span className="ml-3 flex-none text-gray-400">
-                                        Jump to...
-                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        <button className="border p-1 px-1.5 rounded flex-none text-gray-400">
+                                          Balance
+                                        </button>
+                                        <button className="border p-1 px-1.5 rounded flex-none text-gray-400">
+                                          Pool
+                                        </button>
+                                      </div>
                                     )}
                                   </>
                                 )}
@@ -267,15 +282,20 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                               >
                                 {({ active }) => (
                                   <>
-                                    <action.icon
-                                      className={clsx(
-                                        "h-6 w-6 flex-none",
-                                        active
-                                          ? "text-white"
-                                          : "text-sifgray-300",
-                                      )}
-                                      aria-hidden="true"
-                                    />
+                                    {typeof action.icon === "function" ? (
+                                      <action.icon
+                                        className={clsx(
+                                          "h-6 w-6 flex-none",
+                                          active
+                                            ? "text-white"
+                                            : "text-sifgray-300",
+                                        )}
+                                        aria-hidden="true"
+                                      />
+                                    ) : (
+                                      action.icon
+                                    )}
+
                                     <span className="ml-3 flex-auto truncate">
                                       {action.label}
                                     </span>

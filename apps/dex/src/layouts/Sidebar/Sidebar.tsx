@@ -1,12 +1,13 @@
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
 import { Logo, ThemeSwitcher } from "@sifchain/ui";
+import { formatNumberAsCurrency } from "@sifchain/ui/src/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { formatNumberAsCurrency } from "@sifchain/ui/src/utils";
+import GlobalSearch from "~/compounds/GlobalSearch";
 
 const ENV = process.env.APP_ENV ?? "betanet";
 
@@ -87,6 +88,9 @@ const Aside = () => {
             </a>
           </Link>
           <span className="text-white font-mono uppercase">{ENV}</span>
+        </section>
+        <section>
+          <GlobalSearch />
         </section>
         <section>
           <ConnectButton />

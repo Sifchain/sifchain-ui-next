@@ -24,7 +24,6 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
             </span>
           </nav>
         )}
-        <GlobalSearch />
       </header>
       <div className="p-6 overflow-y-scroll flex-1">{props.children}</div>
     </>
