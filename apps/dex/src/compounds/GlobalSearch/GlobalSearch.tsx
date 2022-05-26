@@ -1,8 +1,13 @@
-import React, { type FC, useCallback, useMemo, useState } from "react";
-import { CommandPalette, CommandPaletteEntry } from "@sifchain/ui";
+import {
+  CommandPalette,
+  CommandPaletteEntry,
+  useRecentEntries,
+} from "@sifchain/ui";
+import { indexBy, prop } from "rambda";
+import React, { useCallback, useMemo, useState, type FC } from "react";
 
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 type Props = {};
 
@@ -12,18 +17,20 @@ const GlobalSearch: FC<Props> = (_props) => {
 
   const { data: assets } = useTokenRegistryQuery();
 
-  const handleChange = useCallback((value: string) => {
-    setValue(value);
+  const [recentEntries, addRecentEntry] = useRecentEntries([], {
+    adapter: "localStorage",
+    key: "global-search",
+  });
 
-    // ...
-  }, []);
-
-  const entries = useMemo<CommandPaletteEntry[]>(() => {
+  const { entries, indexedById } = useMemo(() => {
     if (!assets) {
-      return [];
-    }
-    return assets.map((asset) => {
       return {
+        entries: [],
+        indexedById: {},
+      };
+    }
+    const entries = assets.map(
+      (asset): CommandPaletteEntry => ({
         id: asset.symbol,
         label: `${asset.name}  (${(
           asset.displaySymbol ?? asset.symbol
@@ -36,15 +43,33 @@ const GlobalSearch: FC<Props> = (_props) => {
             invertColor={asset.hasDarkIcon}
           />
         ),
-      };
-    });
+      }),
+    );
+
+    return {
+      entries,
+      indexedById: indexBy(prop("id"), entries),
+    };
   }, [assets]);
+
+  const handleChange = useCallback(
+    (selectedId: string) => {
+      setValue(selectedId);
+      const selected = indexedById[selectedId];
+
+      if (selected) {
+        addRecentEntry(selected);
+      }
+    },
+    [entries],
+  );
 
   return (
     <CommandPalette
       query={query}
       entries={entries}
       quickActions={[]}
+      recentEntrires={recentEntries}
       onQueryChange={setQuery}
       categories={[]}
       storageKey="@sifchain/recent-entries"

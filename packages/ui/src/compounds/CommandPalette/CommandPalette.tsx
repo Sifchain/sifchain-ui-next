@@ -1,3 +1,9 @@
+import { Combobox, Dialog, Transition } from "@headlessui/react";
+import { FolderIcon } from "@heroicons/react/outline";
+import { SearchIcon } from "@heroicons/react/solid";
+import clsx from "clsx";
+import { prop, uniq } from "rambda";
+import { uniqBy } from "ramda";
 import {
   ComponentProps,
   FC,
@@ -8,10 +14,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Combobox, Dialog, Transition } from "@headlessui/react";
-import { SearchIcon } from "@heroicons/react/solid";
-import { FolderIcon } from "@heroicons/react/outline";
-import clsx from "clsx";
 import tw from "tailwind-styled-components";
 
 export type CommandPaletteEntry = {
@@ -44,6 +46,7 @@ export type CommandPaletteProps = {
   onQueryChange(query: string): void;
   categories: { id: string; label: string }[];
   entries: CommandPaletteEntry[];
+  recentEntrires?: CommandPaletteEntry[];
   quickActions: QuickActionEntry[];
   isOpen?: boolean;
   /**
@@ -107,7 +110,9 @@ export function useRecentEntries<TAdapter extends Storage>(
   }, [state]);
 
   const handleAddEntry = useCallback((newEntry: CommandPaletteEntry) => {
-    setState((prevEntries) => [newEntry, ...prevEntries.slice(0, 9)]);
+    setState((prevEntries) =>
+      uniqBy(prop("id"), [newEntry, ...prevEntries.slice(0, 9)]),
+    );
   }, []);
 
   return [state, handleAddEntry] as const;
@@ -126,11 +131,6 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
       props.isOpen === true ? true : props.isOpen === false ? false : prev,
     );
   }, []);
-
-  const [recents, addRecent] = useRecentEntries([], {
-    key: "recent-entries",
-    adapter: "localStorage",
-  });
 
   const filteredEntries = useMemo(
     () =>
@@ -159,6 +159,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
       >
         <TwSearchIcon aria-hidden="true" />
         <input
+          readOnly
           className={clsx(
             inputClassName,
             "!border-sifgray-700 !bg-sifgray-750 !text-sifgray-50 rounded-xl opacity-90 hover:opacity-100",
@@ -230,39 +231,40 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                           </h2>
                         )}
                         <ul className="text-sm text-gray-400">
-                          {(props.query === "" ? recents : filteredEntries).map(
-                            (entry) => (
-                              <Combobox.Option
-                                key={entry.id}
-                                value={entry.id}
-                                className={({ active }) =>
-                                  clsx(
-                                    "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                    active && "bg-gray-800 text-white",
-                                  )
-                                }
-                              >
-                                {({ active }) => (
-                                  <>
-                                    {entry.icon}
-                                    <span className="ml-3 flex-auto truncate">
-                                      {entry.label}
-                                    </span>
-                                    {active && (
-                                      <div className="flex items-center gap-2">
-                                        <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
-                                          Balance
-                                        </button>
-                                        <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
-                                          Pool
-                                        </button>
-                                      </div>
-                                    )}
-                                  </>
-                                )}
-                              </Combobox.Option>
-                            ),
-                          )}
+                          {(props.query === ""
+                            ? props.recentEntrires ?? []
+                            : filteredEntries
+                          ).map((entry) => (
+                            <Combobox.Option
+                              key={entry.id}
+                              value={entry.id}
+                              className={({ active }) =>
+                                clsx(
+                                  "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                                  active && "bg-gray-800 text-white",
+                                )
+                              }
+                            >
+                              {({ active }) => (
+                                <>
+                                  {entry.icon}
+                                  <span className="ml-3 flex-auto truncate">
+                                    {entry.label}
+                                  </span>
+                                  {active && (
+                                    <div className="flex items-center gap-2">
+                                      <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
+                                        Balance
+                                      </button>
+                                      <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
+                                        Pool
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </Combobox.Option>
+                          ))}
                         </ul>
                       </li>
                       {props.query === "" && (
