@@ -98,10 +98,16 @@ export function useEnhancedPoolQuery(externalAssetSymbol: string) {
   return useMemo(
     () => ({
       data:
+        query.indexedByDisplaySymbol[sanitizedSymbol] ??
         query.indexedBySymbol[sanitizedSymbol] ??
-        query.indexedByDisplaySymbol[sanitizedSymbol],
+        query.indexedBySymbol[`c${sanitizedSymbol}`],
       ...query,
     }),
-    [query.isSuccess, query.indexedBySymbol, query.indexedByDisplaySymbol],
+    [
+      query.isSuccess,
+      query.indexedBySymbol,
+      query.indexedByDisplaySymbol,
+      externalAssetSymbol,
+    ],
   );
 }
