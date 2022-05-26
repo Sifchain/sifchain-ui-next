@@ -1,9 +1,9 @@
-import { useMemo } from "react";
-import { indexBy, prop } from "rambda";
-
-import useSifnodeQuery from "~/hooks/useSifnodeQuery";
-import useAssetsQuery from "~/domains/assets/hooks/useAssets";
 import type { IAsset } from "@sifchain/core";
+import { indexBy, prop } from "rambda";
+import { useMemo } from "react";
+
+import { useAssetsQuery } from "~/domains/assets";
+import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export default function useTokenRegistryQuery() {
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {

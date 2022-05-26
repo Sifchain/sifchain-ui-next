@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 
-export default function useAssetsQuery(network: "ethereum" | "sifchain") {
+export function useAssetsQuery(network: "ethereum" | "sifchain") {
   const { data: env } = useDexEnvironment();
   const { data, ...query } = useQuery(
     ["assetlist", env?.kind],

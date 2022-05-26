@@ -93,11 +93,13 @@ export function useEnhancedPoolsQuery() {
 export function useEnhancedPoolQuery(externalAssetSymbol: string) {
   const { data: pools, ...query } = useEnhancedPoolsQuery();
 
+  const sanitizedSymbol = externalAssetSymbol.toLowerCase();
+
   return useMemo(
     () => ({
       data:
-        query.indexedBySymbol[externalAssetSymbol] ??
-        query.indexedByDisplaySymbol[externalAssetSymbol],
+        query.indexedBySymbol[sanitizedSymbol] ??
+        query.indexedByDisplaySymbol[sanitizedSymbol],
       ...query,
     }),
     [query.isSuccess, query.indexedBySymbol, query.indexedByDisplaySymbol],

@@ -1,7 +1,7 @@
 import { Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
 import React, { type FC, useMemo } from "react";
-import useAssetsQuery from "~/domains/assets/hooks/useAssets";
+import { useAssetsQuery } from "~/domains/assets";
 
 type Props = {
   network: "ethereum" | "sifchain";

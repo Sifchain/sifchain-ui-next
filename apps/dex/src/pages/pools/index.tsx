@@ -67,7 +67,7 @@ const PoolItem: FC<{
   return (
     <Link href={`/pools/${asset?.displaySymbol}`}>
       <li
-        className="p-4 rounded-lg bg-sifgray-900 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
+        className="p-4 rounded-lg bg-sifgray-800 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
         role="button"
       >
         <div className="flex gap-2 items-center">
@@ -76,10 +76,10 @@ const PoolItem: FC<{
         </div>
         <ul className="grid gap-1">
           {statSummary.map((stat) => (
-            <div key={stat.label} className="flex justify-between">
+            <li key={stat.label} className="flex justify-between">
               <span className="text-gray-500">{stat.label}</span>
               <span className="text-gray-50">{stat.value}</span>
-            </div>
+            </li>
           ))}
         </ul>
       </li>

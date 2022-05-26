@@ -9,8 +9,9 @@ export type Props = PropsWithChildren<{
 }>;
 
 const Shell = tw.div`
-  min-h-screen w-full bg-slate-100 flex 
-  dark:bg-slate-900/95 dark:text-slate-100 subpixel-antialiased
+  min-h-screen w-full bg-slate-100 flex
+  dark:bg-gradient-to-b
+  dark:from-sifgray-900 dark:to-sifgray-900/95 dark:text-slate-100 subpixel-antialiased
 `;
 
 const MainLayout: FC<Props> = (props) => {
