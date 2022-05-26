@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useEnhancedPoolQuery } from "~/domains/clp";
 
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
@@ -7,19 +8,31 @@ import PageLayout from "~/layouts/PageLayout";
 const PoolDetails: NextPage = () => {
   const { query } = useRouter();
 
-  const queryId = String(query["id"]).toUpperCase();
+  const externalAssetSymbol = String(query["id"]);
+
+  const {
+    data: enhancedPool,
+    isLoading,
+    isSuccess,
+  } = useEnhancedPoolQuery(externalAssetSymbol);
+
+  const poolSymbol = `${externalAssetSymbol.toUpperCase}·ROWAN`;
 
   return (
-    <MainLayout title={`Pools - ${queryId}`}>
+    <MainLayout title={`Pools - ${externalAssetSymbol}`}>
       <PageLayout
         withBackNavigation
         heading={
           <>
-            Pools / <span className="text-sifgray-50">{queryId}</span>
+            Pools / <span className="text-sifgray-50">{poolSymbol}</span>
           </>
         }
       >
-        Pool Details - {queryId}
+        Pool Details - {externalAssetSymbol}
+        {isLoading && <p>Loading pool...</p>}
+        {isSuccess && (
+          <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3"></ul>
+        )}
       </PageLayout>
     </MainLayout>
   );

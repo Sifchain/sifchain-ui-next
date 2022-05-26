@@ -1,5 +1,5 @@
 import type { createQueryClient } from "@sifchain/stargate";
-import type { ArgumentTypes } from "rambda";
+import { ArgumentTypes, omit } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
 import useQueryClient from "./useQueryClient";
@@ -51,6 +51,12 @@ export default function useSifnodeQuery<
       // @ts-ignore
       return await method(...args);
     },
-    options as {},
+    {
+      enabled:
+        "enabled" in options
+          ? options.enabled && Boolean(client)
+          : Boolean(client),
+      ...(omit(["enabled"], options) as {}),
+    },
   );
 }

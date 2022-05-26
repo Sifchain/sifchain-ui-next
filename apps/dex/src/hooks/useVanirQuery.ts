@@ -1,5 +1,5 @@
 import type { createClient } from "@sifchain/vanir-client";
-import type { ArgumentTypes } from "rambda";
+import { ArgumentTypes, omit } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
 import type { SafeKeyof } from "~/lib/type-utils";
@@ -57,6 +57,12 @@ export default function useVanirQuery<
 
       return result.body;
     },
-    options as {},
+    {
+      enabled:
+        "enabled" in options
+          ? options.enabled && Boolean(client)
+          : Boolean(client),
+      ...(omit(["enabled"], options) as {}),
+    },
   );
 }

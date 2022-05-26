@@ -1,6 +1,8 @@
 import type { IAsset } from "@sifchain/core";
 import type { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
+import { indexBy } from "rambda";
 import { ascend, descend, sortWith } from "ramda";
+import { useMemo } from "react";
 import { useQuery } from "react-query";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -11,6 +13,12 @@ export function useEnhancedPoolsQuery() {
   const { data: poolsRes, ...poolsQuery } = usePoolsQuery();
   const statsQuery = usePoolStatsQuery();
   const registryQuery = useTokenRegistryQuery();
+
+  const isSuccess =
+    poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess;
+
+  const isLoading =
+    poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading;
 
   const derivedQuery = useQuery(
     "enhanced-pools",
@@ -48,16 +56,50 @@ export function useEnhancedPoolsQuery() {
       );
     },
     {
-      enabled:
-        poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
+      enabled: isSuccess,
     },
   );
 
+  const indices = useMemo(() => {
+    if (!derivedQuery.data) {
+      return {
+        indexedBySymbol: {},
+        indexedByDisplaySymbol: {},
+      };
+    }
+
+    return {
+      indexedBySymbol: indexBy((x) => x.asset.symbol, derivedQuery.data),
+      indexedByDisplaySymbol: indexBy(
+        (x) => x.asset.displaySymbol,
+        derivedQuery.data,
+      ),
+    };
+  }, [derivedQuery.data]);
+
   return {
     ...derivedQuery,
-    isLoading:
-      poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading,
-    isSuccess:
-      poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess,
+    ...indices,
+    isSuccess,
+    isLoading,
   };
+}
+/**
+ * Queries a single pool by symbol.
+ *
+ * @param externalAssetSymbol {string}
+ * @returns
+ */
+export function useEnhancedPoolQuery(externalAssetSymbol: string) {
+  const { data: pools, ...query } = useEnhancedPoolsQuery();
+
+  return useMemo(
+    () => ({
+      data:
+        query.indexedBySymbol[externalAssetSymbol] ??
+        query.indexedByDisplaySymbol[externalAssetSymbol],
+      ...query,
+    }),
+    [query.isSuccess, query.indexedBySymbol, query.indexedByDisplaySymbol],
+  );
 }
