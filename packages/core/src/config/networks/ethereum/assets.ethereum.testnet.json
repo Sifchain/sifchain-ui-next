@@ -1,4 +1,5 @@
 {
+  "$schema": "./_assets.schema.json",
   "assets": [
     {
       "symbol": "erowan",
@@ -16,7 +17,6 @@
       "name": "Tether USDT",
       "network": "ethereum",
       "symbol": "USDT",
-      "transferLimit": "5004238590",
       "homeNetwork": "ethereum"
     },
     {
@@ -25,8 +25,8 @@
       "name": "Ethereum",
       "network": "ethereum",
       "symbol": "eth",
-      "transferLimit": "4381237787299667968",
-      "homeNetwork": "ethereum"
+      "homeNetwork": "ethereum",
+      "address": ""
     },
     {
       "address": "0x3cA047fD7e0a4Bf245ea30826bd156753aacDecE",
@@ -35,7 +35,6 @@
       "name": "Basic Attention Token",
       "network": "ethereum",
       "symbol": "BAT",
-      "transferLimit": "16147836674320740909056",
       "homeNetwork": "ethereum"
     },
     {
@@ -45,7 +44,6 @@
       "name": "Aragon",
       "network": "ethereum",
       "symbol": "ANT",
-      "transferLimit": "1305483028720626696192",
       "homeNetwork": "ethereum"
     },
     {
@@ -55,7 +53,6 @@
       "name": "Bancor Network Token",
       "network": "ethereum",
       "symbol": "BNT",
-      "transferLimit": "2577319587628866076672",
       "homeNetwork": "ethereum"
     },
     {
@@ -65,7 +62,6 @@
       "name": "0x",
       "network": "ethereum",
       "symbol": "ZRX",
-      "transferLimit": "8175411631975670218752",
       "homeNetwork": "ethereum"
     },
     {
@@ -75,7 +71,6 @@
       "name": "Chainlink",
       "network": "ethereum",
       "symbol": "LINK",
-      "transferLimit": "214408233276157788160",
       "homeNetwork": "ethereum"
     },
     {
@@ -85,7 +80,6 @@
       "name": "Decentraland",
       "network": "ethereum",
       "symbol": "MANA",
-      "transferLimit": "31495864592978940002304",
       "homeNetwork": "ethereum"
     },
     {
@@ -95,7 +89,6 @@
       "name": "Loopring",
       "network": "ethereum",
       "symbol": "LRC",
-      "transferLimit": "10751115965837254590464",
       "homeNetwork": "ethereum"
     },
     {
@@ -105,7 +98,6 @@
       "name": "Enjin Coin",
       "network": "ethereum",
       "symbol": "ENJ",
-      "transferLimit": "13591240717182590517248",
       "homeNetwork": "ethereum"
     },
     {
@@ -115,7 +107,6 @@
       "name": "Synthetix Network Token",
       "network": "ethereum",
       "symbol": "SNX",
-      "transferLimit": "288850375505488150528",
       "homeNetwork": "ethereum"
     },
     {
@@ -125,7 +116,6 @@
       "name": "TrueUSD",
       "network": "ethereum",
       "symbol": "TUSD",
-      "transferLimit": "5000845142829138182144",
       "homeNetwork": "ethereum"
     },
     {
@@ -135,7 +125,6 @@
       "name": "Ocean Protocol",
       "network": "ethereum",
       "symbol": "OCEAN",
-      "transferLimit": "8793017640551988592640",
       "homeNetwork": "ethereum"
     },
     {
@@ -145,7 +134,6 @@
       "name": "Fantom",
       "network": "ethereum",
       "symbol": "FTM",
-      "transferLimit": "34341602791285476818944",
       "homeNetwork": "ethereum"
     },
     {
@@ -155,7 +143,6 @@
       "name": "sUSD",
       "network": "ethereum",
       "symbol": "SUSD",
-      "transferLimit": "4950495049504951107584",
       "homeNetwork": "ethereum"
     },
     {
@@ -165,7 +152,6 @@
       "name": "USD Coin",
       "network": "ethereum",
       "symbol": "USDC",
-      "transferLimit": "5000000000",
       "homeNetwork": "ethereum"
     },
     {
@@ -176,7 +162,6 @@
       "network": "ethereum",
       "symbol": "CRO",
       "displaySymbol": "CRO (ERC-20)",
-      "transferLimit": "7111262818051",
       "homeNetwork": "ethereum",
       "decommissioned": true,
       "decommissionReason": "Crypto.org's ERC-20 token has been decommissioned on Sifchain in favor of the Cosmos CRO token. Please export all CRO (ERC-20) off of Sifchain."
@@ -188,7 +173,6 @@
       "name": "Wrapped Bitcoin",
       "network": "ethereum",
       "symbol": "WBTC",
-      "transferLimit": "14713671",
       "homeNetwork": "ethereum"
     },
     {
@@ -198,7 +182,6 @@
       "name": "Swipe",
       "network": "ethereum",
       "symbol": "SXP",
-      "transferLimit": "4132231404958677729280",
       "homeNetwork": "ethereum"
     },
     {
@@ -208,7 +191,6 @@
       "name": "Band Protocol",
       "network": "ethereum",
       "symbol": "BAND",
-      "transferLimit": "555555555555555540992",
       "homeNetwork": "ethereum"
     },
     {
@@ -218,7 +200,6 @@
       "name": "Dai Stablecoin",
       "network": "ethereum",
       "symbol": "DAI",
-      "transferLimit": "5012003748978804916224",
       "homeNetwork": "ethereum"
     },
     {
@@ -228,7 +209,6 @@
       "name": "Compound",
       "network": "ethereum",
       "symbol": "COMP",
-      "transferLimit": "19435590453237972992",
       "homeNetwork": "ethereum"
     },
     {
@@ -238,7 +218,6 @@
       "name": "UMA",
       "network": "ethereum",
       "symbol": "UMA",
-      "transferLimit": "460405156537753272320",
       "homeNetwork": "ethereum"
     },
     {
@@ -248,7 +227,6 @@
       "name": "Balancer",
       "network": "ethereum",
       "symbol": "BAL",
-      "transferLimit": "210437710437710430208",
       "homeNetwork": "ethereum"
     },
     {
@@ -258,7 +236,6 @@
       "name": "yearn finance",
       "network": "ethereum",
       "symbol": "YFI",
-      "transferLimit": "165766004707754528",
       "homeNetwork": "ethereum"
     },
     {
@@ -268,7 +245,6 @@
       "name": "Serum",
       "network": "ethereum",
       "symbol": "SRM",
-      "transferLimit": "2604166666",
       "homeNetwork": "ethereum"
     },
     {
@@ -278,7 +254,6 @@
       "name": "Cream",
       "network": "ethereum",
       "symbol": "CREAM",
-      "transferLimit": "32823475349570011136",
       "homeNetwork": "ethereum"
     },
     {
@@ -288,7 +263,6 @@
       "name": "SAND",
       "network": "ethereum",
       "symbol": "SAND",
-      "transferLimit": "55533342218668080103424",
       "homeNetwork": "ethereum"
     },
     {
@@ -298,7 +272,6 @@
       "name": "Sushi",
       "network": "ethereum",
       "symbol": "SUSHI",
-      "transferLimit": "595947556615017725952",
       "homeNetwork": "ethereum"
     },
     {
@@ -308,7 +281,6 @@
       "name": "Empty Set Dollar",
       "network": "ethereum",
       "symbol": "ESD",
-      "transferLimit": "23367980258730274979840",
       "homeNetwork": "ethereum"
     },
     {
@@ -318,7 +290,6 @@
       "name": "Uniswap",
       "network": "ethereum",
       "symbol": "UNI",
-      "transferLimit": "325097529258777640960",
       "homeNetwork": "ethereum"
     },
     {
@@ -328,7 +299,6 @@
       "name": "Aave",
       "network": "ethereum",
       "symbol": "AAVE",
-      "transferLimit": "16593103906016661504",
       "homeNetwork": "ethereum"
     },
     {
@@ -338,7 +308,6 @@
       "name": "BarnBridge",
       "network": "ethereum",
       "symbol": "BOND",
-      "transferLimit": "100341159943808942080",
       "homeNetwork": "ethereum"
     },
     {
@@ -348,7 +317,6 @@
       "name": "Wrapped Filecoin",
       "network": "ethereum",
       "symbol": "WFIL",
-      "transferLimit": "178316690442225385472",
       "homeNetwork": "ethereum"
     },
     {
@@ -358,7 +326,6 @@
       "name": "The Graph",
       "network": "ethereum",
       "symbol": "GRT",
-      "transferLimit": "8004341554859355406336",
       "homeNetwork": "ethereum"
     },
     {
@@ -368,7 +335,6 @@
       "name": "Tokenlon",
       "network": "ethereum",
       "symbol": "LON",
-      "transferLimit": "748502994011976105984",
       "homeNetwork": "ethereum"
     },
     {
@@ -378,7 +344,6 @@
       "name": "1inch",
       "network": "ethereum",
       "symbol": "1INCH",
-      "transferLimit": "1582278481012658274304",
       "homeNetwork": "ethereum"
     },
     {
@@ -388,7 +353,6 @@
       "name": "THORChain ERC20",
       "network": "ethereum",
       "symbol": "RUNE",
-      "transferLimit": "1547987616099071164416",
       "homeNetwork": "ethereum"
     },
     {
@@ -398,7 +362,6 @@
       "name": "Secret ERC20 ",
       "network": "ethereum",
       "symbol": "WSCRT",
-      "transferLimit": "4464285714",
       "homeNetwork": "ethereum"
     },
     {
@@ -408,7 +371,6 @@
       "name": "IoTeX",
       "network": "ethereum",
       "symbol": "IOTX",
-      "transferLimit": "458715596330000000000000",
       "homeNetwork": "ethereum"
     },
     {
@@ -416,7 +378,6 @@
       "name": "Reef Finance",
       "symbol": "REEF",
       "decimals": 18,
-      "transferLimit": "277355888654000000000000",
       "network": "ethereum",
       "imageUrl": "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png?1610534130",
       "homeNetwork": "ethereum"
@@ -428,7 +389,6 @@
       "name": "COCOS BCX",
       "network": "ethereum",
       "symbol": "cocos",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -438,7 +398,6 @@
       "name": "Keep Network",
       "network": "ethereum",
       "symbol": "keep",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -448,7 +407,6 @@
       "name": "Origin Protocol",
       "network": "ethereum",
       "symbol": "ogn",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -458,7 +416,6 @@
       "name": "DAOfi",
       "network": "ethereum",
       "symbol": "daofi",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -468,7 +425,6 @@
       "name": "Linear",
       "network": "ethereum",
       "symbol": "lina",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -478,7 +434,6 @@
       "name": "12Ships",
       "network": "ethereum",
       "symbol": "tshp",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum",
       "hasDarkIcon": true
     },
@@ -489,7 +444,6 @@
       "name": "B.20",
       "network": "ethereum",
       "symbol": "b20",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -499,7 +453,6 @@
       "name": "Akropolis",
       "network": "ethereum",
       "symbol": "akro",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -509,7 +462,6 @@
       "name": "Rio Fuel Token",
       "network": "ethereum",
       "symbol": "rfuel",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum",
       "hasDarkIcon": true
     },
@@ -520,7 +472,6 @@
       "name": "Rally",
       "network": "ethereum",
       "symbol": "rly",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -530,7 +481,6 @@
       "name": "Convergence",
       "network": "ethereum",
       "symbol": "conv",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -540,7 +490,6 @@
       "name": "Render Token",
       "network": "ethereum",
       "symbol": "rndr",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -550,7 +499,6 @@
       "name": "PAID Network",
       "network": "ethereum",
       "symbol": "paid",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -560,7 +508,6 @@
       "name": "Tidal",
       "network": "ethereum",
       "symbol": "tidal",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum",
       "hasDarkIcon": true
     },
@@ -571,7 +518,6 @@
       "name": "SHIBA INU",
       "network": "ethereum",
       "symbol": "SHIB",
-      "transferLimit": "99999999999999999999999",
       "homeNetwork": "ethereum"
     },
     {
@@ -581,7 +527,7 @@
       "name": "DOGE KILLER",
       "network": "ethereum",
       "symbol": "LEASH",
-      "transferLimit": "99999999999999999999999"
+      "homeNetwork": "ethereum"
     },
     {
       "address": "",
@@ -591,8 +537,7 @@
       "network": "ethereum",
       "homeNetwork": "cosmoshub",
       "symbol": "uphoton",
-      "displaySymbol": "photon",
-      "transferLimit": "99999999999999999999999"
+      "displaySymbol": "photon"
     },
     {
       "address": "",
@@ -602,8 +547,7 @@
       "network": "ethereum",
       "homeNetwork": "akash",
       "symbol": "uakt",
-      "displaySymbol": "akt",
-      "transferLimit": "99999999999999999999999"
+      "displaySymbol": "akt"
     },
     {
       "address": "",
@@ -613,8 +557,7 @@
       "network": "ethereum",
       "homeNetwork": "sentinel",
       "symbol": "udvpn",
-      "displaySymbol": "dvpn",
-      "transferLimit": "99999999999999999999999"
+      "displaySymbol": "dvpn"
     },
     {
       "address": "0xABe580E7ee158dA464b51ee1a83Ac0289622e6be",
@@ -624,7 +567,6 @@
       "name": "Offshift",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Offshift",
       "imageUrl": "https://assets.coingecko.com/coins/images/11977/small/CsBrPiA.png?1614570441",
       "decommissioned": false
     },
@@ -636,7 +578,6 @@
       "name": "Opyn Squeeth",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Opyn Squeeth",
       "imageUrl": "https://assets.coingecko.com/coins/images/22806/small/DyVT5XPV_400x400.jpg?1642656239"
     },
     {
@@ -647,7 +588,6 @@
       "name": "Ultra",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Ultra",
       "imageUrl": "https://assets.coingecko.com/coins/images/4480/small/Ultra.png?1563356418"
     },
     {
@@ -658,7 +598,6 @@
       "name": "New Order",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "New Order",
       "imageUrl": "https://assets.coingecko.com/coins/images/21440/small/new-order-icon-256px.png?1639125759"
     },
     {
@@ -669,7 +608,6 @@
       "name": "Gala",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Gala",
       "imageUrl": "https://assets.coingecko.com/coins/images/12493/small/GALA-COINGECKO.png?1600233435"
     },
     {
@@ -680,7 +618,6 @@
       "name": "Ethereum Push Notification Service - EPNS",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Ethereum Push Notification Service - EPNS",
       "imageUrl": "https://assets.coingecko.com/coins/images/14769/small/epns_logo.jpg?1618330344"
     },
     {
@@ -691,7 +628,6 @@
       "name": "Merit Circle",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Merit Circle",
       "imageUrl": "https://assets.coingecko.com/coins/images/19304/small/Db4XqML.png?1634972154"
     },
     {
@@ -702,7 +638,6 @@
       "name": "Injective",
       "network": "ethereum",
       "homeNetwork": "ethereum",
-      "label": "Injective",
       "imageUrl": "https://assets.coingecko.com/coins/images/12882/small/Secondary_Symbol.png?1628233237"
     }
   ]
