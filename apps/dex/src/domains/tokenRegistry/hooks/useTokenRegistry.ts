@@ -3,6 +3,7 @@ import { indexBy, prop } from "rambda";
 
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useAssetsQuery from "~/domains/assets/hooks/useAssets";
+import type { IAsset } from "@sifchain/core";
 
 export default function useTokenRegistryQuery() {
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
@@ -21,7 +22,7 @@ export default function useTokenRegistryQuery() {
       .map((entry) => indexedBySymbol[entry.denom])
       .filter(Boolean);
 
-    return filteredEntries;
+    return filteredEntries as IAsset[];
   }, [data]);
 
   const indices = useMemo(() => {

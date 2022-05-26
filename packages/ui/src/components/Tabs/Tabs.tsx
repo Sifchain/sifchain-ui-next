@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { FC, useState } from "react";
+import { type FC, useState } from "react";
 
 export type TabItem<T> = {
   label: string;

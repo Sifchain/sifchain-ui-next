@@ -1,4 +1,4 @@
-import { NetworkEnv } from "@sifchain/core";
+import type { NetworkEnv } from "@sifchain/core";
 import { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { type FC, useCallback, useMemo, useState } from "react";
 import { CommandPalette, CommandPaletteEntry } from "@sifchain/ui";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";

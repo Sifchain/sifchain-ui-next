@@ -1,4 +1,4 @@
-import { DexEnvironment } from ".";
+import type { DexEnvironment } from ".";
 
 export default <DexEnvironment>{
   kind: "mainnet",

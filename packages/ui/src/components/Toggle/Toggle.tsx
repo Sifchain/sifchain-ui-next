@@ -1,6 +1,6 @@
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
-import { FC, useState } from "react";
+import type { FC } from "react";
 
 export type ToggleProps = {
   checked: boolean;

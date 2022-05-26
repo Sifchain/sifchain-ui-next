@@ -1,7 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import React, { FC, PropsWithChildren, ReactNode } from "react";
-import GlobalSearch from "~/compounds/GlobalSearch";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 
 type Props = {
   heading?: ReactNode;

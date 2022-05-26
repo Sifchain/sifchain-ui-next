@@ -1,7 +1,7 @@
 import MoonIcon from "@heroicons/react/outline/MoonIcon";
 import SunIcon from "@heroicons/react/outline/SunIcon";
 import clsx from "clsx";
-import { FC } from "react";
+import type { FC } from "react";
 import tw from "tailwind-styled-components";
 
 import { useTheme } from "../../hooks/useTheme";

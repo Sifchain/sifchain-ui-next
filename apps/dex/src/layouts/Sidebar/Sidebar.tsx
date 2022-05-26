@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
-const ENV = process.env.APP_ENV ?? "betanet";
+const ENV = process.env["APP_ENV"] ?? "betanet";
 
 export const MENU_ITEMS = [
   {

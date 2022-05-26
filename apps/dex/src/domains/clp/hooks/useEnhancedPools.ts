@@ -1,5 +1,5 @@
-import { IAsset } from "@sifchain/core";
-import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
+import type { IAsset } from "@sifchain/core";
+import type { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { ascend, descend, sortWith } from "ramda";
 import { useQuery } from "react-query";
 

@@ -264,7 +264,10 @@ importers:
       typescript: 4.7.2
 
   packages/tsconfig:
-    specifiers: {}
+    specifiers:
+      '@tsconfig/node16-strictest-esm': ^1.0.1
+    devDependencies:
+      '@tsconfig/node16-strictest-esm': 1.0.1
 
   packages/ui:
     specifiers:

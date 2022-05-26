@@ -1,13 +1,13 @@
 import { Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
-import React, { FC, useMemo } from "react";
+import React, { type FC, useMemo } from "react";
 import useAssetsQuery from "~/domains/assets/hooks/useAssets";
 
 type Props = {
   network: "ethereum" | "sifchain";
   symbol: string;
   size: "xs" | "sm" | "md" | "lg" | "xl";
-  invertColor?: boolean;
+  invertColor?: boolean | undefined;
 };
 
 const AssetIcon: FC<Props> = (props) => {

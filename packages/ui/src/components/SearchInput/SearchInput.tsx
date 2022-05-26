@@ -1,6 +1,4 @@
-import { FC } from "react";
-import { SearchIcon } from '@heroicons/react/solid'
-
+import type { FC } from "react";
 
 export type Props = JSX.IntrinsicElements["input"] & {};
 

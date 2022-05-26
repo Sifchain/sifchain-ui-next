@@ -1,4 +1,4 @@
-import { IAsset } from "@sifchain/core";
+import type { IAsset } from "@sifchain/core";
 import ky from "ky";
 import { prop } from "rambda";
 import { indexBy } from "ramda";

@@ -1,8 +1,7 @@
-import { createQueryClient } from "@sifchain/stargate";
-import { ArgumentTypes } from "rambda";
+import type { createQueryClient } from "@sifchain/stargate";
+import type { ArgumentTypes } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
-import { SafeKeyof } from "~/lib/type-utils";
 import useQueryClient from "./useQueryClient";
 
 export type SifnodeClient = Awaited<ReturnType<typeof createQueryClient>>;
@@ -52,15 +51,6 @@ export default function useSifnodeQuery<
       // @ts-ignore
       return await method(...args);
     },
-    {
-      refetchOnMount: Boolean(options.refetchOnMount),
-      retry: options.retry,
-      staleTime: options.staleTime,
-      cacheTime: options.cacheTime,
-      enabled:
-        typeof options.enabled === "boolean"
-          ? options.enabled && Boolean(client)
-          : Boolean(client),
-    },
+    options as {},
   );
 }

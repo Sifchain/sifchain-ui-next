@@ -1,6 +1,5 @@
-import { ThemeSwitcher } from "@sifchain/ui";
 import Head from "next/head";
-import React, { FC, PropsWithChildren } from "react";
+import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
 
 import Sidebar from "./Sidebar";

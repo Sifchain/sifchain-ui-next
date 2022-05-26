@@ -1,8 +1,8 @@
-import { createClient } from "@sifchain/vanir-client";
-import { ArgumentTypes } from "rambda";
+import type { createClient } from "@sifchain/vanir-client";
+import type { ArgumentTypes } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
-import { SafeKeyof } from "~/lib/type-utils";
+import type { SafeKeyof } from "~/lib/type-utils";
 import useVanirClient from "./useVanirClient";
 
 export type VanirClient = Awaited<ReturnType<typeof createClient>>;
@@ -34,7 +34,7 @@ export default function useVanirQuery<
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  query: QueryKey | `${T}.${P}`,
+  query: `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
   options: Omit<
     UseQueryOptions<Res, unknown, Res>,
@@ -57,15 +57,6 @@ export default function useVanirQuery<
 
       return result.body;
     },
-    {
-      refetchOnMount: Boolean(options.refetchOnMount),
-      retry: options.retry,
-      staleTime: options.staleTime,
-      cacheTime: options.cacheTime,
-      enabled:
-        typeof options.enabled === "boolean"
-          ? options.enabled && Boolean(client)
-          : Boolean(client),
-    },
+    options as {},
   );
 }
