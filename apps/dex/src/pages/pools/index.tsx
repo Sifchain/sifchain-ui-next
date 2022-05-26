@@ -1,10 +1,10 @@
-import { IAsset } from "@sifchain/core";
-import { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
+import type { IAsset } from "@sifchain/core";
+import type { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
 import { formatNumberAsCurrency } from "@sifchain/ui";
-import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
-import { NextPage } from "next";
+import type { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
+import type { NextPage } from "next";
 import Link from "next/link";
-import { FC } from "react";
+import type { FC } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useEnhancedPoolsQuery } from "~/domains/clp/hooks";
