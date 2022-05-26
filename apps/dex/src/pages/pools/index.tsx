@@ -5,8 +5,8 @@ import { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FC } from "react";
-import AssetIcon from "~/compounds/AssetIcon";
 
+import AssetIcon from "~/compounds/AssetIcon";
 import { useEnhancedPoolsQuery } from "~/domains/clp/hooks";
 import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";

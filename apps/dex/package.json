@@ -21,7 +21,7 @@
     "@walletconnect/ethereum-provider": "2.0.0-beta.26",
     "@walletconnect/types": "2.0.0-beta.26",
     "clsx": "^1.1.1",
-    "ethers": "^5.6.4",
+    "ethers": "^5.6.8",
     "ky": "^0.30.0",
     "next": "12.1.6",
     "rambda": "^7.1.4",
@@ -29,7 +29,7 @@
     "react": "18.1.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.1.0",
-    "react-hook-form": "^7.31.1",
+    "react-hook-form": "^7.31.2",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.0"
   },
@@ -39,15 +39,15 @@
     "@types/react": "18.0.8",
     "@types/react-dom": "18.0.0",
     "autoprefixer": "^10.4.7",
-    "eslint": "8.15.0",
+    "eslint": "^8.16.0",
     "eslint-config-next": "12.1.6",
     "next-transpile-modules": "9.0.0",
-    "postcss": "^8.4.13",
+    "postcss": "^8.4.14",
     "prettier": "^2.6.2",
-    "prettier-plugin-tailwindcss": "^0.1.10",
+    "prettier-plugin-tailwindcss": "^0.1.11",
     "tailwind-styled-components": "^2.1.7",
     "tailwindcss": "^3.0.24",
     "tsconfig": "workspace:*",
-    "typescript": "4.6.4"
+    "typescript": "4.7.2"
   }
 }
