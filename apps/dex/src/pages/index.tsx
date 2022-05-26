@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/swap");
+    router.push("/pools");
   }, [router]);
 
   return (
