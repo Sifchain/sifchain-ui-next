@@ -42,7 +42,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   readonly id = "keplr";
   readonly name = "Keplr";
 
-  #keplr: Keplr;
+  #keplr: Keplr | undefined = window.keplr;
   readonly #chainStore = new ChainStore(this.options.chainInfos);
 
   async connect() {
@@ -61,11 +61,11 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
-    await this.#keplr.experimentalSuggestChain(
+    await this.#keplr!.experimentalSuggestChain(
       this.#chainStore.getChain(chainId),
     );
-    await this.#keplr.enable(chainId);
-    return this.#keplr.getOfflineSignerAuto(chainId);
+    await this.#keplr!.enable(chainId);
+    return this.#keplr!.getOfflineSignerAuto(chainId);
   }
 
   async getSigningStargateClient(
