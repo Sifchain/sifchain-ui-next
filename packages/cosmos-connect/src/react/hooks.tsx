@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useState,
 } from "react";
 import type { BaseCosmConnector } from "../core";
 import { noopStorage, StorageOptions } from "./storage";
@@ -43,6 +44,10 @@ export const CosmConnectProvider = (
     (x) => x.id === activeConnectorId,
   );
 
+  const [initSuccessful, setIsInitSuccessful] = useState(
+    () => activeConnector?.connected ?? false,
+  );
+
   useEffect(() => {
     props.connectors.forEach((x) => {
       x.addListener("disconnect", () =>
@@ -53,10 +58,12 @@ export const CosmConnectProvider = (
     return () => props.connectors.forEach((x) => x.removeAllListeners());
   }, [props.connectors]);
 
+  // get active connector from storage on first mount then try to connect it
   useEffect(() => {
-    if (activeConnector) {
-      console.log(activeConnector);
-      activeConnector.connect();
+    if (!activeConnector?.connected) {
+      activeConnector?.connect().then(() => {
+        setIsInitSuccessful(true);
+      });
     }
   }, []);
 
@@ -64,18 +71,15 @@ export const CosmConnectProvider = (
     <CosmConnectContext.Provider
       value={{
         connectors: props.connectors,
-        activeConnector,
+        activeConnector: initSuccessful ? activeConnector : undefined,
         connect: useCallback(async (connector: BaseCosmConnector) => {
           await connector.connect();
           setActiveConnectorId(connector.id);
         }, []),
-        disconnect: useCallback(
-          async (connector: BaseCosmConnector) => {
-            await connector.disconnect();
-            setActiveConnectorId((x) => (x === connector.id ? undefined : x));
-          },
-          [activeConnector],
-        ),
+        disconnect: useCallback(async (connector: BaseCosmConnector) => {
+          await connector.disconnect();
+          setActiveConnectorId((x) => (x === connector.id ? undefined : x));
+        }, []),
       }}
     >
       {props.children}
