@@ -53,6 +53,13 @@ export const CosmConnectProvider = (
     return () => props.connectors.forEach((x) => x.removeAllListeners());
   }, [props.connectors]);
 
+  useEffect(() => {
+    if (activeConnector) {
+      console.log(activeConnector);
+      activeConnector.connect();
+    }
+  }, []);
+
   return (
     <CosmConnectContext.Provider
       value={{
