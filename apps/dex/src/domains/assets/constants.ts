@@ -1,4 +1,4 @@
-import { Asset } from "@sifchain/core";
+import { Asset } from "@sifchain/common";
 
 export const ROWAN = Asset({
   symbol: "rowan",

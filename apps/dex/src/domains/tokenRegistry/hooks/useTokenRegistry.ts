@@ -1,4 +1,4 @@
-import type { IAsset } from "@sifchain/core";
+import type { IAsset } from "@sifchain/common";
 import { indexBy, prop } from "rambda";
 import { useMemo } from "react";
 
