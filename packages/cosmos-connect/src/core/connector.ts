@@ -42,8 +42,12 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   readonly id = "keplr";
   readonly name = "Keplr";
 
-  #keplr: Keplr | undefined = window.keplr;
   readonly #chainStore = new ChainStore(this.options.chainInfos);
+
+  // Need this check to support next.js
+  // https://nextjs.org/docs/migrating/from-create-react-app#safely-accessing-web-apis
+  #keplr: Keplr | undefined =
+    typeof window !== "undefined" ? window.keplr : undefined;
 
   async connect() {
     const windowKeplr = await this.#getKeplr();
