@@ -138,16 +138,11 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<{
   async connect() {
     if (this.#walletConnect.connected) return;
 
-    await this.#walletConnect.createSession();
-    await new Promise<void>((resolve, reject) => {
-      this.#walletConnect.on("connect", (error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
+    try {
+      await this.#walletConnect.connect();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async disconnect() {
