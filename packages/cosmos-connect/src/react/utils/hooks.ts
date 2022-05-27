@@ -1,5 +1,5 @@
 import { DependencyList, useCallback, useState } from "react";
-import type { BaseStorage } from "./storage";
+import type { BaseStorage } from "../storage";
 
 export const useAsyncFunc = <T extends Function>(
   asyncFunc: T,
