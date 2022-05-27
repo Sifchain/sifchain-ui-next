@@ -28,6 +28,8 @@ export abstract class BaseCosmConnector<
     this.options = options;
   }
 
+  abstract get connected(): boolean;
+
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
   abstract getSigner(chainId: string): Promise<OfflineSigner>;
@@ -48,6 +50,10 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   // https://nextjs.org/docs/migrating/from-create-react-app#safely-accessing-web-apis
   #keplr: Keplr | undefined =
     typeof window !== "undefined" ? window.keplr : undefined;
+
+  get connected() {
+    return this.#keplr !== undefined;
+  }
 
   async connect() {
     const windowKeplr = await this.#getKeplr();
@@ -149,6 +155,10 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     this.#walletConnect.on("disconnect", () => {
       this.emit("disconnect");
     });
+  }
+
+  get connected() {
+    return this.#walletConnect.connected;
   }
 
   async connect() {
