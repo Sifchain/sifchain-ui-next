@@ -11,7 +11,7 @@ import { BaseCosmConnector } from "./base";
 export type KeplrWalletConnectConnectorOptions = {
   chainInfos: ChainInfo[];
   modalUiOptions?: ConstructorParameters<typeof KeplrQRCodeModalV1>["0"];
-  clientMeta: IClientMeta;
+  clientMeta?: IClientMeta;
 };
 
 export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletConnectConnectorOptions> {
