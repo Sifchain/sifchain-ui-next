@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "moduleResolution": "Node",
+    "declaration": true,
+    "exactOptionalPropertyTypes": false,
+    "jsx": "react"
+  },
+  "include": ["src"],
+  "exclude": ["**/*.spec.ts"]
+}
