@@ -3,9 +3,10 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo, Keplr } from "@keplr-wallet/types";
 import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
-import WalletConnect from "@walletconnect/client";
-import EventEmitter from "eventemitter3";
 import { KeplrQRCodeModalV1 } from "@keplr-wallet/wc-qrcode-modal";
+import WalletConnect from "@walletconnect/client";
+import type { IClientMeta } from "@walletconnect/types";
+import EventEmitter from "eventemitter3";
 
 export type ConnectorEvents = {
   connect(): void;
@@ -92,9 +93,13 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   }
 }
 
-export class KeplrWalletConnectConnector extends BaseCosmConnector<{
+export type KeplrWalletConnectConnectorOptions = {
   chainInfos: ChainInfo[];
-}> {
+  modalUiOptions?: ConstructorParameters<typeof KeplrQRCodeModalV1>["0"];
+  clientMeta: IClientMeta;
+};
+
+export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletConnectConnectorOptions> {
   readonly id = "keplrWalletConnect";
   readonly name = "Wallet Connect";
 
@@ -104,7 +109,8 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<{
       "keplr_enable_wallet_connect_v1",
       "keplr_sign_amino_wallet_connect_v1",
     ],
-    qrcodeModal: new KeplrQRCodeModalV1(),
+    clientMeta: this.options.clientMeta,
+    qrcodeModal: new KeplrQRCodeModalV1(this.options.modalUiOptions),
   });
 
   readonly #keplr = new KeplrWalletConnectV1(this.#walletConnect, {
@@ -125,7 +131,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<{
 
   readonly #chainStore = new ChainStore(this.options.chainInfos);
 
-  constructor(options: { chainInfos: ChainInfo[] }) {
+  constructor(options: KeplrWalletConnectConnectorOptions) {
     super(options);
     this.#walletConnect.on("connect", (error) => {
       if (error === undefined) this.emit("connect");

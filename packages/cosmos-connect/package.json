@@ -37,6 +37,7 @@
     "@keplr-wallet/types": "^0.10.4",
     "@tsconfig/node16-strictest-esm": "^1.0.1",
     "@types/react": "^18.0.9",
+    "@walletconnect/types": "^1.7.8",
     "zx": "^6.1.0"
   }
 }
