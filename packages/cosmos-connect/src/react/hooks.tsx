@@ -11,9 +11,6 @@ import { useAsyncFunc, useStorageState } from "./utils";
 export type CosmConnectContextValue = {
   connectors: BaseCosmConnector[];
   activeConnector?: BaseCosmConnector;
-  setActiveConnector: React.Dispatch<
-    React.SetStateAction<BaseCosmConnector<any> | undefined>
-  >;
   connect: (connector: BaseCosmConnector) => Promise<void>;
   disconnect: (connector: BaseCosmConnector) => Promise<void>;
 };
@@ -26,7 +23,6 @@ export type CosmConnectProviderProps = {
 
 const CosmConnectContext = React.createContext<CosmConnectContextValue>({
   connectors: [],
-  setActiveConnector: () => {},
   connect: async () => {},
   disconnect: async () => {},
 });
@@ -34,8 +30,8 @@ const CosmConnectContext = React.createContext<CosmConnectContextValue>({
 export const CosmConnectProvider = (
   props: PropsWithChildren<CosmConnectProviderProps>,
 ) => {
-  const [activeConnector, setActiveConnector] = useStorageState<
-    BaseCosmConnector | undefined
+  const [activeConnectorId, setActiveConnectorId] = useStorageState<
+    string | undefined
   >(
     (props.persistOptions?.prefix ?? "@@cosmConnect") + "ActiveConnection",
     undefined,
@@ -43,11 +39,14 @@ export const CosmConnectProvider = (
       ? props.persistOptions?.storage ?? window.localStorage
       : noopStorage,
   );
+  const activeConnector = props.connectors.find(
+    (x) => x.id === activeConnectorId,
+  );
 
   useEffect(() => {
     props.connectors.forEach((x) => {
       x.addListener("disconnect", () =>
-        setActiveConnector((y) => (y?.id === x.id ? undefined : y)),
+        setActiveConnectorId((y) => (y === x.id ? undefined : y)),
       );
     });
 
@@ -59,15 +58,14 @@ export const CosmConnectProvider = (
       value={{
         connectors: props.connectors,
         activeConnector,
-        setActiveConnector,
         connect: useCallback(async (connector: BaseCosmConnector) => {
           await connector.connect();
-          setActiveConnector(connector);
+          setActiveConnectorId(connector.id);
         }, []),
         disconnect: useCallback(
           async (connector: BaseCosmConnector) => {
             await connector.disconnect();
-            setActiveConnector((x) => (x?.id === connector.id ? undefined : x));
+            setActiveConnectorId((x) => (x === connector.id ? undefined : x));
           },
           [activeConnector],
         ),
