@@ -1,4 +1,4 @@
-import type { IAsset } from "@sifchain/core";
+import type { IAsset } from "@sifchain/common";
 import type { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import type { GetTokenStatsResponsePools } from "@sifchain/vanir-client";

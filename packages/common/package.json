@@ -1,5 +1,5 @@
 {
-  "name": "@sifchain/core",
+  "name": "@sifchain/common",
   "version": "0.0.1",
   "private": true,
   "description": "core modules for sifchain",
