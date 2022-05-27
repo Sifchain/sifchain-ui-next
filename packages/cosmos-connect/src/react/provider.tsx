@@ -2,7 +2,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useState
+  useState,
 } from "react";
 import type { BaseCosmConnector } from "../core";
 import { noopStorage, StorageOptions } from "./storage";
@@ -74,6 +74,7 @@ export const CosmConnectProvider = (
         connect: useCallback(async (connector: BaseCosmConnector) => {
           await connector.connect();
           setActiveConnectorId(connector.id);
+          setIsInitSuccessful(true);
         }, []),
         disconnect: useCallback(async (connector: BaseCosmConnector) => {
           await connector.disconnect();
