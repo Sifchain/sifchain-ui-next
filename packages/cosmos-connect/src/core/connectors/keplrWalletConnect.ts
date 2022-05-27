@@ -25,7 +25,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
       "keplr_sign_amino_wallet_connect_v1",
     ],
     clientMeta: this.options.clientMeta,
-    qrCodeModal: new KeplrQRCodeModalV1(this.options.modalUiOptions),
+    qrcodeModal: new KeplrQRCodeModalV1(this.options.modalUiOptions),
   });
 
   readonly #keplr = new KeplrWalletConnectV1(this.#walletConnect, {
