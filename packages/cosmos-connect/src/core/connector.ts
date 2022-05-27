@@ -42,11 +42,17 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   readonly id = "keplr";
   readonly name = "Keplr";
 
-  #keplr: Keplr | undefined;
+  #keplr: Keplr;
   readonly #chainStore = new ChainStore(this.options.chainInfos);
 
   async connect() {
-    this.#keplr = await this.#getKeplr();
+    const windowKeplr = await this.#getKeplr();
+
+    if (windowKeplr === undefined) {
+      throw new Error("Keplr extension not installed");
+    }
+
+    this.#keplr = windowKeplr;
     this.emit("connect");
   }
 
@@ -55,11 +61,11 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
-    await this.#keplr?.experimentalSuggestChain(
+    await this.#keplr.experimentalSuggestChain(
       this.#chainStore.getChain(chainId),
     );
-    await this.#keplr?.enable(chainId);
-    return this.#keplr!.getOfflineSignerAuto(chainId);
+    await this.#keplr.enable(chainId);
+    return this.#keplr.getOfflineSignerAuto(chainId);
   }
 
   async getSigningStargateClient(
@@ -155,7 +161,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
-    await this.#keplr?.enable(chainId);
+    await this.#keplr.enable(chainId);
     return this.#keplr.getOfflineSignerOnlyAmino(chainId);
   }
 
