@@ -5,14 +5,8 @@
   "description": "",
   "main": "build/commonjs/index.js",
   "exports": {
-    ".": {
-      "import": "./build/module/core/index.js",
-      "require": "./build/commonjs/core/index.js"
-    },
-    "./react": {
-      "import": "./build/module/react/index.js",
-      "require": "./build/commonjs/react/index.js"
-    }
+    "import": "./build/module/index.js",
+    "require": "./build/commonjs/index.js"
   },
   "scripts": {
     "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
