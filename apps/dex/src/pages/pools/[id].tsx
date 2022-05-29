@@ -1,4 +1,4 @@
-import { Amount, AssetAmount, formatAssetAmount } from "@sifchain/core";
+import { Amount, AssetAmount, formatAssetAmount } from "@sifchain/common";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
