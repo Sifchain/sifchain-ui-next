@@ -33,6 +33,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
   }
 
   async disconnect() {
+    this.#keplr = undefined;
     this.emit("disconnect");
   }
 

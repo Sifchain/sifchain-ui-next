@@ -12,6 +12,7 @@ export const useConnect = () => {
   return {
     connectors,
     activeConnector,
+    isConnected: activeConnector !== undefined,
     connect: connectAsyncFunc.fetch,
     connectingStatus: connectAsyncFunc.status,
     disconnect: disconnectAsyncFunc.fetch,
