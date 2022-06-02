@@ -1,14 +1,22 @@
+import { chainConfigByNetworkEnv, IBCChainConfig } from "@sifchain/common";
 import {
+  CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
   KeplrWalletConnectConnector,
 } from "@sifchain/cosmos-connect";
-import { CosmConnectProvider as BaseCosmConnectProvider } from "@sifchain/cosmos-connect";
 import type { PropsWithChildren } from "react";
 
+const chainInfos = Object.entries(chainConfigByNetworkEnv).flatMap((x) =>
+  Object.values(x[1])
+    .filter((y) => "keplrChainInfo" in y)
+    .map((y) => y as IBCChainConfig)
+    .map((y) => y.keplrChainInfo),
+);
+
 const connectors = [
-  new InjectedKeplrConnector({ chainInfos: [] }),
+  new InjectedKeplrConnector({ chainInfos }),
   new KeplrWalletConnectConnector({
-    chainInfos: [],
+    chainInfos,
     clientMeta: {
       name: "Sifchain",
       description: "The omni chain",
