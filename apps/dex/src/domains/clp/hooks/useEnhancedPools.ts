@@ -24,7 +24,7 @@ export function useEnhancedPoolsQuery() {
     "enhanced-pools",
     () => {
       if (!poolsRes || !statsQuery.data || !registryQuery.data) {
-        return;
+        return [];
       }
 
       const filtered = poolsRes.pools

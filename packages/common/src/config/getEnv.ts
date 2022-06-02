@@ -1,4 +1,4 @@
-import { NetworkKind } from "../entities";
+import { NetworkKind } from "~/entities";
 import { AppCookies } from "./AppCookies";
 
 export type NetworkEnv = "localnet" | "devnet" | "testnet" | "mainnet";
@@ -12,61 +12,58 @@ export const NETWORK_ENVS: Set<NetworkEnv> = new Set<NetworkEnv>([
 
 type AssetTag = `${NetworkKind}.${NetworkEnv}`;
 
-type ProfileLookup = Record<
-  NetworkEnv | number,
-  {
-    tag: NetworkEnv;
-    ethAssetTag: AssetTag;
-    sifAssetTag: AssetTag;
-    cosmoshubAssetTag: AssetTag;
-  }
->;
+type EnvProfileConfig = {
+  kind: NetworkEnv;
+  ethAssetTag: AssetTag;
+  sifAssetTag: AssetTag;
+  cosmoshubAssetTag: AssetTag;
+};
 
-export const profileLookup: ProfileLookup = {
+export const PROFILE_LOOKUP: Record<NetworkEnv, EnvProfileConfig> = {
   mainnet: {
-    tag: "mainnet",
+    kind: "mainnet",
     ethAssetTag: "ethereum.mainnet",
     sifAssetTag: "sifchain.mainnet",
     cosmoshubAssetTag: "cosmoshub.mainnet",
   },
   testnet: {
-    tag: "testnet",
+    kind: "testnet",
     ethAssetTag: "ethereum.testnet",
-    sifAssetTag: "sifchain.devnet",
+    sifAssetTag: "sifchain.testnet",
     cosmoshubAssetTag: "cosmoshub.testnet",
   },
   devnet: {
-    tag: "devnet",
+    kind: "devnet",
     ethAssetTag: "ethereum.devnet",
     sifAssetTag: "sifchain.devnet",
     cosmoshubAssetTag: "cosmoshub.testnet",
   },
   localnet: {
-    tag: "localnet",
+    kind: "localnet",
     ethAssetTag: "ethereum.localnet",
     sifAssetTag: "sifchain.localnet",
     cosmoshubAssetTag: "cosmoshub.testnet",
   },
 } as const;
 
-type HostConfig = {
-  test: RegExp;
-  net: NetworkEnv;
+export type HostConfig = {
+  pattern: RegExp;
+  networkEnv: NetworkEnv;
 };
 
 // Here we list hostnames that have default env settings
 const hostDefaultEnvs: HostConfig[] = [
-  { test: /dex\.sifchain\.finance$/, net: "mainnet" },
-  { test: /testnet\.sifchain\.finance$/, net: "testnet" },
-  { test: /devnet\.sifchain\.finance$/, net: "devnet" },
-  { test: /sifchain\.vercel\.app$/, net: "devnet" },
-  { test: /gateway\.pinata\.cloud$/, net: "devnet" },
-  { test: /localhost$/, net: "devnet" },
+  { pattern: /dex\.sifchain\.finance$/, networkEnv: "mainnet" },
+  { pattern: /testnet\.sifchain\.finance$/, networkEnv: "testnet" },
+  { pattern: /devnet\.sifchain\.finance$/, networkEnv: "devnet" },
+  { pattern: /sifchain\.vercel\.app$/, networkEnv: "devnet" },
+  { pattern: /gateway\.pinata\.cloud$/, networkEnv: "devnet" },
+  { pattern: /localhost$/, networkEnv: "devnet" },
 ];
 
 export function getNetworkEnv(hostname: string) {
-  for (const { test, net } of hostDefaultEnvs) {
-    if (test.test(hostname)) {
+  for (const { pattern, networkEnv: net } of hostDefaultEnvs) {
+    if (pattern.test(hostname)) {
       return net;
     }
   }
@@ -87,21 +84,16 @@ export function getEnv({
   cookies = AppCookies(),
 }: GetEnvArgs) {
   const cookieEnv = cookies.getEnv();
-  const defaultNetworkEnv = getNetworkEnv(hostname);
 
-  let sifEnv: NetworkEnv | null;
+  const sifEnv = isNetworkEnvSymbol(cookieEnv)
+    ? cookieEnv
+    : getNetworkEnv(hostname);
 
-  if (isNetworkEnvSymbol(cookieEnv)) {
-    sifEnv = cookieEnv;
-  } else {
-    sifEnv = defaultNetworkEnv;
-  }
-
-  if (sifEnv != null && profileLookup[sifEnv]) {
-    return profileLookup[sifEnv];
+  if (sifEnv != null && PROFILE_LOOKUP[sifEnv]) {
+    return PROFILE_LOOKUP[sifEnv];
   }
 
   console.error(new Error(`Cannot render environment ${sifEnv} ${cookieEnv}`));
 
-  return profileLookup["mainnet"];
+  return PROFILE_LOOKUP["mainnet"];
 }

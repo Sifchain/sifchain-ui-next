@@ -1,68 +1,42 @@
-// TODO - Conditional load or build-time tree shake
-import localnetconfig from "./networks/sifchain/config.localnet.json";
-import devnetconfig from "./networks/sifchain/config.devnet.json";
-
-import testnetconfig from "./networks/sifchain/config.testnet.json";
-import mainnnetconfig from "./networks/sifchain/config.mainnet.json";
-
-import assetsEthereumLocalnet from "./networks/ethereum/assets.ethereum.localnet.json";
-import assetsEthereumMainnet from "./networks/ethereum/assets.ethereum.mainnet.json";
-import assetsEthereumDevnet from "./networks/ethereum/assets.ethereum.devnet.json";
-import assetsEthereumTestnet from "./networks/ethereum/assets.ethereum.testnet.json";
-
-import assetsSifchainLocalnet from "./networks/sifchain/assets.sifchain.localnet.json";
-import assetsSifchainMainnet from "./networks/sifchain/assets.sifchain.mainnet.json";
-import assetsSifchainDevnet from "./networks/sifchain/assets.sifchain.devnet.json";
-
+import { ACTIVE_NETWORKS, NetworkKind } from "~/entities";
 import {
-  parseConfig,
-  parseAssets,
-  CoreConfig,
   AssetConfig,
-} from "../utils/parseConfig";
-import { NetworkKind, IAsset, ACTIVE_NETWORKS } from "../entities";
-import { NetworkEnv } from "./getEnv";
+  CoreConfig,
+  parseAssets,
+  parseConfig,
+} from "~/utils/parseConfig";
+
 import { chainConfigByNetworkEnv } from "./chains";
+import { NetworkEnv } from "./getEnv";
+import devnetconfig from "./networks/config.devnet.json";
+import localnetconfig from "./networks/config.localnet.json";
+import mainnnetconfig from "./networks/config.mainnet.json";
+import testnetconfig from "./networks/config.testnet.json";
 
 type ConfigMap = Record<NetworkEnv, ReturnType<typeof parseConfig>>;
 
 type ChainNetwork = `${NetworkKind}.${NetworkEnv}`;
 
-type AssetMap = Record<ChainNetwork, IAsset[]>;
-
 export type AppConfig = ReturnType<typeof parseConfig>; // Will include other injectables
 
-export function getConfig(
+const REGISTRY_URL = "https://sifchain-registry.vercel.app";
+
+const fetchConfig = async (network: NetworkKind, env: NetworkEnv) =>
+  fetch(`${REGISTRY_URL}/api/${network}/${env}`)
+    .then((x) => x.json() as Promise<AssetConfig[]>)
+    .then(parseAssets);
+
+export async function getConfig(
   applicationNetworkEnv: NetworkEnv = "localnet",
   sifchainAssetTag: ChainNetwork = "sifchain.localnet",
   ethereumAssetTag: ChainNetwork = "ethereum.localnet",
-): AppConfig {
-  const assetMap: Partial<AssetMap> = {
-    "sifchain.localnet": parseAssets(
-      assetsSifchainLocalnet.assets as AssetConfig[],
-    ),
-    "sifchain.mainnet": parseAssets(
-      assetsSifchainMainnet.assets as AssetConfig[],
-    ),
-    "sifchain.devnet": parseAssets(
-      assetsSifchainDevnet.assets as AssetConfig[],
-    ),
-    "ethereum.localnet": parseAssets(
-      assetsEthereumLocalnet.assets as AssetConfig[],
-    ),
-    "ethereum.devnet": parseAssets(
-      assetsEthereumDevnet.assets as AssetConfig[],
-    ),
-    "ethereum.testnet": parseAssets(
-      assetsEthereumTestnet.assets as AssetConfig[],
-    ),
-    "ethereum.mainnet": parseAssets(
-      assetsEthereumMainnet.assets as AssetConfig[],
-    ),
-  };
+): Promise<AppConfig> {
+  const [_, env] = sifchainAssetTag.split(".") as [NetworkKind, NetworkEnv];
 
-  const sifchainAssets = assetMap[sifchainAssetTag] || [];
-  const ethereumAssets = assetMap[ethereumAssetTag] || [];
+  const [sifchainAssets, ethereumAssets] = await Promise.all([
+    fetchConfig("sifchain", env),
+    fetchConfig("ethereum", env),
+  ]);
 
   if (process.env["NODE_ENV"] === "development") {
     console.log(
@@ -134,7 +108,5 @@ export function getConfig(
     ),
   };
 
-  const currConfig = configMap[applicationNetworkEnv];
-
-  return currConfig;
+  return configMap[applicationNetworkEnv];
 }

@@ -7,14 +7,14 @@ export default function useQueryClient() {
   const { data: env } = useDexEnvironment();
 
   return useQuery(
-    ["sif-query-client", env?.kind],
+    ["sif-query-client", env?.sifRpcUrl],
     async () => {
-      const client = await createQueryClient(env?.sifnodeUrl ?? "");
+      const client = await createQueryClient(env?.sifRpcUrl ?? "");
 
       return client;
     },
     {
-      enabled: Boolean(env?.sifnodeUrl),
+      enabled: Boolean(env?.sifRpcUrl),
     },
   );
 }

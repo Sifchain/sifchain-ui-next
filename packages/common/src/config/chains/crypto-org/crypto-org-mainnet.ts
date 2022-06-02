@@ -1,4 +1,4 @@
-import { IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "~/entities";
 
 export const CRYPTO_ORG_MAINNET: IBCChainConfig = {
   chainType: "ibc",

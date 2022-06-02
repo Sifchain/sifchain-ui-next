@@ -1,30 +1,31 @@
-import { NetworkEnv, NETWORK_ENVS } from "../getEnv";
-import ethereum from "./ethereum";
-import sifchain from "./sifchain";
-import cosmoshub from "./cosmoshub";
-import iris from "./iris";
+import { ChainConfig, NetworkKind } from "~/entities";
+import { NetworkEnv, NETWORK_ENVS } from "~/config/getEnv";
+
 import akash from "./akash";
-import sentinel from "./sentinel";
-import cryptoOrg from "./crypto-org";
-import persistence from "./persistence";
-import regen from "./regen";
-import osmosis from "./osmosis";
-import terra from "./terra";
-import juno from "./juno";
-import ixo from "./ixo";
 import band from "./band";
-import likecoin from "./likecoin";
-import emoney from "./emoney";
-import starname from "./starname";
 import bitsong from "./bitsong";
 import cerberus from "./cerberus";
 import chihuahua from "./chihuahua";
 import comdex from "./comdex";
-import ki from "./ki";
-import stargaze from "./stargaze";
+import cosmoshub from "./cosmoshub";
+import cryptoOrg from "./crypto-org";
+import emoney from "./emoney";
+import ethereum from "./ethereum";
 import evmos from "./evmos";
+import iris from "./iris";
+import ixo from "./ixo";
+import juno from "./juno";
+import ki from "./ki";
+import likecoin from "./likecoin";
+import osmosis from "./osmosis";
+import persistence from "./persistence";
+import regen from "./regen";
 import secret from "./secret";
-import { ChainConfig, NetworkKind } from "../../entities";
+import sentinel from "./sentinel";
+import sifchain from "./sifchain";
+import stargaze from "./stargaze";
+import starname from "./starname";
+import terra from "./terra";
 
 export type ChainConfigByNetworkEnv = Record<
   NetworkEnv,

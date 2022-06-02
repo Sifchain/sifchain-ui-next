@@ -1,4 +1,4 @@
-import { IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "~/entities";
 
 export const EVMOS_MAINNET: IBCChainConfig = {
   chainType: "ibc",

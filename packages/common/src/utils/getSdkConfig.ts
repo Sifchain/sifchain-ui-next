@@ -1,8 +1,12 @@
-import { profileLookup, NetworkEnv } from "../config/getEnv";
+import { PROFILE_LOOKUP, NetworkEnv } from "../config/getEnv";
 import { getConfig } from "../config/getConfig";
 
-export function getSdkConfig(params: { environment: NetworkEnv }) {
-  const { tag, ethAssetTag, sifAssetTag } = profileLookup[params.environment];
+export async function getSdkConfig(params: { environment: NetworkEnv }) {
+  const {
+    kind: tag,
+    ethAssetTag,
+    sifAssetTag,
+  } = PROFILE_LOOKUP[params.environment];
 
   console.log(`Using environment ${tag}`, ethAssetTag, sifAssetTag);
 
@@ -10,5 +14,5 @@ export function getSdkConfig(params: { environment: NetworkEnv }) {
     throw new Error(`environment "${params.environment}" not found`);
   }
 
-  return getConfig(tag, sifAssetTag, ethAssetTag);
+  return await getConfig(tag, sifAssetTag, ethAssetTag);
 }

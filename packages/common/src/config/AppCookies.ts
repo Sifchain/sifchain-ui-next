@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { NetworkEnv } from "./getEnv";
-type CookieService = Pick<typeof Cookies, "set" | "get" | "remove">;
+
+export type CookieService = Pick<typeof Cookies, "set" | "get" | "remove">;
 
 const COOKIE_NAME_SIF_ENV = "__sif_env";
 

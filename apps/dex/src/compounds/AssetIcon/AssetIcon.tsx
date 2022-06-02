@@ -11,9 +11,8 @@ type Props = {
 };
 
 const AssetIcon: FC<Props> = (props) => {
-  const { isLoading, indexedBySymbol, indexedByDisplaySymbol } = useAssetsQuery(
-    props.network,
-  );
+  const { isLoading, indexedBySymbol, indexedByDisplaySymbol } =
+    useAssetsQuery();
 
   const asset = useMemo(
     () => indexedBySymbol[props.symbol] || indexedByDisplaySymbol[props.symbol],

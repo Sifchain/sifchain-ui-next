@@ -3,7 +3,7 @@ import {
   IAsset,
   Asset,
   NetworkKind,
-} from "../entities";
+} from "~/entities";
 
 type BaseAssetConfig = {
   name: string;
@@ -23,11 +23,6 @@ type TokenConfig = BaseAssetConfig & {
 type CoinConfig = BaseAssetConfig & {};
 
 export type AssetConfig = CoinConfig | TokenConfig;
-
-// TODO: not implemented yet
-function getMetamaskProvider() {
-  throw new Error("Not implemented");
-}
 
 /**
  * Convert asset config to label with appropriate capitalization
@@ -95,7 +90,8 @@ export type CoreConfig = {
   sifApiUrl: string;
   sifRpcUrl: string;
   sifChainId: string;
-  cryptoeconomicsUrl: string;
+  vanirUrl: string;
+  registryUrl: string;
   blockExplorerUrl: string;
   web3Provider: "metamask" | string;
   nativeAsset: string; // symbol
@@ -142,12 +138,9 @@ export function parseConfig(
     sifApiUrl: config.sifApiUrl,
     sifRpcUrl: config.sifRpcUrl,
     sifChainId: config.sifChainId,
-    cryptoeconomicsUrl: config.cryptoeconomicsUrl,
+    vanirUrl: config.vanirUrl,
+    registryUrl: config.registryUrl,
     blockExplorerUrl: config.blockExplorerUrl,
-    getWeb3Provider:
-      config.web3Provider === "metamask"
-        ? getMetamaskProvider
-        : async () => config.web3Provider,
     assets,
     nativeAsset,
     bridgebankContractAddress: config.bridgebankContractAddress,

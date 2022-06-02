@@ -1,4 +1,4 @@
-import { IBCChainConfig } from "../../../entities";
+import { IBCChainConfig } from "~/entities";
 
 export const BAND_TESTNET: IBCChainConfig = {
   chainType: "ibc",

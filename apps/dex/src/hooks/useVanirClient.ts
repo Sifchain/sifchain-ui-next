@@ -7,7 +7,7 @@ export default function useVanirClient() {
   const { data: env, isSuccess } = useDexEnvironment();
 
   return useQuery(
-    ["sif-vanir-client", env?.kind],
+    ["sif-vanir-client", env?.vanirUrl],
     () => createClient({ basePath: env?.vanirUrl ?? "" }),
     {
       enabled: isSuccess && typeof env?.vanirUrl === "string",
