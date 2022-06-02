@@ -338,5 +338,5 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
 };
 
 CommandPalette.defaultProps = {
-  placeholder: "Search tokens...",
+  placeholder: "Quick search...",
 };
