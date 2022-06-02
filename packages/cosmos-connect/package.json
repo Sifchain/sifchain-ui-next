@@ -17,21 +17,19 @@
   "dependencies": {
     "@cosmjs/proto-signing": "^0.28.4",
     "@cosmjs/stargate": "^0.28.4",
-    "@keplr-wallet/common": "^0.10.4",
-    "@keplr-wallet/stores": "^0.10.4",
-    "@keplr-wallet/wc-client": "^0.10.4",
-    "@keplr-wallet/wc-qrcode-modal": "^0.10.4",
+    "@keplr-wallet/common": "^0.10.5",
+    "@keplr-wallet/stores": "^0.10.5",
+    "@keplr-wallet/wc-client": "^0.10.5",
+    "@keplr-wallet/wc-qrcode-modal": "^0.10.5",
     "@walletconnect/client": "^1.7.8",
-    "@walletconnect/web3-provider": "^1.7.8",
-    "ethers": "^5.6.4",
     "eventemitter3": "^4.0.7",
     "react": "^18.1.0"
   },
   "devDependencies": {
-    "@keplr-wallet/types": "^0.10.4",
+    "@keplr-wallet/types": "^0.10.5",
     "@tsconfig/node16-strictest-esm": "^1.0.1",
-    "@types/react": "^18.0.9",
+    "@types/react": "^18.0.10",
     "@walletconnect/types": "^1.7.8",
-    "zx": "^6.1.0"
+    "zx": "^6.2.0"
   }
 }
