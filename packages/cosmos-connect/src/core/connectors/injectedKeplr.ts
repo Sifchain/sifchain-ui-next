@@ -39,7 +39,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
     await this.#keplr!.experimentalSuggestChain(
-      this.#chainStore.getChain(chainId),
+      this.#chainStore.getChain(chainId).raw,
     );
     await this.#keplr!.enable(chainId);
     return this.#keplr!.getOfflineSignerAuto(chainId);
