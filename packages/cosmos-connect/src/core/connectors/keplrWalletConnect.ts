@@ -18,6 +18,8 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   readonly id = "keplrWalletConnect";
   readonly name = "Wallet Connect";
 
+  readonly #qrCodeModal = new KeplrQRCodeModalV1(this.options.modalUiOptions);
+
   readonly #walletConnect = new WalletConnect({
     bridge: "https://bridge.walletconnect.org",
     signingMethods: [
@@ -25,7 +27,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
       "keplr_sign_amino_wallet_connect_v1",
     ],
     clientMeta: this.options.clientMeta,
-    qrcodeModal: new KeplrQRCodeModalV1(this.options.modalUiOptions),
+    qrcodeModal: this.#qrCodeModal,
   });
 
   readonly #keplr = new KeplrWalletConnectV1(this.#walletConnect, {
@@ -62,6 +64,10 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   async connect() {
     if (this.#walletConnect.connected) return;
+
+    if (this.#walletConnect.pending) {
+      this.#qrCodeModal.open(this.#walletConnect.uri, () => {});
+    }
 
     await this.#walletConnect.connect();
   }
