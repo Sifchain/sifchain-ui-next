@@ -186,7 +186,7 @@ const WalletButton = () => {
         onClick={useCallback(() => setIsModalVisible(true), [])}
         className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
       >
-        Manage Wallets Connection
+        Manage Wallet Connections
       </button>
       <WalletChooserModal
         visible={isModalVisible}
