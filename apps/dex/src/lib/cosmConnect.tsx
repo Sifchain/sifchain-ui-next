@@ -7,7 +7,17 @@ import type { PropsWithChildren } from "react";
 
 const connectors = [
   new InjectedKeplrConnector({ chainInfos: [] }),
-  new KeplrWalletConnectConnector({ chainInfos: [] }),
+  new KeplrWalletConnectConnector({
+    chainInfos: [],
+    clientMeta: {
+      name: "Sifchain",
+      description: "The omni chain",
+      url: "https://sifchain.network",
+      icons: [
+        "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
+      ],
+    },
+  }),
 ];
 
 export const CosmConnectProvider = (props: PropsWithChildren<{}>) => (

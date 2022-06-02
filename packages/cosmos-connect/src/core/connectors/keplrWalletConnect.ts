@@ -50,6 +50,11 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   constructor(options: KeplrWalletConnectConnectorOptions) {
     super(options);
+
+    // TODO: the clientMeta options in constructor is always ignored for some reason
+    // @ts-ignore
+    this.#walletConnect._clientMeta = this.options.clientMeta;
+
     this.#walletConnect.on("connect", (error) => {
       if (error === undefined) this.emit("connect");
     });
