@@ -1,0 +1,21 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "pnpx playwright test"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [],
+  "author": "Sifchain core",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@playwright/test": "^1.22.2",
+    "@tsconfig/node16-strictest-esm": "^1.0.1",
+    "@types/node": "^17.0.38"
+  }
+}
