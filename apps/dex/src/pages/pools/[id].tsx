@@ -1,4 +1,4 @@
-import { Amount, AssetAmount, formatAssetAmount } from "@sifchain/common";
+import { AssetAmount, formatAssetAmount } from "@sifchain/common";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -68,7 +68,7 @@ const PoolDetails: NextPage = () => {
         }`,
       },
     ];
-  }, [pool]);
+  }, [externalAssetSymbol, pool]);
 
   return (
     <MainLayout title={`Pools - ${externalAssetSymbol}`}>

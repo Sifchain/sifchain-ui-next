@@ -1,12 +1,17 @@
+import { Dialog, Transition } from "@headlessui/react";
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
+import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import { Logo, ThemeSwitcher } from "@sifchain/ui";
 import { formatNumberAsCurrency } from "@sifchain/ui/src/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-
+import { Fragment, useCallback, useState } from "react";
+import {
+  useConnect as useEtherConnect,
+  useDisconnect as useEtherDisconnect,
+} from "wagmi";
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
@@ -104,7 +109,7 @@ const Aside = () => {
           <GlobalSearch />
         </section>
         <section>
-          <ConnectButton />
+          <WalletButton />
         </section>
         <section className="flex flex-1">
           <nav className="w-full">
@@ -122,7 +127,7 @@ const Aside = () => {
                       )}
                     >
                       <span className="h-6 w-6 grid place-items-center">
-                        <Image src={icon} />
+                        <Image alt={title} src={icon} />
                       </span>
                       <span className="text-sifgray-200 font-semibold text-sm">
                         {title}
@@ -139,7 +144,7 @@ const Aside = () => {
             {rowanStats.map(({ id, icon, label }) => (
               <li key={id} className="flex items-center gap-3 p-2">
                 <span className="h-6 w-6 grid place-items-center">
-                  <Image src={icon} />
+                  <Image alt={id} src={icon} />
                 </span>
                 <span className="text-sifgray-200 font-semibold text-sm tracking-widest">
                   {label}
@@ -172,10 +177,119 @@ const Aside = () => {
 
 export default Aside;
 
-function ConnectButton({}) {
+const WalletButton = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   return (
-    <button className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full">
-      Connect Wallets
-    </button>
+    <>
+      <button
+        onClick={useCallback(() => setIsModalVisible(true), [])}
+        className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+      >
+        Manage Wallet Connections
+      </button>
+      <WalletChooserModal
+        visible={isModalVisible}
+        onCloseRequest={useCallback(() => setIsModalVisible(false), [])}
+      />
+    </>
   );
-}
+};
+
+const CosmConnectButtons = () => {
+  const { connectors, activeConnector, connect, isConnected, disconnect } =
+    useCosmConnect();
+
+  return (
+    <>
+      {isConnected ? (
+        <button
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          onClick={() => disconnect(activeConnector!)}
+          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+        >
+          Disconnect Cosmos Wallet
+        </button>
+      ) : (
+        connectors.map((x) => (
+          <button
+            key={x.id}
+            onClick={() => connect(x)}
+            className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+          >
+            Connect Cosmos {x.name}
+          </button>
+        ))
+      )}
+    </>
+  );
+};
+
+const EtherConnectButtons = () => {
+  const { connectors, connect, isConnected } = useEtherConnect();
+  const { disconnect } = useEtherDisconnect();
+
+  return (
+    <>
+      {isConnected ? (
+        <button
+          onClick={() => disconnect()}
+          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+        >
+          Disconnect Ethereum Wallet
+        </button>
+      ) : (
+        connectors.map((x) => (
+          <button
+            key={x.id}
+            onClick={() => connect(x)}
+            className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+          >
+            Connect Eth {x.name}
+          </button>
+        ))
+      )}
+    </>
+  );
+};
+
+const WalletChooserModal = (props: {
+  visible: boolean;
+  onCloseRequest: () => unknown;
+}) => {
+  return (
+    <Transition appear show={props.visible} as={Fragment}>
+      <Dialog onClose={props.onCloseRequest}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50" />
+        </Transition.Child>
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <CosmConnectButtons />
+                <EtherConnectButtons />
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};

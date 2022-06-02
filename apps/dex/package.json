@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
     "@sifchain/common": "workspace:*",
+    "@sifchain/cosmos-connect": "workspace:*",
     "@sifchain/proto-types": "workspace:*",
     "@sifchain/stargate": "workspace:*",
     "@sifchain/ui": "workspace:*",
@@ -31,7 +32,8 @@
     "react-dom": "18.1.0",
     "react-hook-form": "^7.31.2",
     "react-markdown": "^8.0.3",
-    "react-query": "^3.39.0"
+    "react-query": "^3.39.0",
+    "wagmi": "^0.4.3"
   },
   "devDependencies": {
     "@types/node": "17.0.29",

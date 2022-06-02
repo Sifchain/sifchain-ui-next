@@ -1,1 +1,1 @@
-export type SafeKeyof<T> = T extends Record<string, any> ? keyof T : never;
+export type SafeKeyof<T> = T extends Record<string, unknown> ? keyof T : never;

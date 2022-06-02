@@ -18,6 +18,8 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   readonly id = "keplrWalletConnect";
   readonly name = "Wallet Connect";
 
+  readonly #qrCodeModal = new KeplrQRCodeModalV1(this.options.modalUiOptions);
+
   readonly #walletConnect = new WalletConnect({
     bridge: "https://bridge.walletconnect.org",
     signingMethods: [
@@ -25,7 +27,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
       "keplr_sign_amino_wallet_connect_v1",
     ],
     clientMeta: this.options.clientMeta,
-    qrcodeModal: new KeplrQRCodeModalV1(this.options.modalUiOptions),
+    qrcodeModal: this.#qrCodeModal,
   });
 
   readonly #keplr = new KeplrWalletConnectV1(this.#walletConnect, {
@@ -48,6 +50,11 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   constructor(options: KeplrWalletConnectConnectorOptions) {
     super(options);
+
+    // TODO: the clientMeta options in constructor is always ignored for some reason
+    // @ts-ignore
+    this.#walletConnect._clientMeta = this.options.clientMeta;
+
     this.#walletConnect.on("connect", (error) => {
       if (error === undefined) this.emit("connect");
     });
@@ -63,14 +70,15 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   async connect() {
     if (this.#walletConnect.connected) return;
 
+    if (this.#walletConnect.pending) {
+      this.#qrCodeModal.open(this.#walletConnect.uri, () => {});
+    }
+
     await this.#walletConnect.connect();
   }
 
   async disconnect() {
     await this.#walletConnect.killSession();
-    await new Promise<void>((resolve) => {
-      this.#walletConnect.on("disconnect", () => resolve());
-    });
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
