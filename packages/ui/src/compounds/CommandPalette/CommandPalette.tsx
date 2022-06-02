@@ -1,8 +1,7 @@
 import { Combobox, Dialog, Transition } from "@headlessui/react";
-import { FolderIcon } from "@heroicons/react/outline";
-import { SearchIcon } from "@heroicons/react/solid";
+import { FolderIcon, SearchIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import { prop, uniq } from "rambda";
+import { prop } from "rambda";
 import { uniqBy } from "ramda";
 import {
   ComponentProps,
