@@ -28,7 +28,7 @@ const connectors = [
   }),
 ];
 
-export const CosmConnectProvider = (props: PropsWithChildren<{}>) => (
+export const CosmConnectProvider = (props: PropsWithChildren<unknown>) => (
   <BaseCosmConnectProvider
     connectors={connectors}
     persistOptions={{
