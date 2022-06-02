@@ -74,9 +74,6 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   async disconnect() {
     await this.#walletConnect.killSession();
-    await new Promise<void>((resolve) => {
-      this.#walletConnect.on("disconnect", () => resolve());
-    });
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
