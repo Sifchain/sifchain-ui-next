@@ -43,7 +43,7 @@ export const useSigner = (
     if (options.enabled) {
       fetch();
     }
-  }, [activeConnector, options.enabled]);
+  }, [activeConnector, fetch, options.enabled]);
 
   return { signer, status };
 };
@@ -67,7 +67,7 @@ export const useSigningStargateClient = (
     if (options.enabled) {
       fetch();
     }
-  }, [activeConnector, options.enabled]);
+  }, [activeConnector, fetch, options.enabled]);
 
   return { client, status };
 };
