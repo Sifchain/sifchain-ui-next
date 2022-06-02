@@ -200,28 +200,23 @@ const CosmConnectButtons = () => {
   const { connectors, activeConnector, connect, isConnected, disconnect } =
     useCosmConnect();
 
-  return (
-    <>
-      {isConnected ? (
-        <button
-          onClick={() => disconnect(activeConnector!)}
-          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-        >
-          Disconnect Cosmos Wallet
-        </button>
-      ) : (
-        connectors.map((x) => (
-          <>
-            <button
-              onClick={() => connect(x)}
-              className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-            >
-              Connect Cosmos {x.name}
-            </button>
-          </>
-        ))
-      )}
-    </>
+  return isConnected ? (
+    <button
+      onClick={() => disconnect(activeConnector!)}
+      className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+    >
+      Disconnect Cosmos Wallet
+    </button>
+  ) : (
+    connectors.map((x) => (
+      <button
+        key={x.id}
+        onClick={() => connect(x)}
+        className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+      >
+        Connect Cosmos {x.name}
+      </button>
+    ))
   );
 };
 
@@ -229,28 +224,23 @@ const EtherConnectButtons = () => {
   const { connectors, connect, isConnected } = useEtherConnect();
   const { disconnect } = useEtherDisconnect();
 
-  return (
-    <>
-      {isConnected ? (
-        <button
-          onClick={() => disconnect()}
-          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-        >
-          Disconnect Ethereum Wallet
-        </button>
-      ) : (
-        connectors.map((x) => (
-          <>
-            <button
-              onClick={() => connect(x)}
-              className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-            >
-              Connect Eth {x.name}
-            </button>
-          </>
-        ))
-      )}
-    </>
+  return isConnected ? (
+    <button
+      onClick={() => disconnect()}
+      className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+    >
+      Disconnect Ethereum Wallet
+    </button>
+  ) : (
+    connectors.map((x) => (
+      <button
+        key={x.id}
+        onClick={() => connect(x)}
+        className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
+      >
+        Connect Eth {x.name}
+      </button>
+    ))
   );
 };
 
