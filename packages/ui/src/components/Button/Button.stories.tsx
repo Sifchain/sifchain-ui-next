@@ -13,22 +13,33 @@ export const Primary = Template.bind({});
 
 Primary.args = {
   variant: "primary",
-  children: "Click me",
+  children: "Connect Wallets",
 };
 
 export const Secondary = Template.bind({});
+
 Secondary.args = {
-  children: "Click me",
+  children: "Connect Wallets",
+  variant: "secondary",
+};
+
+export const Disabled = Template.bind({});
+
+Disabled.args = {
+  children: "Connect Wallets",
+  disabled: true,
 };
 
 export const Large = Template.bind({});
+
 Large.args = {
   size: "lg",
-  children: "Click me",
+  children: "Connect Wallets",
 };
 
 export const Small = Template.bind({});
+
 Small.args = {
   size: "sm",
-  children: "Click me",
+  children: "Connect Wallets",
 };
