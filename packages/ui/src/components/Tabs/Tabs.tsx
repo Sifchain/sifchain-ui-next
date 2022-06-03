@@ -23,7 +23,7 @@ const PositionIndicator: FC<{
   const leftOffset = (props.itemWidth - props.padding) * props.selectedIndex;
 
   return (
-    <label
+    <span
       className={clsx(
         "absolute bg-gray-600 transition-all rounded translate-x-0 duration-200",
         {
@@ -54,7 +54,7 @@ export function Tabs<T = any>(props: TabsProps<T>) {
         }
       }}
       className={clsx(
-        "relative border p-2 rounded-md bg-gray-900 flex overflow-hidden",
+        "relative p-2 rounded-md bg-gray-900 flex overflow-hidden",
         props.className,
       )}
     >

@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { ComponentStory, ComponentMeta } from "@storybook/react";
 import {
   DocumentAddIcon,
   FolderAddIcon,
@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/outline";
 
 import { CommandPalette } from "./";
-import { CommandPaletteEntry, QuickActionEntry } from "./CommandPalette";
+import type { CommandPaletteEntry, QuickActionEntry } from "./CommandPalette";
 
 export default {
   title: "components/CommandPalette",
@@ -37,4 +37,5 @@ export const Default = Template.bind({});
 Default.args = {
   quickActions,
   entries,
+  query: "",
 };
