@@ -23,5 +23,5 @@ module.exports = {
       },
     },
   ],
-  staticDirs: ["../src/assets", "../public"],
+  staticDirs: ["../public"],
 };
