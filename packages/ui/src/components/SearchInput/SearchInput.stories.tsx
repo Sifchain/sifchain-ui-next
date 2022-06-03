@@ -17,4 +17,6 @@ const Template: ComponentStory<typeof SearchInput> = (args) => (
 
 export const Default = Template.bind({});
 
-Default.args = {};
+Default.args = {
+  placeholder: "Quick search...",
+};
