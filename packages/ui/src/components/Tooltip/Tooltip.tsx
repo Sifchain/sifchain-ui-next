@@ -45,7 +45,7 @@ export const Tooltip: FC<TooltipProps> = ({
   const floatingProps = getFloatingProps({
     ref: floating,
     className:
-      "bg-sifgray-800 text-sifgray-50 rounded p-1 px-1.5 text-xs shadow-sm shadow-white/20",
+      "bg-gray-800 text-gray-50 rounded p-1 px-1.5 text-xs shadow-sm shadow-white/20",
     style: {
       position: strategy,
       top: y ?? "",

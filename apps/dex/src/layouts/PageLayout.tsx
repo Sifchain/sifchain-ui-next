@@ -12,13 +12,13 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
 
   return (
     <>
-      <header className="md:flex items-center p-2 bg-slate-200 dark:bg-sifgray-900 gap-2">
+      <header className="md:flex items-center p-2 bg-slate-200 dark:bg-gray-900 gap-2">
         {props.heading && (
           <nav className="flex items-center gap-2">
             {props.withBackNavigation && (
               <BackButton onClick={() => router.back()} />
             )}
-            <span className="py-0.5 px-2 rounded text-sifgray-900 dark:text-sifgray-300 before:content-['/_']">
+            <span className="py-0.5 px-2 rounded text-gray-900 dark:text-gray-300 before:content-['/_']">
               {props.heading}
             </span>
           </nav>

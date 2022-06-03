@@ -87,7 +87,7 @@ const Aside = () => {
       className={clsx(
         [
           "fixed w-full md:max-w-[280px] h-screen transition-transform ease",
-          "bg-sifgray-900 p-4 sm:shadow-lg shadow-slate-900",
+          "bg-gray-900 p-4 sm:shadow-lg shadow-slate-900",
         ],
         {
           "-translate-x-[100%]": !isOpen,
@@ -120,16 +120,16 @@ const Aside = () => {
                     <a
                       role="navigation"
                       className={clsx(
-                        "flex items-center gap-4 p-2 hover:bg-sifgray-800 hover:opacity-80 rounded-md transition-all",
+                        "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
                         {
-                          "bg-sifgray-600": currentPath === href,
+                          "bg-gray-600": currentPath === href,
                         },
                       )}
                     >
                       <span className="h-6 w-6 grid place-items-center">
                         <Image alt={title} src={icon} />
                       </span>
-                      <span className="text-sifgray-200 font-semibold text-sm">
+                      <span className="text-gray-200 font-semibold text-sm">
                         {title}
                       </span>
                     </a>
@@ -146,7 +146,7 @@ const Aside = () => {
                 <span className="h-6 w-6 grid place-items-center">
                   <Image alt={id} src={icon} />
                 </span>
-                <span className="text-sifgray-200 font-semibold text-sm tracking-widest">
+                <span className="text-gray-200 font-semibold text-sm tracking-widest">
                   {label}
                 </span>
               </li>
@@ -157,16 +157,16 @@ const Aside = () => {
             role="button"
           >
             <div className="flex items-center gap-3">
-              <span className="grid place-items-center text-sifgray-50">
+              <span className="grid place-items-center text-gray-50">
                 <MoonIcon className="h-6 w-6 scale-90 origin-center" />
               </span>
-              <span className="text-sifgray-200 font-semibold text-sm tracking-widest">
+              <span className="text-gray-200 font-semibold text-sm tracking-widest">
                 Dark mode
               </span>
             </div>
             <ThemeSwitcher />
           </label>
-          <div className="text-center text-sm text-sifgray-300 font-mono p-1">
+          <div className="text-center text-sm text-gray-300 font-mono p-1">
             v2.2.105 © {new Date().getFullYear()} Sifchain
           </div>
         </section>

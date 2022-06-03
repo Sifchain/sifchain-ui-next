@@ -11,7 +11,7 @@ export type Props = PropsWithChildren<{
 const Shell = tw.div`
   min-h-screen w-full bg-slate-100 flex
   dark:bg-gradient-to-b
-  dark:from-sifgray-900 dark:to-sifgray-900/95 dark:text-slate-100 subpixel-antialiased
+  dark:from-gray-900 dark:to-gray-900/95 dark:text-slate-100 subpixel-antialiased
 `;
 
 const MainLayout: FC<Props> = (props) => {

@@ -7,7 +7,7 @@ export const SearchInput: FC<Props> = ({ className, ...props }) => {
   return (
     <input
       className={clsx(
-        "!border-sifgray-700 !bg-sifgray-750 !text-sifgray-50 rounded-xl opacity-90 hover:opacity-100",
+        "!border-gray-700 !bg-gray-750 !text-gray-50 rounded-xl opacity-90 hover:opacity-100",
       )}
       {...props}
     />

@@ -31,9 +31,7 @@ export default {
       </svg>
       <span>
         <strong>Sifchain SDK</strong>{" "}
-        <span className="text-sifgray-300 dark:text-sifgray-200">
-          (preview)
-        </span>
+        <span className="text-gray-300 dark:text-gray-200">(preview)</span>
       </span>
     </>
   ),

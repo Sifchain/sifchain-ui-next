@@ -76,7 +76,7 @@ const PoolDetails: NextPage = () => {
         withBackNavigation
         heading={
           <>
-            Pools / <span className="text-sifgray-50">{poolSymbol}</span>
+            Pools / <span className="text-gray-50">{poolSymbol}</span>
           </>
         }
       >
@@ -95,7 +95,7 @@ const PoolDetails: NextPage = () => {
               </section>
               <section className="grid gap-8">
                 <header>
-                  <h3 className="text-sifgray-50 font-semibold text-base">
+                  <h3 className="text-gray-50 font-semibold text-base">
                     Pool stats
                   </h3>
                 </header>
@@ -123,7 +123,7 @@ const TokenBadge: FC<{ symbol: string; priceUsd: number }> = ({
   priceUsd,
 }) => {
   return (
-    <div className="p-2 bg-sifgray-800 rounded-lg flex items-center gap-2 text-sm font-semibold">
+    <div className="p-2 bg-gray-800 rounded-lg flex items-center gap-2 text-sm font-semibold">
       <AssetIcon symbol={symbol} network="sifchain" size="sm" />
       <span>~=</span>
       {formatNumberAsCurrency(priceUsd)}

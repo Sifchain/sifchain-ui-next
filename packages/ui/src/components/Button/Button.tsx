@@ -11,8 +11,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       {...props}
       ref={ref}
-      className={clsx("bg-sifgray-200 rounded-lg place-items-center", {
-        "bg-indigo-600 dark:bg-slate-300 text-sifgray-50":
+      className={clsx("bg-gray-200 rounded-lg place-items-center", {
+        "bg-indigo-600 dark:bg-slate-300 text-gray-50":
           props.variant === "primary",
         "text-xs py-1 px-1.5": props.size === "xs",
         "text-sm py-1.5 px-2.5": props.size === "sm",

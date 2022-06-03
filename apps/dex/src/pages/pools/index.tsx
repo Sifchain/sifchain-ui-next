@@ -67,7 +67,7 @@ const PoolItem: FC<{
   return (
     <Link href={`/pools/${asset?.displaySymbol}`}>
       <li
-        className="rounded-lg bg-sifgray-800 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
+        className="rounded-lg bg-gray-800 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
         role="button"
       >
         <div className="flex gap-1 items-center p-4 font-semibold">
@@ -76,7 +76,7 @@ const PoolItem: FC<{
           <AssetIcon network="sifchain" symbol={asset.symbol} size="md" />
           {asset.displaySymbol.toUpperCase()}
         </div>
-        <ul className="grid gap-2 p-4 bg-sifgray-850 text-sm">
+        <ul className="grid gap-2 p-4 bg-gray-850 text-sm">
           {statSummary.map((stat) => (
             <li key={stat.label} className="flex justify-between">
               <span className="text-gray-300 font-normal">{stat.label}</span>

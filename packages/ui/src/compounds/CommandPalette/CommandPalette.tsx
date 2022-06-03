@@ -118,7 +118,7 @@ export function useRecentEntries<TAdapter extends Storage>(
 }
 
 const TwSearchIcon = tw(SearchIcon)`
-  pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-sifgray-300
+  pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-300
 `;
 
 export const CommandPalette: FC<CommandPaletteProps> = (props) => {
@@ -145,7 +145,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
 
   const inputClassName = clsx(
     "h-12 w-full border-0 bg-transparent pl-11 pr-4",
-    "text-white placeholder-sifgray-300 focus:ring-0 sm:text-sm",
+    "text-white placeholder-gray-300 focus:ring-0 sm:text-sm",
   );
 
   return (
@@ -161,7 +161,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
           readOnly
           className={clsx(
             inputClassName,
-            "!border-sifgray-700 !bg-sifgray-750 !text-sifgray-50 rounded-xl opacity-90 hover:opacity-100",
+            "!border-gray-700 !bg-gray-750 !text-gray-50 rounded-xl opacity-90 hover:opacity-100",
           )}
           placeholder={props.placeholder}
           onClick={setIsOpen.bind(null, true)}
@@ -203,7 +203,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
               <Dialog.Panel
                 className={`
                   m-auto mt-[10vh] md:mt-[25vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 
-                  overflow-hidden rounded-xl bg-sifgray-900 shadow-2xl transition-all
+                  overflow-hidden rounded-xl bg-gray-900 shadow-2xl transition-all
                 `}
               >
                 <Combobox onChange={props.onChange} value={props.value}>
@@ -225,7 +225,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                     >
                       <li className="p-2">
                         {props.query === "" && (
-                          <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-sifgray-50">
+                          <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-50">
                             Recent searches
                           </h2>
                         )}
@@ -289,7 +289,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                           "h-6 w-6 flex-none",
                                           active
                                             ? "text-white"
-                                            : "text-sifgray-300",
+                                            : "text-gray-300",
                                         )}
                                         aria-hidden="true"
                                       />
@@ -318,7 +318,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                   {props.query !== "" && filteredEntries.length === 0 && (
                     <label className="py-14 px-6 text-center sm:px-14">
                       <FolderIcon
-                        className="mx-auto h-6 w-6 text-sifgray-300"
+                        className="mx-auto h-6 w-6 text-gray-300"
                         aria-hidden="true"
                       />
                       <p className="mt-4 text-sm text-gray-200">

@@ -25,7 +25,7 @@ const PositionIndicator: FC<{
   return (
     <label
       className={clsx(
-        "absolute bg-sifgray-600 transition-all rounded translate-x-0 duration-200",
+        "absolute bg-gray-600 transition-all rounded translate-x-0 duration-200",
         {
           "opacity-0": props.selectedIndex === -1,
         },
@@ -54,7 +54,7 @@ export function Tabs<T = any>(props: TabsProps<T>) {
         }
       }}
       className={clsx(
-        "relative border p-2 rounded-md bg-sifgray-900 flex overflow-hidden",
+        "relative border p-2 rounded-md bg-gray-900 flex overflow-hidden",
         props.className,
       )}
     >
@@ -76,9 +76,7 @@ export function Tabs<T = any>(props: TabsProps<T>) {
           key={index}
           className={clsx(
             "flex-1 py-2.5 rounded z-10 font-semibold text-sm",
-            index === props.selectedIndex
-              ? "text-sifgray-50"
-              : "text-sifgray-600",
+            index === props.selectedIndex ? "text-gray-50" : "text-gray-600",
             typeof props.itemClassName === "function"
               ? props.itemClassName(index)
               : props.itemClassName,
