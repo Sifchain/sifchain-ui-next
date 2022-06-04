@@ -2,7 +2,6 @@
  * @type {import("storybook/builder-vite").StorybookViteConfig}
  */
 module.exports = {
-  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   framework: "@storybook/react",
   addons: [
     "@storybook/addon-links",
@@ -23,5 +22,6 @@ module.exports = {
       },
     },
   ],
+  stories: ["../src/**/*.stories.@(js|jsx|ts|tsx|mdx)"],
   staticDirs: ["../public"],
 };

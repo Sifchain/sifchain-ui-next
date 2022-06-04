@@ -1,8 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
-import { Logo, ThemeSwitcher } from "@sifchain/ui";
-import { formatNumberAsCurrency } from "@sifchain/ui/src/utils";
+import { formatNumberAsCurrency, Logo, ThemeSwitcher } from "@sifchain/ui";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
 } from "wagmi";
+
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
