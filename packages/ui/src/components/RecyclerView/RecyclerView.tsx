@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import _debounce from "lodash.debounce";
-import { debounceRaf } from "~/utils/functions";
+import { debounceRaf } from "../../utils/functions";
 
 type Props<
   T extends {},
