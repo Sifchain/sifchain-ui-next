@@ -342,6 +342,7 @@ importers:
       '@storybook/theming': ^6.5.6
       '@tailwindcss/forms': ^0.5.2
       '@tailwindcss/typography': ^0.5.2
+      '@types/lodash.debounce': ^4.0.7
       '@types/ramda': ^0.28.13
       '@types/react': ^18.0.9
       '@types/react-dom': ^18.0.4
@@ -349,6 +350,7 @@ importers:
       babel-loader: ^8.2.5
       clsx: ^1.1.1
       commander: ^9.3.0
+      lodash.debounce: ^4.0.8
       postcss: ^8.4.14
       rambda: ^7.1.4
       ramda: ^0.28.0
@@ -366,6 +368,7 @@ importers:
       '@headlessui/react': 1.6.4_ef5jwxihqo6n7gxfmzogljlgcm
       '@heroicons/react': 1.0.6_react@18.1.0
       clsx: 1.1.1
+      lodash.debounce: 4.0.8
       rambda: 7.1.4
       ramda: 0.28.0
       react: 18.1.0
@@ -384,6 +387,7 @@ importers:
       '@storybook/theming': 6.5.6_ef5jwxihqo6n7gxfmzogljlgcm
       '@tailwindcss/forms': 0.5.2_tailwindcss@3.0.24
       '@tailwindcss/typography': 0.5.2_tailwindcss@3.0.24
+      '@types/lodash.debounce': 4.0.7
       '@types/ramda': 0.28.13
       '@types/react': 18.0.9
       '@types/react-dom': 18.0.4
@@ -6228,6 +6232,12 @@ packages:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
       '@types/node': 17.0.31
+
+  /@types/lodash.debounce/4.0.7:
+    resolution: {integrity: sha512-X1T4wMZ+gT000M2/91SYj0d/7JfeNZ9PeeOldSNoE/lunLeQXKvkmIumI29IaKMotU/ln/McOIvgzZcQ/3TrSA==}
+    dependencies:
+      '@types/lodash': 4.14.182
+    dev: true
 
   /@types/lodash/4.14.182:
     resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
