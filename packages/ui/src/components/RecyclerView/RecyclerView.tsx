@@ -8,9 +8,9 @@ import React, {
   useState,
 } from "react";
 import _debounce from "lodash.debounce";
-import { debounceRaf } from "../../utils/functions";
+import { debounceRaf } from "~/utils/functions";
 
-type Props<
+export type RecyclerViewProps<
   T extends {},
   U extends keyof ReactHTML = "div",
 > = JSX.IntrinsicElements[U] & {
@@ -24,7 +24,7 @@ type Props<
 };
 
 export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
-  props: Props<T, U>,
+  props: RecyclerViewProps<T, U>,
 ) => {
   const {
     data,
