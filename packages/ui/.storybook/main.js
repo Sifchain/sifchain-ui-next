@@ -1,6 +1,5 @@
-/**
- * @type {import("storybook/builder-vite").StorybookViteConfig}
- */
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+
 module.exports = {
   framework: "@storybook/react",
   addons: [
@@ -22,6 +21,10 @@ module.exports = {
       },
     },
   ],
+  webpackFinal: async (config) => {
+    config.resolve.plugins.push(new TsconfigPathsPlugin());
+    return config;
+  },
   stories: ["../src/**/*.stories.@(js|jsx|ts|tsx|mdx)"],
   staticDirs: ["../public"],
 };
