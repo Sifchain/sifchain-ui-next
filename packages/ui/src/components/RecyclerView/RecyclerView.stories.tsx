@@ -17,7 +17,7 @@ const Template: ComponentStory<typeof RecyclerView> = (args) => {
   return (
     <RecyclerView
       as="ul"
-      className="bg-slate-100 ring-1"
+      className="bg-slate-900/40 text-white ring-1 divide-y-2 divide-gray-500"
       data={ITEMS}
       visibleRows={20}
       rowHeight={50}
@@ -25,7 +25,7 @@ const Template: ComponentStory<typeof RecyclerView> = (args) => {
       renderItem={(item) => (
         <li
           role="button"
-          className="grid place-items-center ring-1 hover:opacity-80 hover:bg-blue-300/60 transition-all"
+          className="grid place-items-center hover:opacity-80 hover:bg-blue-300/60 transition-all"
         >
           Row: {item.value}
         </li>

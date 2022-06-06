@@ -10,7 +10,7 @@ import { CommandPalette } from "./";
 import type { CommandPaletteEntry, QuickActionEntry } from "./CommandPalette";
 
 export default {
-  title: "components/CommandPalette",
+  title: "compounds/CommandPalette",
   component: CommandPalette,
 } as ComponentMeta<typeof CommandPalette>;
 

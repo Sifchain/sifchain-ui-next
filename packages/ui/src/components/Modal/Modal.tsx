@@ -1,21 +1,20 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, PropsWithChildren, ReactNode } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ArrowLeftIcon, XIcon } from "@heroicons/react/outline";
 import type { FC } from "react";
 import clsx from "clsx";
 
-export type ModalProps = {
+export type ModalProps = PropsWithChildren<{
   isOpen: boolean;
-  onClose: (isOpen: boolean) => void;
   title?: ReactNode;
   subTitle?: ReactNode;
   hideCloseButton?: boolean;
   className?: string;
-  onGoBack?: () => void;
-};
+  onClose: (isOpen: boolean) => void;
+  onGoBack?: null | undefined | (() => void);
+}>;
 
-export const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
+export const Modal: FC<ModalProps> = (props) => {
   return (
     <Transition.Root show={props.isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={props.onClose}>
@@ -49,10 +48,10 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
                 )}
               >
                 {!props.hideCloseButton && (
-                  <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+                  <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4 z-10">
                     <button
                       type="button"
-                      className="bg-white dark:bg-gray-800 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      className="bg-white dark:bg-gray-800 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring focus:ring-offset-2 focus:ring-gray-500"
                       onClick={props.onClose.bind(null, false)}
                     >
                       <span className="sr-only">Close</span>
@@ -65,8 +64,8 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
                     as="h3"
                     className="text-xl relative text-center px-4 leading-6 font-semibold text-gray-900 dark:text-gray-50 flex items-center gap-2"
                   >
-                    {props.onGoBack && (
-                      <button className="text-gray-50">
+                    {typeof props.onGoBack === "function" && (
+                      <button className="text-gray-50" onClick={props.onGoBack}>
                         <ArrowLeftIcon className="h-6 w-6" />
                       </button>
                     )}
