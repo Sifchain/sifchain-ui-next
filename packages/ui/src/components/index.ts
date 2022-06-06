@@ -1,4 +1,5 @@
 export * from "./atoms";
+export * from "./icons";
 export * from "./Button";
 export * from "./SearchInput";
 export * from "./ButtonGroup";

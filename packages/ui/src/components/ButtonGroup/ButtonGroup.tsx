@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import { type FC, useState } from "react";
 
-export type TabItem<T> = {
+export type Option<T> = {
   label: string;
   value: T;
 };
 
-export type TabsProps<T> = {
-  data: TabItem<T>[];
+export type ButtonGroupProps<T> = {
+  options: Option<T>[];
   selectedIndex: number;
   onChange: (index: number) => void;
   className?: string;
@@ -15,12 +15,14 @@ export type TabsProps<T> = {
   size?: "sm" | "md";
 };
 
-const PositionIndicator: FC<{
+type IndicatorProps = {
   selectedIndex: number;
   itemWidth: number;
   padding: number;
   className?: string;
-}> = (props) => {
+};
+
+const Indicator: FC<IndicatorProps> = (props) => {
   const leftOffset = (props.itemWidth - props.padding) * props.selectedIndex;
 
   return (
@@ -43,7 +45,7 @@ const PositionIndicator: FC<{
   );
 };
 
-export function ButtonGroup<T = any>(props: TabsProps<T>) {
+export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
   const [containerWidth, setContainerWidth] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
 
@@ -59,20 +61,20 @@ export function ButtonGroup<T = any>(props: TabsProps<T>) {
         props.className,
       )}
     >
-      <PositionIndicator
+      <Indicator
         selectedIndex={hoverIndex}
-        itemWidth={containerWidth / props.data.length}
+        itemWidth={containerWidth / props.options.length}
         className={clsx({
           "opacity-40": hoverIndex >= 0,
         })}
         padding={6}
       />
-      <PositionIndicator
+      <Indicator
         selectedIndex={props.selectedIndex}
-        itemWidth={containerWidth / props.data.length}
+        itemWidth={containerWidth / props.options.length}
         padding={6}
       />
-      {props.data.map((item, index) => (
+      {props.options.map((item, index) => (
         <button
           key={index}
           className={clsx(

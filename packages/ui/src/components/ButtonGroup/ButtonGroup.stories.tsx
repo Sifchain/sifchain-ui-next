@@ -19,7 +19,7 @@ export const Default = Template.bind({});
 
 Default.args = {
   className: "max-w-sm",
-  data: [
+  options: [
     {
       label: "Tab 1",
       value: "tab-1",
@@ -40,7 +40,7 @@ export const Small = Template.bind({});
 Small.args = {
   className: "max-w-sm",
   size: "sm",
-  data: [
+  options: [
     {
       label: "Tab 1",
       value: "tab-1",
