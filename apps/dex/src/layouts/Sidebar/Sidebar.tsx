@@ -1,7 +1,12 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
-import { formatNumberAsCurrency, Logo, ThemeSwitcher } from "@sifchain/ui";
+import {
+  ConnectWallet,
+  formatNumberAsCurrency,
+  Logo,
+  ThemeSwitcher,
+} from "@sifchain/ui";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -182,6 +187,7 @@ const WalletButton = () => {
 
   return (
     <>
+      <ConnectWallet />
       <button
         onClick={useCallback(() => setIsModalVisible(true), [])}
         className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"

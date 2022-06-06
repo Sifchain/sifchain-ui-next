@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Button, Modal } from "~/components";
+import { Button, Modal, ModalProps, SearchInput } from "../../components";
 
 export type ConnectWalletProps = {};
 
@@ -15,11 +15,26 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
       <Button disabled={isOpen} onClick={setIsOpen.bind(null, true)}>
         Connect Wallets
       </Button>
-      <Modal title="Connect Wallet" isOpen={isOpen} onClose={setIsOpen}>
-        asd
-      </Modal>
+      <ChooseNetwork isOpen={isOpen} onClose={setIsOpen} />
     </>
   );
 };
 
-const ChooseNetwork = () => {};
+const ChooseNetwork: FC<ModalProps> = ({ isOpen, onClose }) => {
+  return (
+    <Modal
+      title="Connect Wallet"
+      isOpen={isOpen}
+      onClose={onClose}
+      onGoBack={() => {}}
+      subTitle={
+        <header className="flex justify-between items-center w-full">
+          <span>Choose network</span>
+          <SearchInput placeholder="Search network" />
+        </header>
+      }
+    >
+      ...
+    </Modal>
+  );
+};

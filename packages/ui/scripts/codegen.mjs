@@ -49,29 +49,47 @@ Do you want to continue?
 
   if (answer === "y") {
     $.verbose = false;
-    // await $`mkdir ${targetDir}`;
+
     const { stdout: indexContent } =
       await $`cat scripts/templates/ReactComponent/index.ts`;
     const { stdout: componentContent } =
       await $`cat scripts/templates/ReactComponent/ReactComponent.tsx`;
-    const { stdout: storiesContnet } =
+    const { stdout: storiesContent } =
       await $`cat scripts/templates/ReactComponent/ReactComponent.stories.tsx`;
 
-    await $`mkdir ${targetDir}`;
-    if (indexContent && componentContent && storiesContnet) {
+    try {
+      console.log("Creating component...\n");
+
+      if (!indexContent && !componentContent && !storiesContent) {
+        throw new Error(
+          `Missing one or more required values: (${Object.keys({
+            indexContent,
+            componentContent,
+            storiesContent,
+          })
+            .filter((x) => !x)
+            .join(", ")})`,
+        );
+      }
+
+      await $`mkdir ${targetDir}`;
       await $`echo ${replaceName(indexContent)} > ${targetDir}/index.ts`;
       await $`echo ${replaceName(
         componentContent,
       )} > ${targetDir}/${component}.tsx`;
       await $`echo ${replaceName(
-        storiesContnet,
+        storiesContent,
       )} > ${targetDir}/${component}.stories.tsx`;
 
-      console.log("Creating component...");
+      process.exit(0);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(`Failed to create component (${component})`);
+      }
       process.exit(0);
     }
   } else {
-    console.log("Aborted");
+    console.log("Aborted\n");
     process.exit(1);
   }
 }

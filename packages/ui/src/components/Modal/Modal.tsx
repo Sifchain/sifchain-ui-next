@@ -1,14 +1,18 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, PropsWithChildren, ReactNode } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationIcon, XIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, XIcon } from "@heroicons/react/outline";
 import type { FC } from "react";
+import clsx from "clsx";
 
 export type ModalProps = {
   isOpen: boolean;
   onClose: (isOpen: boolean) => void;
   title?: ReactNode;
+  subTitle?: ReactNode;
   hideCloseButton?: boolean;
+  className?: string;
+  onGoBack?: () => void;
 };
 
 export const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
@@ -38,31 +42,43 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = (props) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6">
+              <Dialog.Panel
+                className={clsx(
+                  "relative bg-white dark:bg-gray-800 dark:text-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full",
+                  props.className,
+                )}
+              >
                 {!props.hideCloseButton && (
                   <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                     <button
                       type="button"
-                      className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="bg-white dark:bg-gray-800 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       onClick={props.onClose.bind(null, false)}
                     >
                       <span className="sr-only">Close</span>
-                      <XIcon className="h-6 w-6" aria-hidden="true" />
+                      <XIcon className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 )}
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg leading-6 font-medium text-gray-900"
-                    >
-                      {props.title}
-                    </Dialog.Title>
-
-                    {props.children}
-                  </div>
+                <div className="grid gap-2 py-4">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-xl relative text-center px-4 leading-6 font-semibold text-gray-900 dark:text-gray-50 flex items-center gap-2"
+                  >
+                    {props.onGoBack && (
+                      <button className="text-gray-50">
+                        <ArrowLeftIcon className="h-6 w-6" />
+                      </button>
+                    )}
+                    {props.title}
+                  </Dialog.Title>
+                  {props.subTitle && (
+                    <div className="p-4 pt-0 border-b border-gray-750 ">
+                      {props.subTitle}
+                    </div>
+                  )}
                 </div>
+                <div className="p-4">{props.children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
