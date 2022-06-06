@@ -4,7 +4,7 @@ module.exports = {
   icon: true,
   ext: "tsx",
   jsxRuntime: "automatic",
-  outDir: "./src/components/icons",
+  outDir: "./src/components/icons/svgr",
   template: (variables, { tpl }) => {
     return tpl`
 import type { SVGProps } from "react";

@@ -14,7 +14,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "codegen:component": "node ./scripts/codegen.mjs component --",
-    "svgr": "rm -rf ./src/components/icons && svgr ./assets/icons"
+    "svgr": "svgr ./assets/icons"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^0.7.1",

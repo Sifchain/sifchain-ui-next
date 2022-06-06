@@ -11,7 +11,7 @@ const SvgSearchIcon = (props: SVGProps<SVGSVGElement>) => (
   >
     <path
       d="m17.125 16.741-4.72-4.72a6.886 6.886 0 1 0-.884.884l4.72 4.72.884-.884ZM1.5 7.625a5.625 5.625 0 1 1 5.625 5.625A5.631 5.631 0 0 1 1.5 7.625Z"
-      fill="#9699A5"
+      fill="currentColor"
     />
   </svg>
 );
