@@ -12,6 +12,7 @@ export type TabsProps<T> = {
   onChange: (index: number) => void;
   className?: string;
   itemClassName?: string | ((index: number) => string);
+  size?: "sm" | "md";
 };
 
 const PositionIndicator: FC<{
@@ -42,7 +43,7 @@ const PositionIndicator: FC<{
   );
 };
 
-export function Tabs<T = any>(props: TabsProps<T>) {
+export function ButtonGroup<T = any>(props: TabsProps<T>) {
   const [containerWidth, setContainerWidth] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
 
@@ -75,11 +76,15 @@ export function Tabs<T = any>(props: TabsProps<T>) {
         <button
           key={index}
           className={clsx(
-            "flex-1 py-2.5 rounded z-10 font-semibold text-sm",
-            index === props.selectedIndex ? "text-gray-50" : "text-gray-600",
+            "flex-1 py-2.5 rounded-md z-10 font-semibold",
+            index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
             typeof props.itemClassName === "function"
               ? props.itemClassName(index)
               : props.itemClassName,
+            {
+              "text-sm": props.size === "md",
+              "text-xs": props.size === "sm",
+            },
           )}
           onClick={props.onChange.bind(null, index)}
           onMouseOver={setHoverIndex.bind(null, index)}
@@ -91,3 +96,7 @@ export function Tabs<T = any>(props: TabsProps<T>) {
     </label>
   );
 }
+
+ButtonGroup.defaultProps = {
+  size: "md",
+};
