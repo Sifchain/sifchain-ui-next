@@ -6,7 +6,7 @@ import {
   parseConfig,
 } from "~/utils/parseConfig";
 
-import { chainConfigByNetworkEnv } from "./chains";
+import { CHAINCONFIG_BY_NETWORK_ENV } from "./chains";
 import { NetworkEnv } from "./getEnv";
 import devnetconfig from "./networks/config.devnet.json";
 import localnetconfig from "./networks/config.localnet.json";
@@ -85,25 +85,25 @@ export async function getConfig(
     localnet: parseConfig(
       localnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv["localnet"],
+      CHAINCONFIG_BY_NETWORK_ENV["localnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     devnet: parseConfig(
       devnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv["devnet"],
+      CHAINCONFIG_BY_NETWORK_ENV["devnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     testnet: parseConfig(
       testnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv["testnet"],
+      CHAINCONFIG_BY_NETWORK_ENV["testnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     mainnet: parseConfig(
       mainnnetconfig as CoreConfig,
       allAssets,
-      chainConfigByNetworkEnv["mainnet"],
+      CHAINCONFIG_BY_NETWORK_ENV["mainnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
   };
