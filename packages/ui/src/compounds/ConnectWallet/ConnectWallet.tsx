@@ -42,9 +42,7 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
-
   const [search, setSearch] = useState("");
-
   const [step, setStep] = useState<ConnectWalletStep>("choose-network");
 
   const navigate = useCallback((nextStep: ConnectWalletStep) => {
