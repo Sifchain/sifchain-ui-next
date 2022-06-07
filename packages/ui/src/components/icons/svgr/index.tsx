@@ -6,4 +6,4 @@ export { default as PoolsIcon } from "./PoolsIcon";
 export { default as RowanIcon } from "./RowanIcon";
 export { default as SearchIcon } from "./SearchIcon";
 export { default as SwapIcon } from "./SwapIcon";
-export { default as WalletIcons } from "./WalletIcons";
+export { default as WalletIcon } from "./WalletIcon";

@@ -12,7 +12,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       {...props}
       ref={ref}
       className={clsx(
-        "rounded-lg place-items-center transition-colors disabled:cursor-not-allowed",
+        "rounded-lg place-items-center font-semibold transition-colors disabled:cursor-not-allowed flex items-center justify-center gap-2",
         {
           "bg-gray-100 text-gray-900 hover:bg-white active:bg-gray-200 disabled:bg-gray-300":
             props.variant === "primary",
@@ -20,8 +20,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             props.variant === "secondary",
           "text-xs py-1 px-1.5": props.size === "xs",
           "text-sm py-1.5 px-2.5": props.size === "sm",
-          "text-base py-2 px-3": props.size === "md",
-          "text-lg py-2.5 px-4": props.size === "lg",
+          "text-sm py-3 px-4": props.size === "md",
+          "text-md py-4 px-5": props.size === "lg",
         },
       )}
     >
