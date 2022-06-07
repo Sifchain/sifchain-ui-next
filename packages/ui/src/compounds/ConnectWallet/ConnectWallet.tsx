@@ -32,7 +32,11 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
 
   return (
     <>
-      <Button disabled={isOpen} onClick={setIsOpen.bind(null, true)}>
+      <Button
+        disabled={isOpen}
+        onClick={setIsOpen.bind(null, true)}
+        className="w-full"
+      >
         <WalletIcon className="-translate-y-0.5" /> Connect wallets
       </Button>
       <Content isOpen={isOpen} onClose={setIsOpen} />

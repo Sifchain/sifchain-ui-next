@@ -7,7 +7,7 @@ export type ButtonProps = JSX.IntrinsicElements["button"] & {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (props, ref) => (
+  ({ className, ...props }, ref) => (
     <button
       {...props}
       ref={ref}
@@ -23,6 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "text-sm py-3 px-4": props.size === "md",
           "text-md py-4 px-5": props.size === "lg",
         },
+        className,
       )}
     >
       {props.children}
