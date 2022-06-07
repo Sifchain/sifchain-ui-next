@@ -35,7 +35,7 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
       <Button
         disabled={isOpen}
         onClick={setIsOpen.bind(null, true)}
-        className="w-full"
+        className="w-full max-w-xs"
       >
         <WalletIcon className="-translate-y-0.5" /> Connect wallets
       </Button>
