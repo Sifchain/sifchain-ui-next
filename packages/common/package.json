@@ -23,7 +23,8 @@
     "js-cookie": "^3.0.1",
     "jsbi": "^4.3.0",
     "numbro": "^2.3.6",
-    "tiny-invariant": "^1.2.0"
+    "tiny-invariant": "^1.2.0",
+    "url-join-ts": "^1.0.5"
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.10.4",

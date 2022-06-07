@@ -4,27 +4,28 @@ export type NetworkKind =
   // The rest... sort by name
   | "akash"
   | "band"
+  | "bitsong"
+  | "cerberus"
+  | "chihuahua"
+  | "comdex"
   | "cosmoshub"
   | "crypto-org"
+  | "emoney"
+  | "evmos"
+  | "gravity"
   | "iris"
   | "ixo"
   | "juno"
+  | "ki"
   | "likecoin"
   | "osmosis"
   | "persistence"
   | "regen"
-  | "sentinel"
-  | "terra"
-  | "emoney"
-  | "evmos"
   | "starname"
-  | "bitsong"
-  | "cerberus"
-  | "comdex"
-  | "chihuahua"
-  | "ki"
+  | "sentinel"
   | "stargaze"
-  | "secret";
+  | "secret"
+  | "terra";
 
 export const ACTIVE_NETWORKS = new Set<NetworkKind>([
   "sifchain",
@@ -32,25 +33,26 @@ export const ACTIVE_NETWORKS = new Set<NetworkKind>([
   // The rest... sort by name
   "akash",
   "band",
+  "bitsong",
+  "cerberus",
+  "chihuahua",
+  "comdex",
   "cosmoshub",
   "crypto-org",
+  "emoney",
+  "evmos",
+  "gravity",
   "iris",
   "ixo",
   "juno",
+  "ki",
   "likecoin",
   "osmosis",
   "persistence",
   "regen",
-  "sentinel",
-  "terra",
-  "emoney",
-  "evmos",
   "starname",
-  "bitsong",
-  "cerberus",
-  "comdex",
-  "chihuahua",
-  "ki",
+  "sentinel",
   "stargaze",
   "secret",
+  "terra",
 ]);

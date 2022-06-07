@@ -165,6 +165,7 @@ importers:
       toformat: ^2.0.0
       tsup: ^6.0.1
       typescript: 4.7.3
+      url-join-ts: ^1.0.5
       vitest: ^0.12.9
     dependencies:
       '@cosmjs/stargate': 0.28.4
@@ -174,6 +175,7 @@ importers:
       jsbi: 4.3.0
       numbro: 2.3.6
       tiny-invariant: 1.2.0
+      url-join-ts: 1.0.5
     devDependencies:
       '@keplr-wallet/types': 0.10.4
       '@tsconfig/node16-strictest-esm': 1.0.1
@@ -20773,6 +20775,10 @@ packages:
     resolution: {integrity: sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=}
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
+
+  /url-join-ts/1.0.5:
+    resolution: {integrity: sha512-u+5gi7JyOwhj58ZKwkmkzFGHuepTpmwjqfUDGVjsJJstsCz63CJAINixgJaDcMbmuyWPJIxbtBpIfaDgOQ9KMQ==}
+    dev: false
 
   /url-loader/4.1.1_lit45vopotvaqup7lrvlnvtxwy:
     resolution: {integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA==}
