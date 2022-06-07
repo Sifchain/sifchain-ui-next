@@ -57,9 +57,7 @@ const ChooseNetwork: FC<ModalProps> = ({ isOpen, onClose }) => {
           <SearchInput placeholder="Search network" />
         </header>
       }
-    >
-      ...
-    </Modal>
+    ></Modal>
   );
 };
 
