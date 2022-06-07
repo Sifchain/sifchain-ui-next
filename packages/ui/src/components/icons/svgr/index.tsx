@@ -1,6 +1,8 @@
 export { default as ArrowLeftIcon } from "./ArrowLeftIcon";
+export { default as AvalancheIcon } from "./AvalancheIcon";
 export { default as BalanceIcon } from "./BalanceIcon";
 export { default as ChangelogIcon } from "./ChangelogIcon";
+export { default as EthereumIcon } from "./EthereumIcon";
 export { default as LockIcon } from "./LockIcon";
 export { default as PoolsIcon } from "./PoolsIcon";
 export { default as RowanIcon } from "./RowanIcon";
