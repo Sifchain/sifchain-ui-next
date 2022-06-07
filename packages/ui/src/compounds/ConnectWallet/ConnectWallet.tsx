@@ -1,20 +1,24 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { FC, ReactNode, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Button, Modal, SearchInput, WalletIcon } from "../../components";
 
+export type ChainEntry = {
+  id: string;
+  name: string;
+  wallets: string[];
+  icon: ReactNode;
+};
+
+export type WalletEntry = {
+  id: string;
+  name: string;
+  icon: ReactNode;
+};
+
 export type ConnectWalletProps = {
-  chains: {
-    id: string;
-    name: string;
-    wallets: string[];
-    icon: ReactNode;
-  }[];
-  wallets: {
-    id: string;
-    name: string;
-    icon: ReactNode;
-  }[];
+  chains: ChainEntry[];
+  wallets: WalletEntry[];
   isLoading?: boolean;
   onConnect?: (selection: { networkId: string; walletId: string }) => void;
   onError?: (error: Error) => void;
@@ -27,7 +31,7 @@ export type ConnectWalletStep =
   | "await-confirmation";
 
 const ListContainer = tw.ul`
-  grid gap-2 max-h-64 overflow-y-scroll
+  grid gap-2 max-h-64 overflow-y-scroll -mx-3
 `;
 
 const ListItem = tw.li`
@@ -43,12 +47,12 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
 
   const [step, setStep] = useState<ConnectWalletStep>("choose-network");
 
-  const navigate = (nextStep: ConnectWalletStep) => {
+  const navigate = useCallback((nextStep: ConnectWalletStep) => {
     setStep(nextStep);
     setSearch("");
-  };
+  }, []);
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     switch (step) {
       case "choose-network":
         setIsOpen(false);
@@ -64,7 +68,7 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
       case "await-confirmation":
         navigate("choose-wallet");
     }
-  };
+  }, [step]);
 
   const selectedNetwork = useMemo(
     () => props.chains.find((x) => x.id === networkId),
@@ -136,6 +140,10 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
                     role="button"
                     onClick={() => {
                       setWalletId(x.id);
+                      props.onConnect?.({
+                        networkId: networkId ?? "",
+                        walletId: walletId ?? "",
+                      });
                       navigate("await-confirmation");
                     }}
                   >
@@ -165,6 +173,7 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
                   setSearch("");
                   setWalletId("");
                   setStep("choose-network");
+                  props.onCancel?.();
                 }}
               >
                 Cancel
