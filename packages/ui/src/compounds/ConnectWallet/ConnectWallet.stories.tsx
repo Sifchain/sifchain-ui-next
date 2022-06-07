@@ -40,6 +40,36 @@ Default.args = {
       icon: <img src="/chains/akash.png" />,
       wallets: ["keplr", "cosmostation"],
     },
+    {
+      id: "cerberus",
+      name: "Cerberus",
+      icon: <img src="/chains/cerberus.png" />,
+      wallets: ["keplr", "cosmostation"],
+    },
+    {
+      id: "comdex",
+      name: "comdex",
+      icon: <img src="/chains/comdex.png" />,
+      wallets: ["keplr", "cosmostation"],
+    },
+    {
+      id: "bitsong",
+      name: "Bitsong",
+      icon: <img src="/chains/bitsong.png" />,
+      wallets: ["keplr", "cosmostation"],
+    },
+    {
+      id: "crypto-org",
+      name: "Crypto.org",
+      icon: <img src="/chains/crypto-org.png" />,
+      wallets: ["keplr", "cosmostation"],
+    },
+    {
+      id: "cosmos",
+      name: "Cosmos",
+      icon: <img src="/chains/cosmos.png" />,
+      wallets: ["keplr", "cosmostation"],
+    },
   ],
   wallets: [
     {

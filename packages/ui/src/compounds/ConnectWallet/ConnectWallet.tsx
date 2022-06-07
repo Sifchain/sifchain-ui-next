@@ -1,5 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { FC, ReactNode, useMemo, useState } from "react";
+import tw from "tailwind-styled-components";
 import { Button, Modal, SearchInput, WalletIcon } from "../../components";
 
 export type ConnectWalletProps = {
@@ -25,17 +26,24 @@ export type ConnectWalletStep =
   | "choose-wallet"
   | "await-confirmation";
 
+const ListContainer = tw.ul`
+  grid gap-2 max-h-64 overflow-y-scroll
+`;
+
+const ListItem = tw.li`
+  flex items-center justify-between p-4 hover:opacity-60 rounded
+`;
+
 export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
 
+  const [search, setSearch] = useState("");
+
   const [step, setStep] = useState<ConnectWalletStep>("choose-network");
-  const [previousStep, setPreviousStep] =
-    useState<ConnectWalletStep>("choose-network");
 
   const navigate = (nextStep: ConnectWalletStep) => {
-    setPreviousStep(step);
     setStep(nextStep);
     setSearch("");
   };
@@ -58,8 +66,6 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
     }
   };
 
-  const [search, setSearch] = useState("");
-
   const selectedNetwork = useMemo(
     () => props.chains.find((x) => x.id === networkId),
     [networkId],
@@ -79,17 +85,16 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
             <SearchInput
               placeholder="Search network"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value.toLowerCase())}
             />
           </label>,
           <>
-            <ul className="grid gap-2">
+            <ListContainer>
               {props.chains
-                .filter((x) => x.name.includes(search))
+                .filter((x) => x.name.toLowerCase().includes(search))
                 .map((x) => (
-                  <li
+                  <ListItem
                     key={x.id}
-                    className="flex items-center justify-between p-4 hover:opacity-80 rounded"
                     role="button"
                     onClick={() => {
                       setNetworkId(x.id);
@@ -102,9 +107,9 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
                     </div>
 
                     <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
-                  </li>
+                  </ListItem>
                 ))}
-            </ul>
+            </ListContainer>
           </>,
         ];
       case "choose-wallet":
@@ -118,17 +123,16 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
             />
           </label>,
           <>
-            <ul className="grid gap-2">
+            <ListContainer>
               {props.wallets
                 .filter(
                   (x) =>
                     selectedNetwork?.wallets.includes(x.id) &&
-                    x.name.includes(search),
+                    x.name.toLowerCase().includes(search),
                 )
                 .map((x) => (
-                  <li
+                  <ListItem
                     key={x.id}
-                    className="flex items-center justify-between p-4 hover:opacity-80 rounded"
                     role="button"
                     onClick={() => {
                       setWalletId(x.id);
@@ -141,9 +145,9 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
                     </div>
 
                     <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
-                  </li>
+                  </ListItem>
                 ))}
-            </ul>
+            </ListContainer>
           </>,
         ];
       case "await-confirmation":
@@ -171,7 +175,7 @@ export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
       default:
         return [<></>];
     }
-  }, [step]);
+  }, [step, search, props.chains, props.wallets]);
 
   return (
     <>
