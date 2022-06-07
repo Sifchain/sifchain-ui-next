@@ -1,4 +1,4 @@
-import { chainConfigByNetworkEnv, IBCChainConfig } from "@sifchain/common";
+import { CHAINCONFIG_BY_NETWORK_ENV, IBCChainConfig } from "@sifchain/common";
 import {
   CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
@@ -6,7 +6,7 @@ import {
 } from "@sifchain/cosmos-connect";
 import type { PropsWithChildren } from "react";
 
-const chainInfos = Object.entries(chainConfigByNetworkEnv).flatMap((x) =>
+const chainInfos = Object.entries(CHAINCONFIG_BY_NETWORK_ENV).flatMap((x) =>
   Object.values(x[1])
     .filter((y) => "keplrChainInfo" in y)
     .map((y) => y as IBCChainConfig)

@@ -1,17 +1,25 @@
-import { Dialog, Transition } from "@headlessui/react";
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
+  BalanceIcon,
+  Button,
+  ChangelogIcon,
   ConnectWallet,
   formatNumberAsCurrency,
+  LockIcon,
   Logo,
+  Modal,
+  PoolsIcon,
+  RowanIcon,
+  SwapIcon,
   ThemeSwitcher,
+  WalletIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
@@ -26,22 +34,22 @@ export const MENU_ITEMS = [
   {
     title: "Swap",
     href: "/swap",
-    icon: require("@sifchain/ui/assets/icons/swap-icon.svg"),
+    icon: <SwapIcon />,
   },
   {
     title: "Balance",
     href: "/balances",
-    icon: require("@sifchain/ui/assets/icons/balance-icon.svg"),
+    icon: <BalanceIcon />,
   },
   {
     title: "Pools",
     href: "/pools",
-    icon: require("@sifchain/ui/assets/icons/pools-icon.svg"),
+    icon: <PoolsIcon />,
   },
   {
     title: "Changelog",
     href: "/changelog",
-    icon: require("@sifchain/ui/assets/icons/changelog-icon.svg"),
+    icon: <ChangelogIcon />,
   },
 ];
 
@@ -71,12 +79,12 @@ const Aside = () => {
   const rowanStats = [
     {
       id: "tvl",
-      icon: require("@sifchain/ui/assets/icons/lock-icon.svg"),
+      icon: <LockIcon />,
       label: <>{isLoadingTVL ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
     },
     {
       id: "price",
-      icon: require("@sifchain/ui/assets/icons/rowan-icon.svg"),
+      icon: <RowanIcon />,
       label: (
         <>
           {" "}
@@ -113,9 +121,6 @@ const Aside = () => {
         <section>
           <GlobalSearch />
         </section>
-        <section>
-          <WalletButton />
-        </section>
         <section className="flex flex-1">
           <nav className="w-full">
             <ul className="grid gap-2">
@@ -132,7 +137,7 @@ const Aside = () => {
                       )}
                     >
                       <span className="h-6 w-6 grid place-items-center">
-                        <Image alt={title} src={icon} />
+                        {icon}
                       </span>
                       <span className="text-gray-200 font-semibold text-sm">
                         {title}
@@ -148,9 +153,7 @@ const Aside = () => {
           <ul className="grid">
             {rowanStats.map(({ id, icon, label }) => (
               <li key={id} className="flex items-center gap-3 p-2">
-                <span className="h-6 w-6 grid place-items-center">
-                  <Image alt={id} src={icon} />
-                </span>
+                <span className="h-6 w-6 grid place-items-center">{icon}</span>
                 <span className="text-gray-200 font-semibold text-sm tracking-widest">
                   {label}
                 </span>
@@ -175,6 +178,9 @@ const Aside = () => {
             v2.2.105 © {new Date().getFullYear()} Sifchain
           </div>
         </section>
+        <section className="grid gap-2">
+          <WalletButton />
+        </section>
       </div>
     </aside>
   );
@@ -188,12 +194,10 @@ const WalletButton = () => {
   return (
     <>
       <ConnectWallet />
-      <button
-        onClick={useCallback(() => setIsModalVisible(true), [])}
-        className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-      >
-        Manage Wallet Connections
-      </button>
+      <Button onClick={useCallback(() => setIsModalVisible(true), [])}>
+        <WalletIcon />
+        Connect wallets
+      </Button>
       <WalletChooserModal
         visible={isModalVisible}
         onCloseRequest={useCallback(() => setIsModalVisible(false), [])}
@@ -202,57 +206,45 @@ const WalletButton = () => {
   );
 };
 
-const CosmConnectButtons = () => {
+const CosmosConnectButtons = () => {
   const { connectors, activeConnector, connect, isConnected, disconnect } =
     useCosmConnect();
 
   return (
     <>
       {isConnected ? (
-        <button
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        <Button
+          variant="secondary"
           onClick={() => disconnect(activeConnector!)}
-          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
         >
           Disconnect Cosmos Wallet
-        </button>
+        </Button>
       ) : (
         connectors.map((x) => (
-          <button
-            key={x.id}
-            onClick={() => connect(x)}
-            className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-          >
+          <Button key={x.id} onClick={() => connect(x)}>
             Connect Cosmos {x.name}
-          </button>
+          </Button>
         ))
       )}
     </>
   );
 };
 
-const EtherConnectButtons = () => {
+const EthereumConnectButtons = () => {
   const { connectors, connect, isConnected } = useEtherConnect();
   const { disconnect } = useEtherDisconnect();
 
   return (
     <>
       {isConnected ? (
-        <button
-          onClick={() => disconnect()}
-          className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-        >
+        <Button variant="secondary" onClick={() => disconnect()}>
           Disconnect Ethereum Wallet
-        </button>
+        </Button>
       ) : (
         connectors.map((x) => (
-          <button
-            key={x.id}
-            onClick={() => connect(x)}
-            className="p-4 rounded-lg transition-opacity opacity-80 hover:opacity-100 bg-slate-200 text-gray-900 font-semibold w-full"
-          >
+          <Button key={x.id} onClick={() => connect(x)}>
             Connect Eth {x.name}
-          </button>
+          </Button>
         ))
       )}
     </>
@@ -264,38 +256,15 @@ const WalletChooserModal = (props: {
   onCloseRequest: () => unknown;
 }) => {
   return (
-    <Transition appear show={props.visible} as={Fragment}>
-      <Dialog onClose={props.onCloseRequest}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <Dialog.Backdrop className="fixed inset-0 bg-black bg-opacity-50" />
-        </Transition.Child>
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <CosmConnectButtons />
-                <EtherConnectButtons />
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+    <Modal
+      title="Connect wallets"
+      isOpen={props.visible}
+      onClose={props.onCloseRequest}
+    >
+      <div className="grid gap-2">
+        <CosmosConnectButtons />
+        <EthereumConnectButtons />
+      </div>
+    </Modal>
   );
 };
