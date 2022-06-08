@@ -4,26 +4,23 @@ import {
   BalanceIcon,
   Button,
   ChangelogIcon,
-  ConnectWallet,
   formatNumberAsCurrency,
   LockIcon,
   Logo,
-  Modal,
   PoolsIcon,
   RowanIcon,
   SwapIcon,
   ThemeSwitcher,
-  WalletIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
 } from "wagmi";
+import WalletConnector from "~/compounds/WalletConnector";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
@@ -179,7 +176,7 @@ const Aside = () => {
           </div>
         </section>
         <section className="grid gap-2">
-          <WalletButton />
+          <WalletConnector />
         </section>
       </div>
     </aside>
@@ -187,24 +184,6 @@ const Aside = () => {
 };
 
 export default Aside;
-
-const WalletButton = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  return (
-    <>
-      <ConnectWallet />
-      <Button onClick={useCallback(() => setIsModalVisible(true), [])}>
-        <WalletIcon />
-        Connect wallets
-      </Button>
-      <WalletChooserModal
-        visible={isModalVisible}
-        onCloseRequest={useCallback(() => setIsModalVisible(false), [])}
-      />
-    </>
-  );
-};
 
 const CosmosConnectButtons = () => {
   const { connectors, activeConnector, connect, isConnected, disconnect } =
@@ -248,23 +227,5 @@ const EthereumConnectButtons = () => {
         ))
       )}
     </>
-  );
-};
-
-const WalletChooserModal = (props: {
-  visible: boolean;
-  onCloseRequest: () => unknown;
-}) => {
-  return (
-    <Modal
-      title="Connect wallets"
-      isOpen={props.visible}
-      onClose={props.onCloseRequest}
-    >
-      <div className="grid gap-2">
-        <CosmosConnectButtons />
-        <EthereumConnectButtons />
-      </div>
-    </Modal>
   );
 };

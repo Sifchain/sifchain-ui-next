@@ -6,17 +6,19 @@ import {
 } from "@sifchain/cosmos-connect";
 import type { PropsWithChildren } from "react";
 
-const chainInfos = Object.entries(CHAINCONFIG_BY_NETWORK_ENV).flatMap((x) =>
-  Object.values(x[1])
-    .filter((y) => "keplrChainInfo" in y)
-    .map((y) => y as IBCChainConfig)
-    .map((y) => y.keplrChainInfo),
+export const KEPLR_CHAIN_INFOS = Object.entries(
+  CHAINCONFIG_BY_NETWORK_ENV,
+).flatMap(([_, chainMap]) =>
+  Object.values(chainMap)
+    .filter((chain) => "keplrChainInfo" in chain)
+    .map((chain) => chain as IBCChainConfig)
+    .map((chain) => chain.keplrChainInfo),
 );
 
-const connectors = [
-  new InjectedKeplrConnector({ chainInfos }),
+export const CONNECTORS = [
+  new InjectedKeplrConnector({ chainInfos: KEPLR_CHAIN_INFOS }),
   new KeplrWalletConnectConnector({
-    chainInfos,
+    chainInfos: KEPLR_CHAIN_INFOS,
     clientMeta: {
       name: "Sifchain",
       description: "The omni chain",
@@ -30,7 +32,7 @@ const connectors = [
 
 export const CosmConnectProvider = (props: PropsWithChildren<unknown>) => (
   <BaseCosmConnectProvider
-    connectors={connectors}
+    connectors={CONNECTORS}
     persistOptions={{
       // can't provide window.localStorage directly because of next.js pre-rendering
       storage: {

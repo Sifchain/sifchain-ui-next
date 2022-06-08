@@ -21,6 +21,6 @@ const client = createClient({
   ],
 });
 
-export const WagmiProvider = (props: PropsWithChildren<unknown>) => {
+export const WagmiProvider = (props: PropsWithChildren<{}>) => {
   return <WagmiConfig client={client}>{props.children}</WagmiConfig>;
 };
