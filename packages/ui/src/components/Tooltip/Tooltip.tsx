@@ -16,16 +16,15 @@ import {
 import { Transition } from "@headlessui/react";
 
 export type TooltipProps = {
+  title?: string;
   content: string;
-  placement?: Placement;
   children: JSX.Element;
+  placement?: Placement;
 };
 
-export const Tooltip: FC<TooltipProps> = ({
-  children,
-  content,
-  placement = "top",
-}) => {
+const DEFAULT_PLACEMENT: Placement = "top";
+
+export const Tooltip: FC<TooltipProps> = (props) => {
   const [open, setOpen] = useState(false);
 
   const arrowRef = useRef<HTMLDivElement>(null);
@@ -38,9 +37,9 @@ export const Tooltip: FC<TooltipProps> = ({
     strategy,
     context,
     middlewareData,
-    placement: finalPlacement,
-  } = useFloating({
     placement,
+  } = useFloating({
+    placement: props.placement ?? "top",
     open,
     onOpenChange: setOpen,
     middleware: [
@@ -79,20 +78,20 @@ export const Tooltip: FC<TooltipProps> = ({
       right: "left",
       bottom: "top",
       left: "right",
-    }[finalPlacement.split("-")[0] ?? "top"];
+    }[placement.split("-")[0] ?? DEFAULT_PLACEMENT];
 
     return {
       left: arrowX != null ? `${arrowX}px` : "",
       top: arrowY != null ? `${arrowY}px` : "",
-      [staticSide ?? "top"]: "-4px",
+      [staticSide ?? DEFAULT_PLACEMENT]: "-4px",
     };
-  }, [middlewareData.arrow, finalPlacement]);
+  }, [middlewareData.arrow, placement]);
 
   return (
     <>
       {cloneElement(
-        children,
-        getReferenceProps({ ref: reference, ...children.props }),
+        props.children,
+        getReferenceProps({ ref: reference, ...props.children.props }),
       )}
       <Transition
         show={open}
@@ -103,10 +102,13 @@ export const Tooltip: FC<TooltipProps> = ({
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         as="div"
-        className="bg-gray-700 text-gray-200 font-normal rounded p-2 px-3 text-xs"
+        className="bg-gray-700 text-gray-200 font-normal rounded p-2 px-3 text-xs grid gap-1"
         {...floatingProps}
       >
-        {content}
+        {props.title && (
+          <div className="flex text-gray-100 font-semibold">{props.title}</div>
+        )}
+        {props.content}
         <span
           className="absolute w-2 h-2 bg-gray-700 rotate-45"
           ref={arrowRef}
@@ -115,4 +117,8 @@ export const Tooltip: FC<TooltipProps> = ({
       </Transition>
     </>
   );
+};
+
+Tooltip.defaultProps = {
+  placement: DEFAULT_PLACEMENT,
 };
