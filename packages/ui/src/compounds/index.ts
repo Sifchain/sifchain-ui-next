@@ -1,3 +1,3 @@
 export * from "./ThemeSwitcher";
 export * from "./CommandPalette";
-export * from "./ConnectWallet";
+export * from "./ConnectWallets";

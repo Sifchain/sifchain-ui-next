@@ -16,7 +16,7 @@ export type WalletEntry = {
   icon: ReactNode;
 };
 
-export type ConnectWalletProps = {
+export type ConnectWalletsProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
   isLoading?: boolean;
@@ -25,7 +25,7 @@ export type ConnectWalletProps = {
   onCancel?: () => void;
 };
 
-export type ConnectWalletStep =
+export type ConnectWalletsStep =
   | "choose-network"
   | "choose-wallet"
   | "await-confirmation";
@@ -38,14 +38,14 @@ const ListItem = tw.li`
   flex items-center justify-between p-4 hover:opacity-60 rounded
 `;
 
-export const ConnectWallet: FC<ConnectWalletProps> = (props) => {
+export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
-  const [step, setStep] = useState<ConnectWalletStep>("choose-network");
+  const [step, setStep] = useState<ConnectWalletsStep>("choose-network");
 
-  const navigate = useCallback((nextStep: ConnectWalletStep) => {
+  const navigate = useCallback((nextStep: ConnectWalletsStep) => {
     setStep(nextStep);
     setSearch("");
   }, []);

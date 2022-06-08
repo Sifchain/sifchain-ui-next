@@ -7,15 +7,15 @@ import {
   WalletconnectCircleIcon,
 } from "~/components";
 
-import { ConnectWallet } from ".";
+import { ConnectWallets } from ".";
 
 export default {
   title: "compounds/ConnectWallet",
-  component: ConnectWallet,
-} as ComponentMeta<typeof ConnectWallet>;
+  component: ConnectWallets,
+} as ComponentMeta<typeof ConnectWallets>;
 
-const Template: ComponentStory<typeof ConnectWallet> = (args) => {
-  return <ConnectWallet {...args} />;
+const Template: ComponentStory<typeof ConnectWallets> = (args) => {
+  return <ConnectWallets {...args} />;
 };
 
 export const Default = Template.bind({});
