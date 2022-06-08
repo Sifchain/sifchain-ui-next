@@ -7,9 +7,6 @@ const SvgMetamaskIcon = (props: SVGProps<SVGSVGElement>) => (
     x={0}
     y={0}
     viewBox="0 0 318.6 318.6"
-    style={{
-      enableBackground: "new 0 0 318.6 318.6",
-    }}
     xmlSpace="preserve"
     width="1em"
     height="1em"

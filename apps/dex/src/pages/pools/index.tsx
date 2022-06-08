@@ -39,7 +39,7 @@ const PoolItem: FC<{
   pool: Pool;
   asset: IAsset;
   stats?: GetTokenStatsResponsePools;
-}> = ({ pool, asset, stats }) => {
+}> = ({ asset, stats }) => {
   const statSummary = [
     {
       label: "Total liquidity",
