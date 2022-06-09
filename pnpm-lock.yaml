@@ -63,7 +63,7 @@ importers:
       react-hook-form: ^7.31.3
       react-markdown: ^8.0.3
       react-query: ^3.39.1
-      tailwind-styled-components: ^2.1.7
+      tailwind-styled-components: 2.1.6
       tailwindcss: ^3.0.24
       tsconfig: workspace:*
       typescript: 4.7.3
@@ -106,7 +106,7 @@ importers:
       postcss: 8.4.14
       prettier: 2.6.2
       prettier-plugin-tailwindcss: 0.1.11_prettier@2.6.2
-      tailwind-styled-components: 2.1.7_ef5jwxihqo6n7gxfmzogljlgcm
+      tailwind-styled-components: 2.1.6_ef5jwxihqo6n7gxfmzogljlgcm
       tailwindcss: 3.0.24
       tsconfig: link:../../packages/tsconfig
       typescript: 4.7.3
@@ -359,7 +359,7 @@ importers:
       ramda: ^0.28.0
       react: ^18.1.0
       react-dom: ^18.1.0
-      tailwind-styled-components: ^2.1.7
+      tailwind-styled-components: 2.1.6
       tailwindcss: ^3.0.24
       tsconfig: workspace:*
       tsconfig-paths-webpack-plugin: ^3.5.2
@@ -400,7 +400,7 @@ importers:
       babel-loader: 8.2.5_@babel+core@7.18.2
       commander: 9.3.0
       postcss: 8.4.14
-      tailwind-styled-components: 2.1.7_ef5jwxihqo6n7gxfmzogljlgcm
+      tailwind-styled-components: 2.1.6_ef5jwxihqo6n7gxfmzogljlgcm
       tailwindcss: 3.0.24
       tsconfig: link:../tsconfig
       tsconfig-paths-webpack-plugin: 3.5.2
@@ -9465,7 +9465,7 @@ packages:
       mimic-response: 1.0.1
 
   /clone/1.0.4:
-    resolution: {integrity: sha1-2jCcwmPfFZlMaIypAheco8fNfH4=}
+    resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
     dev: true
 
@@ -10255,7 +10255,7 @@ packages:
     optional: true
 
   /defaults/1.0.3:
-    resolution: {integrity: sha1-xlYFHpgX2f8I7YgUd/P+QBnz730=}
+    resolution: {integrity: sha512-s82itHOnYrN0Ib8r+z7laQz3sdE+4FP3d9Q7VLO7U+KRT+CR0GsWuyHxzdAY82I7cXv0G/twrqomTJLOssO5HA==}
     dependencies:
       clone: 1.0.4
     dev: true
@@ -13542,7 +13542,7 @@ packages:
     optional: true
 
   /is-fullwidth-code-point/1.0.0:
-    resolution: {integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs=}
+    resolution: {integrity: sha512-1pqUqRjkhPJ9miNq9SwMfdvi6lBJcd6eFxvfaivQhaH3SgisfiuudvFntdKOmxuee/77l+FPjKrQjWvmPjWrRw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       number-is-nan: 1.0.1
@@ -16695,7 +16695,7 @@ packages:
     optional: true
 
   /os-tmpdir/1.0.2:
-    resolution: {integrity: sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=}
+    resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -19539,8 +19539,8 @@ packages:
       hashlru: 2.3.0
     dev: true
 
-  /tailwind-styled-components/2.1.7_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-L20oQlwWM+kbYHIrwvvMQ0HHqt1Z/tInnO/Q9zM0IV/vqUxSIcLAmhMwbbiZmyXTdAVz84N4s1GtIyGODq80Pw==}
+  /tailwind-styled-components/2.1.6_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-qqZXvwMYrZoLS75eyxeU+XgrwBmrcJA7568Jj+RWsah0EswKzLc0vkaHtLQFYiHbWy8lDwKVMRFsUWQ4GBpHzA==}
     peerDependencies:
       react: '>= 16.8.0'
       react-dom: '>= 16.8.0'
