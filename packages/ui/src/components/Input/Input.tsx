@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       document.addEventListener("keydown", handleKeyDown);
 
       return () => {
-        window.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("keydown", handleKeyDown);
       };
     }, [hotkey, inputRef.current]);
 
