@@ -1,4 +1,5 @@
 import { SearchIcon } from "@heroicons/react/outline";
+import clsx from "clsx";
 import { forwardRef, useId } from "react";
 import { Input, InputProps } from "../Input";
 
@@ -17,10 +18,11 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         type="search"
         ref={ref}
         id={inputId}
-        className="pl-8"
+        className={clsx("pl-8", className)}
+        hotkey="/"
         {...props}
       >
-        <SearchIcon className="absolute top-0.5 left-3 h-4 w-4 text-gray-300" />
+        <SearchIcon className="absolute left-3 h-4 w-4 text-gray-300" />
       </Input>
     );
   },

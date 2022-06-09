@@ -14,6 +14,7 @@ import {
   useState,
 } from "react";
 import tw from "tailwind-styled-components";
+import { SearchInput } from "../../components";
 
 export type CommandPaletteEntry = {
   id: string;
@@ -150,23 +151,15 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
 
   return (
     <>
-      <label
-        className={clsx("block relative transition-opacity", props.className, {
-          "opacity-50 pointer-events-none": isOpen,
-        })}
-        aria-hidden={!isOpen}
-      >
-        <TwSearchIcon aria-hidden="true" />
-        <input
+      <div className="grid w-full max-w-[200px]">
+        <SearchInput
           readOnly
-          className={clsx(
-            inputClassName,
-            "!border-gray-700 !bg-gray-750 !text-gray-50 rounded-xl opacity-90 hover:opacity-100",
-          )}
+          className={clsx("max-w-[250px]", { "opacity-60": isOpen })}
+          disabled={isOpen}
           placeholder={props.placeholder}
           onClick={setIsOpen.bind(null, true)}
         />
-      </label>
+      </div>
       <Transition.Root
         show={isOpen}
         as={Fragment}
