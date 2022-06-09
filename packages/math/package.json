@@ -1,0 +1,21 @@
+{
+  "name": "@sifchain/math",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "bignumber.js": "^9.0.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node16-strictest-esm": "^1.0.1",
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2",
+    "typescript": "4.7.2"
+  }
+}
