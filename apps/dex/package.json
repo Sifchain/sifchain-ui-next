@@ -47,7 +47,7 @@
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
     "prettier-plugin-tailwindcss": "^0.1.11",
-    "tailwind-styled-components": "^2.1.7",
+    "tailwind-styled-components": "2.1.6",
     "tailwindcss": "^3.0.24",
     "tsconfig": "workspace:*",
     "typescript": "4.7.3"
