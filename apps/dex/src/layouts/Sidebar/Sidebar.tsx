@@ -15,7 +15,6 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
@@ -24,6 +23,7 @@ import WalletConnector from "~/compounds/WalletConnector";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
+import { useUIStore } from "~/stores/ui";
 
 const ENV = process.env["APP_ENV"] ?? "betanet";
 
@@ -51,17 +51,18 @@ export const MENU_ITEMS = [
 ];
 
 const Aside = () => {
-  const [isOpen, setOpen] = useState(true);
+  const { state, actions } = useUIStore();
   const currentPath = useRouter().asPath;
 
   const handleBtn = (
     <button
-      onClick={() => setOpen(!isOpen)}
+      onClick={() => actions.toggleSidebar()}
       className={clsx(
         "h-8 w-8 p-1 rounded-r-md bg-slate-600 absolute top-1.5 sm:top-16 right-0 translate-x-[90%]",
         "transition-transform z-30 md:hidden opacity-50 hover:opacity-100",
         {
-          "-translate-x-0 bg-white -scale-x-[1] text-gray-900": isOpen,
+          "-translate-x-0 bg-white -scale-x-[1] text-gray-900":
+            state.isSidebarOpen,
         },
       )}
     >
@@ -100,8 +101,8 @@ const Aside = () => {
           "bg-gray-900 p-4 sm:shadow-lg shadow-slate-900",
         ],
         {
-          "-translate-x-[100%]": !isOpen,
-          "md:sticky md:top-0": isOpen,
+          "-translate-x-[100%]": !state.isSidebarOpen,
+          "md:sticky md:top-0": state.isSidebarOpen,
         },
       )}
     >
@@ -171,12 +172,12 @@ const Aside = () => {
             </div>
             <ThemeSwitcher />
           </label>
-          <div className="text-center text-sm text-gray-300 font-mono p-1">
-            v2.2.105 © {new Date().getFullYear()} Sifchain
-          </div>
         </section>
         <section className="grid gap-2">
           <WalletConnector />
+          <div className="text-center text-sm text-gray-300 font-mono p-1">
+            v2.2.105 © {new Date().getFullYear()} Sifchain
+          </div>
         </section>
       </div>
     </aside>
