@@ -29,11 +29,11 @@ export const ThemeSwitcher: FC = () => {
   return (
     <Button onClick={toggleTheme} className="group">
       <Slider
-        className={clsx("tanslate-x-8", {
+        className={clsx("tanslate-x-8 flex items-center", {
           "translate-x-6": theme.mode !== "dark",
         })}
       >
-        <Icon className="animate-appear" />
+        <Icon className="animate-appear h-5 w-5" />
       </Slider>
       <Slider
         className={clsx("grid place-items-center tanslate-x-0", {

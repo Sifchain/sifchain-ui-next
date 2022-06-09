@@ -6,6 +6,7 @@ import { Button, Modal, SearchInput, WalletIcon } from "../../components";
 export type ChainEntry = {
   id: string;
   name: string;
+  type: "ibc" | "eth";
   wallets: string[];
   icon: ReactNode;
 };
@@ -14,9 +15,10 @@ export type WalletEntry = {
   id: string;
   name: string;
   icon: ReactNode;
+  type: "evm" | "cosmos";
 };
 
-export type ConnectWalletsProps = {
+export type WallectSelectorProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
   isLoading?: boolean;
@@ -25,7 +27,7 @@ export type ConnectWalletsProps = {
   onCancel?: () => void;
 };
 
-export type ConnectWalletsStep =
+export type WallectSelectorStep =
   | "choose-network"
   | "choose-wallet"
   | "await-confirmation";
@@ -38,14 +40,14 @@ const ListItem = tw.li`
   flex items-center justify-between p-4 hover:opacity-60 rounded
 `;
 
-export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
+export const WallectSelector: FC<WallectSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
-  const [step, setStep] = useState<ConnectWalletsStep>("choose-network");
+  const [step, setStep] = useState<WallectSelectorStep>("choose-network");
 
-  const navigate = useCallback((nextStep: ConnectWalletsStep) => {
+  const navigate = useCallback((nextStep: WallectSelectorStep) => {
     setStep(nextStep);
     setSearch("");
   }, []);
@@ -127,10 +129,9 @@ export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
           <>
             <ListContainer>
               {props.wallets
-                .filter(
-                  (x) =>
-                    selectedNetwork?.wallets.includes(x.id) &&
-                    x.name.toLowerCase().includes(search),
+                .filter((x) =>
+                  // selectedNetwork?.wallets.includes(x.id) &&
+                  x.name.toLowerCase().includes(search),
                 )
                 .map((x) => (
                   <ListItem
@@ -138,18 +139,17 @@ export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
                     role="button"
                     onClick={() => {
                       setWalletId(x.id);
+                      navigate("await-confirmation");
                       props.onConnect?.({
                         networkId: networkId ?? "",
-                        walletId: walletId ?? "",
+                        walletId: x.id,
                       });
-                      navigate("await-confirmation");
                     }}
                   >
                     <div className="flex gap-2 items-center">
                       <figure className="text-lg">{x.icon}</figure>
                       {x.name}
                     </div>
-
                     <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
                   </ListItem>
                 ))}
@@ -167,11 +167,11 @@ export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
               </p>
               <Button
                 onClick={() => {
+                  props.onCancel?.();
                   setNetworkId("");
                   setSearch("");
                   setWalletId("");
                   setStep("choose-network");
-                  props.onCancel?.();
                 }}
               >
                 Cancel
@@ -182,7 +182,14 @@ export const ConnectWallets: FC<ConnectWalletsProps> = (props) => {
       default:
         return [<></>];
     }
-  }, [step, search, props.chains, props.wallets]);
+  }, [
+    step,
+    search,
+    props.chains,
+    props.wallets,
+    props.onConnect,
+    props.onCancel,
+  ]);
 
   return (
     <>

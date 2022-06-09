@@ -1,8 +1,6 @@
 import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
-import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
   BalanceIcon,
-  Button,
   ChangelogIcon,
   formatNumberAsCurrency,
   LockIcon,
@@ -15,10 +13,7 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-  useConnect as useEtherConnect,
-  useDisconnect as useEtherDisconnect,
-} from "wagmi";
+
 import WalletConnector from "~/compounds/WalletConnector";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
@@ -185,48 +180,3 @@ const Aside = () => {
 };
 
 export default Aside;
-
-const CosmosConnectButtons = () => {
-  const { connectors, activeConnector, connect, isConnected, disconnect } =
-    useCosmConnect();
-
-  return (
-    <>
-      {isConnected ? (
-        <Button
-          variant="secondary"
-          onClick={() => disconnect(activeConnector!)}
-        >
-          Disconnect Cosmos Wallet
-        </Button>
-      ) : (
-        connectors.map((x) => (
-          <Button key={x.id} onClick={() => connect(x)}>
-            Connect Cosmos {x.name}
-          </Button>
-        ))
-      )}
-    </>
-  );
-};
-
-const EthereumConnectButtons = () => {
-  const { connectors, connect, isConnected } = useEtherConnect();
-  const { disconnect } = useEtherDisconnect();
-
-  return (
-    <>
-      {isConnected ? (
-        <Button variant="secondary" onClick={() => disconnect()}>
-          Disconnect Ethereum Wallet
-        </Button>
-      ) : (
-        connectors.map((x) => (
-          <Button key={x.id} onClick={() => connect(x)}>
-            Connect Eth {x.name}
-          </Button>
-        ))
-      )}
-    </>
-  );
-};
