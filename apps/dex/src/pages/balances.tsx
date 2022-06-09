@@ -29,7 +29,7 @@ const AssetsPage: NextPage = () => {
   return (
     <MainLayout title="Balances">
       <PageLayout heading="Balances">
-        <section className="grid gap-4">
+        <section className="grid gap-4 max-w-2xl">
           <h2 className="text-2xl">Balances</h2>
           <div className="flex justify-between">
             {stats.map((stat) => (
