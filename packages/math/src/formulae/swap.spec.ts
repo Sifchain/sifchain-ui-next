@@ -2,7 +2,7 @@ import {
   pmtpSwapResult,
   priceImpact,
   providerFee,
-  reverseSwapResult,
+  swapAmountNeeded,
   swapResult,
 } from "./swap";
 
@@ -15,9 +15,13 @@ import swapFixture from "../../__fixtures__/swap.json";
 
 describe("swap", () => {
   test.each(swapFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
-    "swapping %s for %s with balance %s returns %s",
-    (x, X, Y, expected) => {
-      const output = swapResult(x, X, Y);
+    "swapping %s with pool balances of %s/%s returns %s",
+    (fromAmount, fromCoinPoolAmount, toCoinPoolAmount, expected) => {
+      const output = swapResult(
+        fromAmount,
+        fromCoinPoolAmount,
+        toCoinPoolAmount,
+      );
       expect(output.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
@@ -27,9 +31,20 @@ describe("swap", () => {
 
 describe("swap with PMTP", () => {
   test.each(pmtpSwapFixture.map((x) => [x.x, x.X, x.Y, x.A, x.expected]))(
-    "swapping %s for %s with balance %s and adjustment of %s returns %s",
-    (x, X, Y, A, expected) => {
-      const output = pmtpSwapResult(x, X, Y, A);
+    "swapping %s with pool balances of %s/%s and adjustment of %s returns %s",
+    (
+      fromAmount,
+      fromCoinPoolAmount,
+      toCoinPoolAmount,
+      adjustment,
+      expected,
+    ) => {
+      const output = pmtpSwapResult(
+        fromAmount,
+        fromCoinPoolAmount,
+        toCoinPoolAmount,
+        adjustment,
+      );
       expect(output.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
@@ -39,9 +54,9 @@ describe("swap with PMTP", () => {
 
 describe("reverse swap", () => {
   test.each(reverseSwapFixture.map((x) => [x.S, x.X, x.Y, x.expected]))(
-    "reverse swapping %s for %s with balance %s returns %s",
+    "to get %s with target pool of %s & from pool of %s, %s is needed",
     (S, X, Y, expected) => {
-      const x = reverseSwapResult(S, X, Y);
+      const x = swapAmountNeeded(S, X, Y);
       expect(x.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
