@@ -33,7 +33,7 @@ export const slipAdjustment = (
  * @param Y native Balance
  * @returns swapAmount
  */
-export const calculateSwapResult = (
+export const swapResult = (
   x: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -57,7 +57,7 @@ export const calculateSwapResult = (
  * @param adjustment PMTP purchasing power adjustment
  * @returns swapAmount
  */
-export const calculatePmtpSwapResult = (
+export const pmtpSwapResult = (
   x: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -74,7 +74,7 @@ export const calculatePmtpSwapResult = (
 
   const adjustmentPercentage = _adjustment.div(100_000_000_000_000_000_000);
 
-  return calculateSwapResult(x, X, Y).times(adjustmentPercentage.plus(1));
+  return swapResult(x, X, Y).times(adjustmentPercentage.plus(1));
 };
 
 /**
@@ -86,7 +86,7 @@ export const calculatePmtpSwapResult = (
  * @param Y
  * @returns
  */
-export const calculateReverseSwapResult = (
+export const reverseSwapResult = (
   S: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -116,7 +116,7 @@ export const calculateReverseSwapResult = (
  * @param Y native Balance
  * @returns providerFee
  */
-export const calculateProviderFee = (
+export const providerFee = (
   x: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -139,10 +139,7 @@ export const calculateProviderFee = (
  * @param X external Balance
  * @returns
  */
-export const calculatePriceImpact = (
-  x: BigNumber.Value,
-  X: BigNumber.Value,
-) => {
+export const priceImpact = (x: BigNumber.Value, X: BigNumber.Value) => {
   const _x = new BigNumber(x);
 
   if (_x.isZero()) {
