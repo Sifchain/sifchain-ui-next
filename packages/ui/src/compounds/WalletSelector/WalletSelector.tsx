@@ -1,12 +1,18 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
-import { Button, Modal, SearchInput, WalletIcon } from "../../components";
+import {
+  Button,
+  Modal,
+  SearchInput,
+  WalletIcon,
+  Tooltip,
+} from "../../components";
 
 export type ChainEntry = {
   id: string;
   name: string;
-  type: "ibc" | "eth";
+  type: string;
   wallets: string[];
   icon: ReactNode;
 };
@@ -15,14 +21,22 @@ export type WalletEntry = {
   id: string;
   name: string;
   icon: ReactNode;
-  type: "evm" | "cosmos";
+  type: string;
+  isConnected?: boolean;
+  account?: string;
 };
 
 export type WallectSelectorProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
   isLoading?: boolean;
-  onConnect?: (selection: { networkId: string; walletId: string }) => void;
+  selectedWalletId?: string;
+  selectedChainId?: string;
+  accounts?: {
+    [chainId: string]: string[];
+  }[];
+  onConnect?: (selection: { chainId: string; walletId: string }) => void;
+  onDisconnect?: (selection: { chainId: string; walletId: string }) => void;
   onError?: (error: Error) => void;
   onCancel?: () => void;
 };
@@ -129,9 +143,10 @@ export const WallectSelector: FC<WallectSelectorProps> = (props) => {
           <>
             <ListContainer>
               {props.wallets
-                .filter((x) =>
-                  // selectedNetwork?.wallets.includes(x.id) &&
-                  x.name.toLowerCase().includes(search),
+                .filter(
+                  (x) =>
+                    selectedNetwork?.type === x.type &&
+                    x.name.toLowerCase().includes(search),
                 )
                 .map((x) => (
                   <ListItem
@@ -139,16 +154,23 @@ export const WallectSelector: FC<WallectSelectorProps> = (props) => {
                     role="button"
                     onClick={() => {
                       setWalletId(x.id);
-                      navigate("await-confirmation");
                       props.onConnect?.({
-                        networkId: networkId ?? "",
+                        chainId: networkId ?? "",
                         walletId: x.id,
                       });
+                      navigate("await-confirmation");
                     }}
                   >
                     <div className="flex gap-2 items-center">
                       <figure className="text-lg">{x.icon}</figure>
-                      {x.name}
+                      {x.name}{" "}
+                      {x.isConnected && (
+                        <Tooltip content={x.account || "no account"}>
+                          <div>
+                            <WalletIcon className="text-green-600" />
+                          </div>
+                        </Tooltip>
+                      )}
                     </div>
                     <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
                   </ListItem>
@@ -157,6 +179,9 @@ export const WallectSelector: FC<WallectSelectorProps> = (props) => {
           </>,
         ];
       case "await-confirmation":
+        if (!props.isLoading) {
+          return [<></>, <></>];
+        }
         return [
           <></>,
           <>

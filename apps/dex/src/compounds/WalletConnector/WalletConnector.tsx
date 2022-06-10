@@ -1,9 +1,6 @@
+import type { ChainConfig } from "@sifchain/common";
+import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
-  BaseCosmConnector,
-  useConnect as useCosmConnect,
-} from "@sifchain/cosmos-connect";
-import {
-  Button,
   ChainEntry,
   CoinbaseIcon,
   CosmostationIcon,
@@ -11,11 +8,11 @@ import {
   MetamaskIcon,
   WallectSelector,
   WalletconnectCircleIcon,
-  WalletEntry,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
 import React, { FC, useCallback, useMemo } from "react";
+import { useQuery } from "react-query";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
@@ -60,54 +57,111 @@ const WalletConnector: FC = () => {
     );
   }, [data?.chainConfigsByNetwork]);
 
-  const { connectors: cosmosConnectors, connect: connectCosmos } =
-    useCosmConnect();
-  const { connectors: evmConnectors, connect: connectEvm } = useEtherConnect();
+  const {
+    connectors: cosmosConnectors,
+    connect: connectCosmos,
+    isConnected: isCosmosConnected,
+    connectingStatus: cosmosConnectingStatus,
+    activeConnector: cosmosActiveConnector,
+    disconnect: disconnectCosmos,
+  } = useCosmConnect();
+
+  const {
+    connectors: evmConnectors,
+    connectAsync: connectEvm,
+    isConnected: isEthConnected,
+    pendingConnector: pendingEvmConnector,
+    data: evmData,
+  } = useEtherConnect();
+
+  const { disconnect: disconnectEVM } = useEtherDisconnect();
+
+  console.log({
+    evmConnectors,
+    evmData,
+  });
+
+  const { data: accounts } = useQuery("accounts", async () => {
+    if (cosmosActiveConnector) {
+      const accounts = await Promise.all(
+        chains.flatMap(async (x) => {
+          try {
+            const signer = await cosmosActiveConnector.getSigner(x.id);
+            const accounts = await signer.getAccounts();
+
+            return [x.id, accounts.map((x) => x.address)];
+          } catch (error) {
+            return [x.id, []];
+          }
+        }),
+      );
+
+      return Object.fromEntries(accounts);
+    }
+
+    return {};
+  });
 
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [
-      ...cosmosConnectors.map(assoc("type", "cosmos")),
-      ...evmConnectors.map(assoc("type", "evm")),
+      ...cosmosConnectors.map(assoc("type", "ibc" as ChainConfig["chainType"])),
+      ...evmConnectors.map(assoc("type", "eth" as ChainConfig["chainType"])),
     ];
 
-    console.log({ connectors });
-
-    const wallets: WalletEntry[] = connectors.map((x) => ({
+    const wallets = connectors.map((x) => ({
       id: x.id,
       name: x.name,
-      type: x.type as "evm" | "cosmos",
+      type: x.type,
       icon: WALLET_ICONS[x.id as keyof typeof WALLET_ICONS] ?? (
         <WalletconnectCircleIcon />
       ),
+      isConnected: x.type === "ibc" ? isCosmosConnected : isEthConnected,
+      account: x.type === "ibc" ? "" : evmData?.account ?? "",
     }));
 
     const connectorsById = indexBy(prop("id"), connectors);
 
     return [wallets, connectorsById];
-  }, [cosmosConnectors, evmConnectors]);
+  }, [
+    cosmosConnectors,
+    evmConnectors,
+    isCosmosConnected,
+    isEthConnected,
+    evmData,
+  ]);
 
   const handleConnectionRequest = useCallback(
-    async ({ walletId = "" }) => {
+    async ({ walletId = "", chainId = "" }) => {
       const selected = connectorsById[walletId];
 
       if (!selected) {
+        console.log("selected", selected);
         return;
       }
 
       try {
         switch (selected.type) {
-          case "cosmos":
+          case "ibc":
             {
               const connector = cosmosConnectors.find((x) => x.id === walletId);
               if (connector) {
-                await connectCosmos(connector as BaseCosmConnector);
+                console.log("connecting to", connector);
+                await connectCosmos(connector);
+              } else {
+                console.log("connector not found: ", chainId);
               }
             }
             break;
-          case "evm":
+          case "eth":
             {
               const connector = evmConnectors.find((x) => x.id === walletId);
-              connectEvm(connector as any);
+              if (connector) {
+                console.log("connecting to", connector);
+                const account = await connectEvm(connector);
+                console.log({ account });
+              } else {
+                console.log("connector not found");
+              }
             }
             break;
         }
@@ -117,11 +171,15 @@ const WalletConnector: FC = () => {
     },
     [connectEvm, connectEvm, connectorsById, evmConnectors, cosmosConnectors],
   );
-
+  console.log({ accounts });
   return (
     <WallectSelector
-      chains={chains}
+      chains={chains.filter((x) => !accounts[x.id]?.length)}
       wallets={wallets}
+      accounts={accounts}
+      isLoading={
+        Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
+      }
       onConnect={handleConnectionRequest}
     />
   );
