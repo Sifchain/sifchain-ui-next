@@ -33,7 +33,7 @@ export const slipAdjustment = (
  * @param Y native Balance
  * @returns swapAmount
  */
-const _calculateSwapResult = (
+export const calculateSwapResult = (
   x: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -57,7 +57,7 @@ const _calculateSwapResult = (
  * @param adjustment PMTP purchasing power adjustment
  * @returns swapAmount
  */
-export const calculateSwapResult = (
+export const calculatePmtpSwapResult = (
   x: BigNumber.Value,
   X: BigNumber.Value,
   Y: BigNumber.Value,
@@ -74,7 +74,7 @@ export const calculateSwapResult = (
 
   const adjustmentPercentage = _adjustment.div(100_000_000_000_000_000_000);
 
-  return _calculateSwapResult(x, X, Y).times(adjustmentPercentage.plus(1));
+  return calculateSwapResult(x, X, Y).times(adjustmentPercentage.plus(1));
 };
 
 /**
