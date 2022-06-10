@@ -55,8 +55,12 @@ describe("swap with PMTP", () => {
 describe("reverse swap", () => {
   test.each(reverseSwapFixture.map((x) => [x.S, x.X, x.Y, x.expected]))(
     "to get %s with target pool of %s & from pool of %s, %s is needed",
-    (S, X, Y, expected) => {
-      const x = swapAmountNeeded(S, X, Y);
+    (targetAmount, targetCoinPoolAmount, fromCoinPoolAmount, expected) => {
+      const x = swapAmountNeeded(
+        targetAmount,
+        targetCoinPoolAmount,
+        fromCoinPoolAmount,
+      );
       expect(x.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
@@ -67,8 +71,12 @@ describe("reverse swap", () => {
 describe("provider's fee", () => {
   test.each(providerFeesFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
     "swapping %s for %s with balance %s costs %s in provider's fee",
-    (x, X, Y, expected) => {
-      const output = providerFee(x, X, Y);
+    (fromAmount, fromCoinPoolAmount, toCoinPoolAmount, expected) => {
+      const output = providerFee(
+        fromAmount,
+        fromCoinPoolAmount,
+        toCoinPoolAmount,
+      );
       expect(output.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
@@ -79,8 +87,8 @@ describe("provider's fee", () => {
 describe("price impact", () => {
   test.each(priceImpactFixture.map((x) => [x.x, x.X, x.expected]))(
     "swapping %s for %s with balance %s has price impact of %s",
-    (x, X, expected) => {
-      const output = priceImpact(x, X);
+    (fromAmount, fromCoinPoolAmount, expected) => {
+      const output = priceImpact(fromAmount, fromCoinPoolAmount);
       return expect(output.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
