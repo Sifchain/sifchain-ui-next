@@ -2,8 +2,16 @@
   "name": "@sifchain/math",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/commonjs/index.js",
+  "exports": {
+    "import": "./build/module/index.js",
+    "require": "./build/commonjs/index.js"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
+    "build": "rm -rf build && pnpm tsc -p tsconfig.build.json -m commonjs --outDir build/commonjs && pnpm tsc -p tsconfig.build.json -m esnext --outDir build/module",
     "test": "jest"
   },
   "keywords": [],
