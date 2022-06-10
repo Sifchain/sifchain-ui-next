@@ -1,11 +1,13 @@
 import {
   calculatePmtpSwapResult,
+  calculateProviderFee,
   calculateReverseSwapResult,
   calculateSwapResult,
 } from "./swap";
 
 import BigNumber from "bignumber.js";
 import pmtpSwapFixture from "../../__fixtures__/pmtp_swap.json";
+import providerFeesFixture from "../../__fixtures__/provider_fees.json";
 import reverseSwapFixture from "../../__fixtures__/reverse_swap.json";
 import swapFixture from "../../__fixtures__/swap.json";
 
@@ -39,6 +41,18 @@ describe("reverse swap", () => {
     (S, X, Y, expected) => {
       const x = calculateReverseSwapResult(S, X, Y);
       expect(x.toPrecision(18)).toBe(new BigNumber(expected).toPrecision(18));
+    },
+  );
+});
+
+describe("provider's fee", () => {
+  test.each(providerFeesFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
+    "swapping %s for %s with balance %s costs %s in provider's fee",
+    (x, X, Y, expected) => {
+      const output = calculateProviderFee(x, X, Y);
+      expect(output.toPrecision(18)).toBe(
+        new BigNumber(expected).toPrecision(18),
+      );
     },
   );
 });
