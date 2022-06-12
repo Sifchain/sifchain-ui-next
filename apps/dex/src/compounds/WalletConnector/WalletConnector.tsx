@@ -6,7 +6,7 @@ import {
   CosmostationIcon,
   KeplrIcon,
   MetamaskIcon,
-  WallectSelector,
+  WalletSelector,
   WalletconnectCircleIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
@@ -173,7 +173,7 @@ const WalletConnector: FC = () => {
   );
   console.log({ accounts });
   return (
-    <WallectSelector
+    <WalletSelector
       chains={chains.filter((x) => !accounts[x.id]?.length)}
       wallets={wallets}
       accounts={accounts}

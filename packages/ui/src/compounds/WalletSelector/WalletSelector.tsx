@@ -26,7 +26,7 @@ export type WalletEntry = {
   account?: string;
 };
 
-export type WallectSelectorProps = {
+export type WalletSelectorProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
   isLoading?: boolean;
@@ -41,7 +41,7 @@ export type WallectSelectorProps = {
   onCancel?: () => void;
 };
 
-export type WallectSelectorStep =
+export type WalletSelectorStep =
   | "choose-network"
   | "choose-wallet"
   | "await-confirmation";
@@ -54,14 +54,14 @@ const ListItem = tw.li`
   flex items-center justify-between p-4 hover:opacity-60 rounded
 `;
 
-export const WallectSelector: FC<WallectSelectorProps> = (props) => {
+export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
-  const [step, setStep] = useState<WallectSelectorStep>("choose-network");
+  const [step, setStep] = useState<WalletSelectorStep>("choose-network");
 
-  const navigate = useCallback((nextStep: WallectSelectorStep) => {
+  const navigate = useCallback((nextStep: WalletSelectorStep) => {
     setStep(nextStep);
     setSearch("");
   }, []);
