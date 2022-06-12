@@ -1,8 +1,6 @@
 const sifchainPreset = require("@sifchain/ui/tailwind.config.preset");
 
-/**
- * @type {import("tailwindcss/tailwind-config").TailwindConfig}
- */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   presets: [sifchainPreset],
   content: [

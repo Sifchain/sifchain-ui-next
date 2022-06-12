@@ -1,6 +1,4 @@
-/**
- * @type {import("tailwindcss/tailwind-config").TailwindConfig}
- */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "media",
   theme: {
