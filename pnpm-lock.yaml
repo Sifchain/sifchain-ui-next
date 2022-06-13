@@ -390,6 +390,7 @@ importers:
       ramda: ^0.28.0
       react: ^18.1.0
       react-dom: ^18.1.0
+      react-toastify: ^9.0.4
       tailwind-styled-components: 2.1.6
       tailwindcss: ^3.1.2
       tsconfig: workspace:*
@@ -408,6 +409,7 @@ importers:
       ramda: 0.28.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+      react-toastify: 9.0.4_ef5jwxihqo6n7gxfmzogljlgcm
       zustand: 4.0.0-rc.1_react@18.1.0
     devDependencies:
       '@babel/core': 7.18.2
@@ -18127,6 +18129,17 @@ packages:
       react: 18.1.0
       refractor: 3.6.0
     dev: true
+
+  /react-toastify/9.0.4_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-MYmJ1V5F6DEU+TFxBb+pGGsveFPt4tjr4yK+TopXkU3sXPD9F2tFhX+G2HBLZpqObT2O6Z9jbXSg3JpaxuWtWw==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      clsx: 1.1.1
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+    dev: false
 
   /react/16.14.0:
     resolution: {integrity: sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==}

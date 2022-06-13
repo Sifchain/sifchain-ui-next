@@ -27,6 +27,7 @@
     "ramda": "^0.28.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-toastify": "^9.0.4",
     "zustand": "4.0.0-rc.1"
   },
   "devDependencies": {
