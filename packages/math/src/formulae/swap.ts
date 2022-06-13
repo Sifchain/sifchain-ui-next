@@ -8,7 +8,7 @@ import BigNumber from "bignumber.js";
  * @param rightPoolAmount
  * @returns slip adjustment
  */
-export const slipAdjustment = (
+export const calculateSlipAdjustment = (
   leftAmount: BigNumber.Value,
   rightAmount: BigNumber.Value,
   leftPoolAmount: BigNumber.Value,
@@ -34,7 +34,7 @@ export const slipAdjustment = (
  * @param toCoinPoolAmount
  * @returns amount obtained from swap
  */
-const _swapResult = (
+const _calculateSwapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
@@ -58,7 +58,7 @@ const _swapResult = (
  * @param adjustment PMTP purchasing power adjustment, `undefined` if no adjustment is needed
  * @returns amount obtained from swap
  */
-export const swapResult = (
+export const calculateSwapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
@@ -73,14 +73,14 @@ export const swapResult = (
   }
 
   if (adjustment === undefined) {
-    return _swapResult(f, fp, tp);
+    return _calculateSwapResult(f, fp, tp);
   }
 
   const a = new BigNumber(adjustment);
 
   const adjustmentPercentage = a.div(100_000_000_000_000_000_000);
 
-  return _swapResult(f, fp, tp).times(adjustmentPercentage.plus(1));
+  return _calculateSwapResult(f, fp, tp).times(adjustmentPercentage.plus(1));
 };
 
 /**
@@ -92,7 +92,7 @@ export const swapResult = (
  * @param fromCoinPoolAmount
  * @returns
  */
-export const swapAmountNeeded = (
+export const calculateSwapAmountNeeded = (
   targetAmount: BigNumber.Value,
   targetCoinPoolAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
@@ -122,7 +122,7 @@ export const swapAmountNeeded = (
  * @param toCoinPoolAmount native Balance
  * @returns providerFee
  */
-export const providerFee = (
+export const calculateProviderFee = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
@@ -145,7 +145,7 @@ export const providerFee = (
  * @param toCoinPoolAmount external Balance
  * @returns
  */
-export const priceImpact = (
+export const calculatePriceImpact = (
   fromAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
 ) => {
