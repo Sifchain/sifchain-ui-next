@@ -1,4 +1,3 @@
-import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
 
 const OPACITY_VARIANTS = {
