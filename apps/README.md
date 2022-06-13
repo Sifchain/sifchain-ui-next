@@ -1,5 +1,7 @@
 # Apps
 
+Sifchain standalone apps
+
 | App                 | Description   |
 | ------------------- | ------------- |
 | [dex](/apps/dex/)   | Dex frontend  |
