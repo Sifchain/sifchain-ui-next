@@ -13,13 +13,23 @@ const Template: ComponentStory<typeof Input> = (args) => {
 
 export const Default = Template.bind({});
 
-Default.args = {};
+Default.args = {
+  placeholder: "Placeholder",
+};
+
+export const FullWidth = Template.bind({});
+
+FullWidth.args = {
+  fullWidth: true,
+  placeholder: "Full width input",
+};
 
 export const WithButton = Template.bind({});
 
 WithButton.args = {
-  className: "pl-24",
-  placeholder: "Search",
+  className: "text-right",
+  placeholder: "20,000",
+  label: "Amount",
   children: (
     <div className="absolute flex gap-1.5 pl-1.5">
       <InputButton>Half</InputButton>

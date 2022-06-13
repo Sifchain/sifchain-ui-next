@@ -10,7 +10,7 @@ export const StyledInput = tw.input`
   text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   focus:ring focus:ring-blue-400/40
-  hover:opacity-100
+  hover:opacity-100 flex-1
 `;
 
 export type InputProps = Omit<JSX.IntrinsicElements["input"], "ref"> & {
@@ -46,6 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <label
         className={clsx("relative flex items-center", {
           "max-w-min": !fullWidth,
+          "w-full flex-1": fullWidth,
         })}
       >
         {label && <span className="sr-only">{label}</span>}
