@@ -3,14 +3,14 @@ import { forwardRef, useEffect, ReactNode } from "react";
 import tw from "tailwind-styled-components";
 
 import { useSyncedRef } from "../../hooks";
-import { Button, ButtonProps } from "../Button";
 
 export const StyledInput = tw.input`
-  border-gray-700 bg-gray-750 rounded-xl opacity-90 outline-none p-2
+  border-gray-700 bg-gray-750 rounded-xl opacity-90 outline-none p-2 px-4
   text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   focus:ring focus:ring-blue-400/40
   hover:opacity-100 flex-1
+  disabled:bg-gray-800 disabled:border-gray-750 disabled:placeholder:text-gray-600
 `;
 
 export type InputProps = Omit<JSX.IntrinsicElements["input"], "ref"> & {

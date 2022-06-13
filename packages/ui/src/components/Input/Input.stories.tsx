@@ -17,6 +17,13 @@ Default.args = {
   placeholder: "Placeholder",
 };
 
+export const Disabled = Template.bind({});
+
+Disabled.args = {
+  placeholder: "Disabled input",
+  disabled: true,
+};
+
 export const FullWidth = Template.bind({});
 
 FullWidth.args = {
