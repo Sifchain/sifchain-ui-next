@@ -23,7 +23,7 @@
     "long": "^5.2.0"
   },
   "devDependencies": {
-    "@tsconfig/node16-strictest-esm": "^1.0.1",
+    "@tsconfig/node16-strictest-esm": "^1.0.2",
     "@types/inflection": "^1.13.0",
     "@types/jest": "^27.4.1",
     "degit": "^2.8.4",

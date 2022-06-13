@@ -10,8 +10,9 @@
     "dev": "turbo run dev --scope=@sifchain/dex",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ui:storybook": "pnpm -C ./packages/ui run storybook ",
-    "docs:dev": "pnpm -C ./apps/docs dev"
+    "storybook": "pnpm -C ./packages/ui run storybook ",
+    "docs:dev": "pnpm -C ./apps/docs dev",
+    "e2e": "pnpm -C ./packages/e2e run test"
   },
   "keywords": [],
   "license": "Apache-2.0",

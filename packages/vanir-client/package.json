@@ -18,7 +18,7 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "@tsconfig/node16-strictest-esm": "^1.0.1",
+    "@tsconfig/node16-strictest-esm": "^1.0.2",
     "@types/jest": "^27.5.1",
     "jest": "^28.1.0",
     "ts-jest": "^28.0.2",
