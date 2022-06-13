@@ -37,6 +37,7 @@ WithButton.args = {
   className: "text-right",
   placeholder: "20,000",
   label: "Amount",
+  secondaryLabel: "ETH",
   children: (
     <div className="absolute flex gap-1.5 pl-1.5">
       <InputButton>Half</InputButton>

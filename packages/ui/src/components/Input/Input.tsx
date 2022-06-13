@@ -14,14 +14,19 @@ export const StyledInput = tw.input`
 `;
 
 export type InputProps = Omit<JSX.IntrinsicElements["input"], "ref"> & {
-  label?: string;
+  label?: ReactNode | string;
+  secondaryLabel?: ReactNode | string;
+  hideLabel?: boolean;
   children?: ReactNode;
   fullWidth?: boolean;
   hotkey?: string;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, hotkey, fullWidth, children, ...props }, ref) => {
+  (
+    { label, secondaryLabel, hotkey, hideLabel, fullWidth, children, ...props },
+    ref,
+  ) => {
     const inputRef = useSyncedRef<HTMLInputElement>(ref);
 
     useEffect(() => {
@@ -44,19 +49,46 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <label
-        className={clsx("relative flex items-center", {
+        className={clsx("relative grid items-center", {
           "max-w-min": !fullWidth,
           "w-full flex-1": fullWidth,
         })}
       >
-        {label && <span className="sr-only">{label}</span>}
-        <StyledInput aria-label={label} {...props} ref={inputRef} />
-        {children}{" "}
-        {hotkey && (
-          <span className="absolute text-xs right-3 p-1 ring-1 rounded ring-gray-600 text-gray-300">
-            {hotkey}
-          </span>
+        {(label || secondaryLabel) && (
+          <div className="flex justify-between items-center px-1">
+            {label && (
+              <span
+                className={clsx("text-xs md:text-sm text-gray-200", {
+                  "sr-only": hideLabel,
+                })}
+              >
+                {label}
+              </span>
+            )}
+            {secondaryLabel && (
+              <span
+                className={clsx("text-xs md:text-sm text-gray-300", {
+                  "sr-only": hideLabel,
+                })}
+              >
+                {secondaryLabel}
+              </span>
+            )}
+          </div>
         )}
+        <div className="relative flex items-center">
+          <StyledInput
+            aria-label={typeof label === "string" ? label : ""}
+            {...props}
+            ref={inputRef}
+          />
+          {children}{" "}
+          {hotkey && (
+            <span className="absolute text-xs right-3 p-1 ring-1 rounded ring-gray-600 text-gray-300">
+              {hotkey}
+            </span>
+          )}
+        </div>
       </label>
     );
   },
