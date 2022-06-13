@@ -1,10 +1,4 @@
-import {
-  pmtpSwapResult,
-  priceImpact,
-  providerFee,
-  swapAmountNeeded,
-  swapResult,
-} from "./swap";
+import { priceImpact, providerFee, swapAmountNeeded, swapResult } from "./swap";
 
 import BigNumber from "bignumber.js";
 import pmtpSwapFixture from "../../__fixtures__/pmtp_swap.json";
@@ -39,7 +33,7 @@ describe("swap with PMTP", () => {
       adjustment,
       expected,
     ) => {
-      const output = pmtpSwapResult(
+      const output = swapResult(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
