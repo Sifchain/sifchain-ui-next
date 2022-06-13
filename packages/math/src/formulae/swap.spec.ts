@@ -1,4 +1,9 @@
-import { priceImpact, providerFee, swapAmountNeeded, swapResult } from "./swap";
+import {
+  calculatePriceImpact,
+  calculateProviderFee,
+  calculateSwapAmountNeeded,
+  calculateSwapResult,
+} from "./swap";
 
 import BigNumber from "bignumber.js";
 import pmtpSwapFixture from "../../__fixtures__/pmtp_swap.json";
@@ -11,7 +16,7 @@ describe("swap", () => {
   test.each(swapFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
     "swapping %s with pool balances of %s/%s returns %s",
     (fromAmount, fromCoinPoolAmount, toCoinPoolAmount, expected) => {
-      const output = swapResult(
+      const output = calculateSwapResult(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
@@ -33,7 +38,7 @@ describe("swap with PMTP", () => {
       adjustment,
       expected,
     ) => {
-      const output = swapResult(
+      const output = calculateSwapResult(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
@@ -50,7 +55,7 @@ describe("reverse swap", () => {
   test.each(reverseSwapFixture.map((x) => [x.S, x.X, x.Y, x.expected]))(
     "to get %s with target pool of %s & from pool of %s, %s is needed",
     (targetAmount, targetCoinPoolAmount, fromCoinPoolAmount, expected) => {
-      const x = swapAmountNeeded(
+      const x = calculateSwapAmountNeeded(
         targetAmount,
         targetCoinPoolAmount,
         fromCoinPoolAmount,
@@ -66,7 +71,7 @@ describe("provider's fee", () => {
   test.each(providerFeesFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
     "swapping %s for %s with balance %s costs %s in provider's fee",
     (fromAmount, fromCoinPoolAmount, toCoinPoolAmount, expected) => {
-      const output = providerFee(
+      const output = calculateProviderFee(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
@@ -82,7 +87,7 @@ describe("price impact", () => {
   test.each(priceImpactFixture.map((x) => [x.x, x.X, x.expected]))(
     "swapping %s for %s with balance %s has price impact of %s",
     (fromAmount, fromCoinPoolAmount, expected) => {
-      const output = priceImpact(fromAmount, fromCoinPoolAmount);
+      const output = calculatePriceImpact(fromAmount, fromCoinPoolAmount);
       return expect(output.toPrecision(18)).toEqual(
         new BigNumber(expected).toPrecision(18),
       );
