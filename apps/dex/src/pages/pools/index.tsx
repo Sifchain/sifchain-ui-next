@@ -67,7 +67,7 @@ const PoolItem: FC<{
   return (
     <Link href={`/pools/${asset?.displaySymbol}`}>
       <li
-        className="rounded-lg bg-gray-800 min-h-[200px] hover:opacity-60 transition-opacity overflow-x-hidden grid gap-2"
+        className="rounded-lg bg-gray-800 min-h-[200px] hover:opacity-80 transition-opacity overflow-x-hidden grid gap-2"
         role="button"
       >
         <div className="flex gap-1 items-center p-4 font-semibold">
