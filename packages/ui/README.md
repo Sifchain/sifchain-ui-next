@@ -2,7 +2,7 @@
 
 Sifchain design system implementation for react
 
-view storybook [here](storybook.sifchain.network)
+view storybook [here](https://storybook.sifchain.network)
 
 ---
 
