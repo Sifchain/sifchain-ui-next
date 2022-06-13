@@ -8,12 +8,12 @@ import { useTheme } from "../../hooks/useTheme";
 
 const Button = tw.button`
   flex items-center p-1 rounded-full w-14 h-8
-  bg-slate-800/20 dark:bg-white/10 dark:text-slate-400/60
+  bg-white/10 text-slate-400/60
 `;
 
 const Dot = tw.div`
   transition-all duration-600 group-hover:bg-indigo-500/80 
-  rounded-full h-5 w-5 dark:bg-slate-400/40 bg-slate-600/40
+  rounded-full h-5 w-5 bg-slate-400/40
 `;
 
 const Slider = tw.div`
