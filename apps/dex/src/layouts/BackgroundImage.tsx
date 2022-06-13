@@ -13,7 +13,9 @@ const OPACITY_VARIANTS = {
   100: "opacity-100",
 };
 
-const Background = tw.figure<{ $opacity?: keyof typeof OPACITY_VARIANTS }>`
+export type BgOpacityLevel = keyof typeof OPACITY_VARIANTS;
+
+const Background = tw.figure<{ $opacity?: BgOpacityLevel }>`
   absolute inset-0 z-0 
   bg-forest bg-cover bg-center
   pointer-events-none
