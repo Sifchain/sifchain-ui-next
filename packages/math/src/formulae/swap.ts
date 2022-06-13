@@ -34,7 +34,7 @@ export const slipAdjustment = (
  * @param toCoinPoolAmount
  * @returns amount obtained from swap
  */
-export const swapResult = (
+const _swapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
@@ -55,27 +55,32 @@ export const swapResult = (
  * @param fromAmount
  * @param fromCoinPoolAmount
  * @param toCoinPoolAmount
- * @param adjustment PMTP purchasing power adjustment
+ * @param adjustment PMTP purchasing power adjustment, `undefined` if no adjustment is needed
  * @returns amount obtained from swap
  */
-export const pmtpSwapResult = (
+export const swapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
-  adjustment: BigNumber.Value,
+  adjustment?: BigNumber.Value,
 ) => {
   const f = new BigNumber(fromAmount);
   const fp = new BigNumber(fromCoinPoolAmount);
   const tp = new BigNumber(toCoinPoolAmount);
-  const a = new BigNumber(adjustment);
 
   if (f.isZero() || fp.isZero() || tp.isZero()) {
     return new BigNumber(0);
   }
 
+  if (adjustment === undefined) {
+    return _swapResult(f, fp, tp);
+  }
+
+  const a = new BigNumber(adjustment);
+
   const adjustmentPercentage = a.div(100_000_000_000_000_000_000);
 
-  return swapResult(f, fp, tp).times(adjustmentPercentage.plus(1));
+  return _swapResult(f, fp, tp).times(adjustmentPercentage.plus(1));
 };
 
 /**
