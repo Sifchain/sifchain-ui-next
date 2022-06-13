@@ -1,6 +1,7 @@
 import Head from "next/head";
 import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
+import Background from "./BackgroundImage";
 
 import Sidebar from "./Sidebar";
 
@@ -15,12 +16,6 @@ const Shell = tw.div`
   subpixel-antialiased
 `;
 
-const Background = tw.figure`
-  absolute inset-0 z-0 opacity-20
-  bg-forest bg-cover bg-center
-  pointer-events-none
-`;
-
 const MainLayout: FC<Props> = (props) => {
   return (
     <>
@@ -29,7 +24,7 @@ const MainLayout: FC<Props> = (props) => {
           <title>Sichain Dex - {props.title}</title>
         </Head>
       )}
-      <Background />
+      <Background $opacity={20} />
       <Shell>
         <Sidebar />
         <main className="flex-1 flex flex-col max-h-screen z-[1]">
