@@ -3,9 +3,11 @@ import { forwardRef, useEffect, ReactNode } from "react";
 import tw from "tailwind-styled-components";
 
 import { useSyncedRef } from "../../hooks";
+import { Button, ButtonProps } from "../Button";
 
 export const StyledInput = tw.input`
-  border-gray-700 bg-gray-750 text-gray-50 rounded-xl opacity-90 outline-none p-2 px-4
+  border-gray-700 bg-gray-750 rounded-xl opacity-90 outline-none p-2
+  text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   focus:ring focus:ring-blue-400/40
   hover:opacity-100
@@ -58,3 +60,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
+
+export const InputButton = tw.button`
+  transition-colors
+  text-xs font-semibold text-white md:text-md
+  bg-gray-600 px-2 py-1
+  border-gray-500 rounded
+  hover:bg-gray-500 hover:border-gray-300
+  active:bg-gray-400 active:border-gray-300
+`;
