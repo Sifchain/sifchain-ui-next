@@ -92,7 +92,7 @@ const Aside = () => {
     <aside
       className={clsx(
         [
-          "fixed w-full md:max-w-[280px] h-screen transition-transform ease",
+          "fixed w-full md:max-w-sidebar h-screen transition-transform ease",
           "bg-gray-900 p-4 sm:shadow-lg shadow-slate-900",
         ],
         {
@@ -129,7 +129,7 @@ const Aside = () => {
                         },
                       )}
                     >
-                      <span className="h-6 w-6 grid place-items-center">
+                      <span className="h-6 w-6 grid place-items-center text-gray-50">
                         {icon}
                       </span>
                       <span className="text-gray-200 font-semibold text-sm">
@@ -146,7 +146,9 @@ const Aside = () => {
           <ul className="grid">
             {rowanStats.map(({ id, icon, label }) => (
               <li key={id} className="flex items-center gap-3 p-2">
-                <span className="h-6 w-6 grid place-items-center">{icon}</span>
+                <span className="h-6 w-6 grid place-items-center text-gray-50">
+                  {icon}
+                </span>
                 <span className="text-gray-200 font-semibold text-sm tracking-widest">
                   {label}
                 </span>
