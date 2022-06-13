@@ -21,6 +21,11 @@ export const KEPLR_CONNECTORS = [
   }),
   new KeplrWalletConnectConnector({
     chainInfos: KEPLR_CHAIN_INFOS,
+    modalUiOptions: {
+      backdrop: {
+        style: { zIndex: 11 },
+      },
+    },
     clientMeta: {
       name: "Sifchain",
       description: "The omni chain",
