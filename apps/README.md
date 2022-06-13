@@ -1,3 +1,6 @@
 # Apps
 
-- dex - Sifchain's Decentralized Exchange Frontend
+| App                 | Description   |
+| ------------------- | ------------- |
+| [dex](/apps/dex/)   | Dex frontend  |
+| [docs](/apps/docs/) | Documentation |
