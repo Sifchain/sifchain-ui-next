@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "storybook": "pnpm -C ./packages/ui run storybook ",
+    "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
     "e2e": "pnpm -C ./packages/e2e run test"
   },
