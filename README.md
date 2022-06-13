@@ -1,22 +1,15 @@
-<p>
- <center>
+<p align="center">
     <a href="https://dex.sifchain.finance" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/Sifchain/.github/main/assets/Sifchain%20Logo.svg"/>
     </a>
- </center>
 </p>
-<p>
- <center>
+<p align="center">
 ⚡️ <b>T H E &nbsp;&nbsp; O M N I C H A I N &nbsp;&nbsp; J A V A S C R I P T &nbsp;&nbsp;  L I B R A R Y</b> ⚡️
- </center>
 </p>
-<p>
- <center>
- 
+<p align="center">
   <b>FRONTEND 🤝 TRADING BOTS 🤝 ARBITRAGE</b>
- </center>
 </p>
-<hr />
+<hr>
 
 ## ✨ Links
 
