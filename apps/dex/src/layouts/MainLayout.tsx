@@ -15,6 +15,12 @@ const Shell = tw.div`
   subpixel-antialiased
 `;
 
+const Background = tw.figure`
+  absolute inset-0 z-0 opacity-20
+  bg-forest bg-cover bg-center
+  pointer-events-none
+`;
+
 const MainLayout: FC<Props> = (props) => {
   return (
     <>
@@ -23,7 +29,7 @@ const MainLayout: FC<Props> = (props) => {
           <title>Sichain Dex - {props.title}</title>
         </Head>
       )}
-      <figure className="bg-forest bg-cover bg-center absolute inset-0 z-0 opacity-30 blur-sm pointer-events-none" />
+      <Background />
       <Shell>
         <Sidebar />
         <main className="flex-1 flex flex-col max-h-screen z-[1]">
