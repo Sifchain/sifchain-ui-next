@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import {
   Coin,
   GeneratedType,
@@ -31,6 +32,7 @@ import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
+import type BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
@@ -265,12 +267,15 @@ export class SifSigningStargateClient extends SigningStargateClient {
     if (this.isNativeCoin(fromCoin.denom)) {
       const poolRes = await queryClient.clp.getPool({ symbol: toCoinDenom });
 
-      return this.#simulateSwap(
-        {
-          amount: fromCoin.amount,
-          poolBalance: poolRes.pool?.nativeAssetBalance ?? "0",
-        },
-        poolRes.pool?.externalAssetBalance ?? "0",
+      return this.#parseSwapResult(
+        await this.#simulateSwap(
+          {
+            amount: fromCoin.amount,
+            poolBalance: poolRes.pool?.nativeAssetBalance ?? "0",
+          },
+          poolRes.pool?.externalAssetBalance ?? "0",
+        ),
+        toCoinDenom,
       );
     }
 
@@ -280,12 +285,15 @@ export class SifSigningStargateClient extends SigningStargateClient {
         symbol: fromCoin.denom,
       });
 
-      return this.#simulateSwap(
-        {
-          amount: fromCoin.amount,
-          poolBalance: poolRes.pool?.externalAssetBalance ?? "0",
-        },
-        poolRes.pool?.nativeAssetBalance ?? "0",
+      return this.#parseSwapResult(
+        await this.#simulateSwap(
+          {
+            amount: fromCoin.amount,
+            poolBalance: poolRes.pool?.externalAssetBalance ?? "0",
+          },
+          poolRes.pool?.nativeAssetBalance ?? "0",
+        ),
+        toCoinDenom,
       );
     }
 
@@ -312,7 +320,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       secondPoolRes.pool?.externalAssetBalance ?? "0",
     );
 
-    return secondSwap;
+    return await this.#parseSwapResult(secondSwap, toCoinDenom);
   }
 
   async #simulateSwap(
@@ -377,5 +385,41 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   private isNativeCoin(coin: Coin | string) {
     return typeof coin === "string" ? coin === "rowan" : coin.denom === "rowan";
+  }
+
+  /**
+   * convert BigNumber to cosmjs Decimal to keep with cosmjs standard
+   */
+  async #parseSwapResult(
+    result: {
+      rawReceiving: BigNumber;
+      minimumReceiving: BigNumber;
+      priceImpact: BigNumber;
+      providerFee: BigNumber;
+    },
+    toCoinDenom: string,
+  ) {
+    const queryClient = this.forceGetQueryClient();
+    const tokenRegistryRes = await queryClient.tokenRegistry.entries({});
+    const tokenRecord = tokenRegistryRes.registry?.entries.find(
+      (x) => x.denom === toCoinDenom,
+    );
+
+    if (tokenRecord === undefined) {
+      throw new Error(`No token record found for denom ${toCoinDenom}`);
+    }
+
+    const toCosmJsDecimal = (bn: BigNumber) =>
+      Decimal.fromAtomics(
+        bn.integerValue().toFixed(0).toString(),
+        tokenRecord.decimals.toNumber(),
+      );
+
+    return {
+      rawReceiving: toCosmJsDecimal(result.rawReceiving),
+      minimumReceiving: toCosmJsDecimal(result.minimumReceiving),
+      providerFee: toCosmJsDecimal(result.providerFee),
+      priceImpact: result.priceImpact.toNumber(),
+    };
   }
 }
