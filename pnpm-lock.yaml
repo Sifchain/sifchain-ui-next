@@ -13,6 +13,7 @@ importers:
       '@tsconfig/node16-strictest-esm': ^1.0.2
       '@types/inflection': ^1.13.0
       '@types/jest': ^27.4.1
+      bignumber.js: ^9.0.2
       cosmjs-types: ^0.5.0
       degit: ^2.8.4
       inflection: ^1.13.2
@@ -28,6 +29,7 @@ importers:
       '@cosmjs/tendermint-rpc': 0.28.4
       '@sifchain/math': link:../math
       '@sifchain/proto-types': link:../proto-types
+      bignumber.js: 9.0.2
       cosmjs-types: 0.5.0
       inflection: 1.13.2
       long: 5.2.0
@@ -1053,6 +1055,10 @@ packages:
 
   /bech32/1.1.4:
     resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
+    dev: false
+
+  /bignumber.js/9.0.2:
+    resolution: {integrity: sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==}
     dev: false
 
   /bn.js/4.12.0:
