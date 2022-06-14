@@ -72,7 +72,7 @@ export const calculateSwapResult = (
     return new BigNumber(0);
   }
 
-  if (adjustment === undefined) {
+  if (adjustment === undefined || new BigNumber(adjustment).isZero()) {
     return _calculateSwapResult(f, fp, tp);
   }
 
