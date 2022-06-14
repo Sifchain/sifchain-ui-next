@@ -40,18 +40,35 @@ const AssetsPage: NextPage = () => {
         </div>
       </section>
       <section className="pt-16 flex flex-col gap-4">
-        {balances?.map((x) => (
-          <article key={x.denom}>
-            <figcaption className="flex gap-4">
-              <figure>
-                <AssetIcon network="sifchain" symbol={x.denom!} size="md" />
-              </figure>
-              <h2>
-                {x.denom}: {x.amount.toFormat()}
-              </h2>
-            </figcaption>
-          </article>
-        ))}
+        <table className="rounded-lg bg-gray-800 p-8">
+          <thead className="text-left mb-6">
+            <tr>
+              <th className="p-4">Token</th>
+              <th className="p-4">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {balances?.map((x) => (
+              <tr key={x.denom}>
+                <td className="p-4">
+                  <article>
+                    <figcaption className="flex gap-4">
+                      <figure>
+                        <AssetIcon
+                          network="sifchain"
+                          symbol={x.denom}
+                          size="md"
+                        />
+                      </figure>
+                      <h2>{x.denom}</h2>
+                    </figcaption>
+                  </article>
+                </td>
+                <td className="p-4">{x.amount.toFormat()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </PageLayout>
   );
