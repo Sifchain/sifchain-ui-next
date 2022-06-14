@@ -1,4 +1,6 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
+import clsx from "clsx";
+import React from "react";
 
 import { RecyclerView } from ".";
 
@@ -22,14 +24,25 @@ const Template: ComponentStory<typeof RecyclerView> = (args) => {
       visibleRows={20}
       rowHeight={50}
       keyExtractor={(item) => item.id}
-      renderItem={(item) => (
+      renderItem={React.memo(({ item, style }) => (
         <li
           role="button"
-          className="grid place-items-center hover:opacity-80 hover:bg-blue-300/60 transition-all"
+          className="flex items-center justify-center hover:opacity-80 hover:bg-blue-300/60 transition-all"
+          style={style}
         >
-          Row: {item.value}
+          {[
+            new Array(10).fill(0).map((_, i) => (
+              <div
+                className={clsx("flex-1 grid place-items-center h-full", {
+                  "bg-indigo-900/40": (item.value + i) % 2 === 0,
+                })}
+              >
+                {item.value + i}
+              </div>
+            )),
+          ]}
         </li>
-      )}
+      ))}
     />
   );
 };

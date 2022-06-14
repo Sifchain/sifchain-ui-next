@@ -1,7 +1,6 @@
 import React, {
   createElement,
   FC,
-  ReactElement,
   ReactHTML,
   useCallback,
   useMemo,
@@ -18,7 +17,7 @@ export type RecyclerViewProps<
   visibleRows: number;
   rowHeight: number;
   keyExtractor(item: T): string;
-  renderItem(item: T, key: string): ReactElement;
+  renderItem: FC<JSX.IntrinsicElements[U] & { item: T; id: string }>;
   as?: U;
   debounce?: number | "raf";
 };
@@ -31,9 +30,9 @@ export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
     visibleRows,
     rowHeight,
     keyExtractor,
-    renderItem,
     as,
     debounce,
+    renderItem: RowItem,
     ...containerProps
   } = props;
 
@@ -95,14 +94,11 @@ export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
       {...containerProps}
     >
       {startIndex > 0 && <div style={{ height: rowHeight * startIndex }} />}
-      {page.map((item) =>
-        React.cloneElement(renderItem(item.value, item.key), {
-          key: item.key,
-          style: {
-            height: rowHeight,
-          },
-        }),
-      )}
+      {page.map(({ key, value }) => {
+        return React.cloneElement(<RowItem key={key} id={key} item={value} />, {
+          style: { height: rowHeight },
+        });
+      })}
       {endIndex < lastIndex && (
         <div style={{ height: rowHeight * (lastIndex - endIndex) }} />
       )}
