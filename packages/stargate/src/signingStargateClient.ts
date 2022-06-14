@@ -108,7 +108,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(undefined, signer, options);
   }
 
-  private readonly sifQueryClient: SifQueryClient | undefined;
+  readonly #sifQueryClient: SifQueryClient | undefined;
 
   protected constructor(
     tmClient: Tendermint34Client | undefined,
@@ -123,7 +123,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       ...options,
     });
 
-    this.sifQueryClient =
+    this.#sifQueryClient =
       tmClient !== undefined ? createQueryClient(tmClient) : undefined;
   }
 
@@ -155,17 +155,17 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   protected override getQueryClient() {
-    return this.sifQueryClient;
+    return this.#sifQueryClient;
   }
 
   protected override forceGetQueryClient() {
-    if (this.sifQueryClient === undefined) {
+    if (this.#sifQueryClient === undefined) {
       throw new Error(
         "Query client not available. You cannot use online functionality in offline mode.",
       );
     }
 
-    return this.sifQueryClient;
+    return this.#sifQueryClient;
   }
 
   async exportIBCTokens(
@@ -178,7 +178,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
-    const registry = await this.forceGetTokenRegistryEntry(
+    const registry = await this.#forceGetTokenRegistryEntry(
       transferAmount.denom,
     );
 
@@ -206,7 +206,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
-    const registry = await this.forceGetTokenRegistryEntry(
+    const registry = await this.#forceGetTokenRegistryEntry(
       transferAmount.denom,
     );
 
@@ -238,7 +238,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       senderAddress,
       [
         {
-          typeUrl: this.isBridgedEthCoin(transferAmount)
+          typeUrl: this.#isBridgedEthCoin(transferAmount)
             ? "/sifnode.ethbridge.v1.MsgBurn"
             : "/sifnode.ethbridge.v1.MsgLock",
           value: {
@@ -275,7 +275,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const queryClient = this.forceGetQueryClient();
 
     // rowan -> coin
-    if (this.isNativeCoin(fromCoin.denom)) {
+    if (this.#isNativeCoin(fromCoin.denom)) {
       const poolRes = await queryClient.clp.getPool({ symbol: toCoinDenom });
 
       return this.#parseSwapResult(
@@ -292,7 +292,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     }
 
     // coin -> rowan
-    if (this.isNativeCoin(toCoinDenom)) {
+    if (this.#isNativeCoin(toCoinDenom)) {
       const poolRes = await queryClient.clp.getPool({
         symbol: fromCoin.denom,
       });
@@ -375,34 +375,6 @@ export class SifSigningStargateClient extends SigningStargateClient {
     };
   }
 
-  private async forceGetTokenRegistryEntry(denom: string) {
-    const tokenRegistryEntries =
-      await this.forceGetQueryClient().tokenRegistry.entries({});
-
-    const registry = tokenRegistryEntries.registry?.entries.find(
-      (x) => x.denom === denom,
-    );
-
-    if (registry === undefined) {
-      throw new Error("Coin not in token registry");
-    }
-
-    return registry;
-  }
-
-  // TODO: only keep sifBridge check once we migrated to Peggy2
-  private isBridgedEthCoin(coin: Coin) {
-    return (
-      coin.denom !== "rowan" &&
-      !coin.denom.startsWith("ibc/") &&
-      (coin.denom.startsWith("c") || coin.denom.startsWith("sifBridge"))
-    );
-  }
-
-  private isNativeCoin(coin: Coin | string) {
-    return typeof coin === "string" ? coin === "rowan" : coin.denom === "rowan";
-  }
-
   /**
    * convert BigNumber to cosmjs Decimal to keep with cosmjs standard
    */
@@ -437,5 +409,33 @@ export class SifSigningStargateClient extends SigningStargateClient {
       providerFee: toCosmJsDecimal(result.providerFee),
       priceImpact: result.priceImpact.toNumber(),
     };
+  }
+
+  async #forceGetTokenRegistryEntry(denom: string) {
+    const tokenRegistryEntries =
+      await this.forceGetQueryClient().tokenRegistry.entries({});
+
+    const registry = tokenRegistryEntries.registry?.entries.find(
+      (x) => x.denom === denom,
+    );
+
+    if (registry === undefined) {
+      throw new Error("Coin not in token registry");
+    }
+
+    return registry;
+  }
+
+  // TODO: only keep sifBridge check once we migrated to Peggy2
+  #isBridgedEthCoin(coin: Coin) {
+    return (
+      coin.denom !== "rowan" &&
+      !coin.denom.startsWith("ibc/") &&
+      (coin.denom.startsWith("c") || coin.denom.startsWith("sifBridge"))
+    );
+  }
+
+  #isNativeCoin(coin: Coin | string) {
+    return typeof coin === "string" ? coin === "rowan" : coin.denom === "rowan";
   }
 }
