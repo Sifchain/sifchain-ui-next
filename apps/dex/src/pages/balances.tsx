@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import type { FC } from "react";
-
+import AssetIcon from "~/compounds/AssetIcon";
+import { useAllDisplayBalances } from "~/domains/bank/hooks/balances";
 import PageLayout from "~/layouts/PageLayout";
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
@@ -11,6 +12,8 @@ const Stat: FC<{ label: string; value: string }> = (props) => (
 );
 
 const AssetsPage: NextPage = () => {
+  const { data: balances } = useAllDisplayBalances();
+
   const stats = [
     {
       label: "Total Assets",
@@ -35,6 +38,37 @@ const AssetsPage: NextPage = () => {
             <Stat key={stat.label} label={stat.label} value={stat.value} />
           ))}
         </div>
+      </section>
+      <section className="pt-16 flex flex-col gap-4">
+        <table className="rounded-lg bg-gray-800 p-8">
+          <thead className="text-left mb-6">
+            <tr>
+              <th className="p-4">Token</th>
+              <th className="p-4">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {balances?.map((x) => (
+              <tr key={x.denom}>
+                <td className="p-4">
+                  <article>
+                    <figcaption className="flex gap-4">
+                      <figure>
+                        <AssetIcon
+                          network="sifchain"
+                          symbol={x.denom}
+                          size="md"
+                        />
+                      </figure>
+                      <h2>{x.denom}</h2>
+                    </figcaption>
+                  </article>
+                </td>
+                <td className="p-4">{x.amount.toFormat()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </PageLayout>
   );
