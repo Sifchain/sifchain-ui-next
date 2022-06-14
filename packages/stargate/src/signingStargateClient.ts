@@ -31,6 +31,7 @@ import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
+import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
@@ -254,7 +255,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
-  async minimumReceivedFromSwap(fromCoin: Coin, toCoinDenom: string) {
+  async minimumReceivedFromSwap(
+    fromCoin: Coin,
+    toCoinDenom: string,
+  ): Promise<BigNumber.Value> {
     if (fromCoin.denom === toCoinDenom) {
       throw new Error("Can't swap to the same coin");
     }
@@ -274,7 +278,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
       const priceImpact = calculatePriceImpact(
         fromCoin.amount,
-        poolRes.pool?.externalAssetBalance ?? 0,
+        poolRes.pool?.nativeAssetBalance ?? 0,
       );
 
       const providerFee = calculateProviderFee(
@@ -283,7 +287,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolRes.pool?.externalAssetBalance ?? 0,
       );
 
-      return swapResult.times(priceImpact.plus(-1)).minus(providerFee);
+      return swapResult.times(priceImpact.minus(1).abs()).minus(providerFee);
     } else if (this.isNativeCoin(toCoinDenom)) {
       const poolRes = await queryClient.clp.getPool({
         symbol: fromCoin.denom,
@@ -299,7 +303,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
       const priceImpact = calculatePriceImpact(
         fromCoin.amount,
-        poolRes.pool?.nativeAssetBalance ?? 0,
+        poolRes.pool?.externalAssetBalance ?? 0,
       );
 
       const providerFee = calculateProviderFee(
@@ -308,8 +312,11 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolRes.pool?.nativeAssetBalance ?? 0,
       );
 
-      return swapResult.times(priceImpact.plus(-1)).minus(providerFee);
+      return swapResult.times(priceImpact.minus(1).abs()).minus(providerFee);
     }
+
+    // TODO: implement non-native to non-native swap
+    return new BigNumber(0);
   }
 
   private async forceGetTokenRegistryEntry(denom: string) {
