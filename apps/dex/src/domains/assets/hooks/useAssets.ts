@@ -1,4 +1,4 @@
-import { prop } from "rambda";
+import { compose, prop, toLower } from "rambda";
 import { indexBy } from "ramda";
 import { useMemo } from "react";
 
@@ -15,11 +15,32 @@ export function useAssetsQuery() {
       };
     }
 
+    const indexedBySymbol = indexBy(
+      compose(toLower, prop("symbol")),
+      data.assets,
+    );
+
+    const indexedByDisplaySymbol = indexBy(
+      compose(toLower, prop("displaySymbol")),
+      data.assets,
+    );
+
     return {
-      indexedBySymbol: indexBy(prop("symbol"), data.assets),
-      indexedByDisplaySymbol: indexBy(prop("displaySymbol"), data.assets),
+      indexedBySymbol,
+      indexedByDisplaySymbol,
     };
   }, [data?.assets]);
 
-  return { data, ...query, ...indices };
+  return {
+    data: {
+      ...data,
+      assets: data?.assets.map((asset) => ({
+        ...asset,
+        symbol: asset.symbol.toLowerCase(),
+        displaySymbol: asset.displaySymbol.toLowerCase(),
+      })),
+    },
+    ...query,
+    ...indices,
+  };
 }

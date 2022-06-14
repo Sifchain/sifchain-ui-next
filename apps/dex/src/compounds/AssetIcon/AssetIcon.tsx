@@ -15,7 +15,10 @@ const AssetIcon: FC<Props> = (props) => {
     useAssetsQuery();
 
   const asset = useMemo(
-    () => indexedBySymbol[props.symbol] || indexedByDisplaySymbol[props.symbol],
+    () =>
+      indexedBySymbol[props.symbol.toLowerCase()] ||
+      indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
+      indexedByDisplaySymbol[props.symbol.toLowerCase()],
     [],
   );
 
@@ -26,6 +29,10 @@ const AssetIcon: FC<Props> = (props) => {
     lg: "h-10 w-10",
     xl: "h-12 w-12",
   };
+
+  if (!asset) {
+    console.log(`AssetIcon: asset not found for ${props.symbol}`);
+  }
 
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>

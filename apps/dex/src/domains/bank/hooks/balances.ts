@@ -1,4 +1,6 @@
+import type { IAsset } from "@sifchain/common";
 import { useSigner } from "@sifchain/cosmos-connect";
+import type { Coin } from "@sifchain/proto-types/cosmos/base/coin";
 import BigNumber from "bignumber.js";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
@@ -26,21 +28,41 @@ export const useAllBalances = () => {
 
 export const useAllDisplayBalances = () => {
   const { data: balances } = useAllBalances();
-  const { data: assets, indexedBySymbol } = useTokenRegistryQuery();
+  const {
+    data: assets,
+    indexedBySymbol,
+    indexedByDisplaySymbol,
+    indexedByIBCDenom,
+  } = useTokenRegistryQuery();
 
   return useQuery(
     "all-display-balances",
     async () => {
-      return balances?.map((x) => {
-        const tokenRecord = indexedBySymbol[x.denom];
+      const records = balances
+        ?.map((x) => {
+          const tokenRecord =
+            indexedBySymbol[x.denom.toLowerCase()] ||
+            indexedByIBCDenom[x.denom] ||
+            indexedByIBCDenom[x.denom.toLowerCase()] ||
+            indexedByIBCDenom[x.denom.slice(1).toLowerCase()] ||
+            indexedByDisplaySymbol[x.denom.toLowerCase()] ||
+            indexedBySymbol[x.denom.slice(1).toLowerCase()];
 
-        return {
-          denom: tokenRecord?.displaySymbol ?? "",
-          amount: new BigNumber(x.amount).shiftedBy(
-            -(tokenRecord?.decimals ?? 0),
-          ),
-        };
-      });
+          if (!tokenRecord) {
+            console.warn("tokenRecord not found", x.denom);
+            return;
+          }
+
+          return [tokenRecord, x] as const;
+        })
+        .filter(Boolean) as [IAsset, Coin][];
+
+      return records.map(([tokenRecord, x]) => ({
+        denom: tokenRecord?.displaySymbol ?? tokenRecord?.symbol ?? x.denom,
+        amount: new BigNumber(x.amount).shiftedBy(
+          -(tokenRecord?.decimals ?? 0),
+        ),
+      }));
     },
     {
       enabled: balances !== undefined && assets !== undefined,

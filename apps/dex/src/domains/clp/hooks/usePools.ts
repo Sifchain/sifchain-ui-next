@@ -11,7 +11,10 @@ export function usePoolsQuery() {
       return {};
     }
 
-    return indexBy(({ externalAsset }) => externalAsset?.symbol, data.pools);
+    return indexBy(
+      ({ externalAsset }) => externalAsset?.symbol.toLowerCase(),
+      data.pools,
+    );
   }, [data?.pools]);
 
   return {
