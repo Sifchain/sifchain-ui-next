@@ -20,7 +20,7 @@ export const useAllBalances = () => {
         accounts?.[0]?.address ?? "",
       );
     },
-    { enabled: signer !== undefined },
+    { enabled: signer !== undefined && signingStargateClient !== undefined },
   );
 };
 
@@ -35,7 +35,7 @@ export const useAllDisplayBalances = () => {
         const tokenRecord = indexedBySymbol[x.denom];
 
         return {
-          denom: tokenRecord?.displaySymbol,
+          denom: tokenRecord?.displaySymbol ?? "",
           amount: new BigNumber(x.amount).shiftedBy(
             -(tokenRecord?.decimals ?? 0),
           ),
