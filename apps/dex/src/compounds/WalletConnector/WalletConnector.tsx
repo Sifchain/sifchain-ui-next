@@ -11,7 +11,7 @@ import {
 } from "@sifchain/ui";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import {
   useConnect as useEtherConnect,
@@ -52,7 +52,6 @@ const WalletConnector: FC = () => {
             style={{ backgroundImage: `url('/chains/${id}.png')` }}
           />
         ),
-        wallets: ["keplr", "cosmostation", "walletconnect", ""],
       }),
     );
   }, [data?.chainConfigsByNetwork]);
@@ -76,31 +75,32 @@ const WalletConnector: FC = () => {
 
   const { disconnect: disconnectEVM } = useEtherDisconnect();
 
-  console.log({
-    evmConnectors,
-    evmData,
-  });
+  const { data: accounts } = useQuery(
+    "accounts",
+    async () => {
+      if (cosmosActiveConnector) {
+        const accounts = await Promise.all(
+          chains.flatMap(async (x) => {
+            try {
+              const signer = await cosmosActiveConnector.getSigner(x.id);
+              const accounts = await signer.getAccounts();
 
-  const { data: accounts } = useQuery("accounts", async () => {
-    if (cosmosActiveConnector) {
-      const accounts = await Promise.all(
-        chains.flatMap(async (x) => {
-          try {
-            const signer = await cosmosActiveConnector.getSigner(x.id);
-            const accounts = await signer.getAccounts();
+              return [x.id, accounts.map((x) => x.address)];
+            } catch (error) {
+              return [x.id, []];
+            }
+          }),
+        );
 
-            return [x.id, accounts.map((x) => x.address)];
-          } catch (error) {
-            return [x.id, []];
-          }
-        }),
-      );
+        return Object.fromEntries(accounts);
+      }
 
-      return Object.fromEntries(accounts);
-    }
-
-    return {};
-  });
+      return {};
+    },
+    {
+      enabled: Boolean(cosmosActiveConnector),
+    },
+  );
 
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [
@@ -171,7 +171,25 @@ const WalletConnector: FC = () => {
     },
     [connectEvm, connectEvm, connectorsById, evmConnectors, cosmosConnectors],
   );
-  console.log({ accounts });
+
+  const handleDisconnectionRequest = useCallback(
+    async ({ walletId = "", chainId = "" }) => {
+      const selected = connectorsById[walletId];
+      if (selected) {
+        await selected.disconnect();
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    console.log({ accounts, cosmosActiveConnector, isCosmosConnected });
+
+    if (cosmosActiveConnector) {
+      cosmosActiveConnector.connect().then(() => console.log("connected"));
+    }
+  }, [accounts, cosmosActiveConnector, isCosmosConnected]);
+
   return (
     <WalletSelector
       chains={chains.filter((x) => !accounts[x.id]?.length)}
@@ -180,6 +198,7 @@ const WalletConnector: FC = () => {
       isLoading={
         Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
       }
+      onDisconnect={handleDisconnectionRequest}
       onConnect={handleConnectionRequest}
     />
   );

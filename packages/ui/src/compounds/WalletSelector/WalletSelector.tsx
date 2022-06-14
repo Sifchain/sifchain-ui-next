@@ -13,7 +13,6 @@ export type ChainEntry = {
   id: string;
   name: string;
   type: string;
-  wallets: string[];
   icon: ReactNode;
 };
 

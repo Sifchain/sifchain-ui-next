@@ -7,6 +7,7 @@ import { indexBy, prop } from "rambda";
 import React, { useCallback, useMemo, useState, type FC } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
+import { useEnhancedPoolsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 type Props = {};
@@ -15,7 +16,7 @@ const GlobalSearch: FC<Props> = (_props) => {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState("");
 
-  const { data: assets } = useTokenRegistryQuery();
+  const { data: pools } = useEnhancedPoolsQuery();
 
   const [recentEntries, addRecentEntry] = useRecentEntries([], {
     adapter: "localStorage",
@@ -23,14 +24,14 @@ const GlobalSearch: FC<Props> = (_props) => {
   });
 
   const { entries, indexedById } = useMemo(() => {
-    if (!assets) {
+    if (!pools) {
       return {
         entries: [],
         indexedById: {},
       };
     }
-    const entries = assets.map(
-      (asset): CommandPaletteEntry => ({
+    const entries = pools.map(
+      ({ asset }): CommandPaletteEntry => ({
         id: asset.symbol,
         label: `${asset.name}  (${(
           asset.displaySymbol ?? asset.symbol
@@ -50,7 +51,7 @@ const GlobalSearch: FC<Props> = (_props) => {
       entries,
       indexedById: indexBy(prop("id"), entries),
     };
-  }, [assets]);
+  }, [pools]);
 
   const handleChange = useCallback(
     (selectedId: string) => {

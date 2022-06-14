@@ -19,7 +19,12 @@ export default function useTokenRegistryQuery() {
     }
 
     const filteredEntries = data?.registry?.entries
-      .map((entry) => indexedBySymbol[entry.denom])
+      .map(
+        (entry) =>
+          indexedBySymbol[entry.denom] ||
+          indexedBySymbol[entry.baseDenom] ||
+          indexedBySymbol[entry.baseDenom.replace(/^[ucx]/i, "")],
+      )
       .filter(Boolean);
 
     return filteredEntries as IAsset[];

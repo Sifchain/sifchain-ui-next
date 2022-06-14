@@ -8,8 +8,6 @@ export async function getSdkConfig(params: { environment: NetworkEnv }) {
     sifAssetTag,
   } = PROFILE_LOOKUP[params.environment];
 
-  console.log(`Using environment ${tag}`, ethAssetTag, sifAssetTag);
-
   if (typeof tag === "undefined") {
     throw new Error(`environment "${params.environment}" not found`);
   }

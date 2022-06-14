@@ -19,7 +19,7 @@ export function useAssetsQuery() {
       indexedBySymbol: indexBy(prop("symbol"), data.assets),
       indexedByDisplaySymbol: indexBy(prop("displaySymbol"), data.assets),
     };
-  }, [data]);
+  }, [data?.assets]);
 
   return { data, ...query, ...indices };
 }
