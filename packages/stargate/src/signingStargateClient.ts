@@ -32,7 +32,7 @@ import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
-import type BigNumber from "bignumber.js";
+import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
@@ -256,7 +256,18 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
-  async simulateSwap(fromCoin: Coin, toCoinDenom: string) {
+  /**
+   *
+   * @param fromCoin
+   * @param toCoinDenom
+   * @param slippage value between 0 and 1
+   * @returns
+   */
+  async simulateSwap(
+    fromCoin: Coin,
+    toCoinDenom: string,
+    slippage?: number | string,
+  ) {
     if (fromCoin.denom === toCoinDenom) {
       throw new Error("Can't swap to the same coin");
     }
@@ -274,6 +285,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
             poolBalance: poolRes.pool?.nativeAssetBalance ?? "0",
           },
           poolRes.pool?.externalAssetBalance ?? "0",
+          slippage,
         ),
         toCoinDenom,
       );
@@ -292,6 +304,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
             poolBalance: poolRes.pool?.externalAssetBalance ?? "0",
           },
           poolRes.pool?.nativeAssetBalance ?? "0",
+          slippage,
         ),
         toCoinDenom,
       );
@@ -318,6 +331,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
       },
       secondPoolRes.pool?.externalAssetBalance ?? "0",
+      slippage,
     );
 
     return await this.#parseSwapResult(secondSwap, toCoinDenom);
@@ -326,6 +340,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   async #simulateSwap(
     fromCoin: { amount: string; poolBalance: string },
     toCoinPoolBalance: string,
+    slippage?: number | string,
   ) {
     const queryClient = this.forceGetQueryClient();
 
@@ -353,7 +368,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
       rawReceiving: swapResult,
       minimumReceiving: swapResult
         .times(priceImpact.minus(1).abs())
-        .minus(providerFee),
+        .minus(providerFee)
+        .times(new BigNumber(1).minus(slippage ?? 0)),
       priceImpact,
       providerFee,
     };
