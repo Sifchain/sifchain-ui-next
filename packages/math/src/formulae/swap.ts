@@ -142,12 +142,12 @@ export const calculateProviderFee = (
 /**
  * calculate price impact according to the formula (x) / (x + X)
  * @param fromAmount swap Amount
- * @param toCoinPoolAmount external Balance
+ * @param fromCoinPoolAmount external Balance
  * @returns
  */
 export const calculatePriceImpact = (
   fromAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
+  fromCoinPoolAmount: BigNumber.Value,
 ) => {
   const f = new BigNumber(fromAmount);
 
@@ -155,6 +155,6 @@ export const calculatePriceImpact = (
     return new BigNumber(0);
   }
 
-  const denominator = f.plus(toCoinPoolAmount);
+  const denominator = f.plus(fromCoinPoolAmount);
   return f.div(denominator);
 };
