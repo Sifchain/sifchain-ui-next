@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import MainLayout from "~/layouts/MainLayout";
 
 import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
@@ -23,7 +24,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <CookiesProvider>
-              <Component {...pageProps} />
+              <MainLayout>
+                <Component {...pageProps} />
+              </MainLayout>
             </CookiesProvider>
           </Hydrate>
           <ReactQueryDevtools position="bottom-right" />

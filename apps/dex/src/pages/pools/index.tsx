@@ -8,30 +8,27 @@ import type { FC } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useEnhancedPoolsQuery } from "~/domains/clp/hooks";
-import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
 const Pools: NextPage = () => {
   const { data: enhancedPools, isLoading, isSuccess } = useEnhancedPoolsQuery();
 
   return (
-    <MainLayout title="Pools">
-      <PageLayout heading="Pools">
-        {isLoading && <p>Loading pools...</p>}
-        {isSuccess && (
-          <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {enhancedPools?.map((pool) => (
-              <PoolItem
-                key={pool.externalAsset?.symbol}
-                pool={pool}
-                stats={pool.stats}
-                asset={pool.asset}
-              />
-            ))}
-          </ul>
-        )}
-      </PageLayout>
-    </MainLayout>
+    <PageLayout heading="Pools">
+      {isLoading && <p>Loading pools...</p>}
+      {isSuccess && (
+        <ul className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          {enhancedPools?.map((pool) => (
+            <PoolItem
+              key={pool.externalAsset?.symbol}
+              pool={pool}
+              stats={pool.stats}
+              asset={pool.asset}
+            />
+          ))}
+        </ul>
+      )}
+    </PageLayout>
   );
 };
 

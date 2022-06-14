@@ -93,12 +93,3 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
-
-export const InputButton = tw.button`
-  transition-colors
-  text-xs font-semibold text-white md:text-md
-  bg-gray-600 px-2 py-1
-  border-gray-500 rounded
-  hover:bg-gray-500 hover:border-gray-300
-  active:bg-gray-400 active:border-gray-300
-`;

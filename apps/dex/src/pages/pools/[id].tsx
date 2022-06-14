@@ -7,7 +7,6 @@ import AssetIcon from "~/compounds/AssetIcon";
 import { ROWAN } from "~/domains/assets";
 
 import { useEnhancedPoolQuery } from "~/domains/clp";
-import MainLayout from "~/layouts/MainLayout";
 import PageLayout from "~/layouts/PageLayout";
 
 const PoolDetails: NextPage = () => {
@@ -71,50 +70,47 @@ const PoolDetails: NextPage = () => {
   }, [externalAssetSymbol, pool]);
 
   return (
-    <MainLayout title={`Pools - ${externalAssetSymbol}`}>
-      <PageLayout
-        withBackNavigation
-        heading={
+    <PageLayout
+      title={`Pools - ${externalAssetSymbol}`}
+      withBackNavigation
+      heading={
+        <>
+          Pools / <span className="text-gray-50">{poolSymbol}</span>
+        </>
+      }
+    >
+      <div className="grid gap-8 max-w-lg">
+        {isLoading && <p>Loading pool...</p>}
+        {isSuccess && (
           <>
-            Pools / <span className="text-gray-50">{poolSymbol}</span>
+            <section className="grid gap-8">
+              <header className="flex justify-between items-center">
+                <h2>Pool Details - {poolSymbol}</h2>
+                <TokenBadge
+                  symbol={externalAssetSymbol}
+                  priceUsd={pool?.stats?.priceToken ?? 0}
+                />
+              </header>
+            </section>
+            <section className="grid gap-8">
+              <header>
+                <h3 className="text-gray-50 font-semibold text-base">
+                  Pool stats
+                </h3>
+              </header>
+              <ul className="grid gap-4 md:grid-cols-2">
+                {statsSummary.map((stat) => (
+                  <li key={stat.label} className="grid gap-0.5">
+                    <span className="text-gray-500 text-sm">{stat.label}</span>
+                    <span className="text-gray-50 text-lg">{stat.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           </>
-        }
-      >
-        <div className="grid gap-8 max-w-lg">
-          {isLoading && <p>Loading pool...</p>}
-          {isSuccess && (
-            <>
-              <section className="grid gap-8">
-                <header className="flex justify-between items-center">
-                  <h2>Pool Details - {poolSymbol}</h2>
-                  <TokenBadge
-                    symbol={externalAssetSymbol}
-                    priceUsd={pool?.stats?.priceToken ?? 0}
-                  />
-                </header>
-              </section>
-              <section className="grid gap-8">
-                <header>
-                  <h3 className="text-gray-50 font-semibold text-base">
-                    Pool stats
-                  </h3>
-                </header>
-                <ul className="grid gap-4 md:grid-cols-2">
-                  {statsSummary.map((stat) => (
-                    <li key={stat.label} className="grid gap-0.5">
-                      <span className="text-gray-500 text-sm">
-                        {stat.label}
-                      </span>
-                      <span className="text-gray-50 text-lg">{stat.value}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </>
-          )}
-        </div>
-      </PageLayout>
-    </MainLayout>
+        )}
+      </div>
+    </PageLayout>
   );
 };
 
