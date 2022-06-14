@@ -7,7 +7,7 @@
   "nativeAsset": "rowan",
   "blockExplorerUrl": "https://blockexplorer-testnet.sifchain.finance",
   "vanirUrl": "https://data.sifchain.finance/beta",
-  "registryUrl": "https://sifchain-registry.vercel.app",
+  "registryUrl": "https://registry.sifchain.network",
   "bridgebankContractAddress": "0x6CfD69783E3fFb44CBaaFF7F509a4fcF0d8e2835",
   "keplrChainConfig": {
     "chainName": "Sifchain Testnet",
