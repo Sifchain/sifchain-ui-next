@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import {
   Coin,
   GeneratedType,
@@ -22,10 +23,16 @@ import {
   StdFee,
 } from "@cosmjs/stargate";
 import { HttpEndpoint, Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import {
+  calculatePriceImpact,
+  calculateProviderFee,
+  calculateSwapResult,
+} from "@sifchain/math";
 import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
+import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
@@ -101,7 +108,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(undefined, signer, options);
   }
 
-  private readonly sifQueryClient: SifQueryClient | undefined;
+  readonly #sifQueryClient: SifQueryClient | undefined;
 
   protected constructor(
     tmClient: Tendermint34Client | undefined,
@@ -116,7 +123,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       ...options,
     });
 
-    this.sifQueryClient =
+    this.#sifQueryClient =
       tmClient !== undefined ? createQueryClient(tmClient) : undefined;
   }
 
@@ -148,17 +155,17 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   protected override getQueryClient() {
-    return this.sifQueryClient;
+    return this.#sifQueryClient;
   }
 
   protected override forceGetQueryClient() {
-    if (this.sifQueryClient === undefined) {
+    if (this.#sifQueryClient === undefined) {
       throw new Error(
         "Query client not available. You cannot use online functionality in offline mode.",
       );
     }
 
-    return this.sifQueryClient;
+    return this.#sifQueryClient;
   }
 
   async exportIBCTokens(
@@ -171,7 +178,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
-    const registry = await this.forceGetTokenRegistryEntry(
+    const registry = await this.#forceGetTokenRegistryEntry(
       transferAmount.denom,
     );
 
@@ -199,7 +206,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
-    const registry = await this.forceGetTokenRegistryEntry(
+    const registry = await this.#forceGetTokenRegistryEntry(
       transferAmount.denom,
     );
 
@@ -223,7 +230,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     // default values from old sdk
     // 0x1 is mainnet 0x3 is ropsten
     ethChainId: number | string = 0x1,
-    ethFee: string = "35370000000000000",
+    ethFee = "35370000000000000",
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
@@ -231,7 +238,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       senderAddress,
       [
         {
-          typeUrl: this.isBridgedEthToken(transferAmount)
+          typeUrl: this.#isBridgedEthCoin(transferAmount)
             ? "/sifnode.ethbridge.v1.MsgBurn"
             : "/sifnode.ethbridge.v1.MsgLock",
           value: {
@@ -249,7 +256,162 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
-  private async forceGetTokenRegistryEntry(denom: string) {
+  /**
+   *
+   * @param fromCoin
+   * @param toCoinDenom
+   * @param slippage value between 0 and 1
+   * @returns
+   */
+  async simulateSwap(
+    fromCoin: Coin,
+    toCoinDenom: string,
+    slippage?: number | string,
+  ) {
+    if (fromCoin.denom === toCoinDenom) {
+      throw new Error("Can't swap to the same coin");
+    }
+
+    const queryClient = this.forceGetQueryClient();
+
+    // rowan -> coin
+    if (this.#isNativeCoin(fromCoin.denom)) {
+      const poolRes = await queryClient.clp.getPool({ symbol: toCoinDenom });
+
+      return this.#parseSwapResult(
+        await this.#simulateSwap(
+          {
+            amount: fromCoin.amount,
+            poolBalance: poolRes.pool?.nativeAssetBalance ?? "0",
+          },
+          poolRes.pool?.externalAssetBalance ?? "0",
+          slippage,
+        ),
+        toCoinDenom,
+      );
+    }
+
+    // coin -> rowan
+    if (this.#isNativeCoin(toCoinDenom)) {
+      const poolRes = await queryClient.clp.getPool({
+        symbol: fromCoin.denom,
+      });
+
+      return this.#parseSwapResult(
+        await this.#simulateSwap(
+          {
+            amount: fromCoin.amount,
+            poolBalance: poolRes.pool?.externalAssetBalance ?? "0",
+          },
+          poolRes.pool?.nativeAssetBalance ?? "0",
+          slippage,
+        ),
+        toCoinDenom,
+      );
+    }
+
+    // if neither coins is rowan then we need to do coin1 -> rowan -> coin2
+    const firstPoolRes = await queryClient.clp.getPool({
+      symbol: fromCoin.denom,
+    });
+    const firstSwap = await this.#simulateSwap(
+      {
+        amount: fromCoin.amount,
+        poolBalance: firstPoolRes.pool?.externalAssetBalance ?? "0",
+      },
+      firstPoolRes.pool?.nativeAssetBalance ?? "0",
+    );
+
+    const secondPoolRes = await queryClient.clp.getPool({
+      symbol: toCoinDenom,
+    });
+    const secondSwap = await this.#simulateSwap(
+      {
+        amount: firstSwap.rawReceiving.toString(),
+        poolBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
+      },
+      secondPoolRes.pool?.externalAssetBalance ?? "0",
+      slippage,
+    );
+
+    return await this.#parseSwapResult(secondSwap, toCoinDenom);
+  }
+
+  async #simulateSwap(
+    fromCoin: { amount: string; poolBalance: string },
+    toCoinPoolBalance: string,
+    slippage?: number | string,
+  ) {
+    const queryClient = this.forceGetQueryClient();
+
+    const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
+
+    const swapResult = calculateSwapResult(
+      fromCoin.amount,
+      fromCoin.poolBalance,
+      toCoinPoolBalance,
+      pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+    );
+
+    const priceImpact = calculatePriceImpact(
+      fromCoin.amount,
+      fromCoin.poolBalance,
+    );
+
+    const providerFee = calculateProviderFee(
+      fromCoin.amount,
+      fromCoin.poolBalance,
+      toCoinPoolBalance,
+    );
+
+    return {
+      rawReceiving: swapResult,
+      minimumReceiving: swapResult
+        .times(priceImpact.minus(1).abs())
+        .minus(providerFee)
+        .times(new BigNumber(1).minus(slippage ?? 0)),
+      priceImpact,
+      providerFee,
+    };
+  }
+
+  /**
+   * convert BigNumber to cosmjs Decimal to keep with cosmjs standard
+   */
+  async #parseSwapResult(
+    result: {
+      rawReceiving: BigNumber;
+      minimumReceiving: BigNumber;
+      priceImpact: BigNumber;
+      providerFee: BigNumber;
+    },
+    toCoinDenom: string,
+  ) {
+    const queryClient = this.forceGetQueryClient();
+    const tokenRegistryRes = await queryClient.tokenRegistry.entries({});
+    const tokenRecord = tokenRegistryRes.registry?.entries.find(
+      (x) => x.denom === toCoinDenom,
+    );
+
+    if (tokenRecord === undefined) {
+      throw new Error(`No token record found for denom ${toCoinDenom}`);
+    }
+
+    const toCosmJsDecimal = (bn: BigNumber) =>
+      Decimal.fromAtomics(
+        bn.integerValue().toFixed(0).toString(),
+        tokenRecord.decimals.toNumber(),
+      );
+
+    return {
+      rawReceiving: toCosmJsDecimal(result.rawReceiving),
+      minimumReceiving: toCosmJsDecimal(result.minimumReceiving),
+      providerFee: toCosmJsDecimal(result.providerFee),
+      priceImpact: result.priceImpact.toNumber(),
+    };
+  }
+
+  async #forceGetTokenRegistryEntry(denom: string) {
     const tokenRegistryEntries =
       await this.forceGetQueryClient().tokenRegistry.entries({});
 
@@ -265,11 +427,15 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   // TODO: only keep sifBridge check once we migrated to Peggy2
-  private isBridgedEthToken(coin: Coin) {
+  #isBridgedEthCoin(coin: Coin) {
     return (
       coin.denom !== "rowan" &&
       !coin.denom.startsWith("ibc/") &&
       (coin.denom.startsWith("c") || coin.denom.startsWith("sifBridge"))
     );
+  }
+
+  #isNativeCoin(coin: Coin | string) {
+    return typeof coin === "string" ? coin === "rowan" : coin.denom === "rowan";
   }
 }
