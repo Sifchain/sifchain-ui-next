@@ -327,6 +327,7 @@ importers:
       '@tsconfig/node16-strictest-esm': ^1.0.2
       '@types/inflection': ^1.13.0
       '@types/jest': ^27.4.1
+      bignumber.js: ^9.0.2
       cosmjs-types: ^0.5.0
       degit: ^2.8.4
       inflection: ^1.13.2
@@ -342,6 +343,7 @@ importers:
       '@cosmjs/tendermint-rpc': 0.28.4
       '@sifchain/math': link:../math
       '@sifchain/proto-types': link:../proto-types
+      bignumber.js: 9.0.2
       cosmjs-types: 0.5.0
       inflection: 1.13.2
       long: 5.2.0
@@ -20230,7 +20232,7 @@ packages:
       '@types/jest': 27.5.1
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.0_6llz3imlg24hiqj7rrwntziuoi
+      jest: 28.1.0
       jest-util: 28.1.0
       json5: 2.2.1
       lodash.memoize: 4.1.2
