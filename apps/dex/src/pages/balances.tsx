@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import type { FC } from "react";
-
+import AssetIcon from "~/compounds/AssetIcon";
+import { useAllBalances } from "~/domains/bank/hooks/balances";
 import PageLayout from "~/layouts/PageLayout";
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
@@ -11,6 +12,8 @@ const Stat: FC<{ label: string; value: string }> = (props) => (
 );
 
 const AssetsPage: NextPage = () => {
+  const { data: balances } = useAllBalances();
+
   const stats = [
     {
       label: "Total Assets",
@@ -35,6 +38,20 @@ const AssetsPage: NextPage = () => {
             <Stat key={stat.label} label={stat.label} value={stat.value} />
           ))}
         </div>
+      </section>
+      <section className="pt-16 flex flex-col gap-4">
+        {balances?.map((x) => (
+          <article key={x.denom}>
+            <figcaption className="flex gap-4">
+              <figure>
+                <AssetIcon network="sifchain" symbol={x.denom} size="md" />
+              </figure>
+              <h2>
+                {x.denom}: {x.amount}
+              </h2>
+            </figcaption>
+          </article>
+        ))}
       </section>
     </PageLayout>
   );
