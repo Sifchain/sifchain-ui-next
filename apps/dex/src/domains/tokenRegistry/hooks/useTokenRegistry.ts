@@ -1,5 +1,5 @@
 import type { IAsset } from "@sifchain/common";
-import { indexBy, prop } from "rambda";
+import { compose, indexBy, prop, toLower } from "rambda";
 import { useMemo } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";
@@ -15,19 +15,23 @@ export default function useTokenRegistryQuery() {
 
   const entries = useMemo(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [];
+      return [] as IAsset[];
     }
 
     const filteredEntries = data?.registry?.entries
-      .map(
-        (entry) =>
-          indexedBySymbol[entry.denom] ||
-          indexedBySymbol[entry.baseDenom] ||
-          indexedBySymbol[entry.baseDenom.replace(/^[ucx]/i, "")],
-      )
-      .filter(Boolean);
+      .map((entry) => ({
+        entry,
+        asset:
+          indexedBySymbol[entry.denom.toLowerCase()] ||
+          indexedBySymbol[entry.baseDenom.toLowerCase()] ||
+          indexedBySymbol[entry.denom.slice(1).toLowerCase()],
+      }))
+      .filter((x) => Boolean(x.asset));
 
-    return filteredEntries as IAsset[];
+    return filteredEntries.map(({ asset, entry }) => ({
+      ...(asset as IAsset),
+      ibcDenom: asset?.ibcDenom ?? entry.denom ?? "",
+    }));
   }, [data]);
 
   const indices = useMemo(() => {
@@ -35,14 +39,23 @@ export default function useTokenRegistryQuery() {
       return {
         indexedBySymbol: {},
         indexedByDisplaySymbol: {},
+        indexedByIBCDenom: {},
       };
     }
 
+    const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), entries);
+    const indexedByDisplaySymbol = indexBy(
+      compose(toLower, prop("displaySymbol")),
+      entries,
+    );
+    const indexedByIBCDenom = indexBy(prop("ibcDenom"), entries);
+
     return {
-      indexedBySymbol: indexBy(prop("symbol"), entries),
-      indexedByDisplaySymbol: indexBy(prop("displaySymbol"), entries),
+      indexedBySymbol,
+      indexedByDisplaySymbol,
+      indexedByIBCDenom,
     };
-  }, [entries, query.isSuccess]);
+  }, [entries]);
 
   return {
     data: entries,
