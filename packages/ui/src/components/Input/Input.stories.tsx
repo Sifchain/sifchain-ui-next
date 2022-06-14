@@ -1,6 +1,7 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import { Input, InputButton } from ".";
+import { Input } from ".";
+import { Label } from "../Label";
 
 export default {
   title: "components/Input",
@@ -40,8 +41,8 @@ WithButton.args = {
   secondaryLabel: "ETH",
   children: (
     <div className="absolute flex gap-1.5 pl-1.5">
-      <InputButton>Half</InputButton>
-      <InputButton>Max</InputButton>
+      <Label>Half</Label>
+      <Label>Max</Label>
     </div>
   ),
 };
