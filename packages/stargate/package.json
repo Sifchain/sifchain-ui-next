@@ -17,6 +17,7 @@
     "@cosmjs/proto-signing": "^0.28.4",
     "@cosmjs/stargate": "^0.28.4",
     "@cosmjs/tendermint-rpc": "^0.28.4",
+    "@sifchain/math": "workspace:*",
     "@sifchain/proto-types": "workspace:*",
     "cosmjs-types": "^0.5.0",
     "inflection": "^1.13.2",

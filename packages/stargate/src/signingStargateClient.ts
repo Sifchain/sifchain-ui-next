@@ -22,6 +22,11 @@ import {
   StdFee,
 } from "@cosmjs/stargate";
 import { HttpEndpoint, Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import {
+  calculatePriceImpact,
+  calculateProviderFee,
+  calculateSwapResult,
+} from "@sifchain/math";
 import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
@@ -223,7 +228,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     // default values from old sdk
     // 0x1 is mainnet 0x3 is ropsten
     ethChainId: number | string = 0x1,
-    ethFee: string = "35370000000000000",
+    ethFee = "35370000000000000",
     fee: StdFee | "auto" | number,
     memo?: string,
   ) {
@@ -231,7 +236,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       senderAddress,
       [
         {
-          typeUrl: this.isBridgedEthToken(transferAmount)
+          typeUrl: this.isBridgedEthCoin(transferAmount)
             ? "/sifnode.ethbridge.v1.MsgBurn"
             : "/sifnode.ethbridge.v1.MsgLock",
           value: {
@@ -247,6 +252,64 @@ export class SifSigningStargateClient extends SigningStargateClient {
       fee,
       memo,
     );
+  }
+
+  async minimumReceivedFromSwap(fromCoin: Coin, toCoinDenom: string) {
+    if (fromCoin.denom === toCoinDenom) {
+      throw new Error("Can't swap to the same coin");
+    }
+
+    const queryClient = this.forceGetQueryClient();
+
+    if (this.isNativeCoin(fromCoin.denom)) {
+      const poolRes = await queryClient.clp.getPool({ symbol: toCoinDenom });
+      const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
+
+      const swapResult = calculateSwapResult(
+        fromCoin.amount,
+        poolRes.pool?.nativeAssetBalance ?? 0,
+        poolRes.pool?.externalAssetBalance ?? 0,
+        pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+      );
+
+      const priceImpact = calculatePriceImpact(
+        fromCoin.amount,
+        poolRes.pool?.externalAssetBalance ?? 0,
+      );
+
+      const providerFee = calculateProviderFee(
+        fromCoin.amount,
+        poolRes.pool?.nativeAssetBalance ?? 0,
+        poolRes.pool?.externalAssetBalance ?? 0,
+      );
+
+      return swapResult.times(priceImpact.plus(-1)).minus(providerFee);
+    } else if (this.isNativeCoin(toCoinDenom)) {
+      const poolRes = await queryClient.clp.getPool({
+        symbol: fromCoin.denom,
+      });
+      const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
+
+      const swapResult = calculateSwapResult(
+        fromCoin.amount,
+        poolRes.pool?.externalAssetBalance ?? 0,
+        poolRes.pool?.nativeAssetBalance ?? 0,
+        pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+      );
+
+      const priceImpact = calculatePriceImpact(
+        fromCoin.amount,
+        poolRes.pool?.nativeAssetBalance ?? 0,
+      );
+
+      const providerFee = calculateProviderFee(
+        fromCoin.amount,
+        poolRes.pool?.externalAssetBalance ?? 0,
+        poolRes.pool?.nativeAssetBalance ?? 0,
+      );
+
+      return swapResult.times(priceImpact.plus(-1)).minus(providerFee);
+    }
   }
 
   private async forceGetTokenRegistryEntry(denom: string) {
@@ -265,11 +328,15 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   // TODO: only keep sifBridge check once we migrated to Peggy2
-  private isBridgedEthToken(coin: Coin) {
+  private isBridgedEthCoin(coin: Coin) {
     return (
       coin.denom !== "rowan" &&
       !coin.denom.startsWith("ibc/") &&
       (coin.denom.startsWith("c") || coin.denom.startsWith("sifBridge"))
     );
+  }
+
+  private isNativeCoin(coin: Coin | string) {
+    return typeof coin === "string" ? coin === "rowan" : coin.denom === "rowan";
   }
 }
