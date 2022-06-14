@@ -1,10 +1,12 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import type { FC, PropsWithChildren, ReactNode } from "react";
 
 type Props = {
   heading?: ReactNode;
   withBackNavigation?: boolean;
+  title?: string;
 };
 
 const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
@@ -12,6 +14,11 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
 
   return (
     <>
+      {(props.title || typeof props.heading === "string") && (
+        <Head>
+          <title>Sichain Dex - {props.title ?? props.heading}</title>
+        </Head>
+      )}
       <header className="md:flex items-center p-2 bg-slate-200/40 dark:bg-gray-900/80 gap-2">
         {props.heading && (
           <nav className="flex items-center gap-2">

@@ -5,18 +5,16 @@ import { Button, toast } from "@sifchain/ui";
 
 const SwapPage = () => {
   return (
-    <MainLayout title="Swap">
-      <PageLayout heading="Swap">
-        Swap Page
-        <Button
-          onClick={() => {
-            toast.success?.("Success");
-          }}
-        >
-          fire toast
-        </Button>
-      </PageLayout>
-    </MainLayout>
+    <PageLayout heading="Swap" title="Swap">
+      Swap Page
+      <Button
+        onClick={() => {
+          toast.success?.("Success");
+        }}
+      >
+        fire toast
+      </Button>
+    </PageLayout>
   );
 };
 
