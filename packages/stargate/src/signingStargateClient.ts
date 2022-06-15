@@ -257,7 +257,43 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   /**
-   *
+   * requires pre-fetched pool balances & PMTP block rate
+   * useful when lots of swap simulation are required (i.e. text box with real-time update)
+   * @param fromCoin
+   * @param toCoin
+   * @param pmtpBlockRate
+   * @param slippage
+   * @returns
+   */
+  simulateSwapSync(
+    fromCoin: Coin & {
+      poolExternalAssetBalance: string;
+      poolNativeAssetBalance: string;
+    },
+    toCoin: Omit<Coin, "amount"> & {
+      poolExternalAssetBalance: string;
+      poolNativeAssetBalance: string;
+    },
+    pmtpBlockRate?: string,
+    slippage?: number | string,
+  ) {
+    const result = this.#simulateAutoCompositePoolSwap(
+      fromCoin,
+      toCoin,
+      pmtpBlockRate,
+      slippage,
+    );
+    return {
+      rawReceiving: result.rawReceiving.integerValue().toString(),
+      minimumReceiving: result.minimumReceiving.integerValue().toString(),
+      providerFee: result.providerFee.integerValue().toString(),
+      priceImpact: result.priceImpact.toNumber(),
+    };
+  }
+
+  /**
+   * asynchronous method for simulating swap
+   * if lots of swap simulations are required, use {@link simulateSwapSync} instead
    * @param fromCoin
    * @param toCoinDenom
    * @param slippage value between 0 and 1
@@ -265,92 +301,138 @@ export class SifSigningStargateClient extends SigningStargateClient {
    */
   async simulateSwap(
     fromCoin: Coin,
-    toCoinDenom: string,
+    toCoin: Omit<Coin, "amount">,
     slippage?: number | string,
   ) {
-    if (fromCoin.denom === toCoinDenom) {
+    const queryClient = this.forceGetQueryClient();
+
+    if (fromCoin.denom === toCoin.denom) {
       throw new Error("Can't swap to the same coin");
     }
 
-    const queryClient = this.forceGetQueryClient();
+    // use one pool when it's rowan -> coin or coin -> rowan
+    // else 2 pools are required
+    const [firstPoolRes, secondPoolRes] = await (async () => {
+      if (this.#isNativeCoin(fromCoin)) {
+        const poolRes = await queryClient.clp.getPool({
+          symbol: toCoin.denom,
+        });
+        return [poolRes, poolRes];
+      }
+
+      if (this.#isNativeCoin(toCoin.denom)) {
+        const poolRes = await queryClient.clp.getPool({
+          symbol: fromCoin.denom,
+        });
+
+        return [poolRes, poolRes];
+      }
+
+      return await Promise.all([
+        queryClient.clp.getPool({ symbol: fromCoin.denom }),
+        queryClient.clp.getPool({ symbol: toCoin.denom }),
+      ]);
+    })();
+
+    const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
+
+    return this.#parseSwapResult(
+      this.#simulateAutoCompositePoolSwap(
+        {
+          ...fromCoin,
+          poolNativeAssetBalance: firstPoolRes.pool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance:
+            firstPoolRes.pool?.externalAssetBalance ?? "0",
+        },
+        {
+          ...toCoin,
+          poolNativeAssetBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance:
+            secondPoolRes.pool?.externalAssetBalance ?? "0",
+        },
+        pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+        slippage,
+      ),
+      toCoin.denom,
+    );
+  }
+
+  #simulateAutoCompositePoolSwap(
+    fromCoin: Coin & {
+      poolExternalAssetBalance: string;
+      poolNativeAssetBalance: string;
+    },
+    toCoin: Omit<Coin, "amount"> & {
+      poolExternalAssetBalance: string;
+      poolNativeAssetBalance: string;
+    },
+    pmtpBlockRate?: string,
+    slippage?: number | string,
+  ) {
+    if (fromCoin.denom === toCoin.denom) {
+      throw new Error("Can't swap to the same coin");
+    }
 
     // rowan -> coin
     if (this.#isNativeCoin(fromCoin.denom)) {
-      const poolRes = await queryClient.clp.getPool({ symbol: toCoinDenom });
-
-      return this.#parseSwapResult(
-        await this.#simulateSwap(
-          {
-            amount: fromCoin.amount,
-            poolBalance: poolRes.pool?.nativeAssetBalance ?? "0",
-          },
-          poolRes.pool?.externalAssetBalance ?? "0",
-          slippage,
-        ),
-        toCoinDenom,
+      return this.#simulateSwap(
+        {
+          amount: fromCoin.amount,
+          poolBalance: fromCoin.poolNativeAssetBalance,
+        },
+        { poolBalance: toCoin.poolExternalAssetBalance },
+        pmtpBlockRate,
+        slippage,
       );
     }
 
     // coin -> rowan
-    if (this.#isNativeCoin(toCoinDenom)) {
-      const poolRes = await queryClient.clp.getPool({
-        symbol: fromCoin.denom,
-      });
-
-      return this.#parseSwapResult(
-        await this.#simulateSwap(
-          {
-            amount: fromCoin.amount,
-            poolBalance: poolRes.pool?.externalAssetBalance ?? "0",
-          },
-          poolRes.pool?.nativeAssetBalance ?? "0",
-          slippage,
-        ),
-        toCoinDenom,
+    if (this.#isNativeCoin(toCoin.denom)) {
+      return this.#simulateSwap(
+        {
+          amount: fromCoin.amount,
+          poolBalance: fromCoin.poolExternalAssetBalance,
+        },
+        { poolBalance: toCoin.poolNativeAssetBalance },
+        pmtpBlockRate,
+        slippage,
       );
     }
 
     // if neither coins is rowan then we need to do coin1 -> rowan -> coin2
-    const firstPoolRes = await queryClient.clp.getPool({
-      symbol: fromCoin.denom,
-    });
-    const firstSwap = await this.#simulateSwap(
+    const firstSwap = this.#simulateSwap(
       {
         amount: fromCoin.amount,
-        poolBalance: firstPoolRes.pool?.externalAssetBalance ?? "0",
+        poolBalance: fromCoin.poolExternalAssetBalance,
       },
-      firstPoolRes.pool?.nativeAssetBalance ?? "0",
+      { poolBalance: fromCoin.poolNativeAssetBalance },
+      pmtpBlockRate,
     );
 
-    const secondPoolRes = await queryClient.clp.getPool({
-      symbol: toCoinDenom,
-    });
-    const secondSwap = await this.#simulateSwap(
+    const secondSwap = this.#simulateSwap(
       {
         amount: firstSwap.rawReceiving.toString(),
-        poolBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
+        poolBalance: toCoin.poolNativeAssetBalance,
       },
-      secondPoolRes.pool?.externalAssetBalance ?? "0",
+      { poolBalance: toCoin.poolExternalAssetBalance },
+      pmtpBlockRate,
       slippage,
     );
 
-    return await this.#parseSwapResult(secondSwap, toCoinDenom);
+    return secondSwap;
   }
 
-  async #simulateSwap(
+  #simulateSwap(
     fromCoin: { amount: string; poolBalance: string },
-    toCoinPoolBalance: string,
+    toCoin: { poolBalance: string },
+    pmtpBlockRate?: string,
     slippage?: number | string,
   ) {
-    const queryClient = this.forceGetQueryClient();
-
-    const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
-
     const swapResult = calculateSwapResult(
       fromCoin.amount,
       fromCoin.poolBalance,
-      toCoinPoolBalance,
-      pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+      toCoin.poolBalance,
+      pmtpBlockRate,
     );
 
     const priceImpact = calculatePriceImpact(
@@ -361,7 +443,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const providerFee = calculateProviderFee(
       fromCoin.amount,
       fromCoin.poolBalance,
-      toCoinPoolBalance,
+      toCoin.poolBalance,
     );
 
     return {
