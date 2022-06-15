@@ -284,11 +284,11 @@ export class SifSigningStargateClient extends SigningStargateClient {
       slippage,
     );
     return {
-      rawReceiving: result.rawReceiving.integerValue().toString(),
-      minimumReceiving: result.minimumReceiving.integerValue().toString(),
+      rawReceiving: result.rawReceiving.integerValue().toFixed(0),
+      minimumReceiving: result.minimumReceiving.integerValue().toFixed(0),
       liquidityProvidierFee: result.liquidityProvidierFee
         .integerValue()
-        .toString(),
+        .toFixed(0),
       priceImpact: result.priceImpact.toNumber(),
     };
   }
