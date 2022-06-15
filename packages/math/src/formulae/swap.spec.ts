@@ -1,6 +1,6 @@
 import {
   calculatePriceImpact,
-  calculateProviderFee,
+  calculateLiquidityProviderFee,
   calculateSwapAmountNeeded,
   calculateSwapResult,
 } from "./swap";
@@ -71,7 +71,7 @@ describe("provider's fee", () => {
   test.each(providerFeesFixture.map((x) => [x.x, x.X, x.Y, x.expected]))(
     "swapping %s for %s with balance %s costs %s in provider's fee",
     (fromAmount, fromCoinPoolAmount, toCoinPoolAmount, expected) => {
-      const output = calculateProviderFee(
+      const output = calculateLiquidityProviderFee(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
