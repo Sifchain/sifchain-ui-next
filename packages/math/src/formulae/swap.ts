@@ -122,7 +122,7 @@ export const calculateSwapAmountNeeded = (
  * @param toCoinPoolAmount native Balance
  * @returns providerFee
  */
-export const calculateProviderFee = (
+export const calculateLiquidityProviderFee = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
