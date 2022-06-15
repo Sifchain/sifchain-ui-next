@@ -48,8 +48,9 @@ export function statusTextToJSON(object: StatusText): string {
       return "STATUS_TEXT_SUCCESS";
     case StatusText.STATUS_TEXT_FAILED:
       return "STATUS_TEXT_FAILED";
+    case StatusText.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 

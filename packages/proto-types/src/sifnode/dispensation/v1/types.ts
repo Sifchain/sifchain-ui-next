@@ -49,8 +49,9 @@ export function distributionTypeToJSON(object: DistributionType): string {
       return "DISTRIBUTION_TYPE_VALIDATOR_SUBSIDY";
     case DistributionType.DISTRIBUTION_TYPE_LIQUIDITY_MINING:
       return "DISTRIBUTION_TYPE_LIQUIDITY_MINING";
+    case DistributionType.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -98,8 +99,9 @@ export function distributionStatusToJSON(object: DistributionStatus): string {
       return "DISTRIBUTION_STATUS_COMPLETED";
     case DistributionStatus.DISTRIBUTION_STATUS_FAILED:
       return "DISTRIBUTION_STATUS_FAILED";
+    case DistributionStatus.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 

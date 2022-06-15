@@ -43,8 +43,9 @@ export function permissionToJSON(object: Permission): string {
       return "IBCEXPORT";
     case Permission.IBCIMPORT:
       return "IBCIMPORT";
+    case Permission.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -87,8 +88,9 @@ export function adminTypeToJSON(object: AdminType): string {
       return "TOKENREGISTRY";
     case AdminType.ETHBRIDGE:
       return "ETHBRIDGE";
+    case AdminType.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 

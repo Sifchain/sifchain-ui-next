@@ -104,6 +104,7 @@ export interface ParamsReq {}
 export interface ParamsRes {
   params?: Params;
   symmetryThreshold: string;
+  symmetryRatioThreshold: string;
 }
 
 export interface RewardParamsReq {}
@@ -1333,7 +1334,11 @@ export const ParamsReq = {
 };
 
 function createBaseParamsRes(): ParamsRes {
-  return { params: undefined, symmetryThreshold: "" };
+  return {
+    params: undefined,
+    symmetryThreshold: "",
+    symmetryRatioThreshold: "",
+  };
 }
 
 export const ParamsRes = {
@@ -1346,6 +1351,9 @@ export const ParamsRes = {
     }
     if (message.symmetryThreshold !== "") {
       writer.uint32(18).string(message.symmetryThreshold);
+    }
+    if (message.symmetryRatioThreshold !== "") {
+      writer.uint32(26).string(message.symmetryRatioThreshold);
     }
     return writer;
   },
@@ -1363,6 +1371,9 @@ export const ParamsRes = {
         case 2:
           message.symmetryThreshold = reader.string();
           break;
+        case 3:
+          message.symmetryRatioThreshold = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1377,6 +1388,9 @@ export const ParamsRes = {
       symmetryThreshold: isSet(object.symmetryThreshold)
         ? String(object.symmetryThreshold)
         : "",
+      symmetryRatioThreshold: isSet(object.symmetryRatioThreshold)
+        ? String(object.symmetryRatioThreshold)
+        : "",
     };
   },
 
@@ -1386,6 +1400,8 @@ export const ParamsRes = {
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     message.symmetryThreshold !== undefined &&
       (obj.symmetryThreshold = message.symmetryThreshold);
+    message.symmetryRatioThreshold !== undefined &&
+      (obj.symmetryRatioThreshold = message.symmetryRatioThreshold);
     return obj;
   },
 
@@ -1398,6 +1414,7 @@ export const ParamsRes = {
         ? Params.fromPartial(object.params)
         : undefined;
     message.symmetryThreshold = object.symmetryThreshold ?? "";
+    message.symmetryRatioThreshold = object.symmetryRatioThreshold ?? "";
     return message;
   },
 };

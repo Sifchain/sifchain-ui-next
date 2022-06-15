@@ -41,8 +41,9 @@ export function claimTypeToJSON(object: ClaimType): string {
       return "CLAIM_TYPE_BURN";
     case ClaimType.CLAIM_TYPE_LOCK:
       return "CLAIM_TYPE_LOCK";
+    case ClaimType.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 

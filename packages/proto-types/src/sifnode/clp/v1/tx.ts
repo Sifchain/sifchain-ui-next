@@ -113,6 +113,7 @@ export interface MsgAddRewardPeriodResponse {}
 export interface MsgSetSymmetryThreshold {
   signer: string;
   threshold: string;
+  ratio: string;
 }
 
 export interface MsgSetSymmetryThresholdResponse {}
@@ -1786,7 +1787,7 @@ export const MsgAddRewardPeriodResponse = {
 };
 
 function createBaseMsgSetSymmetryThreshold(): MsgSetSymmetryThreshold {
-  return { signer: "", threshold: "" };
+  return { signer: "", threshold: "", ratio: "" };
 }
 
 export const MsgSetSymmetryThreshold = {
@@ -1799,6 +1800,9 @@ export const MsgSetSymmetryThreshold = {
     }
     if (message.threshold !== "") {
       writer.uint32(18).string(message.threshold);
+    }
+    if (message.ratio !== "") {
+      writer.uint32(26).string(message.ratio);
     }
     return writer;
   },
@@ -1819,6 +1823,9 @@ export const MsgSetSymmetryThreshold = {
         case 2:
           message.threshold = reader.string();
           break;
+        case 3:
+          message.ratio = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1831,6 +1838,7 @@ export const MsgSetSymmetryThreshold = {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
       threshold: isSet(object.threshold) ? String(object.threshold) : "",
+      ratio: isSet(object.ratio) ? String(object.ratio) : "",
     };
   },
 
@@ -1838,6 +1846,7 @@ export const MsgSetSymmetryThreshold = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.threshold !== undefined && (obj.threshold = message.threshold);
+    message.ratio !== undefined && (obj.ratio = message.ratio);
     return obj;
   },
 
@@ -1847,6 +1856,7 @@ export const MsgSetSymmetryThreshold = {
     const message = createBaseMsgSetSymmetryThreshold();
     message.signer = object.signer ?? "";
     message.threshold = object.threshold ?? "";
+    message.ratio = object.ratio ?? "";
     return message;
   },
 };
