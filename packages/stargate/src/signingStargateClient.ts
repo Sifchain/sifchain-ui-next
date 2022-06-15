@@ -409,6 +409,14 @@ export class SifSigningStargateClient extends SigningStargateClient {
       pmtpBlockRate,
     );
 
+    const firstSwapConvertedProviderFee = this.#simulateSwap(
+      {
+        amount: firstSwap.providerFee.toString(),
+        poolBalance: toCoin.poolNativeAssetBalance,
+      },
+      { poolBalance: toCoin.poolExternalAssetBalance },
+    );
+
     const secondSwap = this.#simulateSwap(
       {
         amount: firstSwap.rawReceiving.toString(),
@@ -419,7 +427,13 @@ export class SifSigningStargateClient extends SigningStargateClient {
       slippage,
     );
 
-    return secondSwap;
+    return {
+      ...secondSwap,
+      priceImpact: firstSwap.priceImpact.plus(secondSwap.priceImpact),
+      providerFee: firstSwapConvertedProviderFee.rawReceiving.plus(
+        secondSwap.providerFee,
+      ),
+    };
   }
 
   #simulateSwap(
