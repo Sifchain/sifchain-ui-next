@@ -11,7 +11,7 @@ import {
 } from "@sifchain/ui";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
-import React, { FC, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import {
   useConnect as useEtherConnect,
@@ -75,32 +75,32 @@ const WalletConnector: FC = () => {
 
   const { disconnect: disconnectEVM } = useEtherDisconnect();
 
-  const { data: accounts } = useQuery(
-    "accounts",
-    async () => {
-      if (cosmosActiveConnector) {
-        const accounts = await Promise.all(
-          chains.flatMap(async (x) => {
-            try {
-              const signer = await cosmosActiveConnector.getSigner(x.id);
-              const accounts = await signer.getAccounts();
+  const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
-              return [x.id, accounts.map((x) => x.address)];
-            } catch (error) {
-              return [x.id, []];
-            }
-          }),
+  useEffect(() => {
+    if (cosmosActiveConnector) {
+      Promise.all(
+        chains.flatMap(async (chain) => {
+          try {
+            const signer = await cosmosActiveConnector.getSigner(chain.id);
+            const accounts = await signer.getAccounts();
+
+            return [chain.id, accounts.map((x) => x.address)];
+          } catch (error) {
+            return [chain.id, []];
+          }
+        }),
+      ).then((entries) => {
+        const cosmosAccounts = Object.fromEntries(
+          entries.filter(([_, xs]) => xs),
         );
-
-        return Object.fromEntries(accounts);
-      }
-
-      return {};
-    },
-    {
-      enabled: Boolean(cosmosActiveConnector),
-    },
-  );
+        setAccounts((accounts) => ({
+          ...accounts,
+          ...cosmosAccounts,
+        }));
+      });
+    }
+  }, [cosmosActiveConnector]);
 
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [

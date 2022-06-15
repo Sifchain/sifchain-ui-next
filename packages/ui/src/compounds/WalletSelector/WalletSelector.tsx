@@ -1,5 +1,14 @@
+import { Popover, Transition } from "@headlessui/react";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { FC, ReactNode, useCallback, useMemo, useState } from "react";
+import {
+  FC,
+  Fragment,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import tw from "tailwind-styled-components";
 import {
   Button,
@@ -31,9 +40,9 @@ export type WalletSelectorProps = {
   isLoading?: boolean;
   selectedWalletId?: string;
   selectedChainId?: string;
-  accounts?: {
+  accounts: {
     [chainId: string]: string[];
-  }[];
+  };
   onConnect?: (selection: { chainId: string; walletId: string }) => void;
   onDisconnect?: (selection: { chainId: string; walletId: string }) => void;
   onError?: (error: Error) => void;
@@ -53,8 +62,13 @@ const ListItem = tw.li`
   flex items-center justify-between p-4 hover:opacity-60 rounded
 `;
 
+const maskAccount = (account: string) =>
+  account.slice(0, 4) + "..." + account.slice(-4);
+
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
@@ -68,7 +82,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const goBack = useCallback(() => {
     switch (step) {
       case "choose-network":
-        setIsOpen(false);
+        setIsModalOpen(false);
         setNetworkId("");
         setWalletId("");
         setSearch("");
@@ -215,19 +229,71 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     props.onCancel,
   ]);
 
+  const accountEntries = Object.entries(props.accounts).filter(
+    ([, x]) => x.length,
+  );
+
+  const popoverPanelRef = useRef<HTMLUListElement>(null);
+
   return (
     <>
-      <Button
-        disabled={isOpen}
-        onClick={setIsOpen.bind(null, true)}
-        className="w-full max-w-xs"
-      >
-        <WalletIcon className="-translate-y-0.5" /> Connect wallets
-      </Button>
+      {accountEntries.length ? (
+        <Popover className="relative">
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-200"
+            enterFrom="opacity-0 translate-y-1"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition ease-in duration-150"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 translate-y-1"
+          >
+            <Popover.Panel
+              as="div"
+              className="bg-gray-800 p-4 rounded-lg absolute -top-64 w-full"
+            >
+              <ul className="grid gap-2 h-62 overflow-y-scroll">
+                {accountEntries.map(([id, accounts]) => (
+                  <li key={id} className="flex items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                      {maskAccount(accounts[0] ?? "")}
+                    </div>
+                    <Button
+                      size="xs"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        props.onDisconnect?.({
+                          chainId: id,
+                          walletId: "keplr",
+                        });
+                      }}
+                    >
+                      Disconnect
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </Popover.Panel>
+          </Transition>
+          <Popover.Button disabled={isModalOpen} as={Button} className="w-full">
+            <WalletIcon className="-translate-y-0.5" /> Connected wallets (
+            {accountEntries.length})
+          </Popover.Button>
+        </Popover>
+      ) : (
+        <Button
+          disabled={isModalOpen}
+          onClick={setIsModalOpen.bind(null, true)}
+          className="w-full max-w-xs"
+        >
+          <WalletIcon className="-translate-y-0.5" /> Connect wallets
+        </Button>
+      )}
       <Modal
         title="Connect Wallet"
-        isOpen={isOpen}
-        onClose={setIsOpen}
+        isOpen={isModalOpen}
+        onClose={setIsModalOpen}
         onGoBack={goBack}
         subTitle={subHeading}
       >
