@@ -1,6 +1,7 @@
-import { ChevronRightIcon, MoonIcon } from "@heroicons/react/outline";
+import { ChevronRightIcon } from "@heroicons/react/outline";
 import {
   BalanceIcon,
+  ButtonGroup,
   ChangelogIcon,
   formatNumberAsCurrency,
   LockIcon,
@@ -45,7 +46,8 @@ export const MENU_ITEMS = [
 
 const Header = () => {
   const { state, actions } = useUIStore();
-  const currentPath = useRouter().asPath;
+  const router = useRouter();
+  const currentPath = router.asPath;
 
   const handleBtn = (
     <button
@@ -101,7 +103,19 @@ const Header = () => {
           <GlobalSearch />
         </section>
         <nav className="flex items-center flex-1 gap-8 justify-center">
-          <ul className="flex gap-2">
+          <ButtonGroup
+            className="hidden md:flex w-full max-w-md"
+            selectedIndex={MENU_ITEMS.findIndex(
+              (item) => item.href === currentPath,
+            )}
+            options={MENU_ITEMS.slice(0, 3).map(({ title, href }) => ({
+              label: title,
+              value: href,
+            }))}
+            gap={8}
+            onChange={(i) => router.push(MENU_ITEMS[i]?.href ?? "")}
+          />
+          <ul className="flex gap-2 md:hidden">
             {MENU_ITEMS.map(({ title, href, icon }) => (
               <li key={title} className="grid gap-2">
                 <Link href={href}>
