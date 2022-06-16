@@ -1,4 +1,4 @@
-import { SortUnderterminedIcon } from "@sifchain/ui";
+import { SearchInput, SortUnderterminedIcon } from "@sifchain/ui";
 import type { NextPage } from "next";
 import type { FC } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
@@ -17,21 +17,25 @@ const COLUMNS = [
     id: "token",
     label: "Token",
     sortable: true,
+    sortField: "token",
   },
   {
     id: "balance",
     label: "Balance",
     sortable: true,
+    sortField: "balance",
   },
   {
     id: "available",
     label: "Available",
     sortable: true,
+    sortField: "available",
   },
   {
     id: "pooled",
     label: "Pooled",
     sortable: true,
+    sortField: "pooled",
   },
 ];
 
@@ -55,15 +59,18 @@ const AssetsPage: NextPage = () => {
 
   return (
     <PageLayout heading="Balances">
-      <section className="grid gap-4 max-w-2xl">
-        <h2 className="text-2xl">Balances</h2>
-        <div className="flex justify-between">
-          {stats.map((stat) => (
-            <Stat key={stat.label} label={stat.label} value={stat.value} />
-          ))}
-        </div>
-      </section>
-      <section className="flex flex-col gap-4 rounded-lg bg-gray-800 p-8">
+      <section className="grid gap-12 rounded-xl bg-gray-900 p-8">
+        <header className="grid gap-4">
+          <div className="flex justify-between">
+            <h2 className="text-2xl">Balances</h2>
+            <SearchInput placeholder="filter tokens..." />
+          </div>
+          <div className="flex justify-between max-w-2xl">
+            {stats.map((stat) => (
+              <Stat key={stat.label} label={stat.label} value={stat.value} />
+            ))}
+          </div>
+        </header>
         <table>
           <thead className="text-left mb-6">
             <tr>
