@@ -1,9 +1,4 @@
 import { Popover, Transition } from "@headlessui/react";
-import {
-  ArrowLeftIcon,
-  ChevronDownIcon,
-  PlusIcon,
-} from "@heroicons/react/outline";
 import { FC, Fragment, ReactNode, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import { maskWalletAddress } from "../../utils";
@@ -14,6 +9,9 @@ import {
   WalletIcon,
   Tooltip,
   Identicon,
+  ChevronDownIcon,
+  PlusIcon,
+  ArrowLeftIcon,
 } from "../../components";
 
 export type ChainEntry = {
@@ -130,7 +128,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                       {x.name}
                     </div>
 
-                    <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
+                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
                   </ListItem>
                 ))}
             </ListContainer>
@@ -178,7 +176,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                         </Tooltip>
                       )}
                     </div>
-                    <ArrowLeftIcon className="h-4 w-4 rotate-180 text-gray-400" />
+                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
                   </ListItem>
                 ))}
             </ListContainer>
@@ -312,7 +310,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
             onClick={props.onConnectAnotherWallet}
             className="w-full max-w-xs"
           >
-            <PlusIcon className="h-5 w-5" /> Connect another wallet
+            <PlusIcon /> Connect another wallet
           </Button>
         </Popover.Panel>
       </Transition>
@@ -327,7 +325,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
           <span className="h-5 w-5 bg-gray-600 rounded-full grid place-items-center">
             {props.accounts.length}
           </span>
-          <ChevronDownIcon className="h-5 w-5" />
+          <ChevronDownIcon />
         </div>
       </Popover.Button>
     </Popover>
