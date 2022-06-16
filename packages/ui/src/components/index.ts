@@ -8,3 +8,5 @@ export * from "./Tooltip";
 export * from "./RecyclerView";
 export * from "./Modal";
 export * from "./Label";
+export * from "./Input";
+export * from "./Identicon";

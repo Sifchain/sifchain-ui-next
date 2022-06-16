@@ -183,9 +183,9 @@ const WalletConnector: FC = () => {
   );
 
   useEffect(() => {
-    console.log({ accounts, cosmosActiveConnector, isCosmosConnected });
-
     if (cosmosActiveConnector) {
+      console.log("Cosmos active connector:", cosmosActiveConnector);
+
       cosmosActiveConnector.connect().then(() => console.log("connected"));
     }
   }, [accounts, cosmosActiveConnector, isCosmosConnected]);

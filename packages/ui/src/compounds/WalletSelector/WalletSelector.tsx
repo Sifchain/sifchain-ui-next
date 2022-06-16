@@ -1,5 +1,5 @@
 import { Popover, Transition } from "@headlessui/react";
-import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/outline";
 import {
   FC,
   Fragment,
@@ -16,6 +16,7 @@ import {
   SearchInput,
   WalletIcon,
   Tooltip,
+  Identicon,
 } from "../../components";
 
 export type ChainEntry = {
@@ -233,8 +234,6 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     ([, x]) => x.length,
   );
 
-  const popoverPanelRef = useRef<HTMLUListElement>(null);
-
   return (
     <>
       {accountEntries.length ? (
@@ -250,14 +249,17 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           >
             <Popover.Panel
               as="div"
-              className="bg-gray-800 p-4 rounded-lg absolute -top-64 w-full"
+              className="bg-gray-800 p-4 rounded-lg absolute -top-[360px] min-w-max grid gap-4"
             >
-              <ul className="grid gap-2 h-62 overflow-y-scroll">
+              <ul className="grid gap-2 h-64 overflow-y-scroll">
                 {accountEntries.map(([id, accounts]) => (
                   <li key={id} className="flex items-center justify-between">
-                    <div className="flex gap-2 items-center">
-                      {maskAccount(accounts[0] ?? "")}
-                    </div>
+                    <Tooltip content={id}>
+                      <div className="flex gap-2 items-center">
+                        <Identicon diameter={20} address={accounts[0] ?? ""} />
+                        {maskAccount(accounts[0] ?? "")}
+                      </div>
+                    </Tooltip>
                     <Button
                       size="xs"
                       onClick={(e) => {
@@ -274,6 +276,14 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                   </li>
                 ))}
               </ul>
+              <Button
+                disabled={isModalOpen}
+                variant="secondary"
+                onClick={setIsModalOpen.bind(null, true)}
+                className="w-full max-w-xs"
+              >
+                <PlusIcon className="h-5 w-6" /> Connect another wallet
+              </Button>
             </Popover.Panel>
           </Transition>
           <Popover.Button disabled={isModalOpen} as={Button} className="w-full">

@@ -398,6 +398,7 @@ importers:
       ramda: ^0.28.0
       react: ^18.1.0
       react-dom: ^18.1.0
+      react-jazzicon: ^1.0.4
       react-toastify: ^9.0.4
       tailwind-styled-components: 2.1.6
       tailwindcss: ^3.1.2
@@ -418,6 +419,7 @@ importers:
       ramda: 0.28.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+      react-jazzicon: 1.0.4_ef5jwxihqo6n7gxfmzogljlgcm
       react-toastify: 9.0.4_ef5jwxihqo6n7gxfmzogljlgcm
       zustand: 4.0.0-rc.1_react@18.1.0
     devDependencies:
@@ -15135,6 +15137,10 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
+  /mersenne-twister/1.1.0:
+    resolution: {integrity: sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==}
+    dev: false
+
   /methods/1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
@@ -17517,6 +17523,17 @@ packages:
 
   /react-is/18.1.0:
     resolution: {integrity: sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==}
+
+  /react-jazzicon/1.0.4_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-/3kWv5vtAhI18GBFoqjpxRTtL+EImuB73PAC02r/zJQ6E+PAUmoBx8edYvTCIYHwS01uFf6N3elTDqSrVPwg4w==}
+    peerDependencies:
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
+    dependencies:
+      mersenne-twister: 1.1.0
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+    dev: false
 
   /react-markdown/8.0.3_cbpnieqasrszcwkqeh5i7z7nse:
     resolution: {integrity: sha512-We36SfqaKoVNpN1QqsZwWSv/OZt5J15LNgTLWynwAN5b265hrQrsjMtlRNwUvS+YyR3yDM8HpTNc4pK9H/Gc0A==}
