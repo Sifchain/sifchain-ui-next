@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import useSifSigningStargateClient from "~/hooks/useSifSigningStargateClient";
+import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 export const useAllBalances = () => {
   const { data: env } = useDexEnvironment();

@@ -20,6 +20,8 @@ import {
   SignerData,
   SigningStargateClient,
   SigningStargateClientOptions,
+  StargateClient,
+  StargateClientOptions,
   StdFee,
 } from "@cosmjs/stargate";
 import { HttpEndpoint, Tendermint34Client } from "@cosmjs/tendermint-rpc";
@@ -92,6 +94,17 @@ export const createDefaultRegistry = () => {
 };
 
 export class SifSigningStargateClient extends SigningStargateClient {
+  // TODO: very dirty way of working around how
+  // StargateClient & SigningStargateClient inheritance was implemented
+  static override async connect(
+    endpoint: string | HttpEndpoint,
+    options: StargateClientOptions = {},
+  ) {
+    const tmClient = await Tendermint34Client.connect(endpoint);
+    return new this(tmClient, {} as any, options) as StargateClient &
+      Pick<SifSigningStargateClient, "simulateSwap" | "simulateSwapSync">;
+  }
+
   static override async connectWithSigner(
     endpoint: string | HttpEndpoint,
     signer: OfflineSigner,
