@@ -158,6 +158,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
           disabled={isOpen}
           placeholder={props.placeholder}
           onClick={setIsOpen.bind(null, true)}
+          hotkey="/"
         />
       </div>
       <Transition.Root

@@ -19,7 +19,6 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         ref={ref}
         id={inputId}
         className={clsx("pl-8 bg-gray-750 border-gray-700", className)}
-        hotkey="/"
         {...props}
       >
         <SearchIcon className="absolute left-3 h-4 w-4 text-gray-300" />
