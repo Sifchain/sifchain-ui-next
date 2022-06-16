@@ -1,15 +1,12 @@
 import { Popover, Transition } from "@headlessui/react";
-import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/outline";
 import {
-  FC,
-  Fragment,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+  ArrowLeftIcon,
+  ChevronDownIcon,
+  PlusIcon,
+} from "@heroicons/react/outline";
+import { FC, Fragment, ReactNode, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
+import { maskWalletAddress } from "../../utils";
 import {
   Button,
   Modal,
@@ -62,9 +59,6 @@ const ListContainer = tw.ul`
 const ListItem = tw.li`
   flex items-center justify-between p-4 hover:opacity-60 rounded
 `;
-
-const maskAccount = (account: string) =>
-  account.slice(0, 4) + "..." + account.slice(-4);
 
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -191,6 +185,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                 ))}
             </ListContainer>
           </>,
+          2,
         ];
       case "await-confirmation":
         if (!props.isLoading) {
@@ -237,60 +232,12 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   return (
     <>
       {accountEntries.length ? (
-        <Popover className="relative">
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-200"
-            enterFrom="opacity-0 translate-y-1"
-            enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
-            leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 translate-y-1"
-          >
-            <Popover.Panel
-              as="div"
-              className="bg-gray-800 p-4 rounded-lg absolute -top-[360px] min-w-max grid gap-4"
-            >
-              <ul className="grid gap-2 h-64 overflow-y-scroll">
-                {accountEntries.map(([id, accounts]) => (
-                  <li key={id} className="flex items-center justify-between">
-                    <Tooltip content={id}>
-                      <div className="flex gap-2 items-center">
-                        <Identicon diameter={20} address={accounts[0] ?? ""} />
-                        {maskAccount(accounts[0] ?? "")}
-                      </div>
-                    </Tooltip>
-                    <Button
-                      size="xs"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        props.onDisconnect?.({
-                          chainId: id,
-                          walletId: "keplr",
-                        });
-                      }}
-                    >
-                      Disconnect
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                disabled={isModalOpen}
-                variant="secondary"
-                onClick={setIsModalOpen.bind(null, true)}
-                className="w-full max-w-xs"
-              >
-                <PlusIcon className="h-5 w-6" /> Connect another wallet
-              </Button>
-            </Popover.Panel>
-          </Transition>
-          <Popover.Button disabled={isModalOpen} as={Button} className="w-full">
-            <WalletIcon className="-translate-y-0.5" /> Connected wallets (
-            {accountEntries.length})
-          </Popover.Button>
-        </Popover>
+        <ConnectedWallets
+          accounts={accountEntries}
+          isModalOpen={isModalOpen}
+          onDisconnect={props.onDisconnect}
+          onConnectAnotherWallet={setIsModalOpen.bind(null, true)}
+        />
       ) : (
         <Button
           disabled={isModalOpen}
@@ -310,5 +257,81 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
         {content}
       </Modal>
     </>
+  );
+};
+
+type ConnectedWalletsProps = {
+  isModalOpen: boolean;
+  accounts: [chainId: string, accounts: string[]][];
+  onDisconnect: WalletSelectorProps["onDisconnect"];
+  onConnectAnotherWallet(): void;
+};
+
+const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
+  return (
+    <Popover className="relative">
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-200"
+        enterFrom="opacity-0 translate-y-1"
+        enterTo="opacity-100 translate-y-0"
+        leave="transition ease-in duration-150"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 translate-y-1"
+      >
+        <Popover.Panel
+          as="div"
+          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] -top-[360px] min-w-max grid gap-4"
+        >
+          <ul className="grid gap-0.5 h-64 overflow-y-scroll">
+            {props.accounts.map(([id, accounts]) => (
+              <li
+                key={id}
+                className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
+              >
+                <Tooltip content={id}>
+                  <div className="flex gap-2 items-center">
+                    <Identicon diameter={20} address={accounts[0] ?? ""} />
+                    {maskWalletAddress(accounts[0] ?? "")}
+                  </div>
+                </Tooltip>
+                <Button
+                  size="xs"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    props.onDisconnect?.({ chainId: id, walletId: "keplr" });
+                  }}
+                >
+                  Disconnect
+                </Button>
+              </li>
+            ))}
+          </ul>
+          <Button
+            disabled={props.isModalOpen}
+            variant="secondary"
+            onClick={props.onConnectAnotherWallet}
+            className="w-full max-w-xs"
+          >
+            <PlusIcon className="h-5 w-5" /> Connect another wallet
+          </Button>
+        </Popover.Panel>
+      </Transition>
+      <Popover.Button
+        disabled={props.isModalOpen}
+        as={Button}
+        className="w-full justify-between"
+        variant="outline"
+      >
+        <span>Connected wallets</span>
+        <div className="flex items-center gap-2">
+          <span className="h-5 w-5 bg-gray-600 rounded-full grid place-items-center">
+            {props.accounts.length}
+          </span>
+          <ChevronDownIcon className="h-5 w-5" />
+        </div>
+      </Popover.Button>
+    </Popover>
   );
 };

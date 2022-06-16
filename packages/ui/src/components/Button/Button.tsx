@@ -4,7 +4,7 @@ import tw from "tailwind-styled-components";
 
 export type ButtonProps = JSX.IntrinsicElements["button"] & {
   size?: "xs" | "sm" | "md" | "lg";
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "outline";
 };
 
 const StyledButton = tw.button<ButtonProps>`
@@ -24,6 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             variant === "primary",
           "bg-gray-600 text-white hover:bg-gray-500 active:bg-gray-400":
             variant === "secondary",
+          "ring-2 ring-white": variant === "outline",
           "text-xs py-1 px-1.5": size === "xs",
           "text-sm py-1.5 px-2.5": size === "sm",
           "text-sm py-3 px-4": size === "md",
