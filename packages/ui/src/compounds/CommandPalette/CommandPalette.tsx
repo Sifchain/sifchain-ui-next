@@ -32,9 +32,9 @@ export type CommandPaletteCategory = {
 
 export type QuickActionEntry = {
   label: string;
-  shortcut: string;
   url?: string;
-  icon:
+  onClick?: () => void;
+  icon?:
     | JSX.Element
     | ReactNode
     | ((props: ComponentProps<"svg">) => JSX.Element);
@@ -43,12 +43,13 @@ export type QuickActionEntry = {
 export type CommandPaletteProps = {
   query: string;
   placeholder?: string;
-  onQueryChange(query: string): void;
   categories: { id: string; label: string }[];
   entries: CommandPaletteEntry[];
   recentEntrires?: CommandPaletteEntry[];
   quickActions: QuickActionEntry[];
   isOpen?: boolean;
+  entryActions(entry: CommandPaletteEntry): QuickActionEntry[];
+  onQueryChange(query: string): void;
   /**
    * used for persisting recent queries to sessionStorage
    */
@@ -244,14 +245,21 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                   <span className="ml-3 flex-auto truncate">
                                     {entry.label}
                                   </span>
-                                  {active && (
+                                  {active && props.entryActions && (
                                     <div className="flex items-center gap-2">
-                                      <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
-                                        Balance
-                                      </button>
-                                      <button className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400">
-                                        Pool
-                                      </button>
+                                      {props.entryActions(entry).map((link) => (
+                                        <button
+                                          key={link.label}
+                                          className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            link.onClick?.();
+                                          }}
+                                        >
+                                          {link.label}
+                                        </button>
+                                      ))}
                                     </div>
                                   )}
                                 </>
@@ -266,7 +274,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                           <ul className="text-sm text-gray-400">
                             {props.quickActions.map((action) => (
                               <Combobox.Option
-                                key={action.shortcut}
+                                key={action.label}
                                 value={action}
                                 className={({ active }) =>
                                   clsx(
@@ -293,12 +301,6 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
 
                                     <span className="ml-3 flex-auto truncate">
                                       {action.label}
-                                    </span>
-                                    <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
-                                      <kbd className="font-sans">⌘</kbd>
-                                      <kbd className="font-sans">
-                                        {action.shortcut}
-                                      </kbd>
                                     </span>
                                   </>
                                 )}

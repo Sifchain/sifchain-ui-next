@@ -31,7 +31,9 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
           </nav>
         )}
       </header>
-      <div className="p-6 overflow-y-scroll flex-1">{props.children}</div>
+      <div className="p-6 overflow-y-scroll flex-1 max-w-6xl mx-auto w-full">
+        {props.children}
+      </div>
     </>
   );
 };

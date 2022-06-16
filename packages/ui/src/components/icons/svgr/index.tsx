@@ -5,6 +5,7 @@ export { default as BscIcon } from "./BscIcon";
 export { default as ChangelogIcon } from "./ChangelogIcon";
 export { default as ChevronDownIcon } from "./ChevronDownIcon";
 export { default as CoinbaseIcon } from "./CoinbaseIcon";
+export { default as CosmosIcon } from "./CosmosIcon";
 export { default as CosmostationIcon } from "./CosmostationIcon";
 export { default as EthereumCircleIcon } from "./EthereumCircleIcon";
 export { default as EthereumIcon } from "./EthereumIcon";

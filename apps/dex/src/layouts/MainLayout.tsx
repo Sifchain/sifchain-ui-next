@@ -6,19 +6,16 @@ import {
   ExclamationCircleIcon,
 } from "@heroicons/react/outline";
 import { ToastContainer } from "@sifchain/ui";
-import Head from "next/head";
 import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
 
-import Background from "./BackgroundImage";
-
-import Sidebar from "./Sidebar";
+import Nav from "./Nav";
 
 const Shell = tw.div`
-min-h-screen w-full bg-slate-100 flex
-dark:bg-gradient-to-b
-dark:from-gray-900 dark:to-gray-900/95 dark:text-slate-100 
-subpixel-antialiased
+  min-h-screen w-full bg-slate-100
+  dark:bg-gradient-to-b
+  dark:from-gray-900 dark:to-gray-900/95 dark:text-slate-100 
+  subpixel-antialiased
 `;
 
 export type Props = PropsWithChildren<{}>;
@@ -26,10 +23,9 @@ export type Props = PropsWithChildren<{}>;
 const MainLayout: FC<Props> = (props) => {
   return (
     <>
-      <Background $opacity={20} />
       <Shell>
-        <Sidebar />
-        <main className="flex-1 flex flex-col max-h-screen z-[1]">
+        <Nav />
+        <main className="flex-1 flex flex-col max-h-[calc(100vh-80px)] z-[1]">
           {props.children}
         </main>
       </Shell>

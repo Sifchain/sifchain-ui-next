@@ -277,7 +277,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       >
         <Popover.Panel
           as="div"
-          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] -top-[360px] min-w-max grid gap-4 !z-60"
+          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] top-16 right-0 min-w-max grid gap-4"
         >
           <ul className="grid gap-0.5 h-64 overflow-y-scroll">
             {props.accounts.map(([id, accounts]) => (

@@ -3,6 +3,7 @@ import {
   CommandPaletteEntry,
   useRecentEntries,
 } from "@sifchain/ui";
+import { useRouter } from "next/router";
 import { indexBy, prop } from "rambda";
 import React, { useCallback, useMemo, useState, type FC } from "react";
 
@@ -14,6 +15,8 @@ type Props = {};
 const GlobalSearch: FC<Props> = (_props) => {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState("");
+
+  const router = useRouter();
 
   const { data: pools } = useTokenRegistryQuery();
 
@@ -76,6 +79,14 @@ const GlobalSearch: FC<Props> = (_props) => {
       className="max-w-2xl w-full mx-auto"
       value={value}
       onChange={handleChange}
+      entryActions={(entry) => [
+        {
+          label: "Pools",
+          onClick: () => {
+            router.push(`/pools/${entry.id}`);
+          },
+        },
+      ]}
     />
   );
 };
