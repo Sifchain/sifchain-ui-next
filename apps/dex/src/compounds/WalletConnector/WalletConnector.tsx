@@ -12,7 +12,7 @@ import {
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
+
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
@@ -77,7 +77,7 @@ const WalletConnector: FC = () => {
 
   const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
-  useEffect(() => {
+  const syncCosmosAccounts = useCallback(async () => {
     if (cosmosActiveConnector) {
       Promise.all(
         chains.flatMap(async (chain) => {
@@ -101,6 +101,10 @@ const WalletConnector: FC = () => {
       });
     }
   }, [cosmosActiveConnector]);
+
+  useEffect(() => {
+    syncCosmosAccounts();
+  }, [syncCosmosAccounts]);
 
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [
@@ -135,7 +139,7 @@ const WalletConnector: FC = () => {
       const selected = connectorsById[walletId];
 
       if (!selected) {
-        console.log("selected", selected);
+        console.error(`Unknown wallet ${walletId}`);
         return;
       }
 
@@ -183,12 +187,23 @@ const WalletConnector: FC = () => {
   );
 
   useEffect(() => {
-    if (cosmosActiveConnector) {
-      console.log("Cosmos active connector:", cosmosActiveConnector);
-
-      cosmosActiveConnector.connect().then(() => console.log("connected"));
+    if (cosmosActiveConnector && !accounts["sifchain"]?.length) {
+      handleConnectionRequest({
+        walletId: "keplr",
+        chainId: "sifchain",
+      }).then(syncCosmosAccounts);
     }
-  }, [accounts, cosmosActiveConnector, isCosmosConnected]);
+
+    if (cosmosActiveConnector && isCosmosConnected) {
+      syncCosmosAccounts();
+    }
+  }, [
+    accounts,
+    cosmosActiveConnector,
+    isCosmosConnected,
+    syncCosmosAccounts,
+    handleConnectionRequest,
+  ]);
 
   return (
     <WalletSelector

@@ -62,8 +62,6 @@ const ListItem = tw.li`
 
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
@@ -281,7 +279,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       >
         <Popover.Panel
           as="div"
-          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] -top-[360px] min-w-max grid gap-4"
+          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] -top-[360px] min-w-max grid gap-4 !z-60"
         >
           <ul className="grid gap-0.5 h-64 overflow-y-scroll">
             {props.accounts.map(([id, accounts]) => (
