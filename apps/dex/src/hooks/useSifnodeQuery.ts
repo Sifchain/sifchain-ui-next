@@ -38,7 +38,7 @@ export default function useSifnodeQuery<
   const { data: client } = useQueryClient();
 
   return useQuery(
-    [query],
+    [query, ...args],
     // @ts-ignore
     async (): Awaited<ReturnType<PublicSifnodeClient[T][P]>> => {
       const [moduleName, methodName] = query.split(".") as [T, P];
