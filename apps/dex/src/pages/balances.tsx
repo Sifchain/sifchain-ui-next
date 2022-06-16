@@ -1,3 +1,4 @@
+import { SortUnderterminedIcon } from "@sifchain/ui";
 import type { NextPage } from "next";
 import type { FC } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
@@ -10,6 +11,29 @@ const Stat: FC<{ label: string; value: string }> = (props) => (
     <span className="text-2xl font-semibold">{props.value}</span>
   </div>
 );
+
+const COLUMNS = [
+  {
+    id: "token",
+    label: "Token",
+    sortable: true,
+  },
+  {
+    id: "balance",
+    label: "Balance",
+    sortable: true,
+  },
+  {
+    id: "available",
+    label: "Available",
+    sortable: true,
+  },
+  {
+    id: "pooled",
+    label: "Pooled",
+    sortable: true,
+  },
+];
 
 const AssetsPage: NextPage = () => {
   const { data: balances } = useAllDisplayBalances();
@@ -39,32 +63,39 @@ const AssetsPage: NextPage = () => {
           ))}
         </div>
       </section>
-      <section className="pt-16 flex flex-col gap-4">
-        <table className="rounded-lg bg-gray-800 p-8">
+      <section className="flex flex-col gap-4 rounded-lg bg-gray-800 p-8">
+        <table>
           <thead className="text-left mb-6">
             <tr>
-              <th className="p-4">Token</th>
-              <th className="p-4">Balance</th>
+              {COLUMNS.map((column) => (
+                <th key={column.id} className="text-gray-300 py-4">
+                  <div className="flex items-center gap-2">
+                    {column.label} <SortUnderterminedIcon />
+                  </div>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {balances?.map((x) => (
-              <tr key={x.denom}>
-                <td className="p-4">
+            {balances?.map((balance) => (
+              <tr key={balance.denom}>
+                <td className="py-4">
                   <article>
                     <figcaption className="flex gap-4">
                       <figure>
                         <AssetIcon
                           network="sifchain"
-                          symbol={x.denom}
+                          symbol={balance.denom}
                           size="md"
                         />
                       </figure>
-                      <h2>{x.denom}</h2>
+                      <h2>{balance.denom}</h2>
                     </figcaption>
                   </article>
                 </td>
-                <td className="p-4">{x.amount.toFormat()}</td>
+                <td className="py-4">{balance.amount.toFormat()}</td>
+                <td className="py-4">{balance.amount.toFormat()}</td>
+                <td className="py-4">{balance.amount.toFormat()}</td>
               </tr>
             ))}
           </tbody>
