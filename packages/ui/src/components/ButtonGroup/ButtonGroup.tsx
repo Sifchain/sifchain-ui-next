@@ -22,6 +22,7 @@ type IndicatorProps = {
   padding: number;
   gap: number;
   className?: string;
+  optionsLength: number;
 };
 
 const Indicator: FC<IndicatorProps> = (props) => {
@@ -30,15 +31,15 @@ const Indicator: FC<IndicatorProps> = (props) => {
   return (
     <span
       className={clsx(
-        "absolute bg-gray-600 transition-all rounded translate-x-0 duration-200 scale-x-75 origin-center",
+        "absolute bg-gray-600 transition-all rounded translate-x-0 duration-200 scale-x-75 origin-center ring-2",
         {
           "opacity-0": props.selectedIndex === -1,
         },
         props.className,
       )}
       style={{
-        width: props.itemWidth - 2 * props.gap,
-        left: props.padding + props.gap,
+        width: props.itemWidth - props.gap,
+        left: props.padding + props.selectedIndex * (props.gap / 2),
         top: props.padding,
         bottom: props.padding,
         transform: `translateX(${leftOffset}px)`,
@@ -67,17 +68,19 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
     >
       <Indicator
         selectedIndex={hoverIndex}
+        optionsLength={props.options.length}
         itemWidth={itemWidth}
         className={clsx({
           "opacity-40": hoverIndex >= 0,
         })}
-        padding={6}
+        padding={8}
         gap={props.gap ?? 0}
       />
       <Indicator
         selectedIndex={props.selectedIndex}
+        optionsLength={props.options.length}
         itemWidth={itemWidth}
-        padding={6}
+        padding={8}
         gap={props.gap ?? 0}
       />
       <div className="flex flex-1 gap-2">
