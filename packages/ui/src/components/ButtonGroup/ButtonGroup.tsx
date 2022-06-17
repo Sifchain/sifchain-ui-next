@@ -31,7 +31,7 @@ const Indicator: FC<IndicatorProps> = (props) => {
   return (
     <span
       className={clsx(
-        "absolute bg-gray-600 transition-all rounded translate-x-0 duration-200 scale-x-75 origin-center ring-2",
+        "absolute bg-gray-600 transition-all rounded-md translate-x-0 duration-200 scale-x-75 origin-center ring-2",
         {
           "opacity-0": props.selectedIndex === -1,
         },
@@ -62,7 +62,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         }
       }}
       className={clsx(
-        "relative p-2 rounded-md bg-gray-900 flex overflow-hidden",
+        "relative p-1.5 rounded-lg bg-gray-800 flex overflow-hidden",
         props.className,
       )}
     >
@@ -73,14 +73,14 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         className={clsx({
           "opacity-40": hoverIndex >= 0,
         })}
-        padding={8}
+        padding={6}
         gap={props.gap ?? 0}
       />
       <Indicator
         selectedIndex={props.selectedIndex}
         optionsLength={props.options.length}
         itemWidth={itemWidth}
-        padding={8}
+        padding={6}
         gap={props.gap ?? 0}
       />
       <div className="flex flex-1 gap-2">
@@ -88,7 +88,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
           <button
             key={index}
             className={clsx(
-              "flex-1 py-2.5 rounded-md z-10 font-semibold",
+              "flex-1 py-2.5 rounded-xl z-10 font-semibold",
               index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
               typeof props.itemClassName === "function"
                 ? props.itemClassName(index)
