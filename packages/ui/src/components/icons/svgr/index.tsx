@@ -18,6 +18,7 @@ export { default as PoolsIcon } from "./PoolsIcon";
 export { default as RacetrackSpinnerIcon } from "./RacetrackSpinnerIcon";
 export { default as RowanIcon } from "./RowanIcon";
 export { default as SearchIcon } from "./SearchIcon";
+export { default as SettingsIcon } from "./SettingsIcon";
 export { default as SifchainLogoSmall } from "./SifchainLogoSmall";
 export { default as SortUnderterminedIcon } from "./SortUnderterminedIcon";
 export { default as SwapIcon } from "./SwapIcon";
