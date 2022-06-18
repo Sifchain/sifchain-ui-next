@@ -26,11 +26,13 @@
     "lodash.throttle": "^4.1.1",
     "rambda": "^7.1.4",
     "ramda": "^0.28.0",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
     "react-jazzicon": "^1.0.4",
     "react-toastify": "^9.0.4",
     "zustand": "4.0.0-rc.1"
+  },
+  "peerDependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",

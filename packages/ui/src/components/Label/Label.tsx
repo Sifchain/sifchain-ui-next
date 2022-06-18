@@ -5,6 +5,7 @@ import tw from "tailwind-styled-components";
 export type LabelProps = JSX.IntrinsicElements["button"] & {
   size?: "xs" | "sm" | "md" | "lg";
   variant?: "primary" | "secondary" | "tertiary";
+  round?: boolean;
 };
 
 const StyledLabel = tw.button<LabelProps>`
@@ -17,12 +18,12 @@ const StyledLabel = tw.button<LabelProps>`
 `;
 
 export const Label = forwardRef<HTMLButtonElement, LabelProps>(
-  ({ className, variant, size, ...props }, ref) => (
+  ({ className, variant, round, size, ...props }, ref) => (
     <StyledLabel
       {...props}
       ref={ref}
       className={clsx({
-        "rounded-full": variant === "primary",
+        "rounded-full": round,
       })}
     >
       {props.children}
