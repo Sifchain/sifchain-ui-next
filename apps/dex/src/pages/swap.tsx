@@ -187,7 +187,22 @@ const SwapPage = () => {
             />
           </fieldset>
           <div className="flex justify-center align-middle my-[-2em] z-10">
-            <button className="bg-gray-900 rounded-full p-3 border-4 border-gray-800">
+            <button
+              className="bg-gray-900 rounded-full p-3 border-4 border-gray-800"
+              type="button"
+              onClick={() => {
+                // need this else gonna freeze the browser if user spam click
+                requestAnimationFrame(() => {
+                  setFromSelectedOption(toSelectedOption);
+                  setToSelectedOption(fromSelectedOption);
+                  setFromAmount((x) =>
+                    formattedResult.minimumReceiving === "0"
+                      ? x
+                      : formattedResult.minimumReceiving,
+                  );
+                });
+              }}
+            >
               <SwapIcon width="1.25em" height="1.25em" />
             </button>
           </div>
