@@ -1,22 +1,50 @@
 import { Decimal } from "@cosmjs/math";
+import { Popover } from "@headlessui/react";
 import { runCatching } from "@sifchain/common";
-import { Button, Input } from "@sifchain/ui";
-import { FC, PropsWithChildren, useMemo, useState } from "react";
+import {
+  ArrowLeftIcon,
+  Button,
+  ButtonGroup,
+  Input,
+  Select,
+  SelectOption,
+  SettingsIcon,
+  SwapIcon,
+} from "@sifchain/ui";
+import { useMemo, useState } from "react";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
-import PageLayout from "~/layouts/PageLayout";
 
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
   const { data: stargateClient } = useSifStargateClient();
   const { signer } = useSifSigner();
 
-  const [fromDenom, setFromDenom] = useState("cusdc");
-  const [toDenom, setToDenom] = useState("rowan");
-  const [slippage, setSlippage] = useState(0.005);
+  const [fromSelectedOption, setFromSelectedOption] = useState<SelectOption>({
+    id: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+    label: "atom",
+    body: "atom",
+  });
+  const [toSelectedOption, setToSelectedOption] = useState<SelectOption>({
+    id: "rowan",
+    label: "rowan",
+    body: "rowan",
+  });
+
+  const fromDenom = fromSelectedOption.id;
+  const toDenom = toSelectedOption.id;
+
+  const slippageOptions = [
+    { label: "0.5%", value: 0.005 },
+    { label: "1%", value: 0.01 },
+    { label: "1.5%", value: 0.015 },
+  ];
+  const [selectedSlippageIndex, setSelectedSlippageIndex] = useState(0);
+  const slippage = slippageOptions[selectedSlippageIndex]?.value;
+
   const [fromAmount, setFromAmount] = useState("");
 
   const commonOptions = { refetchInterval: 6000 };
@@ -43,6 +71,12 @@ const SwapPage = () => {
   const toPool = toPoolQuery.data?.pool ?? fromPoolQuery.data?.pool;
 
   const tokenRegistryQuery = useTokenRegistryQuery();
+
+  const tokenOptions = tokenRegistryQuery.data.map((x) => ({
+    id: x.ibcDenom ?? "",
+    label: x.displaySymbol,
+    body: x.displaySymbol,
+  }));
 
   const fromAmountDecimal = runCatching(() =>
     Decimal.fromUserInput(
@@ -104,83 +138,79 @@ const SwapPage = () => {
   );
 
   return (
-    <PageLayout heading="Swap" title="Swap">
-      <section className="bg-gray-800 p-4 pt-6 rounded-xl grid gap-8 max-w-lg mx-auto">
-        <header className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">Swap</h2>
-          <div></div>
-        </header>
-        {stargateClient !== undefined && (
-          <form
-            className="flex flex-col gap-2"
-            onSubmit={(event) => {
-              event.preventDefault();
-              swapMutation.mutate({
-                fromDenom,
-                toDenom,
-                fromAmount: fromAmountDecimal?.atomics ?? "0",
-                minimumReceiving: swapSimulationResult?.minimumReceiving ?? "0",
-              });
-            }}
-          >
-            <select
-              value={fromDenom}
-              onChange={(event) => setFromDenom(event.target.value)}
-            >
-              <option value="grapefruit">Grapefruit</option>
-              <option value="lime">Lime</option>
-              <option value="coconut">Coconut</option>
-              <option value="mango">Mango</option>
-              {tokenRegistryQuery.data.map((x) => (
-                <option key={x.ibcDenom} value={x.ibcDenom}>
-                  {x.displaySymbol}
-                </option>
-              ))}
-            </select>
-            <select
-              value={toDenom}
-              onChange={(event) => setToDenom(event.target.value)}
-            >
-              {tokenRegistryQuery.data.map((x) => (
-                <option key={x.ibcDenom} value={x.ibcDenom}>
-                  {x.displaySymbol}
-                </option>
-              ))}
-            </select>
-            <select
-              value={slippage}
-              onChange={(event) => setSlippage(parseFloat(event.target.value))}
-            >
-              <option value={0.005}>0.5%</option>
-              <option value={0.01}>1%</option>
-              <option value={0.015}>1.5%</option>
-            </select>
+    <section className="flex-1 flex flex-col bg-gray-800 w-full h-full p-6">
+      <header className="flex items-center justify-between pb-6">
+        <h2 className="text-2xl font-bold text-white">Swap</h2>
+        <Popover className="relative">
+          {({ open }) => (
+            <>
+              <Popover.Button>
+                {open ? <ArrowLeftIcon /> : <SettingsIcon />}
+              </Popover.Button>
+              <Popover.Panel className="absolute z-10 right-[-100%] bg-gray-700 rounded-lg border-gray-750 p-4">
+                <ButtonGroup
+                  selectedIndex={selectedSlippageIndex}
+                  options={slippageOptions}
+                  onChange={setSelectedSlippageIndex}
+                />
+              </Popover.Panel>
+            </>
+          )}
+        </Popover>
+      </header>
+      <form
+        className="flex-1 flex flex-col justify-between"
+        onSubmit={(event) => {
+          event.preventDefault();
+          swapMutation.mutate({
+            fromDenom,
+            toDenom,
+            fromAmount: fromAmountDecimal?.atomics ?? "0",
+            minimumReceiving: swapSimulationResult?.minimumReceiving ?? "0",
+          });
+        }}
+      >
+        <div className="flex flex-col gap-3">
+          <fieldset className="flex flex-col gap-2 bg-black rounded-md p-6">
+            <legend className="float-left font-bold opacity-90">From</legend>
+            <Select
+              className="relative z-20"
+              value={fromSelectedOption}
+              options={tokenOptions}
+              onChange={setFromSelectedOption}
+            />
             <Input
               placeholder="Swap amount"
               value={fromAmount}
               onChange={(event) => setFromAmount(event.target.value)}
+              fullWidth
             />
-            <p>Raw receiving: {formattedResult.rawReceiving}</p>
-            <p>Minimum receiving: {formattedResult.minimumReceiving}</p>
-            <p>
-              Liquidity provider fee: {formattedResult.liquidityProviderFee}
-            </p>
-            <p>Price impact: {formattedResult.priceImpact}</p>
-            <Button disabled={signer === undefined}>
-              {signer === undefined ? "Please Sif Connect Wallet" : "Swap"}
-            </Button>
-          </form>
-        )}
-      </section>
-    </PageLayout>
-  );
-};
-
-const FieldSet: FC<PropsWithChildren<{ legend: string }>> = (props) => {
-  return (
-    <fieldset>
-      <legend>{props.legend}</legend>
-    </fieldset>
+          </fieldset>
+          <div className="flex justify-center align-middle my-[-2em] z-10">
+            <button className="bg-gray-900 rounded-full p-3 border-4 border-gray-800">
+              <SwapIcon width="1.25em" height="1.25em" />
+            </button>
+          </div>
+          <fieldset className="flex flex-col gap-3 bg-black rounded-md p-6">
+            <legend className="float-left font-bold opacity-90">To</legend>
+            <Select
+              className="relative z-10"
+              value={toSelectedOption}
+              options={tokenOptions}
+              onChange={setToSelectedOption}
+            />
+            <Input
+              value={formattedResult.minimumReceiving}
+              fullWidth
+              disabled
+            />
+          </fieldset>
+        </div>
+        <Button disabled={signer === undefined}>
+          {signer === undefined ? "Please Connect Sif Wallet" : "Swap"}
+        </Button>
+      </form>
+    </section>
   );
 };
 
