@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Button, ButtonGroup, SifchainLogoSmall } from "@sifchain/ui";
+import { ButtonGroup, SifchainLogoSmall } from "@sifchain/ui";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
