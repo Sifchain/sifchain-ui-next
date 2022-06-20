@@ -1,4 +1,3 @@
-import Cors from "cors";
 import type { NextApiHandler } from "next";
 
 import { readAssetList } from "~/lib/utils";
