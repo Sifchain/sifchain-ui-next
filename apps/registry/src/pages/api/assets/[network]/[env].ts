@@ -9,10 +9,12 @@ const handler: NextApiHandler = async (req, res) => {
     const { network, env } = req.query;
 
     if (typeof network !== "string" || !VALID_NETWORKS.includes(network)) {
+      res.statusCode = 400;
       throw new Error(`Invalid network: ${network}`);
     }
 
     if (typeof env !== "string" || !VALID_ENVS.includes(env)) {
+      res.statusCode = 400;
       throw new Error(`Invalid env: ${env}`);
     }
 
@@ -21,12 +23,12 @@ const handler: NextApiHandler = async (req, res) => {
     res.json(assets);
   } catch (error) {
     if (error instanceof Error) {
-      res.end({
-        message: `failed to read assets: ${error.message}\n`,
+      res.status(res.statusCode ?? 400).send({
+        message: `Failed to process request: ${error.message}`,
       });
     } else {
-      res.end({
-        message: `failed to read assets: unknown error\n`,
+      res.status(res.statusCode ?? 500).send({
+        message: `Failed to process request: unknown error`,
         originalError: error,
       });
     }

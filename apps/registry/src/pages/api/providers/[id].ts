@@ -1,11 +1,24 @@
 import type { NextApiHandler } from "next";
 import { readProviderList } from "~/lib/utils";
 
-const handler: NextApiHandler = async (_req, res) => {
+const handler: NextApiHandler = async (req, res) => {
   try {
+    const { id } = req.query;
+
+    if (typeof id !== "string") {
+      throw new Error("id must be a string");
+    }
+
     const { providers } = await readProviderList();
 
-    res.json(providers);
+    const provider = providers.find((p) => p.id === id);
+
+    if (!provider) {
+      res.statusCode = 404;
+      throw new Error(`provider with id "${id}" not found`);
+    }
+
+    res.json(provider);
   } catch (error) {
     if (error instanceof Error) {
       res.status(res.statusCode ?? 400).send({
