@@ -1,23 +1,14 @@
 import Cors from "cors";
 import type { NextApiHandler } from "next";
 
-import initMiddleware from "~/lib/initMiddleware";
 import { readAssetList } from "~/lib/utils";
+import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
 const VALID_NETWORKS = ["ethereum", "sifchain"];
 const VALID_ENVS = ["localnet", "devnet", "testnet", "mainnet"];
 
-const corsMiddleware = initMiddleware(
-  Cors({
-    methods: ["GET", "OPTIONS"],
-    origin: "*",
-  }),
-);
-
 const handler: NextApiHandler = async (req, res) => {
   try {
-    await corsMiddleware(req, res);
-
     const { network, env } = req.query;
 
     if (typeof network !== "string" || !VALID_NETWORKS.includes(network)) {
@@ -47,4 +38,4 @@ const handler: NextApiHandler = async (req, res) => {
   }
 };
 
-export default handler;
+export default withCorsMiddleware(handler);

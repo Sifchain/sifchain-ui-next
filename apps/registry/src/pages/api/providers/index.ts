@@ -1,15 +1,7 @@
-import Cors from "cors";
 import type { NextApiHandler } from "next";
 
-import initMiddleware from "~/lib/initMiddleware";
 import { readProviderList } from "~/lib/utils";
-
-const corsMiddleware = initMiddleware(
-  Cors({
-    methods: ["GET", "OPTIONS"],
-    origin: "*",
-  }),
-);
+import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
 const handler: NextApiHandler = async (_req, res) => {
   try {
@@ -30,4 +22,4 @@ const handler: NextApiHandler = async (_req, res) => {
   }
 };
 
-export default handler;
+export default withCorsMiddleware(handler);
