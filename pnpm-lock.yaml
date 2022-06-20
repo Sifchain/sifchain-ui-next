@@ -187,6 +187,7 @@ importers:
       postcss: ^8.4.14
       react: 18.2.0
       react-dom: 18.2.0
+      tailwind-styled-components: 2.1.6
       tailwindcss: ^3.1.2
       tsconfig: workspace:*
       typescript: 4.7.4
@@ -196,6 +197,7 @@ importers:
       next: 12.1.6_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      tailwind-styled-components: 2.1.6_biqbaboplfbrettd7655fr4n2y
       tsconfig: link:../../packages/tsconfig
     devDependencies:
       '@types/cors': 2.8.12
@@ -12868,7 +12870,6 @@ packages:
 
   /hashlru/2.3.0:
     resolution: {integrity: sha512-0cMsjjIC8I+D3M44pOQdsy0OHXGLVz6Z0beRuufhKa0KfaD2wGwAev6jILzXsd3/vpnNQJmWyZtIILqM1N+n5A==}
-    dev: true
 
   /hast-to-hyperscript/9.0.1:
     resolution: {integrity: sha512-zQgLKqF+O2F72S1aa4y2ivxzSlko3MAvxkwG8ehGmNiqd98BIN3JM1rAJPmplEyLmGLO2QZYJtIneOSZ2YbJuA==}
@@ -19554,7 +19555,6 @@ packages:
     resolution: {integrity: sha512-M+DC6DO5eypc3/iOt/oTuqUH68Ip+XCu/Afybg9/ATxUX6KMPk4UGU4z4EMx08BMOBL+iOL93+hx3Jxpb9qNGw==}
     dependencies:
       hashlru: 2.3.0
-    dev: true
 
   /tailwind-styled-components/2.1.6:
     resolution: {integrity: sha512-qqZXvwMYrZoLS75eyxeU+XgrwBmrcJA7568Jj+RWsah0EswKzLc0vkaHtLQFYiHbWy8lDwKVMRFsUWQ4GBpHzA==}
@@ -19564,6 +19564,17 @@ packages:
     dependencies:
       tailwind-merge: 1.3.0
     dev: true
+
+  /tailwind-styled-components/2.1.6_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-qqZXvwMYrZoLS75eyxeU+XgrwBmrcJA7568Jj+RWsah0EswKzLc0vkaHtLQFYiHbWy8lDwKVMRFsUWQ4GBpHzA==}
+    peerDependencies:
+      react: '>= 16.8.0'
+      react-dom: '>= 16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tailwind-merge: 1.3.0
+    dev: false
 
   /tailwind-styled-components/2.1.6_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution: {integrity: sha512-qqZXvwMYrZoLS75eyxeU+XgrwBmrcJA7568Jj+RWsah0EswKzLc0vkaHtLQFYiHbWy8lDwKVMRFsUWQ4GBpHzA==}
