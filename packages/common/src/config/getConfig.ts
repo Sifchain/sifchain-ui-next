@@ -19,10 +19,10 @@ type ChainNetwork = `${NetworkKind}.${NetworkEnv}`;
 
 export type AppConfig = ReturnType<typeof parseConfig>; // Will include other injectables
 
-const REGISTRY_URL = "https://registry.sifchain.network";
+const REGISTRY_URL = mainnnetconfig.registryUrl;
 
 const fetchConfig = async (network: NetworkKind, env: NetworkEnv) =>
-  fetch(`${REGISTRY_URL}/api/${network}/${env}`)
+  fetch(`${REGISTRY_URL}/api/assets/${network}/${env}`)
     .then((x) => x.json() as Promise<AssetConfig[]>)
     .then(parseAssets);
 
