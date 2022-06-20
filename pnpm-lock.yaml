@@ -173,10 +173,12 @@ importers:
   apps/registry:
     specifiers:
       '@sifchain/ui': workspace:*
+      '@types/cors': ^2.8.12
       '@types/node': 18.0.0
       '@types/react': 18.0.14
       '@types/react-dom': 18.0.5
       autoprefixer: ^10.4.7
+      cors: ^2.8.5
       eslint: 8.18.0
       eslint-config-next: 12.1.6
       jsonschema: ^1.4.1
@@ -196,10 +198,12 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       tsconfig: link:../../packages/tsconfig
     devDependencies:
+      '@types/cors': 2.8.12
       '@types/node': 18.0.0
       '@types/react': 18.0.14
       '@types/react-dom': 18.0.5
       autoprefixer: 10.4.7_postcss@8.4.14
+      cors: 2.8.5
       eslint: 8.18.0
       eslint-config-next: 12.1.6_ngoqluhis4kr6sqtxgtlos2xtq
       jsonschema: 1.4.1
@@ -6200,6 +6204,10 @@ packages:
     resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
     dev: false
 
+  /@types/cors/2.8.12:
+    resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
+    dev: true
+
   /@types/debug/4.1.7:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
     dependencies:
@@ -9509,6 +9517,14 @@ packages:
 
   /core-util-is/1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+
+  /cors/2.8.5:
+    resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
+    engines: {node: '>= 0.10'}
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+    dev: true
 
   /cosmiconfig-typescript-loader/2.0.1_qcsw3vdpnl5xa7bcfnevuqnvwy:
     resolution: {integrity: sha512-B9s6sX/omXq7I6gC6+YgLmrBFMJhPWew7ty/X5Tuwtd2zOSgWaUdXjkuVwbe3qqcdETo60+1nSVMekq//LIXVA==}
