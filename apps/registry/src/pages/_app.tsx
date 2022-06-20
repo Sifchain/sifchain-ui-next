@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { ButtonGroup, SifchainLogoSmall } from "@sifchain/ui";
+import { Button, SifchainLogoSmall } from "@sifchain/ui";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -32,18 +32,18 @@ function MyApp({ Component, pageProps }: AppProps) {
               <SifchainLogoSmall className="text-4xl" /> Registry
             </div>
           </Link>
-          <div className="flex-1 flex justify-center">
-            <ButtonGroup
-              className="w-full max-w-md"
-              selectedIndex={NAV_LINKS.findIndex((x) => x.href === currentPath)}
-              options={NAV_LINKS.map(({ href, label }) => ({
-                label,
-                value: href,
-              }))}
-              onChange={(idx) => {
-                router.push(NAV_LINKS[idx]?.href ?? "/");
-              }}
-            />
+          <div className="flex-1 flex justify-center gap-2">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link key={href} href={href}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="bg-gray-900 hover:opacity-80 transition-all duration-300"
+                >
+                  {label}
+                </Button>
+              </Link>
+            ))}
           </div>
         </header>
         <section className="max-w-6xl w-full mx-auto flex-1">
