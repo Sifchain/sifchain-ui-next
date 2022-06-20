@@ -1,9 +1,9 @@
 import "~/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Button, SifchainLogoSmall } from "@sifchain/ui";
-import { useRouter } from "next/router";
+import { Button, ButtonGroup, SifchainLogoSmall } from "@sifchain/ui";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const NAV_LINKS = [
   {
@@ -18,7 +18,8 @@ const NAV_LINKS = [
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const currentRoute = router.asPath;
+  const currentPath = router.asPath;
+
   return (
     <>
       <Head>
@@ -31,16 +32,18 @@ function MyApp({ Component, pageProps }: AppProps) {
               <SifchainLogoSmall className="text-4xl" /> Registry
             </div>
           </Link>
-          <div className="flex flex-1 gap-2">
-            {NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <a>
-                  <Button size="xs" variant="secondary">
-                    {link.label}
-                  </Button>
-                </a>
-              </Link>
-            ))}
+          <div className="flex-1 flex justify-center">
+            <ButtonGroup
+              className="w-full max-w-md"
+              selectedIndex={NAV_LINKS.findIndex((x) => x.href === currentPath)}
+              options={NAV_LINKS.map(({ href, label }) => ({
+                label,
+                value: href,
+              }))}
+              onChange={(idx) => {
+                router.push(NAV_LINKS[idx]?.href ?? "/");
+              }}
+            />
           </div>
         </header>
         <section className="max-w-6xl w-full mx-auto flex-1">

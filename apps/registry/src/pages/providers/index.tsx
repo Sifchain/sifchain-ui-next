@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const Providers = (props: Props) => {
+const Providers = () => {
   return <div>Providers</div>;
 };
 
