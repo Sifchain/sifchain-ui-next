@@ -4,6 +4,7 @@ import Head from "next/head";
 import { Button, SifchainLogoSmall } from "@sifchain/ui";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 const NAV_LINKS = [
   {
@@ -38,7 +39,12 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="bg-gray-900 hover:opacity-80 transition-all duration-300"
+                  className={clsx(
+                    "bg-gray-900 hover:opacity-80 transition-all duration-300",
+                    {
+                      "bg-gray-700": currentPath === href,
+                    },
+                  )}
                 >
                   {label}
                 </Button>
