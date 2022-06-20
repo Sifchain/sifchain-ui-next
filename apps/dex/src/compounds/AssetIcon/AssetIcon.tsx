@@ -1,6 +1,8 @@
-import { Tooltip } from "@sifchain/ui";
+import { RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
-import React, { type FC, useMemo } from "react";
+import React, { type FC, useMemo, useState } from "react";
+import SVG, { Props as SVGProps } from "react-inlinesvg";
+
 import { useAssetsQuery } from "~/domains/assets";
 
 type Props = {
@@ -19,6 +21,15 @@ const CLASS_MAP: Record<Props["size"], string> = {
   xl: "h-12 w-12",
 };
 
+const NOTFOUND = new Set<string>();
+
+export const InlineVector = React.forwardRef<SVGElement, SVGProps>(
+  ({ src, ...props }, ref) => {
+    const title = src.split("/").pop()?.replace(".svg", "");
+    return <SVG innerRef={ref} title={title ?? ""} src={src} {...props} />;
+  },
+);
+
 const AssetIcon: FC<Props> = (props) => {
   const { isLoading, indexedBySymbol, indexedByDisplaySymbol } =
     useAssetsQuery();
@@ -35,23 +46,39 @@ const AssetIcon: FC<Props> = (props) => {
     console.log(`AssetIcon: asset not found for ${props.symbol}`);
   }
 
+  const [fallback, setFallback] = useState(false);
+
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <div className="relative">
-        <figure
-          className={clsx(
-            "ring ring-slate-900 rounded-full p-2 bg-cover overflow-hidden",
-            CLASS_MAP[props.size],
-            {
-              invert: props.invertColor,
-            },
-          )}
-          style={{
-            backgroundImage: `url(${asset?.imageUrl})`,
-          }}
-        >
-          {isLoading ? "..." : ""}
-        </figure>
+        {isLoading ? (
+          <RacetrackSpinnerIcon className={CLASS_MAP[props.size]} />
+        ) : fallback || NOTFOUND.has(props.symbol) ? (
+          <figure
+            className={clsx(
+              "ring ring-slate-900 rounded-full p-2 bg-cover overflow-hidden",
+              CLASS_MAP[props.size],
+              {
+                invert: props.invertColor,
+              },
+            )}
+            style={{
+              backgroundImage: `url(${asset?.imageUrl})`,
+            }}
+          >
+            {isLoading ? "..." : ""}
+          </figure>
+        ) : (
+          <InlineVector
+            cacheRequests
+            className={CLASS_MAP[props.size]}
+            src={`/tokens/${asset?.displaySymbol.toUpperCase()}.svg`}
+            onError={(e) => {
+              NOTFOUND.add(props.symbol);
+              setFallback(true);
+            }}
+          />
+        )}
       </div>
     </Tooltip>
   );

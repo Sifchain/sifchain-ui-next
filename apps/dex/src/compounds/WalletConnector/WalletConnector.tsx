@@ -187,7 +187,11 @@ const WalletConnector: FC = () => {
   );
 
   useEffect(() => {
-    if (cosmosActiveConnector && !accounts["sifchain"]?.length) {
+    if (
+      cosmosActiveConnector &&
+      !isCosmosConnected &&
+      !accounts["sifchain"]?.length
+    ) {
       handleConnectionRequest({
         walletId: "keplr",
         chainId: "sifchain",
