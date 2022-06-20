@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { Popover } from "@headlessui/react";
+import { Popover, Transition } from "@headlessui/react";
 import { runCatching } from "@sifchain/common";
 import {
   ArrowLeftIcon,
@@ -11,7 +11,7 @@ import {
   SettingsIcon,
   SwapIcon,
 } from "@sifchain/ui";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
@@ -147,13 +147,34 @@ const SwapPage = () => {
               <Popover.Button>
                 {open ? <ArrowLeftIcon /> : <SettingsIcon />}
               </Popover.Button>
-              <Popover.Panel className="absolute z-10 right-[-100%] bg-gray-700 rounded-lg border-gray-750 p-4">
-                <ButtonGroup
-                  selectedIndex={selectedSlippageIndex}
-                  options={slippageOptions}
-                  onChange={setSelectedSlippageIndex}
-                />
-              </Popover.Panel>
+              <Transition
+                as={Fragment}
+                enter="transition duration-100 ease-out"
+                enterFrom="transform scale-95 opacity-0"
+                enterTo="transform scale-100 opacity-100"
+                leave="transition duration-75 ease-out"
+                leaveFrom="transform scale-100 opacity-100"
+                leaveTo="transform scale-95 opacity-0"
+              >
+                <Popover.Panel className="absolute z-30 right-[-100%] bg-gray-700 rounded-lg border border-gray-600 p-4">
+                  <div className="flex flex-col">
+                    <legend className="float-left font-bold">Settings</legend>
+                    <div className="flex items-center">
+                      <label className="pr-6 text-sm opacity-90">
+                        Slippage
+                      </label>
+                      <ButtonGroup
+                        itemClassName="px-4"
+                        size="sm"
+                        gap={8}
+                        selectedIndex={selectedSlippageIndex}
+                        options={slippageOptions}
+                        onChange={setSelectedSlippageIndex}
+                      />
+                    </div>
+                  </div>
+                </Popover.Panel>
+              </Transition>
             </>
           )}
         </Popover>

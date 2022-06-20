@@ -55,7 +55,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
   const itemWidth = containerWidth / props.options.length;
 
   return (
-    <label
+    <div
       ref={(x) => {
         if (x && x.clientWidth !== containerWidth) {
           setContainerWidth(x.clientWidth);
@@ -106,7 +106,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
           </button>
         ))}
       </div>
-    </label>
+    </div>
   );
 }
 
