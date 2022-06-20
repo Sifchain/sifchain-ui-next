@@ -1,0 +1,37 @@
+{
+  "$schema": "./_providers.schema.json",
+  "providers": [
+    {
+      "id": "redstarling",
+      "displayName": "RedStarling",
+      "url": "https://sifchain-dex.redstarling.com/",
+      "description": "Sifchain powered by RedStarling",
+      "logoUrl": "",
+      "analyticsId": ""
+    },
+    {
+      "id": "forbole",
+      "displayName": "Forbole",
+      "url": "https://sifchain-dex.forbole.com/",
+      "description": "Sifchain powered by Forbole",
+      "logoUrl": "https://s3.amazonaws.com/keybase_processed_uploads/f5b0771af36b2e3d6a196a29751e1f05_360_360.jpeg",
+      "analyticsId": ""
+    },
+    {
+      "id": "akash",
+      "displayName": "Akash",
+      "url": "https://sifchain.akash.pro/",
+      "description": "Sifchain powered by Akash",
+      "logoUrl": "https://s3.amazonaws.com/keybase_processed_uploads/dc696d875cbf0c5b745080101d914605_360_360.jpg",
+      "analyticsId": ""
+    },
+    {
+      "id": "consensusone",
+      "displayName": "ConsensusOne",
+      "url": "https://sifchain-dex.consensus.one/",
+      "description": "Sifchain powered by ConsensusOne",
+      "logoUrl": "",
+      "analyticsId": ""
+    }
+  ]
+}

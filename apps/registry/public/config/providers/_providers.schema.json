@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "providers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provider"
+      }
+    }
+  },
+  "required": ["providers"],
+  "$defs": {
+    "provider": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The provider's unique identifier"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Provider's display name."
+        },
+        "description": {
+          "type": "string",
+          "description": "Provider's description text."
+        },
+        "url": {
+          "type": "string",
+          "description": "The provider's permanent URL"
+        },
+        "displaySymbol": {
+          "type": "string",
+          "description": "[OPTIONAL] Display symbol of an asset."
+        },
+        "analyticsId": {
+          "type": "string",
+          "description": "[OPTIONAL] The provider's unique analytics identifier."
+        }
+      },
+      "required": ["id", "displayName", "url", "logoUrl"]
+    }
+  }
+}
