@@ -48,14 +48,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [hotkey, inputRef.current]);
 
     return (
-      <label
+      <div
         className={clsx("relative grid items-center", {
           "max-w-min": !fullWidth,
           "w-full flex-1": fullWidth,
         })}
       >
         {(label || secondaryLabel) && (
-          <div className="flex justify-between items-center px-1">
+          <label className="flex justify-between items-center px-1">
             {label && (
               <span
                 className={clsx("text-xs md:text-sm text-gray-200", {
@@ -74,7 +74,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 {secondaryLabel}
               </span>
             )}
-          </div>
+          </label>
         )}
         <div className="relative flex items-center">
           <StyledInput
@@ -89,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
         </div>
-      </label>
+      </div>
     );
   },
 );
