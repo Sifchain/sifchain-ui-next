@@ -39,10 +39,10 @@ export const useSwapMutation = () => {
     },
     {
       onMutate: () => {
-        toast.loading("Swapping inprogress");
+        toast.info("Swapping inprogress");
       },
       onError: () => {
-        toast.loading("Swapping failed");
+        toast.error("Swapping failed");
       },
       onSettled: (data, error, variables) => {
         if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
