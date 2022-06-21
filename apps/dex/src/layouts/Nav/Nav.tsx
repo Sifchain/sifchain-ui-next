@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from "@heroicons/react/outline";
 import {
   BalanceIcon,
   ButtonGroup,
@@ -6,6 +5,7 @@ import {
   formatNumberAsCurrency,
   LockIcon,
   Logo,
+  LogoFull,
   PoolsIcon,
   RowanIcon,
   SwapIcon,
@@ -19,7 +19,6 @@ import WalletConnector from "~/compounds/WalletConnector";
 
 import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
-import { useUIStore } from "~/stores/ui";
 
 export const MENU_ITEMS = [
   {
@@ -45,25 +44,8 @@ export const MENU_ITEMS = [
 ];
 
 const Header = () => {
-  const { state, actions } = useUIStore();
   const router = useRouter();
   const currentPath = router.asPath;
-
-  const handleBtn = (
-    <button
-      onClick={() => actions.toggleSidebar()}
-      className={clsx(
-        "h-8 w-8 p-1 rounded-r-md bg-slate-600 absolute top-1.5 sm:top-16 right-0 translate-x-[90%]",
-        "transition-transform z-30 md:hidden opacity-50 hover:opacity-100",
-        {
-          "-translate-x-0 bg-white -scale-x-[1] text-gray-900":
-            state.isSidebarOpen,
-        },
-      )}
-    >
-      <ChevronRightIcon />
-    </button>
-  );
 
   const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
   const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
@@ -89,34 +71,22 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-black p-2 sticky top-0">
-      <div className="flex items-center gap-8 w-full justify-between">
-        {handleBtn}
+    <header className="bg-black p-2 grid md:sticky top-0">
+      <div className="grid md:flex items-center gap-8 w-full justify-between">
         <section className="grid place-items-center">
           <Link href="/">
             <a className="flex items-center">
-              <Logo />
+              <Logo className="md:hidden" />
+              <LogoFull className="hidden md:block h-12" />
             </a>
           </Link>
         </section>
-        <section className="md:w-[250px]">
+        <section className="md:max-w-[250px]">
           <GlobalSearch />
         </section>
-        <nav className="flex items-center flex-1 gap-8 justify-center">
-          <ButtonGroup
-            className="hidden md:flex w-full max-w-md"
-            selectedIndex={MENU_ITEMS.findIndex(
-              (item) => item.href === currentPath,
-            )}
-            options={MENU_ITEMS.slice(0, 3).map(({ title, href }) => ({
-              label: title,
-              value: href,
-            }))}
-            gap={8}
-            onChange={(i) => router.push(MENU_ITEMS[i]?.href ?? "")}
-          />
-          <ul className="flex gap-2 md:hidden">
-            {MENU_ITEMS.map(({ title, href, icon }) => (
+        <nav className="grid md:flex items-center flex-1 gap-8 justify-center">
+          <ul className="grid gap-2 md:flex">
+            {MENU_ITEMS.slice(0, 3).map(({ title, href, icon }) => (
               <li key={title} className="grid gap-2">
                 <Link href={href}>
                   <a
@@ -138,6 +108,7 @@ const Header = () => {
                 </Link>
               </li>
             ))}
+            <li>...</li>
           </ul>
         </nav>
         <section className="flex items-center gap-2 md:gap-4">

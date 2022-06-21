@@ -207,9 +207,10 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                     <Combobox.Input
                       className={inputClassName}
                       placeholder={props.placeholder}
-                      onChange={(event) =>
-                        props.onQueryChange(event.target.value)
-                      }
+                      value={props.query}
+                      onChange={(event) => {
+                        props.onQueryChange(event.target.value);
+                      }}
                     />
                   </label>
 
