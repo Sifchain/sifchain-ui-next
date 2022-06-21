@@ -277,11 +277,12 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       >
         <Menu.Items
           as="div"
-          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] top-24 right-0 min-w-max grid gap-4 hover:opacity-30"
+          className="bg-gray-800 p-4 rounded-lg absolute z-10 top-16 w-[350px] right-0 min-w-max grid gap-4"
         >
           <ul className="grid gap-0.5 h-64 overflow-y-scroll">
             {props.accounts.map(([id, accounts]) => (
-              <li
+              <Menu.Item
+                as="li"
                 key={id}
                 className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
               >
@@ -301,7 +302,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 >
                   Disconnect
                 </Button>
-              </li>
+              </Menu.Item>
             ))}
           </ul>
           <Button
