@@ -3,8 +3,8 @@ import { useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import MainLayout from "~/layouts/MainLayout";
 
+import MainLayout from "~/layouts/MainLayout";
 import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
 import "~/styles/globals.css";
