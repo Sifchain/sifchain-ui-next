@@ -1,9 +1,8 @@
 import { Decimal } from "@cosmjs/math";
-import { Popover, Transition } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import { runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
-  ArrowLeftIcon,
   Button,
   ButtonGroup,
   ButtonProps,
@@ -12,12 +11,10 @@ import {
   RacetrackSpinnerIcon,
   Select,
   SelectOption,
-  SettingsIcon,
   SwapIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import {
-  Fragment,
   PropsWithChildren,
   startTransition,
   useEffect,
@@ -299,6 +296,7 @@ const SwapPage = () => {
                   onChange={setFromSelectedOption}
                 />
                 <Input
+                  className="text-right"
                   placeholder="Swap amount"
                   value={fromAmount}
                   onChange={(event) => setFromAmount(event.target.value)}
@@ -335,6 +333,7 @@ const SwapPage = () => {
                   onChange={setToSelectedOption}
                 />
                 <Input
+                  className="text-right"
                   value={parsedSwapResult.minimumReceiving.toString()}
                   fullWidth
                   disabled
