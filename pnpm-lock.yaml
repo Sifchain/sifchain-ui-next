@@ -326,12 +326,6 @@ importers:
       ts-node: 10.8.1_3tizgsnecxkh6uvlvs7umkbw44
       typescript: 4.7.3
 
-  packages/eth-sdk/build/commonjs/generated:
-    specifiers: {}
-
-  packages/eth-sdk/build/module/generated:
-    specifiers: {}
-
   packages/eth-sdk/src/generated:
     specifiers: {}
 
@@ -10939,10 +10933,10 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.28.0_b5e7v2qnwxfo6hmiq56u52mz3e
+      '@typescript-eslint/parser': 5.28.0_ud6rd4xtew5bv4yhvkvu24pzm4
       debug: 3.2.7
       eslint-import-resolver-node: 0.3.6
-      eslint-import-resolver-typescript: 2.7.1_srrmf5la5dmnsfe2mpg6sboreu
+      eslint-import-resolver-typescript: 2.7.1_3yxiwxzsqipdmy4jwrlv6vgfmy
       find-up: 2.1.0
     transitivePeerDependencies:
       - supports-color
