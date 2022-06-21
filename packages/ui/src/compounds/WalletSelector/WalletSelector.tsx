@@ -1,4 +1,4 @@
-import { Popover, Transition } from "@headlessui/react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { FC, Fragment, ReactNode, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import { maskWalletAddress } from "../../utils";
@@ -265,7 +265,7 @@ export type ConnectedWalletsProps = {
 
 const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
   return (
-    <Popover className="relative flex flex-1">
+    <Menu>
       <Transition
         as={Fragment}
         enter="transition ease-out duration-200"
@@ -275,9 +275,9 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel
+        <Menu.Items
           as="div"
-          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] top-16 right-0 min-w-max grid gap-4"
+          className="bg-gray-800 p-4 rounded-lg absolute w-[350px] top-24 right-0 min-w-max grid gap-4 hover:opacity-30"
         >
           <ul className="grid gap-0.5 h-64 overflow-y-scroll">
             {props.accounts.map(([id, accounts]) => (
@@ -312,9 +312,9 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
           >
             <PlusIcon /> Connect another wallet
           </Button>
-        </Popover.Panel>
+        </Menu.Items>
       </Transition>
-      <Popover.Button
+      <Menu.Button
         disabled={props.isModalOpen}
         as={Button}
         className="flex justify-between flex-1 items-center"
@@ -327,7 +327,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
           </span>
           <ChevronDownIcon />
         </div>
-      </Popover.Button>
-    </Popover>
+      </Menu.Button>
+    </Menu>
   );
 };

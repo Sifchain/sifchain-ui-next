@@ -186,28 +186,32 @@ const WalletConnector: FC = () => {
     [],
   );
 
-  useEffect(() => {
-    if (
-      cosmosActiveConnector &&
-      !isCosmosConnected &&
-      !accounts["sifchain"]?.length
-    ) {
-      handleConnectionRequest({
-        walletId: "keplr",
-        chainId: "sifchain",
-      }).then(syncCosmosAccounts);
-    }
+  // useEffect(() => {
+  //   console.log({
+  //     isCosmosConnected,
+  //     cosmosActiveConnector,
+  //   });
+  //   if (
+  //     cosmosActiveConnector &&
+  //     !isCosmosConnected &&
+  //     !accounts["sifchain"]?.length
+  //   ) {
+  //     handleConnectionRequest({
+  //       walletId: "keplr",
+  //       chainId: "sifchain",
+  //     }).then(syncCosmosAccounts);
+  //   }
 
-    if (cosmosActiveConnector && isCosmosConnected) {
-      syncCosmosAccounts();
-    }
-  }, [
-    accounts,
-    cosmosActiveConnector,
-    isCosmosConnected,
-    syncCosmosAccounts,
-    handleConnectionRequest,
-  ]);
+  //   if (cosmosActiveConnector && isCosmosConnected) {
+  //     syncCosmosAccounts();
+  //   }
+  // }, [
+  //   accounts,
+  //   cosmosActiveConnector,
+  //   isCosmosConnected,
+  //   syncCosmosAccounts,
+  //   handleConnectionRequest,
+  // ]);
 
   return (
     <WalletSelector

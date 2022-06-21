@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 
 import WalletConnector from "~/compounds/WalletConnector";
 
-import GlobalSearch from "~/compounds/GlobalSearch";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
 export const MENU_ITEMS = [
@@ -69,7 +68,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-black p-2 md:p-4 grid md:sticky top-0">
+    <header className="bg-black p-2 md:p-4 grid ">
       <div className="block md:flex md:items-center md:gap-8 justify-between">
         <section className="grid place-items-center">
           <Link href="/">
@@ -77,9 +76,6 @@ const Header = () => {
               <LogoFull className="h-24 md:h-12" />
             </a>
           </Link>
-        </section>
-        <section className="w-full md:max-w-xs">
-          <GlobalSearch />
         </section>
         <nav className="w-full md:flex md:justify-center">
           <ul className="grid gap-2 md:flex md:gap-4 xl:gap-5 4xl:gap-8">
