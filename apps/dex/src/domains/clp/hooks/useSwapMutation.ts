@@ -41,9 +41,6 @@ export const useSwapMutation = () => {
       onMutate: () => {
         toast.info("Swapping inprogress");
       },
-      onError: () => {
-        toast.error("Swapping failed");
-      },
       onSettled: (data, error, variables) => {
         if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
           toast.error(data?.rawLog ?? "Failed to swap");
