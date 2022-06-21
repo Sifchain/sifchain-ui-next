@@ -130,7 +130,7 @@ const SwapPage = () => {
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
       ).toString(),
       liquidityProviderFee: Decimal.fromAtomics(
-        swapSimulationResult?.liquidityProvidierFee ?? "0",
+        swapSimulationResult?.liquidityProviderFee ?? "0",
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
       ).toString(),
     }),

@@ -299,7 +299,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return {
       rawReceiving: result.rawReceiving.integerValue().toFixed(0),
       minimumReceiving: result.minimumReceiving.integerValue().toFixed(0),
-      liquidityProvidierFee: result.liquidityProvidierFee
+      liquidityProviderFee: result.liquidityProviderFee
         .integerValue()
         .toFixed(0),
       priceImpact: result.priceImpact.toNumber(),
@@ -426,7 +426,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
     const firstSwapConvertedLpFee = this.#simulateSwap(
       {
-        amount: firstSwap.liquidityProvidierFee.toString(),
+        amount: firstSwap.liquidityProviderFee.toString(),
         poolBalance: toCoin.poolNativeAssetBalance,
       },
       { poolBalance: toCoin.poolExternalAssetBalance },
@@ -445,8 +445,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return {
       ...secondSwap,
       priceImpact: firstSwap.priceImpact.plus(secondSwap.priceImpact),
-      liquidityProvidierFee: firstSwapConvertedLpFee.rawReceiving.plus(
-        secondSwap.liquidityProvidierFee,
+      liquidityProviderFee: firstSwapConvertedLpFee.rawReceiving.plus(
+        secondSwap.liquidityProviderFee,
       ),
     };
   }
@@ -469,7 +469,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       fromCoin.poolBalance,
     );
 
-    const liquidityProvidierFee = calculateLiquidityProviderFee(
+    const liquidityProviderFee = calculateLiquidityProviderFee(
       fromCoin.amount,
       fromCoin.poolBalance,
       toCoin.poolBalance,
@@ -479,10 +479,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
       rawReceiving: swapResult,
       minimumReceiving: swapResult
         .times(priceImpact.minus(1).abs())
-        .minus(liquidityProvidierFee)
+        .minus(liquidityProviderFee)
         .times(new BigNumber(1).minus(slippage ?? 0)),
       priceImpact,
-      liquidityProvidierFee,
+      liquidityProviderFee,
     };
   }
 
@@ -494,7 +494,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       rawReceiving: BigNumber;
       minimumReceiving: BigNumber;
       priceImpact: BigNumber;
-      liquidityProvidierFee: BigNumber;
+      liquidityProviderFee: BigNumber;
     },
     toCoinDenom: string,
   ) {
@@ -517,7 +517,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return {
       rawReceiving: toCosmJsDecimal(result.rawReceiving),
       minimumReceiving: toCosmJsDecimal(result.minimumReceiving),
-      liquidityProvidierFee: toCosmJsDecimal(result.liquidityProvidierFee),
+      liquidityProviderFee: toCosmJsDecimal(result.liquidityProviderFee),
       priceImpact: result.priceImpact.toNumber(),
     };
   }
