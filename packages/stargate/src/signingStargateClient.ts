@@ -480,8 +480,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
       minimumReceiving: BigNumber.max(
         0,
         swapResult
-          .times(priceImpact.minus(1).abs())
           .minus(liquidityProviderFee)
+          .times(priceImpact.minus(1).abs())
           .times(new BigNumber(1).minus(slippage ?? 0)),
       ),
       priceImpact,
