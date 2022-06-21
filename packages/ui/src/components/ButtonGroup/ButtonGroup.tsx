@@ -87,6 +87,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         {props.options.map((item, index) => (
           <button
             key={index}
+            type="button"
             className={clsx(
               "flex-1 py-2.5 rounded-xl z-10 font-semibold",
               index === props.selectedIndex ? "text-gray-50" : "text-gray-300",

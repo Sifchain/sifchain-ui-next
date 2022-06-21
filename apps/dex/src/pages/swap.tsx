@@ -279,45 +279,6 @@ const SwapPage = () => {
         <section className="flex-1 flex flex-col bg-gray-800 w-full h-full md:rounded-xl md:flex-initial md:w-auto md:h-auto p-6">
           <header className="flex items-center justify-between pb-6">
             <h2 className="text-2xl font-bold text-white">Swap</h2>
-            <Popover className="relative">
-              {({ open }) => (
-                <>
-                  <Popover.Button>
-                    {open ? <ArrowLeftIcon /> : <SettingsIcon />}
-                  </Popover.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition duration-100 ease-out"
-                    enterFrom="transform scale-95 opacity-0"
-                    enterTo="transform scale-100 opacity-100"
-                    leave="transition duration-75 ease-out"
-                    leaveFrom="transform scale-100 opacity-100"
-                    leaveTo="transform scale-95 opacity-0"
-                  >
-                    <Popover.Panel className="absolute z-30 right-[-100%] bg-gray-700 rounded-lg border border-gray-600 p-4">
-                      <div className="flex flex-col">
-                        <legend className="float-left font-bold">
-                          Settings
-                        </legend>
-                        <div className="flex items-center">
-                          <label className="pr-6 text-sm opacity-90">
-                            Slippage
-                          </label>
-                          <ButtonGroup
-                            itemClassName="px-4"
-                            size="sm"
-                            gap={8}
-                            selectedIndex={selectedSlippageIndex}
-                            options={slippageOptions}
-                            onChange={setSelectedSlippageIndex}
-                          />
-                        </div>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </>
-              )}
-            </Popover>
           </header>
           <form
             className="flex-1 flex flex-col justify-between"
@@ -379,6 +340,20 @@ const SwapPage = () => {
                   disabled
                 />
               </fieldset>
+              <div className="flex justify-between items-center">
+                <label className="pr-6">Slippage</label>
+                <div>
+                  <ButtonGroup
+                    className="bg-black"
+                    itemClassName="px-4"
+                    size="sm"
+                    gap={8}
+                    selectedIndex={selectedSlippageIndex}
+                    options={slippageOptions}
+                    onChange={setSelectedSlippageIndex}
+                  />
+                </div>
+              </div>
             </div>
             <Button className="mt-8" disabled={signer === undefined}>
               {signer === undefined ? "Please Connect Sif Wallet" : "Swap"}
