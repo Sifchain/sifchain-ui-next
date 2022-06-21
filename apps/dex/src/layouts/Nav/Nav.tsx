@@ -1,10 +1,8 @@
 import {
   BalanceIcon,
-  ButtonGroup,
   ChangelogIcon,
   formatNumberAsCurrency,
   LockIcon,
-  Logo,
   LogoFull,
   PoolsIcon,
   RowanIcon,
@@ -71,21 +69,20 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-black p-2 grid md:sticky top-0">
-      <div className="grid md:flex items-center gap-8 w-full justify-between">
+    <header className="bg-black p-2 md:p-4 grid md:sticky top-0">
+      <div className="block md:flex md:items-center md:gap-8 justify-between">
         <section className="grid place-items-center">
           <Link href="/">
-            <a className="flex items-center">
-              <Logo className="md:hidden" />
-              <LogoFull className="hidden md:block h-12" />
+            <a className="p-8 md:p-0">
+              <LogoFull className="h-24 md:h-12" />
             </a>
           </Link>
         </section>
-        <section className="md:max-w-[250px]">
+        <section className="w-full md:max-w-xs">
           <GlobalSearch />
         </section>
-        <nav className="grid md:flex items-center flex-1 gap-8 justify-center">
-          <ul className="grid gap-2 md:flex">
+        <nav className="w-full md:flex md:justify-center">
+          <ul className="grid gap-2 md:flex md:gap-4 xl:gap-5 4xl:gap-8">
             {MENU_ITEMS.slice(0, 3).map(({ title, href, icon }) => (
               <li key={title} className="grid gap-2">
                 <Link href={href}>
@@ -111,8 +108,8 @@ const Header = () => {
             <li>...</li>
           </ul>
         </nav>
-        <section className="flex items-center gap-2 md:gap-4">
-          <ul className="flex items-center gap-2">
+        <section className="grid md:flex md:items-center gap-2 md:gap-4">
+          <ul className="grid md:flex md:items-center gap-2">
             {rowanStats.map(({ id, icon, label }) => (
               <li key={id} className="flex items-center gap-3 p-2">
                 <span className="h-6 w-6 grid place-items-center text-gray-50">
@@ -132,7 +129,7 @@ const Header = () => {
             <ThemeSwitcher />
           </label>
         </section>
-        <section className="flex gap-2 p-1">
+        <section className="whitespace-nowrap">
           <WalletConnector />
         </section>
       </div>

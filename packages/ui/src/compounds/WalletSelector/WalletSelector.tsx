@@ -256,7 +256,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   );
 };
 
-type ConnectedWalletsProps = {
+export type ConnectedWalletsProps = {
   isModalOpen: boolean;
   accounts: [chainId: string, accounts: string[]][];
   onDisconnect: WalletSelectorProps["onDisconnect"];
@@ -265,7 +265,7 @@ type ConnectedWalletsProps = {
 
 const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
   return (
-    <Popover className="relative">
+    <Popover className="relative flex flex-1">
       <Transition
         as={Fragment}
         enter="transition ease-out duration-200"
@@ -317,7 +317,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       <Popover.Button
         disabled={props.isModalOpen}
         as={Button}
-        className="w-full justify-between"
+        className="flex justify-between flex-1 items-center"
         variant="outline"
       >
         <span>Connected wallets</span>

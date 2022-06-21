@@ -152,16 +152,15 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
 
   return (
     <>
-      <div className="grid w-full max-w-[200px]">
-        <SearchInput
-          readOnly
-          className={clsx("max-w-[250px]", { "opacity-60": isOpen })}
-          disabled={isOpen}
-          placeholder={props.placeholder}
-          onClick={setIsOpen.bind(null, true)}
-          hotkey="/"
-        />
-      </div>
+      <SearchInput
+        readOnly
+        fullWidth
+        className={clsx({ "opacity-60": isOpen })}
+        disabled={isOpen}
+        placeholder={props.placeholder}
+        onClick={setIsOpen.bind(null, true)}
+        hotkey="/"
+      />
       <Transition.Root
         show={isOpen}
         as={Fragment}
