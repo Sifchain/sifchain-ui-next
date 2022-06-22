@@ -1,5 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/outline";
+import clsx from "clsx";
 import { indexBy, prop } from "rambda";
 import { FC, Fragment, ReactNode, useMemo } from "react";
 import tw from "tailwind-styled-components";
@@ -10,7 +11,7 @@ const StyledListboxButton = tw.button`
   p-2 px-4 text-left shadow-md focus:outline-none 
   focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
   focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 
-  sm:text-sm text-gray-50
+  text-lg text-gray-50
 `;
 
 const StyledOptionsContainer = tw.ul`
@@ -44,9 +45,9 @@ export const Select: FC<SelectProps> = (props) => {
   );
   return (
     <Listbox value={props.value} onChange={props.onChange}>
-      <div className={["relative mt-1", props.className].join("")}>
+      <div className={clsx("relative mt-1", props.className)}>
         {props.label && (
-          <Listbox.Label className="text-gray-200 text-sm pl-4">
+          <Listbox.Label className="text-gray-200 text-sm">
             {props.label}
           </Listbox.Label>
         )}
