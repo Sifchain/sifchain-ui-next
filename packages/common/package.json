@@ -35,6 +35,6 @@
     "toformat": "^2.0.0",
     "tsup": "^6.0.1",
     "typescript": "4.7.4",
-    "vitest": "^0.12.9"
+    "vitest": "^0.15.2"
   }
 }
