@@ -114,7 +114,11 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
         </div>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
           <div className="flex align-middle gap-1">
-            <AssetIcon network="sifchain" symbol="rowan" size="md" />
+            <AssetIcon
+              network="sifchain"
+              symbol={props.toCoin.denom}
+              size="md"
+            />
             {props.toCoin.denom}
           </div>
           <span>{props.toCoin.amountPreSlippage}</span>
@@ -127,7 +131,11 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           <span>Minimum received</span>
           <div className="flex align-middle gap-1 font-bold">
             {props.toCoin.minimumAmount}
-            <AssetIcon network="sifchain" symbol="rowan" size="md" />
+            <AssetIcon
+              network="sifchain"
+              symbol={props.toCoin.denom}
+              size="md"
+            />
           </div>
         </ConfirmationLineItem>
       </ul>
