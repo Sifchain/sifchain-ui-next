@@ -1,18 +1,27 @@
 import { Menu, Popover, Transition } from "@headlessui/react";
-import { FC, Fragment, ReactNode, useCallback, useMemo, useState } from "react";
+import { DotsVerticalIcon } from "@heroicons/react/outline";
+import React, {
+  FC,
+  Fragment,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import tw from "tailwind-styled-components";
-import { maskWalletAddress } from "../../utils";
 import {
-  Button,
-  Modal,
-  SearchInput,
-  WalletIcon,
-  Tooltip,
-  Identicon,
-  ChevronDownIcon,
-  PlusIcon,
   ArrowLeftIcon,
+  Button,
+  ChevronDownIcon,
+  Identicon,
+  Modal,
+  PlusIcon,
+  SearchInput,
+  Tooltip,
+  WalletIcon,
 } from "../../components";
+import { maskWalletAddress } from "../../utils";
 
 export type ChainEntry = {
   id: string;
@@ -263,59 +272,24 @@ export type ConnectedWalletsProps = {
   onConnectAnotherWallet(): void;
 };
 
+const AppearTransition: FC<PropsWithChildren> = ({ children }) => (
+  <Transition
+    as={Fragment}
+    enter="transition ease-out duration-200"
+    enterFrom="opacity-0 translate-y-1"
+    enterTo="opacity-100 translate-y-0"
+    leave="transition ease-in duration-150"
+    leaveFrom="opacity-100 translate-y-0"
+    leaveTo="opacity-0 translate-y-1"
+  >
+    {children}
+  </Transition>
+);
+
 const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
   return (
-    <Menu>
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-200"
-        enterFrom="opacity-0 translate-y-1"
-        enterTo="opacity-100 translate-y-0"
-        leave="transition ease-in duration-150"
-        leaveFrom="opacity-100 translate-y-0"
-        leaveTo="opacity-0 translate-y-1"
-      >
-        <Menu.Items
-          as="div"
-          className="bg-gray-800 p-4 rounded-lg absolute z-10 top-16 w-[350px] right-0 min-w-max grid gap-4"
-        >
-          <ul className="grid gap-0.5 h-64 overflow-y-scroll">
-            {props.accounts.map(([id, accounts]) => (
-              <Menu.Item
-                as="li"
-                key={id}
-                className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
-              >
-                <Tooltip content={id}>
-                  <div className="flex gap-2 items-center">
-                    <Identicon diameter={20} address={accounts[0] ?? ""} />
-                    {maskWalletAddress(accounts[0] ?? "")}
-                  </div>
-                </Tooltip>
-                <Button
-                  size="xs"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.onDisconnect?.({ chainId: id, walletId: "keplr" });
-                  }}
-                >
-                  Disconnect
-                </Button>
-              </Menu.Item>
-            ))}
-          </ul>
-          <Button
-            disabled={props.isModalOpen}
-            variant="secondary"
-            onClick={props.onConnectAnotherWallet}
-            className="w-full max-w-xs"
-          >
-            <PlusIcon /> Connect another wallet
-          </Button>
-        </Menu.Items>
-      </Transition>
-      <Menu.Button
+    <Popover>
+      <Popover.Button
         disabled={props.isModalOpen}
         as={Button}
         className="flex justify-between flex-1 items-center"
@@ -326,9 +300,75 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
           <span className="h-5 w-5 bg-gray-600 rounded-full grid place-items-center">
             {props.accounts.length}
           </span>
-          <ChevronDownIcon />
+          <ChevronDownIcon aria-hidden />
         </div>
-      </Menu.Button>
-    </Menu>
+      </Popover.Button>
+      <AppearTransition>
+        <Popover.Panel className="bg-gray-800 p-4 rounded-lg absolute z-10 top-16 w-[350px] right-0 min-w-max grid gap-4">
+          <ul className="grid gap-1">
+            {props.accounts.map(([id, accounts]) => (
+              <ConnectedAccount
+                key={id}
+                accounts={accounts}
+                id={id}
+                onDisconnect={props.onDisconnect}
+              />
+            ))}
+          </ul>
+          <hr className="border-gray-500" aria-hidden />
+          <Button
+            disabled={props.isModalOpen}
+            variant="secondary"
+            onClick={props.onConnectAnotherWallet}
+            className="w-full max-w-xs"
+          >
+            <PlusIcon /> Connect another wallet
+          </Button>
+        </Popover.Panel>
+      </AppearTransition>
+    </Popover>
   );
 };
+
+const ConnectedAccount: FC<{
+  id: string;
+  onDisconnect: ConnectedWalletsProps["onDisconnect"];
+  accounts: string[];
+}> = ({ id, onDisconnect, accounts }) => (
+  <li
+    role="button"
+    className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
+  >
+    <Menu as="div" className="relative w-full grid">
+      <Menu.Button className="flex items-center justify-between">
+        <div className="flex gap-2.5 items-center w-full">
+          <Identicon diameter={32} address={accounts[0] ?? ""} />
+          <div className="grid gap-1 flex-1 text-left">
+            <div>{maskWalletAddress(accounts[0] ?? "")}</div>
+            <div className="text-xs">Keplr - {id}</div>
+          </div>
+        </div>
+        <DotsVerticalIcon className="h-4 w-4" />
+      </Menu.Button>
+      <AppearTransition>
+        <Menu.Items className="absolute right-0 top-10">
+          <Menu.Item
+            as={Button}
+            className="w-full overflow-hidden"
+            variant="secondary"
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDisconnect?.({
+                chainId: id,
+                walletId: "keplr",
+              });
+            }}
+          >
+            Disconnect
+          </Menu.Item>
+        </Menu.Items>
+      </AppearTransition>
+    </Menu>
+  </li>
+);
