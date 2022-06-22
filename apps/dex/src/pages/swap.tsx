@@ -142,8 +142,17 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalances();
-  const { data: stargateClient } = useSifStargateClient();
-  const { signer } = useSifSigner();
+  const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
+    useSifStargateClient();
+  const { signer, status: signerStatus } = useSifSigner();
+
+  const isReady = useMemo(
+    () =>
+      allBalancesQuery.isSuccess &&
+      isSifStargateClientQuerySuccess &&
+      signerStatus === "resolved",
+    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
+  );
 
   const [fromSelectedOption, setFromSelectedOption] = useState<SelectOption>({
     id: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
@@ -256,9 +265,14 @@ const SwapPage = () => {
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
       ),
       receivingPreSlippage: Decimal.fromAtomics(
-        new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
-          .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
-          .times(new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0))
+        BigNumber.max(
+          0,
+          new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
+            .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
+            .times(
+              new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0),
+            ),
+        )
           .integerValue()
           .toFixed(0),
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
@@ -284,6 +298,26 @@ const SwapPage = () => {
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
     [isConfirmationModalOpen],
   );
+
+  const swapButtonMsg = (() => {
+    if (!isReady) {
+      return "Loading";
+    }
+
+    if (signer === undefined) {
+      return "Please Connect Sif Wallet";
+    }
+
+    if (
+      fromAmountDecimal?.isGreaterThan(
+        fromBalance?.amount ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
+      )
+    ) {
+      return "Insufficient balance";
+    }
+
+    return "Swap";
+  })();
 
   return (
     <>
@@ -400,8 +434,8 @@ const SwapPage = () => {
                 </div>
               </div>
             </div>
-            <Button className="mt-8" disabled={signer === undefined}>
-              {signer === undefined ? "Please Connect Sif Wallet" : "Swap"}
+            <Button className="mt-8" disabled={swapButtonMsg !== "Swap"}>
+              {swapButtonMsg}
             </Button>
           </form>
         </section>
