@@ -262,8 +262,8 @@ const SwapPage = () => {
 
   useEffect(
     () => {
-      // reset mutation state every time modal is closed
-      if (!isConfirmationModalOpen && swapMutation.status !== "idle") {
+      // reset mutation state every time modal is opened
+      if (isConfirmationModalOpen && swapMutation.status !== "idle") {
         swapMutation.reset();
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
