@@ -273,7 +273,7 @@ const SwapPage = () => {
   return (
     <>
       <div className="flex-1 flex flex-col justify-center items-center">
-        <section className="flex-1 flex flex-col bg-gray-800 w-full h-full md:rounded-xl md:flex-initial md:w-auto md:h-auto p-6">
+        <section className="flex-1 flex flex-col w-full bg-gray-800 p-6 md:w-auto md:min-w-[32rem] md:rounded-xl md:flex-initial">
           <header className="flex items-center justify-between pb-6">
             <h2 className="text-2xl font-bold text-white">Swap</h2>
           </header>
