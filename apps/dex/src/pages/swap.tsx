@@ -84,35 +84,34 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
             <ArrowDownIcon width="1em" height="1em" />
           </div>
         </div>
-        <Transition
-          show={props.showDetail}
-          enter="transition duration-100 ease-out"
-          enterFrom="transform scale-95 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-75 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-95 opacity-0"
-        >
-          <ConfirmationLineItem>
-            <span>Swap result</span>
-            <div className="flex align-middle gap-1 font-bold">
-              {props.toCoin.amount}
-              <AssetIcon
-                network="sifchain"
-                symbol={props.toCoin.denom}
-                size="md"
-              />
-            </div>
-          </ConfirmationLineItem>
-          <ConfirmationLineItem>
-            <span>Liquidity provider fee</span>
-            <span>{props.liquidityProviderFee}</span>
-          </ConfirmationLineItem>
-          <ConfirmationLineItem>
-            <span>Price impact</span>
-            <span>{props.priceImpact}</span>
-          </ConfirmationLineItem>
-        </Transition>
+        <div className="overflow-y-hidden">
+          <Transition
+            show={props.showDetail}
+            leave="transition-all duration-[2.5s]"
+            leaveFrom="mt-0"
+            leaveTo="mt-[-100%]"
+          >
+            <ConfirmationLineItem>
+              <span>Swap result</span>
+              <div className="flex align-middle gap-1 font-bold">
+                {props.toCoin.amount}
+                <AssetIcon
+                  network="sifchain"
+                  symbol={props.toCoin.denom}
+                  size="md"
+                />
+              </div>
+            </ConfirmationLineItem>
+            <ConfirmationLineItem>
+              <span>Liquidity provider fee</span>
+              <span>{props.liquidityProviderFee}</span>
+            </ConfirmationLineItem>
+            <ConfirmationLineItem>
+              <span>Price impact</span>
+              <span>{props.priceImpact}</span>
+            </ConfirmationLineItem>
+          </Transition>
+        </div>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
           <div className="flex align-middle gap-1">
             <AssetIcon network="sifchain" symbol="rowan" size="md" />
