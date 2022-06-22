@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "description": "Sifchain UI component library and utilities",
   "main": "./src/index.tsx",
-  "types": "./src/index.tsx",
   "files": [
     "src",
     "assets",
+    "typings",
     "tailwind.config.preset.js"
   ],
   "scripts": {
