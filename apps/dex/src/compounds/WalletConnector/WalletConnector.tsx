@@ -41,6 +41,7 @@ const WalletConnector: FC = () => {
         id,
         name: config.displayName,
         type: config.chainType,
+        connected: false,
         icon: (
           <figure
             className={clsx(
@@ -192,36 +193,12 @@ const WalletConnector: FC = () => {
     [connectorsById],
   );
 
-  // useEffect(() => {
-  //   console.log({
-  //     isCosmosConnected,
-  //     cosmosActiveConnector,
-  //   });
-  //   if (
-  //     cosmosActiveConnector &&
-  //     !isCosmosConnected &&
-  //     !accounts["sifchain"]?.length
-  //   ) {
-  //     handleConnectionRequest({
-  //       walletId: "keplr",
-  //       chainId: "sifchain",
-  //     }).then(syncCosmosAccounts);
-  //   }
-
-  //   if (cosmosActiveConnector && isCosmosConnected) {
-  //     syncCosmosAccounts();
-  //   }
-  // }, [
-  //   accounts,
-  //   cosmosActiveConnector,
-  //   isCosmosConnected,
-  //   syncCosmosAccounts,
-  //   handleConnectionRequest,
-  // ]);
-
   return (
     <WalletSelector
-      chains={chains.filter((x) => !accounts[x.id]?.length)}
+      chains={chains.map((x) => ({
+        ...x,
+        connected: Boolean(accounts[x.id]?.length ?? 0),
+      }))}
       wallets={wallets}
       accounts={accounts}
       isLoading={

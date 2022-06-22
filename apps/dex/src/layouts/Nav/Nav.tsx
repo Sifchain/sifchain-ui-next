@@ -7,14 +7,12 @@ import {
   PoolsIcon,
   RowanIcon,
   SwapIcon,
-  ThemeSwitcher,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import WalletConnector from "~/compounds/WalletConnector";
-
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
 
 export const MENU_ITEMS = [
@@ -117,13 +115,6 @@ const Header = () => {
               </li>
             ))}
           </ul>
-          <label
-            className="flex items-center justify-between p-2"
-            role="button"
-          >
-            <span className="sr-only">Dark mode</span>
-            <ThemeSwitcher />
-          </label>
         </section>
         <section className="whitespace-nowrap">
           <WalletConnector />

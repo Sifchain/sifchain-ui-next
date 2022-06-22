@@ -1,12 +1,10 @@
-import { Menu, Popover, Transition } from "@headlessui/react";
-
+import { Menu, Popover } from "@headlessui/react";
 import clsx from "clsx";
 import React, {
   FC,
-  Fragment,
-  PropsWithChildren,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -14,6 +12,7 @@ import tw from "tailwind-styled-components";
 import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
 
 import {
+  AppearTransition,
   ArrowLeftIcon,
   Button,
   ChevronDownIcon,
@@ -25,6 +24,7 @@ import {
   PlusIcon,
   QrcodeIcon,
   SearchInput,
+  SurfaceA,
   Tooltip,
   WalletIcon,
 } from "../../components";
@@ -36,6 +36,7 @@ export type ChainEntry = {
   name: string;
   type: string;
   icon: ReactNode;
+  connected: boolean;
 };
 
 export type WalletEntry = {
@@ -247,6 +248,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
       {accountEntries.length ? (
         <ConnectedWallets
           accounts={accountEntries}
+          chains={props.chains}
           isModalOpen={isModalOpen}
           onDisconnect={props.onDisconnect}
           onConnectAnotherWallet={setIsModalOpen.bind(null, true)}
@@ -276,23 +278,10 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
 export type ConnectedWalletsProps = {
   isModalOpen: boolean;
   accounts: [chainId: string, accounts: string[]][];
+  chains: ChainEntry[];
   onDisconnect: WalletSelectorProps["onDisconnect"];
   onConnectAnotherWallet(): void;
 };
-
-const AppearTransition: FC<PropsWithChildren> = ({ children }) => (
-  <Transition
-    as={Fragment}
-    enter="transition ease-out duration-200"
-    enterFrom="opacity-0 translate-y-1"
-    enterTo="opacity-100 translate-y-0"
-    leave="transition ease-in duration-150"
-    leaveFrom="opacity-100 translate-y-0"
-    leaveTo="opacity-0 translate-y-1"
-  >
-    {children}
-  </Transition>
-);
 
 const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
   return (
@@ -312,13 +301,19 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
         </div>
       </Popover.Button>
       <AppearTransition>
-        <Popover.Panel className="bg-gray-800 p-4 rounded-lg absolute z-10 top-16 w-[350px] right-0 min-w-max grid gap-4">
+        <Popover.Panel
+          as={SurfaceA}
+          className="absolute z-10 top-[74px] w-[350px] right-2.5 min-w-max grid gap-4"
+        >
           <ul className="grid gap-1">
-            {props.accounts.map(([id, accounts]) => (
+            {props.accounts.map(([chainId, accounts]) => (
               <ConnectedAccount
-                key={id}
+                key={chainId}
                 accounts={accounts}
-                chainId={id}
+                chainId={chainId}
+                chainName={
+                  props.chains.find((x) => x.id === chainId)?.name ?? chainId
+                }
                 walletId={""}
                 onDisconnect={props.onDisconnect}
               />
@@ -373,11 +368,29 @@ function useOverflowActions(options: {
     },
   ];
 
-  const [, copyToClipboard] = useCopyToClipboard();
-  const handleAction = (action: OverflowAction) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const [_, copyToClipboard] = useCopyToClipboard();
+
+  useEffect(() => {
+    let timeoutId = -1;
+    if (isCopied) {
+      timeoutId = window.setTimeout(() => {
+        setIsCopied(false);
+      }, 1000);
+    }
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [isCopied]);
+
+  const handleAction = async (action: OverflowAction) => {
     switch (action.kind) {
       case "copy-address":
-        copyToClipboard(options.account);
+        await copyToClipboard(options.account);
+        setIsCopied(true);
+
         break;
       case "show-qr-code":
         WalletConnectQRCodeModal.open(options.account);
@@ -388,16 +401,17 @@ function useOverflowActions(options: {
     }
   };
 
-  return [actions, handleAction] as const;
+  return [actions, handleAction, isCopied] as const;
 }
 
 const ConnectedAccount: FC<{
   chainId: string;
+  chainName: string;
   walletId: string;
-  onDisconnect: ConnectedWalletsProps["onDisconnect"];
   accounts: string[];
-}> = ({ chainId, walletId, onDisconnect, accounts }) => {
-  const [actions, handleAction] = useOverflowActions({
+  onDisconnect: ConnectedWalletsProps["onDisconnect"];
+}> = ({ chainId, chainName, walletId, accounts, onDisconnect }) => {
+  const [actions, handleAction, isCopied] = useOverflowActions({
     chainId,
     account: accounts[0] as string,
     onDisconnect: () => onDisconnect?.({ chainId, walletId }),
@@ -416,9 +430,7 @@ const ConnectedAccount: FC<{
                 <Identicon diameter={32} address={accounts[0] ?? ""} />
                 <div className="grid gap-1 flex-1 text-left">
                   <div>{maskWalletAddress(accounts[0] ?? "")}</div>
-                  <div className="text-xs">
-                    {walletId} - {chainId}
-                  </div>
+                  <div className="text-xs">{chainName}</div>
                 </div>
               </div>
               <div
@@ -431,24 +443,32 @@ const ConnectedAccount: FC<{
               </div>
             </Menu.Button>
             <AppearTransition>
-              <Menu.Items className="absolute right-0 top-10 bg-gray-800 border border-gray-700 p-2 grid gap-2 rounded-lg z-20">
-                {actions.map((action) => (
-                  <Menu.Item
-                    key={action.kind}
-                    as={Button}
-                    className="w-full overflow-hidden bg-transparent flex items-center justify-start"
-                    variant="secondary"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+              <Menu.Items
+                as={SurfaceA}
+                className="absolute right-0 top-10 p-2 grid gap-2 z-20"
+              >
+                {actions.map((action) => {
+                  const copied = isCopied && action.kind === "copy-address";
 
-                      handleAction(action);
-                    }}
-                  >
-                    <figure className="mr-2">{action.icon}</figure>
-                    {action.label}
-                  </Menu.Item>
-                ))}
+                  return (
+                    <Menu.Item
+                      key={action.kind}
+                      as={Button}
+                      className="w-full min-w-max overflow-hidden bg-transparent flex items-center justify-start"
+                      variant="secondary"
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        handleAction(action);
+                      }}
+                    >
+                      <figure className="mr-2">{action.icon}</figure>
+
+                      {copied ? "Copied ✓" : action.label}
+                    </Menu.Item>
+                  );
+                })}
               </Menu.Items>
             </AppearTransition>
           </>
