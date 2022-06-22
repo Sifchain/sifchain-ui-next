@@ -34,7 +34,7 @@
           "type": "string",
           "description": "[OPTIONAL] Display symbol of an asset."
         },
-        "analyticsId": {
+        "analyticsSiteId": {
           "type": "string",
           "description": "[OPTIONAL] The provider's unique analytics identifier."
         }
