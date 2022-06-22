@@ -1,9 +1,8 @@
 import { Decimal } from "@cosmjs/math";
-import { Popover, Transition } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import { runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
-  ArrowLeftIcon,
   Button,
   ButtonGroup,
   ButtonProps,
@@ -12,12 +11,11 @@ import {
   RacetrackSpinnerIcon,
   Select,
   SelectOption,
-  SettingsIcon,
   SwapIcon,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import {
-  Fragment,
   PropsWithChildren,
   startTransition,
   useEffect,
@@ -25,6 +23,7 @@ import {
   useState,
 } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useAllBalances } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
@@ -43,6 +42,7 @@ type SwapConfirmationModalProps = {
   };
   toCoin: {
     amount: string;
+    amountPreSlippage: string;
     minimumAmount: string;
     denom: string;
   };
@@ -84,41 +84,44 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
             <ArrowDownIcon width="1em" height="1em" />
           </div>
         </div>
-        <Transition
-          show={props.showDetail}
-          enter="transition duration-100 ease-out"
-          enterFrom="transform scale-95 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-75 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-95 opacity-0"
-        >
-          <ConfirmationLineItem>
-            <span>Swap result</span>
-            <div className="flex align-middle gap-1 font-bold">
-              {props.toCoin.amount}
-              <AssetIcon
-                network="sifchain"
-                symbol={props.toCoin.denom}
-                size="md"
-              />
-            </div>
-          </ConfirmationLineItem>
-          <ConfirmationLineItem>
-            <span>Liquidity provider fee</span>
-            <span>{props.liquidityProviderFee}</span>
-          </ConfirmationLineItem>
-          <ConfirmationLineItem>
-            <span>Price impact</span>
-            <span>{props.priceImpact}</span>
-          </ConfirmationLineItem>
-        </Transition>
+        <div className="overflow-y-hidden">
+          <Transition
+            show={props.showDetail}
+            leave="transition-all duration-[2.5s]"
+            leaveFrom="mt-0"
+            leaveTo="mt-[-100%]"
+          >
+            <ConfirmationLineItem>
+              <span>Swap result</span>
+              <div className="flex align-middle gap-1 font-bold">
+                {props.toCoin.amount}
+                <AssetIcon
+                  network="sifchain"
+                  symbol={props.toCoin.denom}
+                  size="md"
+                />
+              </div>
+            </ConfirmationLineItem>
+            <ConfirmationLineItem>
+              <span>Liquidity provider fee</span>
+              <span>{props.liquidityProviderFee}</span>
+            </ConfirmationLineItem>
+            <ConfirmationLineItem>
+              <span>Price impact</span>
+              <span>{props.priceImpact}</span>
+            </ConfirmationLineItem>
+          </Transition>
+        </div>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
           <div className="flex align-middle gap-1">
-            <AssetIcon network="sifchain" symbol="rowan" size="md" />
+            <AssetIcon
+              network="sifchain"
+              symbol={props.toCoin.denom}
+              size="md"
+            />
             {props.toCoin.denom}
           </div>
-          <span>{props.toCoin.amount}</span>
+          <span>{props.toCoin.amountPreSlippage}</span>
         </ConfirmationLineItem>
         <ConfirmationLineItem>
           <span>Slippage</span>
@@ -128,7 +131,11 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           <span>Minimum received</span>
           <div className="flex align-middle gap-1 font-bold">
             {props.toCoin.minimumAmount}
-            <AssetIcon network="sifchain" symbol="rowan" size="md" />
+            <AssetIcon
+              network="sifchain"
+              symbol={props.toCoin.denom}
+              size="md"
+            />
           </div>
         </ConfirmationLineItem>
       </ul>
@@ -141,8 +148,18 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
 
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
-  const { data: stargateClient } = useSifStargateClient();
-  const { signer } = useSifSigner();
+  const allBalancesQuery = useAllBalances();
+  const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
+    useSifStargateClient();
+  const { signer, status: signerStatus } = useSifSigner();
+
+  const isReady = useMemo(
+    () =>
+      allBalancesQuery.isSuccess &&
+      isSifStargateClientQuerySuccess &&
+      signerStatus === "resolved",
+    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
+  );
 
   const [fromSelectedOption, setFromSelectedOption] = useState<SelectOption>({
     id: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
@@ -154,6 +171,7 @@ const SwapPage = () => {
     label: "rowan",
     body: "rowan",
   });
+  const [hasBeenReversed, setHasBeenReversed] = useState(false);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -190,6 +208,9 @@ const SwapPage = () => {
     [{ symbol: toDenom }],
     commonOptions,
   );
+
+  const fromBalance = allBalancesQuery.indexedByDenom?.[fromDenom];
+  const toBalance = allBalancesQuery.indexedByDenom?.[toDenom];
 
   // because rowan pool doesn't exist, it will return nothing
   // hence we doing this, if both selected token are rowan then we wouldn't allow the swap anyway
@@ -251,6 +272,19 @@ const SwapPage = () => {
         swapSimulationResult?.rawReceiving ?? "0",
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
       ),
+      receivingPreSlippage: Decimal.fromAtomics(
+        BigNumber.max(
+          0,
+          new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
+            .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
+            .times(
+              new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0),
+            ),
+        )
+          .integerValue()
+          .toFixed(0),
+        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+      ),
       minimumReceiving: Decimal.fromAtomics(
         swapSimulationResult?.minimumReceiving ?? "0",
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
@@ -265,59 +299,40 @@ const SwapPage = () => {
 
   useEffect(
     () => {
-      // reset mutation state every time modal is closed
-      if (!isConfirmationModalOpen && swapMutation.status !== "idle") {
+      // reset mutation state every time modal is opened
+      if (isConfirmationModalOpen && swapMutation.status !== "idle") {
         swapMutation.reset();
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
     [isConfirmationModalOpen],
   );
 
+  const swapButtonMsg = (() => {
+    if (!isReady) {
+      return "Loading";
+    }
+
+    if (signer === undefined) {
+      return "Please Connect Sif Wallet";
+    }
+
+    if (
+      fromAmountDecimal?.isGreaterThan(
+        fromBalance?.amount ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
+      )
+    ) {
+      return "Insufficient balance";
+    }
+
+    return "Swap";
+  })();
+
   return (
     <>
       <div className="flex-1 flex flex-col justify-center items-center">
-        <section className="flex-1 flex flex-col bg-gray-800 w-full h-full md:rounded-xl md:flex-initial md:w-auto md:h-auto p-6">
+        <section className="flex-1 flex flex-col w-full bg-gray-800 p-6 md:w-auto md:min-w-[32rem] md:rounded-xl md:flex-initial">
           <header className="flex items-center justify-between pb-6">
             <h2 className="text-2xl font-bold text-white">Swap</h2>
-            <Popover className="relative">
-              {({ open }) => (
-                <>
-                  <Popover.Button>
-                    {open ? <ArrowLeftIcon /> : <SettingsIcon />}
-                  </Popover.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition duration-100 ease-out"
-                    enterFrom="transform scale-95 opacity-0"
-                    enterTo="transform scale-100 opacity-100"
-                    leave="transition duration-75 ease-out"
-                    leaveFrom="transform scale-100 opacity-100"
-                    leaveTo="transform scale-95 opacity-0"
-                  >
-                    <Popover.Panel className="absolute z-30 right-[-100%] bg-gray-700 rounded-lg border border-gray-600 p-4">
-                      <div className="flex flex-col">
-                        <legend className="float-left font-bold">
-                          Settings
-                        </legend>
-                        <div className="flex items-center">
-                          <label className="pr-6 text-sm opacity-90">
-                            Slippage
-                          </label>
-                          <ButtonGroup
-                            itemClassName="px-4"
-                            size="sm"
-                            gap={8}
-                            selectedIndex={selectedSlippageIndex}
-                            options={slippageOptions}
-                            onChange={setSelectedSlippageIndex}
-                          />
-                        </div>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </>
-              )}
-            </Popover>
           </header>
           <form
             className="flex-1 flex flex-col justify-between"
@@ -327,30 +342,44 @@ const SwapPage = () => {
             }}
           >
             <div className="flex flex-col gap-3">
-              <fieldset className="flex flex-col gap-2 bg-black rounded-md p-6 pb-10">
-                <legend className="float-left font-bold opacity-90">
+              <fieldset className="bg-black rounded-md p-6 pb-10">
+                <legend className="contents font-bold opacity-90 mb-3">
                   From
                 </legend>
-                <Select
-                  className="relative z-20"
-                  value={fromSelectedOption}
-                  options={tokenOptions}
-                  onChange={setFromSelectedOption}
-                />
-                <Input
-                  placeholder="Swap amount"
-                  value={fromAmount}
-                  onChange={(event) => setFromAmount(event.target.value)}
-                  fullWidth
-                />
+                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
+                  <Select
+                    className="relative z-20 md:flex-1"
+                    label="Token"
+                    value={fromSelectedOption}
+                    options={tokenOptions}
+                    onChange={setFromSelectedOption}
+                  />
+                  <Input
+                    className="text-right md:flex-1"
+                    label="Amount"
+                    secondaryLabel={`Balance: ${
+                      fromBalance?.amount
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        }) ?? 0
+                    }`}
+                    placeholder="Swap amount"
+                    value={fromAmount}
+                    onChange={(event) => setFromAmount(event.target.value)}
+                    fullWidth
+                  />
+                </div>
               </fieldset>
               <div className="flex justify-center align-middle my-[-2em] z-10">
                 <button
-                  className="bg-gray-900 rounded-full p-3 border-4 border-gray-800"
+                  className={clsx(
+                    "bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform	",
+                    { "rotate-180": hasBeenReversed },
+                  )}
                   type="button"
                   onClick={() => {
-                    // need this else gonna freeze the browser if user spam click
-                    requestAnimationFrame(() => {
+                    startTransition(() => {
                       setFromSelectedOption(toSelectedOption);
                       setToSelectedOption(fromSelectedOption);
                       setFromAmount((x) =>
@@ -359,29 +388,65 @@ const SwapPage = () => {
                           ? x
                           : parsedSwapResult.minimumReceiving.toString(),
                       );
+                      setHasBeenReversed((x) => !x);
                     });
                   }}
                 >
                   <SwapIcon width="1.25em" height="1.25em" />
                 </button>
               </div>
-              <fieldset className="flex flex-col gap-3 bg-black rounded-md p-6">
-                <legend className="float-left font-bold opacity-90">To</legend>
-                <Select
-                  className="relative z-10"
-                  value={toSelectedOption}
-                  options={tokenOptions}
-                  onChange={setToSelectedOption}
-                />
-                <Input
-                  value={parsedSwapResult.minimumReceiving.toString()}
-                  fullWidth
-                  disabled
-                />
+              <fieldset className="bg-black rounded-md p-6">
+                <legend className="contents font-bold opacity-90 mb-3">
+                  To
+                </legend>
+                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
+                  <Select
+                    className="relative z-10 md:flex-1"
+                    label="Token"
+                    value={toSelectedOption}
+                    options={tokenOptions}
+                    onChange={setToSelectedOption}
+                  />
+                  <Input
+                    className="text-right md:flex-1"
+                    secondaryLabel={`Balance: ${
+                      toBalance?.amount
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        }) ?? 0
+                    }`}
+                    label="Amount"
+                    value={
+                      parsedSwapResult.minimumReceiving.toFloatApproximation() ===
+                      0
+                        ? 0
+                        : parsedSwapResult.minimumReceiving
+                            .toFloatApproximation()
+                            .toFixed(10)
+                    }
+                    fullWidth
+                    disabled
+                  />
+                </div>
               </fieldset>
+              <div className="flex justify-between items-center">
+                <label className="pr-6">Slippage</label>
+                <div>
+                  <ButtonGroup
+                    className="bg-black"
+                    itemClassName="px-4"
+                    size="sm"
+                    gap={8}
+                    selectedIndex={selectedSlippageIndex}
+                    options={slippageOptions}
+                    onChange={setSelectedSlippageIndex}
+                  />
+                </div>
+              </div>
             </div>
-            <Button className="mt-8" disabled={signer === undefined}>
-              {signer === undefined ? "Please Connect Sif Wallet" : "Swap"}
+            <Button className="mt-8" disabled={swapButtonMsg !== "Swap"}>
+              {swapButtonMsg}
             </Button>
           </form>
         </section>
@@ -446,6 +511,9 @@ const SwapPage = () => {
           denom:
             tokenRegistryQuery.indexedByIBCDenom[toDenom]?.displaySymbol ?? "",
           amount: parsedSwapResult.rawReceiving
+            .toFloatApproximation()
+            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amountPreSlippage: parsedSwapResult.receivingPreSlippage
             .toFloatApproximation()
             .toLocaleString(undefined, { maximumFractionDigits: 6 }),
           minimumAmount: parsedSwapResult.minimumReceiving

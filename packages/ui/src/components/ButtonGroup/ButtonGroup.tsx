@@ -83,12 +83,13 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         padding={6}
         gap={props.gap ?? 0}
       />
-      <div className="flex flex-1 gap-2">
+      <div className="relative flex flex-1 gap-2">
         {props.options.map((item, index) => (
           <button
             key={index}
+            type="button"
             className={clsx(
-              "flex-1 py-2.5 rounded-xl z-10 font-semibold",
+              "flex-1 py-2.5 rounded-xl font-semibold",
               index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
               typeof props.itemClassName === "function"
                 ? props.itemClassName(index)

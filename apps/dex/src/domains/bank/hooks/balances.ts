@@ -1,7 +1,8 @@
+import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
 import { useSigner } from "@sifchain/cosmos-connect";
-import type { Coin } from "@sifchain/proto-types/cosmos/base/coin";
 import BigNumber from "bignumber.js";
+import { indexBy, prop } from "rambda";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -13,17 +14,40 @@ export const useAllBalances = () => {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: signingStargateClient } = useSifSigningStargateClient();
+  const { indexedByIBCDenom, isSuccess: isTokenRegistryQuerySuccess } =
+    useTokenRegistryQuery();
 
-  return useQuery(
+  const baseQuery = useQuery(
     "all-balances",
     async () => {
       const accounts = await signer?.getAccounts();
-      return signingStargateClient?.getAllBalances(
+      const balances = await signingStargateClient?.getAllBalances(
         accounts?.[0]?.address ?? "",
       );
+
+      return balances?.map((x) => ({
+        ...x,
+        amount: Decimal.fromAtomics(
+          x.amount,
+          indexedByIBCDenom[x.denom]?.decimals ?? 0,
+        ),
+      }));
     },
-    { enabled: signer !== undefined && signingStargateClient !== undefined },
+    {
+      enabled:
+        signer !== undefined &&
+        signingStargateClient !== undefined &&
+        isTokenRegistryQuerySuccess,
+    },
   );
+
+  return {
+    ...baseQuery,
+    indexedByDenom:
+      baseQuery.data === undefined
+        ? undefined
+        : indexBy(prop("denom"), baseQuery.data),
+  };
 };
 
 export const useAllDisplayBalances = () => {
@@ -55,11 +79,11 @@ export const useAllDisplayBalances = () => {
 
           return [tokenRecord, x] as const;
         })
-        .filter(Boolean) as [IAsset, Coin][];
+        .filter(Boolean) as [IAsset, { amount: Decimal; denom: string }][];
 
-      return records.map(([tokenRecord, x]) => ({
+      return records?.map(([tokenRecord, x]) => ({
         denom: tokenRecord?.displaySymbol ?? tokenRecord?.symbol ?? x.denom,
-        amount: new BigNumber(x.amount).shiftedBy(
+        amount: new BigNumber(x.amount.atomics).shiftedBy(
           -(tokenRecord?.decimals ?? 0),
         ),
       }));
