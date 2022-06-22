@@ -28,7 +28,7 @@ import {
   Tooltip,
   WalletIcon,
 } from "../../components";
-import useCopyToClipboard from "../../hooks";
+import { useCopyToClipboard } from "../../hooks";
 import { maskWalletAddress } from "../../utils";
 
 export type ChainEntry = {
