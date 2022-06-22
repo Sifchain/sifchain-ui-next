@@ -52,7 +52,9 @@ export const Select: FC<SelectProps> = (props) => {
           </Listbox.Label>
         )}
         <Listbox.Button as={StyledListboxButton}>
-          <span className="block truncate">{selected?.label}</span>
+          <span className="block truncate">
+            {selected?.label ?? <span className="opacity-0">.</span>}
+          </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
             <ChevronDownIcon
               className="h-4 w-4 text-gray-400"
