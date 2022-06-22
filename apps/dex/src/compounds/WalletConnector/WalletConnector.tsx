@@ -100,7 +100,7 @@ const WalletConnector: FC = () => {
         }));
       });
     }
-  }, [cosmosActiveConnector]);
+  }, [chains, cosmosActiveConnector]);
 
   useEffect(() => {
     syncCosmosAccounts();
@@ -173,7 +173,13 @@ const WalletConnector: FC = () => {
         console.log("failed to connect", error);
       }
     },
-    [connectEvm, connectEvm, connectorsById, evmConnectors, cosmosConnectors],
+    [
+      connectorsById,
+      cosmosConnectors,
+      connectCosmos,
+      evmConnectors,
+      connectEvm,
+    ],
   );
 
   const handleDisconnectionRequest = useCallback(
@@ -183,7 +189,7 @@ const WalletConnector: FC = () => {
         await selected.disconnect();
       }
     },
-    [],
+    [connectorsById],
   );
 
   // useEffect(() => {
