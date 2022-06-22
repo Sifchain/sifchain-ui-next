@@ -1,4 +1,3 @@
-export { default as ArrowDownIcon } from "./ArrowDownIcon";
 export { default as ArrowLeftIcon } from "./ArrowLeftIcon";
 export { default as AvalancheIcon } from "./AvalancheIcon";
 export { default as BalanceIcon } from "./BalanceIcon";
@@ -25,6 +24,7 @@ export { default as RowanIcon } from "./RowanIcon";
 export { default as SearchIcon } from "./SearchIcon";
 export { default as SettingsIcon } from "./SettingsIcon";
 export { default as SifchainLogoSmall } from "./SifchainLogoSmall";
+export { default as SifchainLogo } from "./SifchainLogo";
 export { default as SortUnderterminedIcon } from "./SortUnderterminedIcon";
 export { default as SwapIcon } from "./SwapIcon";
 export { default as TerraIcon } from "./TerraIcon";
