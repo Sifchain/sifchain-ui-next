@@ -16,5 +16,5 @@ export type ProviderConfig = {
   description: string;
   url: string;
   logoUrl: string;
-  analyticsId: string;
+  analyticsSiteId: string;
 };

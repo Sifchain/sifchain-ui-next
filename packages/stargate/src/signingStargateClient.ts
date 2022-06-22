@@ -477,10 +477,13 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
     return {
       rawReceiving: swapResult,
-      minimumReceiving: swapResult
-        .times(priceImpact.minus(1).abs())
-        .minus(liquidityProviderFee)
-        .times(new BigNumber(1).minus(slippage ?? 0)),
+      minimumReceiving: BigNumber.max(
+        0,
+        swapResult
+          .minus(liquidityProviderFee)
+          .times(priceImpact.minus(1).abs())
+          .times(new BigNumber(1).minus(slippage ?? 0)),
+      ),
       priceImpact,
       liquidityProviderFee,
     };

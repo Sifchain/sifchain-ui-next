@@ -1,10 +1,11 @@
-import "~/styles/globals.css";
+import { Button, SifchainLogoSmall } from "@sifchain/ui";
+import clsx from "clsx";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Button, SifchainLogoSmall } from "@sifchain/ui";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import clsx from "clsx";
+
+import "~/styles/globals.css";
 
 const NAV_LINKS = [
   {

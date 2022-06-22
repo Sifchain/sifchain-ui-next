@@ -1,6 +1,6 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["./src"],
+  "include": ["./src", "./typings/index.d.ts"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "module": "ESNext",

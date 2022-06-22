@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "description": "Sifchain UI component library and utilities",
   "main": "./src/index.tsx",
-  "types": "./src/index.tsx",
   "files": [
     "src",
     "assets",
+    "typings",
     "tailwind.config.preset.js"
   ],
   "scripts": {
@@ -28,6 +28,7 @@
     "ramda": "^0.28.0",
     "react-jazzicon": "^1.0.4",
     "react-toastify": "^9.0.4",
+    "walletconnect-qrcode-modal": "^0.7.28",
     "zustand": "4.0.0-rc.1"
   },
   "peerDependencies": {

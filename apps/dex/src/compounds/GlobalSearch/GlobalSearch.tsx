@@ -76,7 +76,7 @@ const GlobalSearch: FC<Props> = (_props) => {
       onQueryChange={setQuery}
       categories={[]}
       storageKey="@sifchain/recent-entries"
-      className="max-w-2xl w-full mx-auto"
+      className="w-full"
       value={value}
       onChange={handleChange}
       entryActions={(entry) => [

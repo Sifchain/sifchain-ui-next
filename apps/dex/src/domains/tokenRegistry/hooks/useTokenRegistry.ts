@@ -11,7 +11,7 @@ export default function useTokenRegistryQuery() {
     staleTime: 60000 * 5, // 5 minutes
   });
 
-  const { indexedBySymbol, ...assetsQeuery } = useAssetsQuery();
+  const { indexedBySymbol, ...assetsQuery } = useAssetsQuery();
 
   const entries = useMemo(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
@@ -32,7 +32,7 @@ export default function useTokenRegistryQuery() {
       ...(asset as IAsset),
       ibcDenom: asset?.ibcDenom ?? entry.denom ?? "",
     }));
-  }, [data]);
+  }, [data?.registry?.entries, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {
@@ -55,13 +55,13 @@ export default function useTokenRegistryQuery() {
       indexedByDisplaySymbol,
       indexedByIBCDenom,
     };
-  }, [entries]);
+  }, [entries, query.isSuccess]);
 
   return {
     data: entries,
     ...query,
     ...indices,
-    isSuccess: query.isSuccess || assetsQeuery.isSuccess,
-    isLoading: query.isLoading || assetsQeuery.isLoading,
+    isSuccess: query.isSuccess && assetsQuery.isSuccess,
+    isLoading: query.isLoading || assetsQuery.isLoading,
   };
 }

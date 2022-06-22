@@ -450,6 +450,7 @@ importers:
       tsconfig: workspace:*
       tsconfig-paths-webpack-plugin: ^3.5.2
       typescript: 4.7.3
+      walletconnect-qrcode-modal: ^0.7.28
       zustand: 4.0.0-rc.1
       zx: ^6.2.3
     dependencies:
@@ -464,6 +465,7 @@ importers:
       ramda: 0.28.0
       react-jazzicon: 1.0.4
       react-toastify: 9.0.4
+      walletconnect-qrcode-modal: 0.7.28
       zustand: 4.0.0-rc.1
     devDependencies:
       '@babel/core': 7.18.5
@@ -17593,6 +17595,10 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     dev: true
 
+  /qr-image/3.2.0:
+    resolution: {integrity: sha512-rXKDS5Sx3YipVsqmlMJsJsk6jXylEpiHRC2+nJy66fxA5ExYyGa4PqwteW69SaVmAb2OQ18HbYriT7cGQMbduw==}
+    dev: false
+
   /qr.js/0.0.0:
     resolution: {integrity: sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=}
     dev: false
@@ -21163,6 +21169,13 @@ packages:
     dependencies:
       makeerror: 1.0.12
     dev: true
+
+  /walletconnect-qrcode-modal/0.7.28:
+    resolution: {integrity: sha512-hmAw2pxXy1kIuNkGaFbWcnDeLYhi85tT0rq0Nv6+ZBw+6rknrbinzs/chf9r67rk4UQBOfS9bQUTssMNyprR5g==}
+    deprecated: Package deprecated in favor of @walletconnect/qrcode-modal
+    dependencies:
+      qr-image: 3.2.0
+    dev: false
 
   /warning/4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
