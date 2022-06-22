@@ -164,6 +164,7 @@ const SwapPage = () => {
     label: "rowan",
     body: "rowan",
   });
+  const [hasBeenReversed, setHasBeenReversed] = useState(false);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -365,11 +366,13 @@ const SwapPage = () => {
               </fieldset>
               <div className="flex justify-center align-middle my-[-2em] z-10">
                 <button
-                  className="bg-gray-900 rounded-full p-3 border-4 border-gray-800"
+                  className={clsx(
+                    "bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform	",
+                    { "rotate-180": hasBeenReversed },
+                  )}
                   type="button"
                   onClick={() => {
-                    // need this else gonna freeze the browser if user spam click
-                    requestAnimationFrame(() => {
+                    startTransition(() => {
                       setFromSelectedOption(toSelectedOption);
                       setToSelectedOption(fromSelectedOption);
                       setFromAmount((x) =>
@@ -378,6 +381,7 @@ const SwapPage = () => {
                           ? x
                           : parsedSwapResult.minimumReceiving.toString(),
                       );
+                      setHasBeenReversed((x) => !x);
                     });
                   }}
                 >
