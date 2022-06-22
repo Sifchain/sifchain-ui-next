@@ -27,6 +27,7 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import BigNumber from "bignumber.js";
 
 type SwapConfirmationModalProps = {
   title: string;
@@ -40,6 +41,7 @@ type SwapConfirmationModalProps = {
   };
   toCoin: {
     amount: string;
+    amountPreSlippage: string;
     minimumAmount: string;
     denom: string;
   };
@@ -115,7 +117,7 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
             <AssetIcon network="sifchain" symbol="rowan" size="md" />
             {props.toCoin.denom}
           </div>
-          <span>{props.toCoin.amount}</span>
+          <span>{props.toCoin.amountPreSlippage}</span>
         </ConfirmationLineItem>
         <ConfirmationLineItem>
           <span>Slippage</span>
@@ -246,6 +248,14 @@ const SwapPage = () => {
       ...swapSimulationResult,
       rawReceiving: Decimal.fromAtomics(
         swapSimulationResult?.rawReceiving ?? "0",
+        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+      ),
+      receivingPreSlippage: Decimal.fromAtomics(
+        new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
+          .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
+          .times(new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0))
+          .integerValue()
+          .toFixed(0),
         tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
       ),
       minimumReceiving: Decimal.fromAtomics(
@@ -420,6 +430,9 @@ const SwapPage = () => {
           denom:
             tokenRegistryQuery.indexedByIBCDenom[toDenom]?.displaySymbol ?? "",
           amount: parsedSwapResult.rawReceiving
+            .toFloatApproximation()
+            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amountPreSlippage: parsedSwapResult.receivingPreSlippage
             .toFloatApproximation()
             .toLocaleString(undefined, { maximumFractionDigits: 6 }),
           minimumAmount: parsedSwapResult.minimumReceiving
