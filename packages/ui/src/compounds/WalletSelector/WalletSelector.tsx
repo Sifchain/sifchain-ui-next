@@ -370,7 +370,7 @@ function useOverflowActions(options: {
 
   const [isCopied, setIsCopied] = useState(false);
 
-  const [_, copyToClipboard] = useCopyToClipboard();
+  const [, copyToClipboard] = useCopyToClipboard();
 
   useEffect(() => {
     let timeoutId = -1;
