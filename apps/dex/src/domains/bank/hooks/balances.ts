@@ -14,7 +14,8 @@ export const useAllBalances = () => {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: signingStargateClient } = useSifSigningStargateClient();
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const { indexedByIBCDenom, isSuccess: isTokenRegistryQuerySuccess } =
+    useTokenRegistryQuery();
 
   const baseQuery = useQuery(
     "all-balances",
@@ -32,7 +33,12 @@ export const useAllBalances = () => {
         ),
       }));
     },
-    { enabled: signer !== undefined && signingStargateClient !== undefined },
+    {
+      enabled:
+        signer !== undefined &&
+        signingStargateClient !== undefined &&
+        isTokenRegistryQuerySuccess,
+    },
   );
 
   return {
