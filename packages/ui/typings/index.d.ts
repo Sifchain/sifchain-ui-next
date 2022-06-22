@@ -3,5 +3,5 @@ declare module "walletconnect-qrcode-modal" {
     open(uri: string): void;
   }
   const WallectConnectModal: IWallectConnectModal;
-  export default IWallectConnectModal;
+  export default WallectConnectModal;
 }
