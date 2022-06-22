@@ -300,31 +300,34 @@ const SwapPage = () => {
             }}
           >
             <div className="flex flex-col gap-3">
-              <fieldset className="flex flex-col gap-2 bg-black rounded-md p-6 pb-10">
-                <legend className="float-left font-bold opacity-90">
+              <fieldset className="bg-black rounded-md p-6 pb-10">
+                <legend className="contents font-bold opacity-90 mb-3">
                   From
                 </legend>
-                <Select
-                  className="relative z-20"
-                  value={fromSelectedOption}
-                  options={tokenOptions}
-                  onChange={setFromSelectedOption}
-                />
-                <Input
-                  className="text-right"
-                  label="Amount"
-                  secondaryLabel={`Balance: ${
-                    fromBalance?.amount
-                      .toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      }) ?? 0
-                  }`}
-                  placeholder="Swap amount"
-                  value={fromAmount}
-                  onChange={(event) => setFromAmount(event.target.value)}
-                  fullWidth
-                />
+                <div className="flex justify-between items-end gap-2">
+                  <Select
+                    className="w-36 relative z-20"
+                    label="Token"
+                    value={fromSelectedOption}
+                    options={tokenOptions}
+                    onChange={setFromSelectedOption}
+                  />
+                  <Input
+                    className="flex-1 text-right"
+                    label="Amount"
+                    secondaryLabel={`Balance: ${
+                      fromBalance?.amount
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        }) ?? 0
+                    }`}
+                    placeholder="Swap amount"
+                    value={fromAmount}
+                    onChange={(event) => setFromAmount(event.target.value)}
+                    fullWidth
+                  />
+                </div>
               </fieldset>
               <div className="flex justify-center align-middle my-[-2em] z-10">
                 <button
@@ -347,28 +350,40 @@ const SwapPage = () => {
                   <SwapIcon width="1.25em" height="1.25em" />
                 </button>
               </div>
-              <fieldset className="flex flex-col gap-3 bg-black rounded-md p-6">
-                <legend className="float-left font-bold opacity-90">To</legend>
-                <Select
-                  className="relative z-10"
-                  value={toSelectedOption}
-                  options={tokenOptions}
-                  onChange={setToSelectedOption}
-                />
-                <Input
-                  className="text-right"
-                  secondaryLabel={`Balance: ${
-                    toBalance?.amount
-                      .toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      }) ?? 0
-                  }`}
-                  label="Amount"
-                  value={parsedSwapResult.minimumReceiving.toString()}
-                  fullWidth
-                  disabled
-                />
+              <fieldset className="bg-black rounded-md p-6">
+                <legend className="contents font-bold opacity-90 mb-3">
+                  To
+                </legend>
+                <div className="flex justify-between items-end gap-2">
+                  <Select
+                    className="w-36 relative z-10"
+                    label="Token"
+                    value={toSelectedOption}
+                    options={tokenOptions}
+                    onChange={setToSelectedOption}
+                  />
+                  <Input
+                    className="flex-1 text-right"
+                    secondaryLabel={`Balance: ${
+                      toBalance?.amount
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        }) ?? 0
+                    }`}
+                    label="Amount"
+                    value={
+                      parsedSwapResult.minimumReceiving.toFloatApproximation() ===
+                      0
+                        ? 0
+                        : parsedSwapResult.minimumReceiving
+                            .toFloatApproximation()
+                            .toFixed(10)
+                    }
+                    fullWidth
+                    disabled
+                  />
+                </div>
               </fieldset>
               <div className="flex justify-between items-center">
                 <label className="pr-6">Slippage</label>
