@@ -11,7 +11,7 @@
     "build"
   ],
   "scripts": {
-    "build": "rm -rf build && pnpm tsc -p tsconfig.build.json -m commonjs --outDir build/commonjs && pnpm tsc -p tsconfig.build.json -m esnext --outDir build/module",
+    "build": "rimraf build && pnpm tsc -p tsconfig.build.json -m commonjs --outDir build/commonjs && pnpm tsc -p tsconfig.build.json -m esnext --outDir build/module",
     "test": "jest"
   },
   "keywords": [],

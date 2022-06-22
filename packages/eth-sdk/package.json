@@ -8,8 +8,8 @@
     "require": "./build/commonjs/index.js"
   },
   "scripts": {
-    "codegen": "rm -rf src/eth-sdk/abis && rm -rf src/generated && pnpm eth-sdk -p src/eth-sdk",
-    "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module && cp -r src/generated build/module/generated && cp -r src/generated build/commonjs/generated"
+    "codegen": "rimraf src/eth-sdk/abis && rimraf src/generated && pnpm eth-sdk -p src/eth-sdk",
+    "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module && cp -r src/generated build/module/generated && cp -r src/generated build/commonjs/generated"
   },
   "license": "Apache-2.0",
   "dependencies": {
