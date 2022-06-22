@@ -340,7 +340,7 @@ const SwapPage = () => {
                 </legend>
                 <div className="flex justify-between items-end gap-2">
                   <Select
-                    className="w-36 relative z-20"
+                    className="flex-1 relative z-20"
                     label="Token"
                     value={fromSelectedOption}
                     options={tokenOptions}
@@ -390,7 +390,7 @@ const SwapPage = () => {
                 </legend>
                 <div className="flex justify-between items-end gap-2">
                   <Select
-                    className="w-36 relative z-10"
+                    className="flex-1 relative z-10"
                     label="Token"
                     value={toSelectedOption}
                     options={tokenOptions}
