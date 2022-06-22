@@ -13,6 +13,7 @@ import {
   SelectOption,
   SwapIcon,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import {
   PropsWithChildren,
@@ -22,12 +23,12 @@ import {
   useState,
 } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useAllBalances } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
-import BigNumber from "bignumber.js";
 
 type SwapConfirmationModalProps = {
   title: string;
@@ -140,6 +141,7 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
 
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
+  const allBalancesQuery = useAllBalances();
   const { data: stargateClient } = useSifStargateClient();
   const { signer } = useSifSigner();
 
@@ -189,6 +191,9 @@ const SwapPage = () => {
     [{ symbol: toDenom }],
     commonOptions,
   );
+
+  const fromBalance = allBalancesQuery.indexedByDenom?.[fromDenom];
+  const toBalance = allBalancesQuery.indexedByDenom?.[toDenom];
 
   // because rowan pool doesn't exist, it will return nothing
   // hence we doing this, if both selected token are rowan then we wouldn't allow the swap anyway
@@ -307,6 +312,14 @@ const SwapPage = () => {
                 />
                 <Input
                   className="text-right"
+                  label="Amount"
+                  secondaryLabel={`Balance: ${
+                    fromBalance?.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      }) ?? 0
+                  }`}
                   placeholder="Swap amount"
                   value={fromAmount}
                   onChange={(event) => setFromAmount(event.target.value)}
@@ -344,6 +357,14 @@ const SwapPage = () => {
                 />
                 <Input
                   className="text-right"
+                  secondaryLabel={`Balance: ${
+                    toBalance?.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      }) ?? 0
+                  }`}
+                  label="Amount"
                   value={parsedSwapResult.minimumReceiving.toString()}
                   fullWidth
                   disabled
