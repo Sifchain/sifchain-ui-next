@@ -1,5 +1,6 @@
 import { Menu, Popover, Transition } from "@headlessui/react";
 
+import clsx from "clsx";
 import React, {
   FC,
   Fragment,
@@ -10,27 +11,25 @@ import React, {
   useState,
 } from "react";
 import tw from "tailwind-styled-components";
-
 import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
 
-import useCopyToClipboard from "../../hooks/useCopyToClipboard";
 import {
   ArrowLeftIcon,
   Button,
   ChevronDownIcon,
+  DotsVerticalIcon,
+  ExternalLinkIcon,
   Identicon,
+  LogoutIcon,
   Modal,
   PlusIcon,
+  QrcodeIcon,
   SearchInput,
   Tooltip,
   WalletIcon,
-  DotsVerticalIcon,
-  ExternalLinkIcon,
-  LogoutIcon,
-  QrcodeIcon,
 } from "../../components";
+import useCopyToClipboard from "../../hooks/useCopyToClipboard";
 import { maskWalletAddress } from "../../utils";
-import clsx from "clsx";
 
 export type ChainEntry = {
   id: string;
