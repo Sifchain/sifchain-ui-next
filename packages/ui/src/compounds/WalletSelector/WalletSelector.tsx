@@ -1,5 +1,5 @@
 import { Menu, Popover, Transition } from "@headlessui/react";
-import { DotsVerticalIcon } from "@heroicons/react/outline";
+
 import React, {
   FC,
   Fragment,
@@ -10,6 +10,10 @@ import React, {
   useState,
 } from "react";
 import tw from "tailwind-styled-components";
+
+import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
+
+import useCopyToClipboard from "../../hooks/useCopyToClipboard";
 import {
   ArrowLeftIcon,
   Button,
@@ -20,8 +24,13 @@ import {
   SearchInput,
   Tooltip,
   WalletIcon,
+  DotsVerticalIcon,
+  ExternalLinkIcon,
+  LogoutIcon,
+  QrcodeIcon,
 } from "../../components";
 import { maskWalletAddress } from "../../utils";
+import clsx from "clsx";
 
 export type ChainEntry = {
   id: string;
@@ -310,7 +319,8 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
               <ConnectedAccount
                 key={id}
                 accounts={accounts}
-                id={id}
+                chainId={id}
+                walletId={""}
                 onDisconnect={props.onDisconnect}
               />
             ))}
@@ -330,45 +340,121 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
   );
 };
 
+type OverflowAction = {
+  kind: "copy-address" | "show-qr-code" | "connect-another" | "disconnect";
+  label: string;
+  icon: JSX.Element;
+};
+
+function useOverflowActions(options: {
+  chainId: string;
+  account: string;
+  onDisconnect: () => void;
+}) {
+  const actions: OverflowAction[] = [
+    {
+      kind: "copy-address",
+      label: "Copy address",
+      icon: <PlusIcon />,
+    },
+    {
+      kind: "show-qr-code",
+      label: "Show QR Code",
+      icon: <QrcodeIcon />,
+    },
+    {
+      kind: "connect-another",
+      label: "Connect another wallet",
+      icon: <ExternalLinkIcon />,
+    },
+    {
+      kind: "disconnect",
+      label: "Disconnect wallet",
+      icon: <LogoutIcon />,
+    },
+  ];
+
+  const [, copyToClipboard] = useCopyToClipboard();
+  const handleAction = (action: OverflowAction) => {
+    switch (action.kind) {
+      case "copy-address":
+        copyToClipboard(options.account);
+        break;
+      case "show-qr-code":
+        WalletConnectQRCodeModal.open(options.account);
+        break;
+      case "disconnect":
+        options.onDisconnect();
+        break;
+    }
+  };
+
+  return [actions, handleAction] as const;
+}
+
 const ConnectedAccount: FC<{
-  id: string;
+  chainId: string;
+  walletId: string;
   onDisconnect: ConnectedWalletsProps["onDisconnect"];
   accounts: string[];
-}> = ({ id, onDisconnect, accounts }) => (
-  <li
-    role="button"
-    className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
-  >
-    <Menu as="div" className="relative w-full grid">
-      <Menu.Button className="flex items-center justify-between">
-        <div className="flex gap-2.5 items-center w-full">
-          <Identicon diameter={32} address={accounts[0] ?? ""} />
-          <div className="grid gap-1 flex-1 text-left">
-            <div>{maskWalletAddress(accounts[0] ?? "")}</div>
-            <div className="text-xs">Keplr - {id}</div>
-          </div>
-        </div>
-        <DotsVerticalIcon className="h-4 w-4" />
-      </Menu.Button>
-      <AppearTransition>
-        <Menu.Items className="absolute right-0 top-10">
-          <Menu.Item
-            as={Button}
-            className="w-full overflow-hidden"
-            variant="secondary"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onDisconnect?.({
-                chainId: id,
-                walletId: "keplr",
-              });
-            }}
-          >
-            Disconnect
-          </Menu.Item>
-        </Menu.Items>
-      </AppearTransition>
-    </Menu>
-  </li>
-);
+}> = ({ chainId, walletId, onDisconnect, accounts }) => {
+  const [actions, handleAction] = useOverflowActions({
+    chainId,
+    account: accounts[0] as string,
+    onDisconnect: () => onDisconnect?.({ chainId, walletId }),
+  });
+
+  return (
+    <li
+      role="button"
+      className="flex items-center justify-between p-2 hover:bg-gray-750 rounded"
+    >
+      <Menu as="div" className="relative w-full grid">
+        {({ open }) => (
+          <>
+            <Menu.Button className="flex items-center justify-between">
+              <div className="flex gap-2.5 items-center w-full">
+                <Identicon diameter={32} address={accounts[0] ?? ""} />
+                <div className="grid gap-1 flex-1 text-left">
+                  <div>{maskWalletAddress(accounts[0] ?? "")}</div>
+                  <div className="text-xs">
+                    {walletId} - {chainId}
+                  </div>
+                </div>
+              </div>
+              <div
+                className={clsx("", {
+                  "ring-1 ring-gray-50 ring-offset-gray-800 rounded-full ring-offset-4 bg-gray-700":
+                    open,
+                })}
+              >
+                <DotsVerticalIcon className="h-4 w-4" />
+              </div>
+            </Menu.Button>
+            <AppearTransition>
+              <Menu.Items className="absolute right-0 top-10 bg-gray-800 border border-gray-700 p-2 grid gap-2 rounded-lg z-20">
+                {actions.map((action) => (
+                  <Menu.Item
+                    key={action.kind}
+                    as={Button}
+                    className="w-full overflow-hidden bg-transparent flex items-center justify-start"
+                    variant="secondary"
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      handleAction(action);
+                    }}
+                  >
+                    <figure className="mr-2">{action.icon}</figure>
+                    {action.label}
+                  </Menu.Item>
+                ))}
+              </Menu.Items>
+            </AppearTransition>
+          </>
+        )}
+      </Menu>
+    </li>
+  );
+};
