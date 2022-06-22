@@ -5,7 +5,6 @@ import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import type { GetTokenStatsResponsePools } from "@sifchain/vanir-client";
 import clsx from "clsx";
 import type { NextPage } from "next";
-import Link from "next/link";
 import type { FC } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
