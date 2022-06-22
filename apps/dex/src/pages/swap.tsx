@@ -338,16 +338,16 @@ const SwapPage = () => {
                 <legend className="contents font-bold opacity-90 mb-3">
                   From
                 </legend>
-                <div className="flex justify-between items-end gap-2">
+                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <Select
-                    className="flex-1 relative z-20"
+                    className="relative z-20 md:flex-1"
                     label="Token"
                     value={fromSelectedOption}
                     options={tokenOptions}
                     onChange={setFromSelectedOption}
                   />
                   <Input
-                    className="flex-1 text-right"
+                    className="text-right md:flex-1"
                     label="Amount"
                     secondaryLabel={`Balance: ${
                       fromBalance?.amount
@@ -388,16 +388,16 @@ const SwapPage = () => {
                 <legend className="contents font-bold opacity-90 mb-3">
                   To
                 </legend>
-                <div className="flex justify-between items-end gap-2">
+                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <Select
-                    className="flex-1 relative z-10"
+                    className="relative z-10 md:flex-1"
                     label="Token"
                     value={toSelectedOption}
                     options={tokenOptions}
                     onChange={setToSelectedOption}
                   />
                   <Input
-                    className="flex-1 text-right"
+                    className="text-right md:flex-1"
                     secondaryLabel={`Balance: ${
                       toBalance?.amount
                         .toFloatApproximation()
