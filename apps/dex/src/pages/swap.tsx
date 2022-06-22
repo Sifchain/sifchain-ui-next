@@ -308,12 +308,12 @@ const SwapPage = () => {
   );
 
   const swapButtonMsg = (() => {
-    if (!isReady) {
-      return "Loading";
+    if (signerStatus === "resolved" && signer === undefined) {
+      return "Please Connect Sif Wallet";
     }
 
-    if (signer === undefined) {
-      return "Please Connect Sif Wallet";
+    if (!isReady) {
+      return "Loading";
     }
 
     if (
