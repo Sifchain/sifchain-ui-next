@@ -1,3 +1,4 @@
+export { default as ArrowDownIcon } from "./ArrowDownIcon";
 export { default as ArrowLeftIcon } from "./ArrowLeftIcon";
 export { default as AvalancheIcon } from "./AvalancheIcon";
 export { default as BalanceIcon } from "./BalanceIcon";
