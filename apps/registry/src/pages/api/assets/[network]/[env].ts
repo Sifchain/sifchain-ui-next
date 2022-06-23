@@ -22,7 +22,9 @@ const handler: NextApiHandler = async (req, res) => {
 
     const { assets } = await readAssetList(network, env);
 
-    res.json(assets);
+    res
+      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
+      .json(assets);
   } catch (error) {
     if (error instanceof Error) {
       res.status(res.statusCode ?? 400).send({
