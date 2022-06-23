@@ -10,11 +10,19 @@ export type AssetConfig = {
   address?: string;
 };
 
+export type ProviderAnalyticsConfig = {
+  siteId: string;
+  baseUrl: string;
+  urlSuffix: string;
+  enabled?: boolean;
+};
+
 export type ProviderConfig = {
   id: string;
   displayName: string;
   description: string;
   url: string;
   logoUrl: string;
-  analyticsSiteId: string;
+  featured?: boolean;
+  analytics: ProviderAnalyticsConfig;
 };
