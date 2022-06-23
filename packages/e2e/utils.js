@@ -1,30 +1,9 @@
 // utils.js
 import StreamZip from "node-stream-zip";
-import axios from "axios";
 import fs from "fs";
-import path from "path";
 import mkdirp from "mkdirp";
 
-const retry = require("retry-assert");
-
-// Not in use, don't have good place to get the extension zips, for now
-export async function downloadFile(name, url, dir) {
-  const write = path.resolve(dir, `${name}.zip`);
-  const writer = fs.createWriteStream(write);
-
-  const response = await axios({
-    url,
-    method: "GET",
-    responseType: "stream",
-  });
-
-  response.data.pipe(writer);
-
-  return new Promise((resolve, reject) => {
-    writer.on("finish", resolve);
-    writer.on("error", reject);
-  });
-}
+// const retry = require("retry-assert");
 
 export async function extractFile(downloadedFile, extractDestination) {
   const zip = new StreamZip.async({ file: downloadedFile });
@@ -87,16 +66,16 @@ export async function getInputValue(selector) {
   return await page.$eval(selector, (el) => el.value);
 }
 
-export async function assertWaitedText(
-  selector,
-  expectedText,
-  timeout = 30000,
-) {
-  const text = await retry()
-    .fn(() => page.innerText(selector))
-    .withTimeout(timeout)
-    .until((text) => expect(text.trim()).toBe(expectedText));
-}
+// export async function assertWaitedText(
+//   selector,
+//   expectedText,
+//   timeout = 30000,
+// ) {
+//   const text = await retry()
+//     .fn(() => page.innerText(selector))
+//     .withTimeout(timeout)
+//     .until((text) => expect(text.trim()).toBe(expectedText));
+// }
 
 export async function assertWaitedValue(
   selector,
