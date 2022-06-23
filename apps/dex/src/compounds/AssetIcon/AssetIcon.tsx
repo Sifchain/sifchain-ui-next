@@ -1,6 +1,6 @@
 import { RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
-import React, { type FC, useMemo, useState } from "react";
+import { type FC, useMemo, useState, forwardRef } from "react";
 import SVG, { Props as SVGProps } from "react-inlinesvg";
 
 import { useAssetsQuery } from "~/domains/assets";
@@ -23,12 +23,14 @@ const CLASS_MAP: Record<Props["size"], string> = {
 
 const NOTFOUND = new Set<string>();
 
-export const InlineVector = React.forwardRef<SVGElement, SVGProps>(
+export const InlineVector = forwardRef<SVGElement, SVGProps>(
   ({ src, ...props }, ref) => {
     const title = src.split("/").pop()?.replace(".svg", "");
     return <SVG innerRef={ref} title={title ?? ""} src={src} {...props} />;
   },
 );
+
+InlineVector.displayName = "InlineVector";
 
 const AssetIcon: FC<Props> = (props) => {
   const { isLoading, indexedBySymbol, indexedByDisplaySymbol } =

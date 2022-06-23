@@ -1,3 +1,4 @@
+export * from "./AsyncImage";
 export * from "./atoms";
 export * from "./Button";
 export * from "./ButtonGroup";
