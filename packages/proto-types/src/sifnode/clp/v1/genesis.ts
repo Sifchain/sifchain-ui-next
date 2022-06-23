@@ -1,8 +1,8 @@
 /* eslint-disable */
+import { Params } from "./params";
 import Long from "long";
+import { Pool, LiquidityProvider } from "./types";
 import * as _m0 from "protobufjs/minimal";
-import { Params } from "../../../sifnode/clp/v1/params";
-import { Pool, LiquidityProvider } from "../../../sifnode/clp/v1/types";
 
 export const protobufPackage = "sifnode.clp.v1";
 

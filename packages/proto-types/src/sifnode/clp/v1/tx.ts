@@ -1,8 +1,8 @@
 /* eslint-disable */
+import { Asset } from "./types";
 import Long from "long";
+import { RewardPeriod } from "./params";
 import * as _m0 from "protobufjs/minimal";
-import { Asset } from "../../../sifnode/clp/v1/types";
-import { RewardPeriod } from "../../../sifnode/clp/v1/params";
 
 export const protobufPackage = "sifnode.clp.v1";
 
