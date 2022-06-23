@@ -7,7 +7,7 @@
     "prepare": "husky install",
     "build": "turbo run build",
     "test": "turbo run test",
-    "dev": "turbo run dev --scope=@sifchain/dex",
+    "dev": "turbo run dev --filter=@sifchain/dex",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "storybook": "pnpm -C ./packages/ui run storybook ",
@@ -28,7 +28,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.11",
     "rimraf": "^3.0.2",
-    "turbo": "^1.2.16",
+    "turbo": "^1.3.0",
     "typescript": "4.7.4"
   }
 }
