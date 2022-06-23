@@ -1,6 +1,4 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   DistributionStatus,
   DistributionRecords,
@@ -11,7 +9,9 @@ import {
   distributionStatusToJSON,
   distributionTypeFromJSON,
   distributionTypeToJSON,
-} from "../../../sifnode/dispensation/v1/types";
+} from "./types";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sifnode.dispensation.v1";
 

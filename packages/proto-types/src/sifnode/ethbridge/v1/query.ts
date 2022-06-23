@@ -1,8 +1,8 @@
 /* eslint-disable */
+import { Status } from "../../oracle/v1/types";
 import Long from "long";
+import { EthBridgeClaim } from "./types";
 import * as _m0 from "protobufjs/minimal";
-import { Status } from "../../../sifnode/oracle/v1/types";
-import { EthBridgeClaim } from "../../../sifnode/ethbridge/v1/types";
 
 export const protobufPackage = "sifnode.ethbridge.v1";
 
