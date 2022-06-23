@@ -1,6 +1,6 @@
 import { Signer } from "ethers";
-import { Provider } from "@ethersproject/providers";
-import type { BridgeBank, BridgeBankInterface } from "../BridgeBank";
+import type { Provider } from "@ethersproject/providers";
+import type { BridgeBank, BridgeBankInterface } from "../../../mainnet/peggy/BridgeBank";
 export declare class BridgeBank__factory {
     static readonly abi: ({
         anonymous: boolean;
