@@ -370,7 +370,7 @@ function useOverflowActions(options: {
 
   const [isCopied, setIsCopied] = useState(false);
 
-  const [_, copyToClipboard] = useCopyToClipboard();
+  const [, copyToClipboard] = useCopyToClipboard();
 
   useEffect(() => {
     let timeoutId = -1;
@@ -445,7 +445,7 @@ const ConnectedAccount: FC<{
             <AppearTransition>
               <Menu.Items
                 as={SurfaceA}
-                className="absolute right-0 top-10 p-2 grid gap-2 z-20"
+                className="absolute -right-2 top-10 p-2 grid gap-2 z-20"
               >
                 {actions.map((action) => {
                   const copied = isCopied && action.kind === "copy-address";

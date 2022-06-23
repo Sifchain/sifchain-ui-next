@@ -530,7 +530,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       await this.forceGetQueryClient().tokenRegistry.entries({});
 
     const registry = tokenRegistryEntries.registry?.entries.find(
-      (x) => x.denom === denom,
+      (x) => x.denom === denom || x.baseDenom === denom,
     );
 
     if (registry === undefined) {

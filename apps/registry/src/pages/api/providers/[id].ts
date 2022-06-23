@@ -20,7 +20,9 @@ const handler: NextApiHandler = async (req, res) => {
       throw new Error(`provider with id "${id}" not found`);
     }
 
-    res.json(provider);
+    res
+      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
+      .json(provider);
   } catch (error) {
     if (error instanceof Error) {
       res.status(res.statusCode ?? 400).send({

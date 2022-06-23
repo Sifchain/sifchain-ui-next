@@ -34,12 +34,37 @@
           "type": "string",
           "description": "[OPTIONAL] Display symbol of an asset."
         },
-        "analyticsSiteId": {
-          "type": "string",
-          "description": "[OPTIONAL] The provider's unique analytics identifier."
+        "featured": {
+          "type": "boolean",
+          "description": "[OPTIONAL] Whether the provider should be featured on https://sifchain.network."
+        },
+        "analytics": {
+          "$ref": "#/$defs/analytics"
         }
       },
-      "required": ["id", "displayName", "url", "logoUrl"]
+      "required": ["id", "displayName", "url", "logoUrl", "analytics"]
+    },
+    "analytics": {
+      "type": "object",
+      "properties": {
+        "siteId": {
+          "type": "string",
+          "description": "The provider's unique analytics identifier."
+        },
+        "baseUrl": {
+          "type": "string",
+          "description": "The provider's analytics base URL."
+        },
+        "urlSuffix": {
+          "type": "string",
+          "description": "The provider's analytics URL suffix."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "[OPTIONAL] Whether the provider's analytics should be enabled."
+        }
+      },
+      "required": ["siteId", "baseUrl", "urlSuffix"]
     }
   }
 }

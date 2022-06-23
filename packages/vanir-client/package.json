@@ -9,7 +9,7 @@
   },
   "scripts": {
     "codegen": "swagger-codegen generate -i api.yaml -l typescript-fetch -o src/generated/typescriptFetch",
-    "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
+    "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
   },
   "keywords": [],
   "license": "Apache-2.0",
@@ -22,6 +22,6 @@
     "@types/jest": "^27.5.1",
     "jest": "^28.1.0",
     "ts-jest": "^28.0.2",
-    "typescript": "4.7.3"
+    "typescript": "4.7.4"
   }
 }

@@ -9,7 +9,7 @@
     "require": "./build/commonjs/index.js"
   },
   "scripts": {
-    "build": "rm -rf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
+    "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
     "dev": "zx scripts/dev.mjs"
   },
   "keywords": [],

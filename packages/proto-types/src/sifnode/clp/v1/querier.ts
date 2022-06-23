@@ -1,23 +1,18 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import {
   Pool,
   LiquidityProvider,
   PmtpEpoch,
   Asset,
   LiquidityProviderData,
-} from "../../../sifnode/clp/v1/types";
+} from "./types";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import {
-  Params,
-  RewardParams,
-  PmtpParams,
-  PmtpRateParams,
-} from "../../../sifnode/clp/v1/params";
+import { Params, RewardParams, PmtpParams, PmtpRateParams } from "./params";
+import Long from "long";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sifnode.clp.v1";
 

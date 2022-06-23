@@ -1,7 +1,7 @@
 /* eslint-disable */
+import { Coin } from "../../../cosmos/base/coin";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/coin";
 
 export const protobufPackage = "sifnode.dispensation.v1";
 

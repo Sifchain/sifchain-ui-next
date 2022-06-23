@@ -7,7 +7,9 @@ const handler: NextApiHandler = async (_req, res) => {
   try {
     const { providers } = await readProviderList();
 
-    res.json(providers);
+    res
+      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
+      .json(providers);
   } catch (error) {
     if (error instanceof Error) {
       res.status(res.statusCode ?? 400).send({
