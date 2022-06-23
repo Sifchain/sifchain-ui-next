@@ -22,7 +22,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - run: pnpm install
-      - run: pnpm build
+      - run: pnpm turbo run build --filter="./packages/*"
 
       # Only create snapshot for now, re-enable once the dex is released
       # - name: Create PR or Publish release
