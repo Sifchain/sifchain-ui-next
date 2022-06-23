@@ -356,19 +356,19 @@ importers:
 
   packages/proto-types:
     specifiers:
-      '@tsconfig/node16-strictest-esm': ^1.0.2
+      '@tsconfig/node16-strictest-esm': ^1.0.3
       degit: ^2.8.4
       long: ^5.2.0
-      protobufjs: ^6.11.2
-      ts-proto: ^1.110.4
+      protobufjs: ^6.11.3
+      ts-proto: ^1.115.5
       typescript: 4.7.4
     dependencies:
       long: 5.2.0
-      protobufjs: 6.11.2
+      protobufjs: 6.11.3
     devDependencies:
-      '@tsconfig/node16-strictest-esm': 1.0.2
+      '@tsconfig/node16-strictest-esm': 1.0.3
       degit: 2.8.4
-      ts-proto: 1.112.2
+      ts-proto: 1.115.5
       typescript: 4.7.4
 
   packages/stargate:
@@ -21092,13 +21092,6 @@ packages:
       typescript: 4.7.4
     dev: true
 
-  /ts-poet/4.11.0:
-    resolution: {integrity: sha512-OaXnCKsRs0yrc0O7LFhnq/US2DB4Wd313cS+qjG2XMksZ74pF/jvMHkJdURXJiAo4kSahL2N4e8JOdwUjOMNdw==}
-    dependencies:
-      lodash: 4.17.21
-      prettier: 2.6.2
-    dev: true
-
   /ts-poet/4.14.0:
     resolution: {integrity: sha512-hLGzWo3H3GLjVubftvaycGSconJrNpjjdpn43Lthnu61l/R2CaPIu+1JhaWZyqh2yj5NaOv+wZ5zoSJzDouAHw==}
     dependencies:
@@ -21111,18 +21104,6 @@ packages:
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.3
-    dev: true
-
-  /ts-proto/1.112.2:
-    resolution: {integrity: sha512-+97ks5l+R49nzY/sN3Z43+55suW2+URZt1LoXC+EIg6tmeV0556JqwNp+vVcdXJgUG/gXoypYbOiB0m+RFf9Qg==}
-    hasBin: true
-    dependencies:
-      '@types/object-hash': 1.3.4
-      dataloader: 1.4.0
-      object-hash: 1.3.1
-      protobufjs: 6.11.2
-      ts-poet: 4.11.0
-      ts-proto-descriptors: 1.6.0
     dev: true
 
   /ts-proto/1.115.5:
