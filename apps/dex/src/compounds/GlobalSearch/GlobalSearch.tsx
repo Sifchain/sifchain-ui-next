@@ -10,9 +10,7 @@ import React, { useCallback, useMemo, useState, type FC } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
-type Props = {};
-
-const GlobalSearch: FC<Props> = (_props) => {
+const GlobalSearch: FC = () => {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState("");
 
@@ -64,7 +62,7 @@ const GlobalSearch: FC<Props> = (_props) => {
         addRecentEntry(selected);
       }
     },
-    [entries],
+    [addRecentEntry, indexedById],
   );
 
   return (
