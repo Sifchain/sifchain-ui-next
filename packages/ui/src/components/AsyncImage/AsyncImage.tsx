@@ -10,6 +10,7 @@ export type AsyncImageProps = {
   className?: string;
   loadingClassName?: string;
   placeholder?: React.ReactElement;
+  onLoad?: () => void;
 };
 
 function useStatus(src: string) {
@@ -27,8 +28,9 @@ export const AsyncImage = React.memo<AsyncImageProps>(function AsyncImage({
   alt,
   placeholder,
   decoding = "async",
-  className = "async-image",
-  loadingClassName = "async-image-loading",
+  className,
+  loadingClassName = "",
+  ...props
 }) {
   const [fetching, error, onLoad, onError] = useStatus(src);
 
@@ -36,11 +38,18 @@ export const AsyncImage = React.memo<AsyncImageProps>(function AsyncImage({
     return placeholder;
   }
 
-  const props = { alt, src, decoding, onLoad, onError };
+  const imgProps = { alt, src, decoding, onError };
 
   return (
     <img
-      {...props}
+      {...imgProps}
+      onLoad={() => {
+        onLoad();
+        if (props.onLoad) {
+          props.onLoad();
+        }
+      }}
+      loading="lazy"
       className={clsx(className, { [loadingClassName]: fetching })}
     />
   );

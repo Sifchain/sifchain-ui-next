@@ -1,6 +1,6 @@
-import { RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
+import { AsyncImage, RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
-import { type FC, useMemo, useState, forwardRef } from "react";
+import { type FC, useMemo, useState, forwardRef, memo } from "react";
 import SVG, { Props as SVGProps } from "react-inlinesvg";
 
 import { useAssetsQuery } from "~/domains/assets";
@@ -23,65 +23,78 @@ const CLASS_MAP: Record<Props["size"], string> = {
 
 const NOTFOUND = new Set<string>();
 
-export const InlineVector = forwardRef<SVGElement, SVGProps>(
-  ({ src, ...props }, ref) => {
+export const InlineVector = memo(
+  forwardRef<SVGElement, SVGProps>(({ src, ...props }, ref) => {
     const title = src.split("/").pop()?.replace(".svg", "");
     return <SVG innerRef={ref} title={title ?? ""} src={src} {...props} />;
-  },
+  }),
 );
 
 InlineVector.displayName = "InlineVector";
 
 const AssetIcon: FC<Props> = (props) => {
-  const { isLoading, indexedBySymbol, indexedByDisplaySymbol } =
-    useAssetsQuery();
+  const {
+    isLoading: isLoadingAsset,
+    indexedBySymbol,
+    indexedByDisplaySymbol,
+  } = useAssetsQuery();
 
   const asset = useMemo(
     () =>
       indexedBySymbol[props.symbol.toLowerCase()] ||
       indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
       indexedByDisplaySymbol[props.symbol.toLowerCase()],
-    [],
+    [indexedByDisplaySymbol, indexedBySymbol, props.symbol],
   );
 
   if (!asset) {
     console.log(`AssetIcon: asset not found for ${props.symbol}`);
   }
 
+  const [loading, setLoading] = useState(true);
   const [fallback, setFallback] = useState(false);
 
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
-      <div className="relative">
-        {isLoading ? (
-          <RacetrackSpinnerIcon className={CLASS_MAP[props.size]} />
-        ) : fallback || NOTFOUND.has(props.symbol) ? (
-          <figure
-            className={clsx(
-              "ring ring-slate-900 rounded-full p-2 bg-cover overflow-hidden",
-              CLASS_MAP[props.size],
-              {
-                invert: props.invertColor,
-              },
-            )}
-            style={{
-              backgroundImage: `url(${asset?.imageUrl})`,
-            }}
-          >
-            {isLoading ? "..." : ""}
-          </figure>
+      <figure
+        className={clsx(
+          "ring ring-slate-900 rounded-full bg-cover overflow-hidden relative grid place-items-center",
+          CLASS_MAP[props.size],
+          {
+            invert: Boolean(props.invertColor),
+          },
+        )}
+      >
+        {(loading || isLoadingAsset) && (
+          <RacetrackSpinnerIcon
+            className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
+          />
+        )}
+        {fallback || NOTFOUND.has(props.symbol) ? (
+          <AsyncImage
+            src={asset?.imageUrl ?? ""}
+            placeholder={
+              <RacetrackSpinnerIcon
+                className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
+              />
+            }
+            className="z-10"
+          />
         ) : (
           <InlineVector
             cacheRequests
-            className={CLASS_MAP[props.size]}
+            className={clsx(CLASS_MAP[props.size], "z-10")}
             src={`/tokens/${asset?.displaySymbol.toUpperCase()}.svg`}
-            onError={(e) => {
+            onError={() => {
               NOTFOUND.add(props.symbol);
               setFallback(true);
             }}
+            onLoad={() => {
+              setLoading(false);
+            }}
           />
         )}
-      </div>
+      </figure>
     </Tooltip>
   );
 };
