@@ -607,7 +607,7 @@
     },
     {
       "address": "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
-      "imageUrl": "https://assets.coingecko.com/coins/images/4934/small/0_Black-svg.png?1600757954",
+      "imageUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xb9EF770B6A5e12E45983C5D80545258aA38F3B78/logo.png",
       "name": "0chain",
       "symbol": "ZCN",
       "hasDarkIcon": true,

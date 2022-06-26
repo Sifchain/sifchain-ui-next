@@ -104,4 +104,4 @@ AssetIcon.defaultProps = {
   showNetwork: false,
 };
 
-export default AssetIcon;
+export default memo(AssetIcon);
