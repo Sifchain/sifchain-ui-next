@@ -16,6 +16,11 @@
     "e2e": "pnpm -C ./packages/e2e run test",
     "pretty-quick": "pretty-quick"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "keywords": [],
   "license": "Apache-2.0",
   "devDependencies": {
