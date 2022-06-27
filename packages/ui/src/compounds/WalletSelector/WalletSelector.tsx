@@ -36,7 +36,7 @@ export type ChainEntry = {
   name: string;
   type: string;
   icon: ReactNode;
-  connected: boolean;
+  connected?: boolean;
 };
 
 export type WalletEntry = {
