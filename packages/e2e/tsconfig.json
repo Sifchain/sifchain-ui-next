@@ -13,7 +13,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./test/*"]
-    }
+    },
+    "allowJs": true,
+    "outDir": "dist"
   },
   "include": ["tests"]
 }

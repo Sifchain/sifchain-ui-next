@@ -298,10 +298,14 @@ importers:
       '@playwright/test': ^1.22.2
       '@tsconfig/node16-strictest-esm': ^1.0.2
       '@types/node': ^17.0.38
+      mkdirp: ^1.0.4
+      node-stream-zip: ^1.15.0
     devDependencies:
       '@playwright/test': 1.22.2
       '@tsconfig/node16-strictest-esm': 1.0.2
       '@types/node': 17.0.38
+      mkdirp: 1.0.4
+      node-stream-zip: 1.15.0
 
   packages/eth-sdk:
     specifiers:
@@ -11398,10 +11402,10 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.28.0_b5e7v2qnwxfo6hmiq56u52mz3e
+      '@typescript-eslint/parser': 5.28.0_ud6rd4xtew5bv4yhvkvu24pzm4
       debug: 3.2.7
       eslint-import-resolver-node: 0.3.6
-      eslint-import-resolver-typescript: 2.7.1_srrmf5la5dmnsfe2mpg6sboreu
+      eslint-import-resolver-typescript: 2.7.1_3yxiwxzsqipdmy4jwrlv6vgfmy
       find-up: 2.1.0
     transitivePeerDependencies:
       - supports-color
@@ -17132,6 +17136,11 @@ packages:
 
   /node-releases/2.0.5:
     resolution: {integrity: sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==}
+
+  /node-stream-zip/1.15.0:
+    resolution: {integrity: sha512-LN4fydt9TqhZhThkZIVQnF9cwjU3qmUH9h78Mx/K7d3VvfRqqwthLwJEUOEL0QPZ0XQmNN7be5Ggit5+4dq3Bw==}
+    engines: {node: '>=0.12.0'}
+    dev: true
 
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}

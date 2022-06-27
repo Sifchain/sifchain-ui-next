@@ -18,6 +18,8 @@
   "devDependencies": {
     "@playwright/test": "^1.22.2",
     "@tsconfig/node16-strictest-esm": "^1.0.2",
-    "@types/node": "^17.0.38"
+    "@types/node": "^17.0.38",
+    "mkdirp": "^1.0.4",
+    "node-stream-zip": "^1.15.0"
   }
 }
