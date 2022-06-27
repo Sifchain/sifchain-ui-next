@@ -181,7 +181,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return this.#sifQueryClient;
   }
 
-  async exportIBCTokens(
+  async exportIbcTokens(
     senderAddress: string,
     recipientAddress: string,
     transferAmount: Coin,
@@ -208,7 +208,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
-  async importIBCTokens(
+  async importIbcTokens(
     counterPartySigningStargateClient: SigningStargateClient,
     senderAddress: string,
     recipientAddress: string,
