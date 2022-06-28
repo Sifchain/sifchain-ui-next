@@ -1,3 +1,4 @@
+export * from "./liquidityProvider";
 export * from "./useEnhancedPools";
 export * from "./usePools";
 export * from "./usePoolStats";
