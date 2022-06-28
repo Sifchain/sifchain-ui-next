@@ -394,6 +394,22 @@ function useOverflowActions(options: {
         break;
       case "show-qr-code":
         WalletConnectQRCodeModal.open(options.account);
+
+        const wcText = document.getElementById("walletconnect-qrcode-text");
+
+        if (wcText) {
+          // @ts-ignore
+          wcText.style = "";
+          wcText.className = "font-sans font-semibold mt-8";
+          wcText.innerText = "Scan QR code to view address";
+        }
+
+        // hide wc logo
+        document
+          .querySelectorAll("#walletconnect-qrcode-modal img")
+          .forEach((el) => {
+            el.remove();
+          });
         break;
       case "disconnect":
         options.onDisconnect();
