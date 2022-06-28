@@ -145,7 +145,7 @@ const AssetsPage: NextPage = () => {
                   <div className="flex-1">
                     <header className="opacity-80">Pooled</header>
                     <div>
-                      {pooledAmount
+                      {(pooledAmount ?? Decimal.zero(0))
                         ?.toFloatApproximation()
                         .toLocaleString(undefined, {
                           maximumFractionDigits: 6,
