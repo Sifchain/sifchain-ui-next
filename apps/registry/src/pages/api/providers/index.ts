@@ -24,4 +24,8 @@ const handler: NextApiHandler = async (_req, res) => {
   }
 };
 
+export const config = {
+  runtime: "experimental-edge",
+};
+
 export default withCorsMiddleware(handler);
