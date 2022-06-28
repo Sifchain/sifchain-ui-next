@@ -1,114 +1,116 @@
-import { SearchInput, SortUnderterminedIcon } from "@sifchain/ui";
+import { ArrowDownIcon, Button } from "@sifchain/ui";
+import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
 import type { NextPage } from "next";
 import type { FC } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllDisplayBalances } from "~/domains/bank/hooks/balances";
-import PageLayout from "~/layouts/PageLayout";
+import { useAllBalances } from "~/domains/bank/hooks/balances";
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
-  <div className="grid gap-2">
-    <span className="text-gray-300">{props.label}</span>
-    <span className="text-2xl font-semibold">{props.value}</span>
+  <div className="flex-1 grid gap-1">
+    <span className="opacity-80">{props.label}</span>
+    <span className="font-semibold">{props.value}</span>
   </div>
 );
-
-const COLUMNS = [
-  {
-    id: "token",
-    label: "Token",
-    sortable: true,
-    sortField: "token",
-  },
-  {
-    id: "balance",
-    label: "Balance",
-    sortable: true,
-    sortField: "balance",
-  },
-  {
-    id: "available",
-    label: "Available",
-    sortable: true,
-    sortField: "available",
-  },
-  {
-    id: "pooled",
-    label: "Pooled",
-    sortable: true,
-    sortField: "pooled",
-  },
-];
-
 const AssetsPage: NextPage = () => {
-  const { data: balances } = useAllDisplayBalances();
+  const { data: balances } = useAllBalances();
 
   const stats = [
     {
-      label: "Total Assets",
-      value: "1,000,000",
+      label: "Total",
+      value: 100000,
     },
     {
-      label: "Available Assets",
-      value: "1,000,000",
+      label: "Available",
+      value: 100000,
     },
     {
-      label: "Pooled Assets",
-      value: "1,000,000",
+      label: "Pooled",
+      value: 100000,
     },
   ];
 
   return (
-    <PageLayout heading="Balances">
-      <section className="grid gap-12 rounded-xl bg-gray-900 p-8">
-        <header className="grid gap-4">
-          <div className="flex justify-between">
-            <h2 className="text-2xl">Balances</h2>
-            <SearchInput placeholder="filter tokens..." />
+    <div className="flex-1 flex flex-col justify-center items-center">
+      <section className="flex-1 w-full bg-black p-6">
+        <header className="mb-10">
+          <div className="flex items-center justify-between pb-6">
+            <h2 className="text-2xl font-bold text-white">Balances</h2>
+            <Button>
+              <ArrowDownIcon /> Import
+            </Button>
           </div>
-          <div className="flex justify-between max-w-2xl">
+          <div className="flex flex-wrap gap-4">
             {stats.map((stat) => (
-              <Stat key={stat.label} label={stat.label} value={stat.value} />
+              <Stat
+                key={stat.label}
+                label={stat.label}
+                value={stat.value.toLocaleString(undefined, {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              />
             ))}
           </div>
         </header>
-        <table>
-          <thead className="text-left mb-6">
-            <tr>
-              {COLUMNS.map((column) => (
-                <th key={column.id} className="text-gray-300 py-4">
-                  <div className="flex items-center gap-2">
-                    {column.label} <SortUnderterminedIcon />
+        <div className="flex flex-col gap-4">
+          {balances?.map((balance) => (
+            <details
+              key={balance.denom}
+              className="[&[open]>summary>div>.marker]:rotate-180"
+            >
+              <summary className="flex justify-between items-center mb-2">
+                <figcaption className="flex items-center gap-4">
+                  <figure>
+                    <AssetIcon
+                      network="sifchain"
+                      symbol={balance.symbol ?? ""}
+                      size="md"
+                    />
+                  </figure>
+                  <div>
+                    <h2 className="uppercase font-bold">
+                      {balance.displaySymbol}
+                    </h2>
+                    <h3>{balance.network}</h3>
                   </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {balances?.map((balance) => (
-              <tr key={balance.denom}>
-                <td className="py-4">
-                  <article>
-                    <figcaption className="flex gap-4">
-                      <figure>
-                        <AssetIcon
-                          network="sifchain"
-                          symbol={balance.denom}
-                          size="md"
-                        />
-                      </figure>
-                      <h2>{balance.denom}</h2>
-                    </figcaption>
-                  </article>
-                </td>
-                <td className="py-4">{balance.amount.toFormat()}</td>
-                <td className="py-4">{balance.amount.toFormat()}</td>
-                <td className="py-4">{balance.amount.toFormat()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </figcaption>
+                <div className="flex items-center gap-4">
+                  <strong>
+                    {balance.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, { maximumFractionDigits: 6 })}
+                  </strong>
+                  <span className="marker p-2 cursor-pointer select-none">
+                    ▼
+                  </span>
+                  <button className="p-2">
+                    <SvgDotsVerticalIcon />
+                  </button>
+                </div>
+              </summary>
+              <div className="flex pl-10">
+                <div className="flex-1">
+                  <header className="opacity-80">Available</header>
+                  <div>
+                    {balance.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, { maximumFractionDigits: 6 })}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <header className="opacity-80">Pooled</header>
+                  <div>
+                    {balance.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, { maximumFractionDigits: 6 })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
-    </PageLayout>
+    </div>
   );
 };
 
