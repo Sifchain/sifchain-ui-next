@@ -1,5 +1,5 @@
 {
-  "name": "@sifchain/vanir-client",
+  "name": "@sifchain/sif-api",
   "version": "1.0.0",
   "description": "",
   "main": "build/commonjs/index.js",

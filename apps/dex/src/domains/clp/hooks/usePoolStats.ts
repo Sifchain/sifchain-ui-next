@@ -1,10 +1,10 @@
 import { indexBy } from "rambda";
 import { useMemo } from "react";
 
-import useVanirQuery from "~/hooks/useVanirQuery";
+import useSifApiQuery from "~/hooks/useSifApiQuery";
 
 export function usePoolStatsQuery() {
-  const { data, ...query } = useVanirQuery("assets.getTokenStats", []);
+  const { data, ...query } = useSifApiQuery("assets.getTokenStats", []);
 
   const indexedBySymbol = useMemo(() => {
     if (!data?.pools) {

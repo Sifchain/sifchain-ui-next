@@ -1,9 +1,9 @@
-import { createClient } from "@sifchain/vanir-client";
+import { createClient } from "@sifchain/sif-api";
 import { useQuery } from "react-query";
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
-export default function useVanirClient() {
+export default function useSifApiClient() {
   const { data: env, isSuccess } = useDexEnvironment();
 
   return useQuery(

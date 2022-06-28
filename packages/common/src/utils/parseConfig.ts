@@ -20,7 +20,7 @@ type TokenConfig = BaseAssetConfig & {
   address: string;
 };
 
-type CoinConfig = BaseAssetConfig & {};
+type CoinConfig = BaseAssetConfig;
 
 export type AssetConfig = CoinConfig | TokenConfig;
 
@@ -118,7 +118,7 @@ export function parseConfig(
 
   const bridgetokenContractAddress = assets.find(
     (token) => token.symbol === "erowan",
-  )?.address!;
+  )?.address;
 
   const sifAssets = assets
     .filter((asset) => asset.network === "sifchain")

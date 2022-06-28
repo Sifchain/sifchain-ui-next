@@ -1,9 +1,9 @@
-import type { createClient } from "@sifchain/vanir-client";
+import type { createClient } from "@sifchain/sif-api";
 import { ArgumentTypes, omit } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
 import type { SafeKeyof } from "~/lib/type-utils";
-import useVanirClient from "./useVanirClient";
+import useSifApiClient from "./useSifApiClient";
 
 export type VanirClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -26,7 +26,7 @@ export type QueryKey = `${L1}.${L2}`;
  * @param args {any}
  * @returns
  */
-export default function useVanirQuery<
+export default function useSifApiQuery<
   T extends L1,
   P extends keyof VanirPublicClient[T],
   M = VanirPublicClient[T][P],
@@ -41,7 +41,7 @@ export default function useVanirQuery<
     "queryKey" | "queryFn"
   > = {},
 ) {
-  const { data: client } = useVanirClient();
+  const { data: client } = useSifApiClient();
 
   return useQuery(
     [query],

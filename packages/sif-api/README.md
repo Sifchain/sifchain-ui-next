@@ -1,4 +1,4 @@
-# @sifchain/vanir-client
+# @sifchain/sif-api
 
 HTTP client for sifchain Vanir data aggregation service
 
@@ -13,7 +13,7 @@ yarn add @sifchain/stargate@snapshot
 ## Example usage
 
 ```ts
-import { createClient } from "@sifchain/vanir-client";
+import { createClient } from "@sifchain/sif-api";
 
 const vanirClient = createClient();
 
