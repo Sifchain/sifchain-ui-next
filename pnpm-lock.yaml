@@ -39,6 +39,7 @@ importers:
       "@heroicons/react": ^1.0.6
       "@sifchain/common": workspace:*
       "@sifchain/cosmos-connect": workspace:*
+      "@sifchain/evm": workspace:*
       "@sifchain/proto-types": workspace:*
       "@sifchain/sif-api": workspace:*
       "@sifchain/stargate": workspace:*
@@ -55,6 +56,7 @@ importers:
       bignumber.js: ^9.0.2
       bufferutil: ^4.0.6
       clsx: ^1.1.1
+      date-fns: ^2.28.0
       encoding: ^0.1.13
       eslint: ^8.18.0
       eslint-config-next: 12.1.6
@@ -90,6 +92,7 @@ importers:
       "@heroicons/react": 1.0.6_react@18.1.0
       "@sifchain/common": link:../../packages/common
       "@sifchain/cosmos-connect": link:../../packages/cosmos-connect
+      "@sifchain/evm": link:../../packages/evm
       "@sifchain/proto-types": link:../../packages/proto-types
       "@sifchain/sif-api": link:../../packages/sif-api
       "@sifchain/stargate": link:../../packages/stargate
@@ -100,6 +103,7 @@ importers:
       "@walletconnect/types": 2.0.0-beta.26
       bignumber.js: 9.0.2
       clsx: 1.1.1
+      date-fns: 2.28.0
       ethers: 5.6.9_22kvxa7zeyivx4jp72v2w3pkvy
       immer: 9.0.15
       ky: 0.30.0
@@ -226,7 +230,7 @@ importers:
 
   packages/common:
     specifiers:
-      "@cosmjs/stargate": ^0.28.4
+      "@cosmjs/stargate": ^0.28.9
       "@keplr-wallet/types": ^0.10.4
       "@tsconfig/node16-strictest-esm": ^1.0.2
       "@types/big.js": ^6.1.3
@@ -244,7 +248,7 @@ importers:
       url-join-ts: ^1.0.5
       vitest: ^0.15.2
     dependencies:
-      "@cosmjs/stargate": 0.28.4
+      "@cosmjs/stargate": 0.28.9
       big.js: 6.2.0
       decimal.js-light: 2.5.1
       js-cookie: 3.0.1
@@ -266,7 +270,7 @@ importers:
   packages/cosmos-connect:
     specifiers:
       "@cosmjs/proto-signing": ^0.28.4
-      "@cosmjs/stargate": ^0.28.4
+      "@cosmjs/stargate": ^0.28.9
       "@keplr-wallet/common": ^0.10.5
       "@keplr-wallet/stores": ^0.10.5
       "@keplr-wallet/types": ^0.10.5
@@ -282,7 +286,7 @@ importers:
       zx: ^6.2.0
     dependencies:
       "@cosmjs/proto-signing": 0.28.4
-      "@cosmjs/stargate": 0.28.4
+      "@cosmjs/stargate": 0.28.9
       "@keplr-wallet/common": 0.10.5
       "@keplr-wallet/stores": 0.10.5
       "@keplr-wallet/wc-client": 0.10.5
@@ -336,12 +340,6 @@ importers:
       ts-jest: 28.0.5_zv2ltmnvcc5apkdaecods742je
       ts-node: 10.8.1_qiyc72axg2v44xl4yovan2v55u
       typescript: 4.7.4
-
-  packages/evm/build/commonjs/generated:
-    specifiers: {}
-
-  packages/evm/build/module/generated:
-    specifiers: {}
 
   packages/evm/src/generated:
     specifiers: {}
@@ -3087,16 +3085,6 @@ packages:
       xstream: 11.14.0
     dev: false
 
-  /@cosmjs/json-rpc/0.28.4:
-    resolution:
-      {
-        integrity: sha512-An8ZQi9OKbnS8ew/MyHhF90zQpXBF8RTj2wdvIH+Hr8yA6QjynY8hxRpUwYUt3Skc5NeUnTZNuWCzlluHnoxVg==,
-      }
-    dependencies:
-      "@cosmjs/stream": 0.28.4
-      xstream: 11.14.0
-    dev: false
-
   /@cosmjs/json-rpc/0.28.9:
     resolution:
       {
@@ -3206,21 +3194,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/socket/0.28.4:
-    resolution:
-      {
-        integrity: sha512-jAEL3Ri+s8XuBM3mqgO4yvmeQu+R+704V37lGROC1B6kAbGxWRyOWrMdOOiFJzCZ35sSMB7L+xKjpE8ug0vJjg==,
-      }
-    dependencies:
-      "@cosmjs/stream": 0.28.4
-      isomorphic-ws: 4.0.1_ws@7.5.7
-      ws: 7.5.7
-      xstream: 11.14.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@cosmjs/socket/0.28.9:
     resolution:
       {
@@ -3248,30 +3221,6 @@ packages:
       xstream: 11.14.0
     transitivePeerDependencies:
       - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@cosmjs/stargate/0.28.4:
-    resolution:
-      {
-        integrity: sha512-tdwudilP5iLNwDm4TOMBjWuL5YehLPqGlC5/7hjJM/kVHyzLFo4Lzt0dVEwr5YegH+RsRXH/VtFLQz+NYlCobw==,
-      }
-    dependencies:
-      "@confio/ics23": 0.6.8
-      "@cosmjs/amino": 0.28.4
-      "@cosmjs/encoding": 0.28.4
-      "@cosmjs/math": 0.28.4
-      "@cosmjs/proto-signing": 0.28.4
-      "@cosmjs/stream": 0.28.4
-      "@cosmjs/tendermint-rpc": 0.28.4
-      "@cosmjs/utils": 0.28.4
-      cosmjs-types: 0.4.1
-      long: 4.0.0
-      protobufjs: 6.10.2
-      xstream: 11.14.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
       - utf-8-validate
     dev: false
 
@@ -3332,15 +3281,6 @@ packages:
       xstream: 11.14.0
     dev: false
 
-  /@cosmjs/stream/0.28.4:
-    resolution:
-      {
-        integrity: sha512-BDwDdFOrOgRx/Wm5nknb9YCV9HHIUcsOxykTDZqdArCUsn4QJBq79QIjp919G05Z8UemkoHwiUCUNB2BfoKmFw==,
-      }
-    dependencies:
-      xstream: 11.14.0
-    dev: false
-
   /@cosmjs/stream/0.28.9:
     resolution:
       {
@@ -3362,28 +3302,6 @@ packages:
       "@cosmjs/math": 0.24.1
       "@cosmjs/socket": 0.24.1
       "@cosmjs/stream": 0.24.1
-      axios: 0.21.4
-      readonly-date: 1.0.0
-      xstream: 11.14.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: false
-
-  /@cosmjs/tendermint-rpc/0.28.4:
-    resolution:
-      {
-        integrity: sha512-iz6p4UW2QUZNh55WeJy9wHbMdqM8COo0AJdrGU4Ikb/xU0/H6b0dFPoEK+i6ngR0cSizh+hpTMzh3AA7ySUKlA==,
-      }
-    dependencies:
-      "@cosmjs/crypto": 0.28.4
-      "@cosmjs/encoding": 0.28.4
-      "@cosmjs/json-rpc": 0.28.4
-      "@cosmjs/math": 0.28.4
-      "@cosmjs/socket": 0.28.4
-      "@cosmjs/stream": 0.28.4
-      "@cosmjs/utils": 0.28.4
       axios: 0.21.4
       readonly-date: 1.0.0
       xstream: 11.14.0
@@ -3626,6 +3544,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
       "@ethersproject/strings": 5.6.1
+    dev: false
 
   /@ethersproject/abstract-provider/5.6.1:
     resolution:
@@ -3640,6 +3559,7 @@ packages:
       "@ethersproject/properties": 5.6.0
       "@ethersproject/transactions": 5.6.2
       "@ethersproject/web": 5.6.1
+    dev: false
 
   /@ethersproject/abstract-signer/5.6.2:
     resolution:
@@ -3652,6 +3572,7 @@ packages:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
+    dev: false
 
   /@ethersproject/address/5.6.1:
     resolution:
@@ -3664,6 +3585,7 @@ packages:
       "@ethersproject/keccak256": 5.6.1
       "@ethersproject/logger": 5.6.0
       "@ethersproject/rlp": 5.6.1
+    dev: false
 
   /@ethersproject/base64/5.6.1:
     resolution:
@@ -3672,6 +3594,7 @@ packages:
       }
     dependencies:
       "@ethersproject/bytes": 5.6.1
+    dev: false
 
   /@ethersproject/basex/5.6.1:
     resolution:
@@ -3681,6 +3604,7 @@ packages:
     dependencies:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/properties": 5.6.0
+    dev: false
 
   /@ethersproject/bignumber/5.6.2:
     resolution:
@@ -3691,6 +3615,7 @@ packages:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/logger": 5.6.0
       bn.js: 5.2.1
+    dev: false
 
   /@ethersproject/bytes/5.6.1:
     resolution:
@@ -3699,6 +3624,7 @@ packages:
       }
     dependencies:
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/constants/5.6.1:
     resolution:
@@ -3707,6 +3633,7 @@ packages:
       }
     dependencies:
       "@ethersproject/bignumber": 5.6.2
+    dev: false
 
   /@ethersproject/contracts/5.6.2:
     resolution:
@@ -3724,6 +3651,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
       "@ethersproject/transactions": 5.6.2
+    dev: false
 
   /@ethersproject/hash/5.6.1:
     resolution:
@@ -3739,6 +3667,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
       "@ethersproject/strings": 5.6.1
+    dev: false
 
   /@ethersproject/hdnode/5.6.2:
     resolution:
@@ -3758,6 +3687,7 @@ packages:
       "@ethersproject/strings": 5.6.1
       "@ethersproject/transactions": 5.6.2
       "@ethersproject/wordlists": 5.6.1
+    dev: false
 
   /@ethersproject/json-wallets/5.6.1:
     resolution:
@@ -3778,6 +3708,7 @@ packages:
       "@ethersproject/transactions": 5.6.2
       aes-js: 3.0.0
       scrypt-js: 3.0.1
+    dev: false
 
   /@ethersproject/keccak256/5.6.1:
     resolution:
@@ -3787,12 +3718,14 @@ packages:
     dependencies:
       "@ethersproject/bytes": 5.6.1
       js-sha3: 0.8.0
+    dev: false
 
   /@ethersproject/logger/5.6.0:
     resolution:
       {
         integrity: sha512-BiBWllUROH9w+P21RzoxJKzqoqpkyM1pRnEKG69bulE9TSQD8SAIvTQqIMZmmCO8pUNkgLP1wndX1gKghSpBmg==,
       }
+    dev: false
 
   /@ethersproject/networks/5.6.4:
     resolution:
@@ -3801,6 +3734,7 @@ packages:
       }
     dependencies:
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/pbkdf2/5.6.1:
     resolution:
@@ -3810,6 +3744,7 @@ packages:
     dependencies:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/sha2": 5.6.1
+    dev: false
 
   /@ethersproject/properties/5.6.0:
     resolution:
@@ -3818,6 +3753,7 @@ packages:
       }
     dependencies:
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/providers/5.6.8:
     resolution:
@@ -3848,6 +3784,7 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: false
 
   /@ethersproject/providers/5.6.8_22kvxa7zeyivx4jp72v2w3pkvy:
     resolution:
@@ -3888,6 +3825,7 @@ packages:
     dependencies:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/rlp/5.6.1:
     resolution:
@@ -3897,6 +3835,7 @@ packages:
     dependencies:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/sha2/5.6.1:
     resolution:
@@ -3907,6 +3846,7 @@ packages:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/logger": 5.6.0
       hash.js: 1.1.7
+    dev: false
 
   /@ethersproject/signing-key/5.6.2:
     resolution:
@@ -3920,6 +3860,7 @@ packages:
       bn.js: 5.2.1
       elliptic: 6.5.4
       hash.js: 1.1.7
+    dev: false
 
   /@ethersproject/solidity/5.6.1:
     resolution:
@@ -3933,6 +3874,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/sha2": 5.6.1
       "@ethersproject/strings": 5.6.1
+    dev: false
 
   /@ethersproject/strings/5.6.1:
     resolution:
@@ -3943,6 +3885,7 @@ packages:
       "@ethersproject/bytes": 5.6.1
       "@ethersproject/constants": 5.6.1
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/transactions/5.6.2:
     resolution:
@@ -3959,6 +3902,7 @@ packages:
       "@ethersproject/properties": 5.6.0
       "@ethersproject/rlp": 5.6.1
       "@ethersproject/signing-key": 5.6.2
+    dev: false
 
   /@ethersproject/units/5.6.1:
     resolution:
@@ -3969,6 +3913,7 @@ packages:
       "@ethersproject/bignumber": 5.6.2
       "@ethersproject/constants": 5.6.1
       "@ethersproject/logger": 5.6.0
+    dev: false
 
   /@ethersproject/wallet/5.6.2:
     resolution:
@@ -3991,6 +3936,7 @@ packages:
       "@ethersproject/signing-key": 5.6.2
       "@ethersproject/transactions": 5.6.2
       "@ethersproject/wordlists": 5.6.1
+    dev: false
 
   /@ethersproject/web/5.6.1:
     resolution:
@@ -4003,6 +3949,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
       "@ethersproject/strings": 5.6.1
+    dev: false
 
   /@ethersproject/wordlists/5.6.1:
     resolution:
@@ -4015,6 +3962,7 @@ packages:
       "@ethersproject/logger": 5.6.0
       "@ethersproject/properties": 5.6.0
       "@ethersproject/strings": 5.6.1
+    dev: false
 
   /@floating-ui/core/0.7.3:
     resolution:
@@ -5144,6 +5092,7 @@ packages:
       {
         integrity: sha512-Te/OBDXFSodPU6jlXYPAXpmZr/AkG6DCATAxttQxqOWaq6eDFX25Db3dK0120GZrSZmv4QCe9KsZmJKDbWs4OA==,
       }
+    dev: false
 
   /@next/eslint-plugin-next/12.1.6:
     resolution:
@@ -5163,6 +5112,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-android-arm64/12.1.6:
@@ -5174,6 +5124,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-darwin-arm64/12.1.6:
@@ -5185,6 +5136,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-darwin-x64/12.1.6:
@@ -5196,6 +5148,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-linux-arm-gnueabihf/12.1.6:
@@ -5207,6 +5160,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-linux-arm64-gnu/12.1.6:
@@ -5218,6 +5172,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-linux-arm64-musl/12.1.6:
@@ -5229,6 +5184,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-linux-x64-gnu/12.1.6:
@@ -5240,6 +5196,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-linux-x64-musl/12.1.6:
@@ -5251,6 +5208,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-win32-arm64-msvc/12.1.6:
@@ -5262,6 +5220,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-win32-ia32-msvc/12.1.6:
@@ -5273,6 +5232,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@next/swc-win32-x64-msvc/12.1.6:
@@ -5284,6 +5244,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@noble/hashes/1.0.0:
@@ -8077,6 +8038,7 @@ packages:
       "@types/prop-types": 15.7.5
       "@types/scheduler": 0.16.2
       csstype: 3.1.0
+    dev: true
 
   /@types/react/18.0.9:
     resolution:
@@ -8087,6 +8049,7 @@ packages:
       "@types/prop-types": 15.7.5
       "@types/scheduler": 0.16.2
       csstype: 3.1.0
+    dev: true
 
   /@types/responselike/1.0.0:
     resolution:
@@ -9558,6 +9521,7 @@ packages:
       {
         integrity: sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==,
       }
+    dev: false
 
   /aes-js/3.1.2:
     resolution:
@@ -10263,7 +10227,7 @@ packages:
         integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==,
       }
     dependencies:
-      follow-redirects: 1.15.0
+      follow-redirects: 1.15.1
     transitivePeerDependencies:
       - debug
 
@@ -11186,6 +11150,7 @@ packages:
     requiresBuild: true
     dependencies:
       node-gyp-build: 4.4.0
+    dev: true
 
   /builtin-status-codes/3.0.0:
     resolution:
@@ -12792,6 +12757,14 @@ packages:
       }
     dev: true
 
+  /date-fns/2.28.0:
+    resolution:
+      {
+        integrity: sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==,
+      }
+    engines: { node: ">=0.11" }
+    dev: false
+
   /dateformat/4.6.3:
     resolution:
       {
@@ -13588,6 +13561,7 @@ packages:
       }
     dependencies:
       iconv-lite: 0.6.3
+    dev: true
 
   /end-of-stream/1.4.4:
     resolution:
@@ -14935,6 +14909,7 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: false
 
   /ethers/5.6.9_22kvxa7zeyivx4jp72v2w3pkvy:
     resolution:
@@ -15718,18 +15693,6 @@ packages:
         integrity: sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==,
       }
     dev: false
-
-  /follow-redirects/1.15.0:
-    resolution:
-      {
-        integrity: sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==,
-      }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
 
   /follow-redirects/1.15.1:
     resolution:
@@ -17010,6 +16973,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       safer-buffer: 2.1.2
+    dev: true
 
   /icss-utils/4.1.1:
     resolution:
@@ -17944,17 +17908,6 @@ packages:
       ws: "*"
     dependencies:
       ws: 6.2.2
-    dev: false
-
-  /isomorphic-ws/4.0.1_ws@7.5.7:
-    resolution:
-      {
-        integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==,
-      }
-    peerDependencies:
-      ws: "*"
-    dependencies:
-      ws: 7.5.7
     dev: false
 
   /isomorphic-ws/4.0.1_ws@7.5.8:
@@ -21338,6 +21291,7 @@ packages:
     transitivePeerDependencies:
       - "@babel/core"
       - babel-plugin-macros
+    dev: false
 
   /nextra-theme-docs/1.2.6_2g4afw7tic4g2gmzvdccsh7i3y:
     resolution:
@@ -22881,6 +22835,7 @@ packages:
       nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: false
 
   /preact/10.4.1:
     resolution:
@@ -23246,6 +23201,7 @@ packages:
       "@types/long": 4.0.2
       "@types/node": 18.0.0
       long: 4.0.0
+    dev: false
 
   /protobufjs/6.11.3:
     resolution:
@@ -23682,6 +23638,7 @@ packages:
       loose-envify: 1.4.0
       react: 18.1.0
       scheduler: 0.22.0
+    dev: false
 
   /react-dom/18.2.0_react@18.2.0:
     resolution:
@@ -23971,6 +23928,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       loose-envify: 1.4.0
+    dev: false
 
   /react/18.2.0:
     resolution:
@@ -24804,6 +24762,7 @@ packages:
       {
         integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==,
       }
+    dev: true
 
   /sane/4.1.0:
     resolution:
@@ -24844,6 +24803,7 @@ packages:
       }
     dependencies:
       loose-envify: 1.4.0
+    dev: false
 
   /scheduler/0.23.0:
     resolution:
@@ -24907,6 +24867,7 @@ packages:
       {
         integrity: sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==,
       }
+    dev: false
 
   /secp256k1/4.0.3:
     resolution:
@@ -24936,7 +24897,7 @@ packages:
       js-crypto-hkdf: 0.7.3
       miscreant: 0.3.2
       pako: 1.0.11
-      protobufjs: 6.11.2
+      protobufjs: 6.11.3
       secure-random: 1.1.2
     transitivePeerDependencies:
       - debug
@@ -26039,6 +26000,7 @@ packages:
         optional: true
     dependencies:
       react: 18.1.0
+    dev: false
 
   /styled-jsx/5.0.2_react@18.2.0:
     resolution:
@@ -28058,6 +28020,7 @@ packages:
     requiresBuild: true
     dependencies:
       node-gyp-build: 4.4.0
+    dev: true
 
   /util-deprecate/1.0.2:
     resolution:
@@ -28874,6 +28837,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
 
   /ws/7.4.6_22kvxa7zeyivx4jp72v2w3pkvy:
     resolution:
@@ -28927,22 +28891,6 @@ packages:
     dependencies:
       bufferutil: 4.0.6
       utf-8-validate: 5.0.9
-    dev: false
-
-  /ws/7.5.7:
-    resolution:
-      {
-        integrity: sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==,
-      }
-    engines: { node: ">=8.3.0" }
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
     dev: false
 
   /ws/7.5.7_22kvxa7zeyivx4jp72v2w3pkvy:
