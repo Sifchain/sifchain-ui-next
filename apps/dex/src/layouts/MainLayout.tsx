@@ -15,8 +15,8 @@ const Shell = tw.div`
   flex flex-col
   min-h-screen w-full bg-slate-100
   text-slate-100
-  bg-forest bg-cover bg-center bg-no-repeat
   subpixel-antialiased
+  bg-forest bg-cover bg-center bg-no-repeat bg-fixed
 `;
 
 export type Props = PropsWithChildren<{}>;
