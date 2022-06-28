@@ -45,6 +45,10 @@
         "displaySymbol": {
           "type": "string",
           "description": "[OPTIONAL] Display symbol of an asset."
+        },
+        "hasDarkIcon": {
+          "type": "boolean",
+          "description": "[OPTIONAL] Whether the asset has a dark icon."
         }
       },
       "required": [

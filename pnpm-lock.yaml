@@ -186,11 +186,13 @@ importers:
       eslint: 8.18.0
       eslint-config-next: 12.1.6
       jsonschema: ^1.4.1
+      ky: ^0.30.0
       next: 12.1.6
       next-transpile-modules: 9.0.0
       postcss: ^8.4.14
       react: 18.2.0
       react-dom: 18.2.0
+      react-query: ^3.39.1
       tailwind-styled-components: 2.1.6
       tailwindcss: ^3.1.4
       tsconfig: workspace:*
@@ -199,9 +201,11 @@ importers:
     dependencies:
       "@sifchain/ui": link:../../packages/ui
       clsx: 1.1.1
+      ky: 0.30.0
       next: 12.1.6_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-query: 3.39.1_biqbaboplfbrettd7655fr4n2y
       tailwind-styled-components: 2.1.6_biqbaboplfbrettd7655fr4n2y
       tsconfig: link:../../packages/tsconfig
     devDependencies:
@@ -15181,7 +15185,7 @@ packages:
       eslint-plugin-jsx-a11y: 6.5.1_eslint@8.18.0
       eslint-plugin-react: 7.30.0_eslint@8.18.0
       eslint-plugin-react-hooks: 4.5.0_eslint@8.18.0
-      next: 12.1.6_ef5jwxihqo6n7gxfmzogljlgcm
+      next: 12.1.6_biqbaboplfbrettd7655fr4n2y
       typescript: 4.7.4
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
@@ -22830,7 +22834,6 @@ packages:
     transitivePeerDependencies:
       - "@babel/core"
       - babel-plugin-macros
-    dev: false
 
   /next/12.1.6_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution:
@@ -25248,7 +25251,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-element-to-jsx-string/14.3.4:
     resolution:
@@ -25401,6 +25403,28 @@ packages:
       }
     dev: true
 
+  /react-query/3.39.1_biqbaboplfbrettd7655fr4n2y:
+    resolution:
+      {
+        integrity: sha512-qYKT1bavdDiQZbngWZyPotlBVzcBjDYEJg5RQLBa++5Ix5jjfbEYJmHSZRZD+USVHUSvl/ey9Hu+QfF1QAK80A==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: "*"
+      react-native: "*"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      "@babel/runtime": 7.18.3
+      broadcast-channel: 3.7.0
+      match-sorter: 6.3.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /react-query/3.39.1_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution:
       {
@@ -25511,7 +25535,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-cache/1.0.0:
     resolution:
@@ -26383,7 +26406,6 @@ packages:
       }
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /schema-utils/1.0.0:
     resolution:
@@ -27588,7 +27610,6 @@ packages:
         optional: true
     dependencies:
       react: 18.2.0
-    dev: false
 
   /sucrase/3.21.0:
     resolution:

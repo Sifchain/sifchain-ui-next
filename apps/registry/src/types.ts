@@ -8,6 +8,7 @@ export type AssetConfig = {
   network: string;
   homeNetwork: string;
   address?: string;
+  hasDarkIcon?: boolean;
 };
 
 export type ProviderAnalyticsConfig = {
