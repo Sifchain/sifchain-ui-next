@@ -22,7 +22,6 @@ export async function readAssetList(
 }
 
 export async function readProviderList(baseUrl?: string) {
-  console.log(process.env);
   const filePath = `${baseUrl}/config/providers/providers.json`;
   const response = await fetch(filePath).then(
     (res) => res.json() as Promise<ProviderList>,
