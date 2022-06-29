@@ -1,8 +1,11 @@
 import { Decimal } from "@cosmjs/math";
+import { runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
   Button,
+  Input,
   Modal,
+  ModalProps,
   PoolsIcon,
   SwapIcon,
 } from "@sifchain/ui";
@@ -10,11 +13,12 @@ import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVert
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC, useCallback, useMemo, useState } from "react";
+import { ChangeEventHandler, FC, useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalances } from "~/domains/bank/hooks/balances";
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 const useBalancesWithPool = () => {
   const { data: liquidityProviders } = useLiquidityProviders();
@@ -46,6 +50,98 @@ const Stat: FC<{ label: string; value: string }> = (props) => (
     <span className="font-semibold">{props.value}</span>
   </div>
 );
+
+const ExportModal = (props: ModalProps & { denom: string }) => {
+  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const balances = useAllBalances();
+  const balance = balances.indexedByDenom?.[props.denom];
+
+  const [amount, setAmount] = useState("");
+  const amountDecimal = useMemo(
+    () =>
+      runCatching(() =>
+        Decimal.fromUserInput(amount, balance?.amount.fractionalDigits ?? 0),
+      )[1],
+    [amount, balance?.amount.fractionalDigits],
+  );
+
+  return (
+    <Modal
+      {...props}
+      title={`Export ${indexedByIBCDenom[
+        props.denom
+      ]?.displaySymbol.toUpperCase()} from Sifchain`}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <fieldset className="p-4 mb-4 bg-black rounded-lg">
+          <Input
+            label="Amount"
+            secondaryLabel={`Balance: ${balance?.amount
+              .toFloatApproximation()
+              .toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            value={amount}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
+              (event) => setAmount(event.target.value),
+              [],
+            )}
+            fullWidth
+          />
+        </fieldset>
+        <Input
+          className="!bg-gray-750"
+          label="Recipient address"
+          value="sif1v5zezuttfk6z6yalzhef0p44z4yywd56f837lm"
+          disabled
+          fullWidth
+        />
+        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
+          <div>
+            <dt>Destination</dt>
+            <dd>Ethereum</dd>
+          </div>
+          <div>
+            <dt>Export Amount</dt>
+            <dd>
+              {amountDecimal
+                ?.toFloatApproximation()
+                .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
+            </dd>
+          </div>
+          <div>
+            <dt>Export Fee</dt>
+            <dd>
+              0.99 <AssetIcon network="sifchain" symbol="rowan" size="sm" />
+            </dd>
+          </div>
+          <div>
+            <dt>New Sifchain Balance</dt>
+            <dd>
+              {(amountDecimal !== undefined &&
+              balance?.amount.isGreaterThanOrEqual(amountDecimal)
+                ? balance.amount
+                    .minus(
+                      amountDecimal ??
+                        Decimal.zero(balance.amount.fractionalDigits),
+                    )
+                    .toFloatApproximation()
+                : 0
+              ).toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
+            </dd>
+          </div>
+        </dl>
+        <Button className="w-full mt-6">
+          <ArrowDownIcon className="rotate-180" /> Export
+        </Button>
+      </form>
+    </Modal>
+  );
+};
 
 const AssetsPage: NextPage = () => {
   const router = useRouter();
@@ -222,20 +318,16 @@ const AssetsPage: NextPage = () => {
           </Link>
         ))}
       </Modal>
-      <Modal
-        title="Import"
+      <ExportModal
+        denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "import"}
         onClose={() => router.back()}
-      >
-        <h1>Hello world</h1>
-      </Modal>
-      <Modal
-        title="Export"
+      />
+      <ExportModal
+        denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "export"}
         onClose={() => router.back()}
-      >
-        <h1>Hello world</h1>
-      </Modal>
+      />
     </>
   );
 };
