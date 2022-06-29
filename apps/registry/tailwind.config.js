@@ -13,14 +13,7 @@ module.exports = {
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      maxWidth: {
-        sidebar: "280px",
-      },
-      backgroundImage: (theme) => ({
-        forest: "url(/img/forest.webp)",
-      }),
-    },
+    extend: {},
   },
   plugins: [],
 };

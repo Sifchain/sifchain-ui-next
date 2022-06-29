@@ -1,39 +1,46 @@
 import type { NextApiHandler } from "next";
+import { NextMiddleware, NextResponse } from "next/server";
 
 import { readAssetList } from "~/lib/utils";
-import withCorsMiddleware from "~/lib/withCorsMiddleware";
+// import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
 const VALID_NETWORKS = ["ethereum", "sifchain"];
 const VALID_ENVS = ["localnet", "devnet", "testnet", "mainnet"];
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextMiddleware = async (req) => {
+  let statusCode: number | undefined;
+
   try {
-    const { network, env } = req.query;
+    const { pathname, origin } = req.nextUrl;
+    const [, , , network, env] = pathname.split("/");
 
     if (typeof network !== "string" || !VALID_NETWORKS.includes(network)) {
-      res.statusCode = 400;
+      statusCode = 400;
       throw new Error(`Invalid network: ${network}`);
     }
 
     if (typeof env !== "string" || !VALID_ENVS.includes(env)) {
-      res.statusCode = 400;
+      statusCode = 400;
       throw new Error(`Invalid env: ${env}`);
     }
 
-    const { assets } = await readAssetList(network, env);
+    const { assets } = await readAssetList(origin, network, env);
 
-    res
-      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
-      .json(assets);
+    return new NextResponse(JSON.stringify(assets), {
+      status: 200,
+      headers: {
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate",
+        "content-type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(res.statusCode ?? 400).send({
-        message: `Failed to process request: ${error.message}`,
+      return new NextResponse(JSON.stringify({ message: error.message }), {
+        status: statusCode ?? 400,
       });
     } else {
-      res.status(res.statusCode ?? 500).send({
-        message: `Failed to process request: unknown error`,
-        originalError: error,
+      return new NextResponse(JSON.stringify({ message: "unknown error" }), {
+        status: statusCode ?? 500,
       });
     }
   }
@@ -43,4 +50,4 @@ export const config = {
   runtime: "experimental-edge",
 };
 
-export default withCorsMiddleware(handler);
+export default handler;

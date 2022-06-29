@@ -1,4 +1,5 @@
-const withTM = require("next-transpile-modules")(["@sifchain/ui"]);
+const nextTranspileModules = require("next-transpile-modules");
+const withTM = nextTranspileModules(["@sifchain/ui"]);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -2,11 +2,18 @@ import Cors, { type CorsOptions } from "cors";
 import type { NextApiHandler } from "next";
 import initMiddleware from "./initMiddleware";
 
-const DEFAULT_CORS_OPTIONS: CorsOptions = {
+export const DEFAULT_CORS_OPTIONS: CorsOptions = {
   methods: ["GET", "OPTIONS"],
   origin: "*",
 };
 
+/**
+ * Utility function to create a middleware that adds CORS headers to the response.
+ *
+ * @param handler
+ * @param options
+ * @returns
+ */
 export default function withCorsMiddleware(
   handler: NextApiHandler,
   options = DEFAULT_CORS_OPTIONS,

@@ -14,9 +14,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      maxWidth: {
-        sidebar: "280px",
-      },
       backgroundImage: (theme) => ({
         forest: "url(/img/forest.webp)",
       }),

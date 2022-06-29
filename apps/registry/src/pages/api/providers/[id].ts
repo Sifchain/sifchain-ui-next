@@ -1,37 +1,31 @@
-import type { NextApiHandler } from "next";
-
+import { NextMiddleware, NextResponse } from "next/server";
 import { readProviderList } from "~/lib/utils";
-import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextMiddleware = async (req) => {
   try {
-    const { id } = req.query;
+    const { pathname, origin } = req.nextUrl;
 
-    if (typeof id !== "string") {
-      throw new Error("id must be a string");
-    }
+    const [, , , providerId] = pathname.split("/");
 
-    const { providers } = await readProviderList();
+    const { providers } = await readProviderList(origin);
 
-    const provider = providers.find((p) => p.id === id);
+    const provider = providers.find((provider) => provider.id === providerId);
 
-    if (!provider) {
-      res.statusCode = 404;
-      throw new Error(`provider with id "${id}" not found`);
-    }
-
-    res
-      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
-      .json(provider);
+    return new NextResponse(JSON.stringify(provider), {
+      status: 200,
+      headers: {
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate",
+        "content-type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(res.statusCode ?? 400).send({
-        message: `Failed to process request: ${error.message}`,
+      return new NextResponse(JSON.stringify({ message: error.message }), {
+        status: 400,
       });
     } else {
-      res.status(res.statusCode ?? 500).send({
-        message: `Failed to process request: unknown error`,
-        originalError: error,
+      return new NextResponse(JSON.stringify({ message: "unknown error" }), {
+        status: 500,
       });
     }
   }
@@ -41,4 +35,4 @@ export const config = {
   runtime: "experimental-edge",
 };
 
-export default withCorsMiddleware(handler);
+export default handler;

@@ -1,24 +1,25 @@
-import type { NextApiHandler } from "next";
-
+import { NextMiddleware, NextResponse } from "next/server";
 import { readProviderList } from "~/lib/utils";
-import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
-const handler: NextApiHandler = async (_req, res) => {
+const handler: NextMiddleware = async (req) => {
   try {
-    const { providers } = await readProviderList();
+    const { providers } = await readProviderList(req.nextUrl.origin);
 
-    res
-      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
-      .json(providers);
+    return new NextResponse(JSON.stringify(providers), {
+      status: 200,
+      headers: {
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate",
+        "content-type": "application/json",
+      },
+    });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(res.statusCode ?? 400).send({
-        message: `Failed to process request: ${error.message}`,
+      return new NextResponse(JSON.stringify({ message: error.message }), {
+        status: 400,
       });
     } else {
-      res.status(res.statusCode ?? 500).send({
-        message: `Failed to process request: unknown error`,
-        originalError: error,
+      return new NextResponse(JSON.stringify({ message: "unknown error" }), {
+        status: 500,
       });
     }
   }
@@ -28,4 +29,4 @@ export const config = {
   runtime: "experimental-edge",
 };
 
-export default withCorsMiddleware(handler);
+export default handler;

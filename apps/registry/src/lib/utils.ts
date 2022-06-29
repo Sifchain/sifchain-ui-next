@@ -1,28 +1,32 @@
-import fs from "fs/promises";
-import path from "path";
 import type { ProviderConfig, AssetConfig } from "~/types";
 
+type AssetList = {
+  assets: AssetConfig[];
+};
+
+type ProviderList = {
+  providers: ProviderConfig[];
+};
+
 export async function readAssetList(
+  baseUrl: string,
   network: string,
   env: string,
-): Promise<{
-  assets: AssetConfig[];
-}> {
-  const raw = await fs.readFile(
-    path.resolve(
-      `./public/config/networks/${network}/assets.${network}.${env}.json`,
-    ),
-    "utf8",
+) {
+  const filePath = `${baseUrl}/config/networks/${network}/assets.${network}.${env}.json`;
+  const response = await fetch(filePath).then(
+    (res) => res.json() as Promise<AssetList>,
   );
-  return JSON.parse(raw);
+
+  return response;
 }
 
-export async function readProviderList(): Promise<{
-  providers: ProviderConfig[];
-}> {
-  const raw = await fs.readFile(
-    path.resolve(`./public/config/providers/providers.json`),
-    "utf8",
+export async function readProviderList(baseUrl?: string) {
+  console.log(process.env);
+  const filePath = `${baseUrl}/config/providers/providers.json`;
+  const response = await fetch(filePath).then(
+    (res) => res.json() as Promise<ProviderList>,
   );
-  return JSON.parse(raw);
+
+  return response;
 }
