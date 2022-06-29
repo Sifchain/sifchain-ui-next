@@ -1,8 +1,8 @@
 import type { createClient } from "@sifchain/sif-api";
+import type { ValidPaths } from "@sifchain/ui";
 import { ArgumentTypes, omit } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
-import type { SafeKeyof } from "~/lib/type-utils";
 import useSifApiClient from "./useSifApiClient";
 
 export type VanirClient = Awaited<ReturnType<typeof createClient>>;
@@ -15,9 +15,7 @@ export type VanirPublicClient = Pick<
 type PublicModuleKey = keyof VanirPublicClient;
 
 type L1 = PublicModuleKey;
-type L2 = SafeKeyof<VanirClient[L1]>;
-
-export type QueryKey = `${L1}.${L2}`;
+export type QueryKey = ValidPaths<VanirPublicClient>;
 
 /**
  * Generic hook to access Vanir queries, with type inference
@@ -34,7 +32,7 @@ export default function useSifApiQuery<
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  query: `${T}.${P}`,
+  query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
   options: Omit<
     UseQueryOptions<Res, unknown, Res>,
@@ -47,12 +45,20 @@ export default function useSifApiQuery<
     [query],
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {
+      if (!client) {
+        throw new Error("[useSifApiQuery] No client available");
+      }
+
       const [moduleName, methodName] = query.split(".") as [T, P];
 
-      // @ts-ignore
-      const method = client[moduleName][methodName] as VanirPublicClient[T][P];
+      const method = client[moduleName][methodName];
 
-      // @ts-ignore
+      if (typeof method !== "function") {
+        throw new Error(
+          `[useSifApiQuery] Method ${String(methodName)} is not a function`,
+        );
+      }
+
       const result = await method(...args);
 
       return result.body;

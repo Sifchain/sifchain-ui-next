@@ -1,4 +1,5 @@
 import type { createQueryClient } from "@sifchain/stargate";
+import type { ValidPaths } from "@sifchain/ui";
 import { ArgumentTypes, omit } from "rambda";
 import { useQuery, UseQueryOptions } from "react-query";
 
@@ -12,6 +13,8 @@ export type PublicSifnodeClient = Pick<
 >;
 
 type PublicModuleKey = keyof PublicSifnodeClient;
+
+type QueryKey = ValidPaths<PublicSifnodeClient>;
 
 /**
  * Generic hook to access Sifnode's queries, with type inference
@@ -28,7 +31,7 @@ export default function useSifnodeQuery<
   Res = Awaited<F>,
 >(
   // @ts-ignore
-  query: `${T}.${P}`,
+  query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<PublicSifnodeClient[T][P]>,
   options: Omit<
     UseQueryOptions<Res, unknown, Res>,
@@ -41,14 +44,22 @@ export default function useSifnodeQuery<
     [query, ...args],
     // @ts-ignore
     async (): Awaited<ReturnType<PublicSifnodeClient[T][P]>> => {
+      if (!client) {
+        throw new Error("[useSifnodeQuery] No client available");
+      }
+
       const [moduleName, methodName] = query.split(".") as [T, P];
 
-      // @ts-ignore
       const method = client[moduleName][
         methodName
       ] as PublicSifnodeClient[T][P];
 
-      // @ts-ignore
+      if (typeof method !== "function") {
+        throw new Error(
+          `[useSifnodeQuery] Method ${String(methodName)} is not a function`,
+        );
+      }
+
       return await method(...args);
     },
     {
