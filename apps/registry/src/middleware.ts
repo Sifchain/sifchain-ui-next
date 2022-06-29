@@ -1,8 +1,6 @@
-import { NextMiddleware, NextRequest, NextResponse } from "next/server";
+import { type NextMiddleware, NextResponse } from "next/server";
 
-export const middleware: NextMiddleware = (req, res) => {
-  console.log("pathname", req.nextUrl.pathname);
-
+export const middleware: NextMiddleware = () => {
   return NextResponse.next({
     headers: {
       "Access-Control-Allow-Origin": "*",
