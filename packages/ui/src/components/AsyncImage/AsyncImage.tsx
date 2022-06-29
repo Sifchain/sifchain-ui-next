@@ -25,8 +25,8 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
     <img
       loading={loading}
       decoding={decoding}
-      onLoadStart={() => setIsLoading(true)}
-      onLoad={() => setIsLoading(false)}
+      onLoadStart={setIsLoading.bind(null, true)}
+      onLoad={setIsLoading.bind(null, false)}
       {...props}
     />
   );

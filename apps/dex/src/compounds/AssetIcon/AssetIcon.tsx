@@ -1,7 +1,11 @@
-import { AsyncImage, RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
+import {
+  AsyncImage,
+  RacetrackSpinnerIcon,
+  Tooltip,
+  useIntersectionObserver,
+} from "@sifchain/ui";
 import clsx from "clsx";
-import { type FC, useMemo, useState, forwardRef, memo } from "react";
-import SVG, { Props as SVGProps } from "react-inlinesvg";
+import { type FC, useMemo, memo, useRef, useEffect } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";
 
@@ -21,9 +25,7 @@ const CLASS_MAP: Record<Props["size"], string> = {
   xl: "h-12 w-12",
 };
 
-const NOTFOUND = new Set<string>();
-
-const AssetIcon: FC<Props> = (props) => {
+const AssetIcon: FC<Props> = memo((props) => {
   const {
     isLoading: isLoadingAsset,
     indexedBySymbol,
@@ -45,19 +47,31 @@ const AssetIcon: FC<Props> = (props) => {
   const placeholder = useMemo(
     () => (
       <RacetrackSpinnerIcon
-        className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
+        className={(clsx(CLASS_MAP[props.size]), "absolute inset-0")}
       />
     ),
     [props.size],
   );
+
+  const figureRef = useRef<HTMLDivElement>(null);
+
+  const entry = useIntersectionObserver(figureRef, {});
+
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      console.log(`AssetIcon: ${props.symbol} is visible`);
+    }
+  }, [entry]);
+
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <figure
+        ref={figureRef}
         className={clsx(
-          "ring ring-slate-900 rounded-full bg-cover overflow-hidden relative grid place-items-center",
+          "relative rounded-full bg-contain overflow-hidden bg-black bg-center shadow-xs shadow-black",
           CLASS_MAP[props.size],
           {
-            invert: Boolean(props.invertColor),
+            "!bg-white": asset?.hasDarkIcon,
           },
         )}
       >
@@ -67,17 +81,17 @@ const AssetIcon: FC<Props> = (props) => {
           <AsyncImage
             src={asset?.imageUrl ?? ""}
             placeholder={placeholder}
-            className="z-10"
+            className="z-10 absolute inset-0"
           />
         )}
       </figure>
     </Tooltip>
   );
-};
+});
 
 AssetIcon.defaultProps = {
   size: "md",
   showNetwork: false,
 };
 
-export default memo(AssetIcon);
+export default AssetIcon;

@@ -13,7 +13,6 @@ module.exports = {
           '"Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"',
           "monospace",
         ],
-        noatan: ["Noatan"],
       },
       colors: {
         white: "#FFFFFF",
