@@ -23,15 +23,6 @@ const CLASS_MAP: Record<Props["size"], string> = {
 
 const NOTFOUND = new Set<string>();
 
-export const InlineVector = memo(
-  forwardRef<SVGElement, SVGProps>(({ src, ...props }, ref) => {
-    const title = src.split("/").pop()?.replace(".svg", "");
-    return <SVG innerRef={ref} title={title ?? ""} src={src} {...props} />;
-  }),
-);
-
-InlineVector.displayName = "InlineVector";
-
 const AssetIcon: FC<Props> = (props) => {
   const {
     isLoading: isLoadingAsset,
@@ -51,9 +42,14 @@ const AssetIcon: FC<Props> = (props) => {
     console.log(`AssetIcon: asset not found for ${props.symbol}`);
   }
 
-  const [loading, setLoading] = useState(true);
-  const [fallback, setFallback] = useState(false);
-
+  const placeholder = useMemo(
+    () => (
+      <RacetrackSpinnerIcon
+        className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
+      />
+    ),
+    [props.size],
+  );
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <figure
@@ -65,33 +61,13 @@ const AssetIcon: FC<Props> = (props) => {
           },
         )}
       >
-        {(loading || isLoadingAsset) && (
-          <RacetrackSpinnerIcon
-            className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
-          />
-        )}
-        {fallback || NOTFOUND.has(props.symbol) ? (
+        {isLoadingAsset ? (
+          placeholder
+        ) : (
           <AsyncImage
             src={asset?.imageUrl ?? ""}
-            placeholder={
-              <RacetrackSpinnerIcon
-                className={(clsx(CLASS_MAP[props.size]), "absolute z-0")}
-              />
-            }
+            placeholder={placeholder}
             className="z-10"
-          />
-        ) : (
-          <InlineVector
-            cacheRequests
-            className={clsx(CLASS_MAP[props.size], "z-10")}
-            src={`/tokens/${asset?.displaySymbol.toUpperCase()}.svg`}
-            onError={() => {
-              NOTFOUND.add(props.symbol);
-              setFallback(true);
-            }}
-            onLoad={() => {
-              setLoading(false);
-            }}
           />
         )}
       </figure>
