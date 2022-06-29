@@ -7,10 +7,11 @@ import React, {
   useState,
 } from "react";
 import _debounce from "lodash.debounce";
-import { debounceRaf } from "../../utils/functions";
+import { debounceRaf } from "../../utils";
+import type { StringIndexable } from "../../utils";
 
 export type RecyclerViewProps<
-  T extends {},
+  T extends StringIndexable,
   U extends keyof ReactHTML = "div",
 > = JSX.IntrinsicElements[U] & {
   data: T[];
@@ -22,7 +23,10 @@ export type RecyclerViewProps<
   debounce?: number | "raf";
 };
 
-export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
+export const RecyclerView = <
+  T extends StringIndexable,
+  U extends keyof ReactHTML = "div",
+>(
   props: RecyclerViewProps<T, U>,
 ) => {
   const {
@@ -31,8 +35,8 @@ export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
     rowHeight,
     keyExtractor,
     as,
-    debounce,
     renderItem: RowItem,
+    debounce,
     ...containerProps
   } = props;
 
@@ -69,11 +73,11 @@ export const RecyclerView = <T extends {}, U extends keyof ReactHTML = "div">(
   );
 
   const debouncedHandleScroll = useMemo(() => {
-    if (typeof props.debounce === "number") {
-      return _debounce(handleScroll, props.debounce);
+    if (typeof debounce === "number") {
+      return _debounce(handleScroll, debounce);
     }
     return debounceRaf(handleScroll);
-  }, [props.debounce, handleScroll]);
+  }, [debounce, handleScroll]);
 
   const Container = useCallback<FC<JSX.IntrinsicElements[U]>>(
     ({ children, ...props }) => {
