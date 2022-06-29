@@ -11,8 +11,6 @@ export type ValidPaths<
   TKeys = IndexableKeys<T>,
 > = TKeys extends string
   ? T[TKeys] extends StringIndexable
-    ? TKeys extends string
-      ? `${TKeys}.${IndexableKeys<T[TKeys]>}`
-      : never
+    ? `${TKeys}.${IndexableKeys<T[TKeys]>}`
     : never
   : never;
