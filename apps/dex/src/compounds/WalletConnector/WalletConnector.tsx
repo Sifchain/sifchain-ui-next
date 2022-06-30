@@ -1,26 +1,29 @@
-import type { ChainConfig } from "@sifchain/common";
+import type { ChainConfig, NetworkKind } from "@sifchain/common";
 import {
   useConnect as useCosmConnect,
   useSigningStargateClient,
 } from "@sifchain/cosmos-connect";
+import type { Coin } from "@sifchain/proto-types/cosmos/base/coin";
 import {
   ChainEntry,
   CoinbaseIcon,
+  ConnectedAccount,
   CosmostationIcon,
   KeplrIcon,
   MetamaskIcon,
-  WalletSelector,
+  RenderConnectedAccount,
   WalletconnectCircleIcon,
+  WalletSelector,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
-  useQuery,
 } from "wagmi";
+
 import { useDexEnvironment } from "~/domains/core/envs";
 
 const WALLET_ICONS = {
@@ -32,24 +35,50 @@ const WALLET_ICONS = {
   cosmostation: <CosmostationIcon />,
 };
 
-function useNativeBalance(chainId: string, address: string) {
+type NativeBalanceResult = {
+  amount: string;
+  denom: string;
+  dollarValue: string;
+};
+
+const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
+  amount: "0",
+  denom: "",
+  dollarValue: "$0",
+};
+
+export function useNativeBalance(chainId: string, address: string) {
   const { data } = useDexEnvironment();
 
   const { client } = useSigningStargateClient(chainId);
 
-  return useQuery(
-    ["native-balance", chainId, address],
-    () => {
-      if (!client) {
-        return;
-      }
+  const query = useCallback(async () => {
+    if (!client || !data) {
+      return DEFAULT_NATIVE_BALANCE;
+    }
 
-      return client.getAllBalances(address);
-    },
-    {
-      enabled: Boolean(data && client),
-    },
-  );
+    const chain = data.chainConfigsByNetwork[chainId as NetworkKind];
+
+    if (!chain) {
+      return {
+        denom: "",
+        amount: "",
+        dollarValue: "",
+      };
+    }
+
+    const result = await client.getBalance(
+      address,
+      chain.nativeAssetSymbol.toLowerCase(),
+    );
+
+    return result ?? DEFAULT_NATIVE_BALANCE;
+  }, [address, chainId, client, data]);
+
+  return useQuery(["native-balance", chainId, address], query, {
+    enabled: Boolean(data && client),
+    staleTime: 60_000,
+  });
 }
 
 const WalletConnector: FC = () => {
@@ -219,25 +248,19 @@ const WalletConnector: FC = () => {
 
       switch (selected.type) {
         case "ibc":
-          const connector = cosmosConnectors.find((x) => x.id === walletId);
-          if (connector) {
-            await disconnectCosmos(connector);
+          {
+            const connector = cosmosConnectors.find((x) => x.id === walletId);
+            if (connector) {
+              await disconnectCosmos(connector);
+            }
           }
           break;
         case "eth":
           disconnectEVM();
       }
     },
-    [connectorsById],
+    [connectorsById, cosmosConnectors, disconnectCosmos, disconnectEVM],
   );
-
-  const balances = useMemo(() => {
-    return {
-      sifchain: {
-        balance: "0",
-      },
-    };
-  }, [accounts]);
 
   return (
     <WalletSelector
@@ -247,12 +270,25 @@ const WalletConnector: FC = () => {
       }))}
       wallets={wallets}
       accounts={accounts}
-      balances={balances}
       isLoading={
         Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
       }
       onDisconnect={handleDisconnectionRequest}
       onConnect={handleConnectionRequest}
+      renderConnectedAccount={ConnectedAccountItem}
+    />
+  );
+};
+
+const ConnectedAccountItem: RenderConnectedAccount = (props) => {
+  const { data } = useNativeBalance(props.chainId, props.account);
+
+  return (
+    <ConnectedAccount
+      {...props}
+      nativeAssetDollarValue={""}
+      nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
+      nativeAssetBalance={(data as Coin)?.amount ?? ""}
     />
   );
 };

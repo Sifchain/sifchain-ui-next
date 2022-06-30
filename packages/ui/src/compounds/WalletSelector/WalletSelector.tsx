@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
 import {
@@ -9,30 +9,12 @@ import {
   Tooltip,
   WalletIcon,
 } from "../../components";
-import type { ConnectedAccountProps } from "./ConnectedAccount";
-import { ConnectedWallets, ConnectedWalletsProps } from "./ConnectedWallets";
-
-export type ChainEntry = {
-  id: string;
-  name: string;
-  type: string;
-  icon: ReactNode;
-  connected?: boolean;
-  nativeAssetSymbol?: string;
-  nativeAssetDecimals?: number;
-  nativeAssetPrice?: string;
-};
-
-export type WalletEntry = {
-  id: string;
-  name: string;
-  icon: ReactNode;
-  type: string;
-  isConnected?: boolean;
-  account?: string;
-};
-
-export type RenderConnectedAccount = FC<ConnectedAccountProps>;
+import {
+  ConnectedWallets,
+  type RenderConnectedAccount,
+  type ConnectedWalletsProps,
+} from "./ConnectedWallets";
+import type { ChainEntry, WalletEntry } from "./types";
 
 export type WalletSelectorProps = {
   chains: ChainEntry[];
@@ -42,11 +24,6 @@ export type WalletSelectorProps = {
   selectedChainId?: string;
   accounts: {
     [chainId: string]: string[];
-  };
-  balances: {
-    [chainId: string]: {
-      balance: string;
-    };
   };
   onConnect?: (selection: { chainId: string; walletId: string }) => void;
   onDisconnect?: ConnectedWalletsProps["onDisconnect"];
@@ -248,6 +225,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
             })
           }
           onConnectAnotherWallet={setIsModalOpen.bind(null, true)}
+          renderConnectedAccount={props.renderConnectedAccount}
         />
       ) : (
         <Button

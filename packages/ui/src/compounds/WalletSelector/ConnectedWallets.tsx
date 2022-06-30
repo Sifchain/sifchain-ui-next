@@ -1,5 +1,5 @@
 import { Popover } from "@headlessui/react";
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 
 import {
   AppearTransition,
@@ -9,26 +9,7 @@ import {
   SurfaceA,
 } from "../../components";
 import { ConnectedAccount, ConnectedAccountProps } from "./ConnectedAccount";
-
-export type ChainEntry = {
-  id: string;
-  name: string;
-  type: string;
-  icon: ReactNode;
-  connected?: boolean;
-  nativeAssetSymbol?: string;
-  nativeAssetDecimals?: number;
-  nativeAssetPrice?: string;
-};
-
-export type WalletEntry = {
-  id: string;
-  name: string;
-  icon: ReactNode;
-  type: string;
-  isConnected?: boolean;
-  account?: string;
-};
+import type { ChainEntry } from "./types";
 
 export type RenderConnectedAccount = FC<ConnectedAccountProps>;
 
@@ -38,7 +19,7 @@ export type ConnectedWalletsProps = {
   chains: ChainEntry[];
   onDisconnect?: (selection: { chainId: string }) => void;
   onConnectAnotherWallet(): void;
-  renderConnectedAccount?: RenderConnectedAccount;
+  renderConnectedAccount?: RenderConnectedAccount | undefined;
 };
 
 export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
@@ -78,10 +59,15 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 onDisconnect: () => props.onDisconnect?.({ chainId }),
                 onConnectAnotherWallet: props.onConnectAnotherWallet,
               };
-              return props.renderConnectedAccount ? (
-                props.renderConnectedAccount(connectedAccountProps)
-              ) : (
-                <ConnectedAccount key={chainId} {...connectedAccountProps} />
+
+              const ConnectedAccountComponent =
+                props.renderConnectedAccount ?? ConnectedAccount;
+
+              return (
+                <ConnectedAccountComponent
+                  key={chainId}
+                  {...connectedAccountProps}
+                />
               );
             })}
           </ul>

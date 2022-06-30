@@ -31,6 +31,7 @@ export default function useSifApiQuery<
   F = M extends () => any ? ReturnType<M> : never,
   Res = Awaited<F>,
 >(
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
@@ -43,6 +44,7 @@ export default function useSifApiQuery<
 
   return useQuery(
     [query],
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {
       if (!client) {
