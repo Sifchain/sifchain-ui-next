@@ -7,6 +7,7 @@ import {
   Modal,
   ModalProps,
   PoolsIcon,
+  Select,
   SwapIcon,
 } from "@sifchain/ui";
 import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
@@ -51,6 +52,123 @@ const Stat: FC<{ label: string; value: string }> = (props) => (
   </div>
 );
 
+const ImportModal = (
+  props: ModalProps & {
+    denom: string;
+    onRequestDenomChange: (denom: string) => unknown;
+  },
+) => {
+  const { data: tokenRegistry, indexedByIBCDenom } = useTokenRegistryQuery();
+  const balances = useAllBalances();
+  const balance = balances.indexedByDenom?.[props.denom];
+
+  const tokenOptions = useMemo(
+    () =>
+      tokenRegistry.map((x) => ({
+        id: x.ibcDenom ?? "",
+        label: x.displaySymbol,
+        body: x.displaySymbol,
+      })),
+    [tokenRegistry],
+  );
+
+  const selectedTokenOptions = useMemo(
+    () => tokenOptions.find((x) => x.id === props.denom),
+    [props.denom, tokenOptions],
+  );
+
+  const [amount, setAmount] = useState("");
+  const amountDecimal = useMemo(
+    () =>
+      runCatching(() =>
+        Decimal.fromUserInput(amount, balance?.amount.fractionalDigits ?? 0),
+      )[1],
+    [amount, balance?.amount.fractionalDigits],
+  );
+
+  return (
+    <Modal
+      {...props}
+      title={`Import ${indexedByIBCDenom[
+        props.denom
+      ]?.displaySymbol.toUpperCase()} from Sifchain`}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <fieldset className="p-4 mb-4 bg-black rounded-lg">
+          <Select
+            className="z-10"
+            options={tokenOptions}
+            value={selectedTokenOptions}
+            onChange={useCallback(
+              (value) => props.onRequestDenomChange(value.id),
+              [props],
+            )}
+          />
+          <Input
+            label="Amount"
+            secondaryLabel={`Balance: ${(
+              balance?.amount.toFloatApproximation() ?? 0
+            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            value={amount}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
+              (event) => setAmount(event.target.value),
+              [],
+            )}
+            fullWidth
+          />
+        </fieldset>
+        <Input
+          className="!bg-gray-750"
+          label="Recipient address"
+          value="sif1v5zezuttfk6z6yalzhef0p44z4yywd56f837lm"
+          disabled
+          fullWidth
+        />
+        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
+          <div>
+            <dt>Direction</dt>
+            <dd>
+              <span className="capitalize">
+                {indexedByIBCDenom[props.denom]?.network}
+              </span>
+              → Sifchain
+            </dd>
+          </div>
+          <div>
+            <dt>Import amount</dt>
+            <dd>
+              {amountDecimal
+                ?.toFloatApproximation()
+                .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
+            </dd>
+          </div>
+          <div>
+            <dt>New Sifchain Balance</dt>
+            <dd>
+              {balance?.amount
+                .plus(
+                  amountDecimal ??
+                    Decimal.zero(balance.amount.fractionalDigits),
+                )
+                .toFloatApproximation()
+                .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
+            </dd>
+          </div>
+        </dl>
+        <Button className="w-full mt-6">
+          <ArrowDownIcon /> Import
+        </Button>
+      </form>
+    </Modal>
+  );
+};
+
 const ExportModal = (props: ModalProps & { denom: string }) => {
   const { indexedByIBCDenom } = useTokenRegistryQuery();
   const balances = useAllBalances();
@@ -80,9 +198,9 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
             label="Amount"
-            secondaryLabel={`Balance: ${balance?.amount
-              .toFloatApproximation()
-              .toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            secondaryLabel={`Balance: ${(
+              balance?.amount.toFloatApproximation() ?? 0
+            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),
@@ -104,7 +222,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             <dd>Ethereum</dd>
           </div>
           <div>
-            <dt>Export Amount</dt>
+            <dt>Export amount</dt>
             <dd>
               {amountDecimal
                 ?.toFloatApproximation()
@@ -113,7 +231,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
           <div>
-            <dt>Export Fee</dt>
+            <dt>Export fee</dt>
             <dd>
               0.99 <AssetIcon network="sifchain" symbol="rowan" size="sm" />
             </dd>
@@ -179,9 +297,11 @@ const AssetsPage: NextPage = () => {
           <header className="mb-10">
             <div className="flex items-center justify-between pb-6">
               <h2 className="text-2xl font-bold text-white">Balances</h2>
-              <Button>
-                <ArrowDownIcon /> Import
-              </Button>
+              <Link href={`balances?action=import&denom=cusdc`}>
+                <Button as="a">
+                  <ArrowDownIcon /> Import
+                </Button>
+              </Link>
             </div>
             <div className="flex flex-wrap gap-4">
               {stats.map((stat) => (
@@ -318,15 +438,22 @@ const AssetsPage: NextPage = () => {
           </Link>
         ))}
       </Modal>
-      <ExportModal
+      <ImportModal
         denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "import"}
-        onClose={() => router.back()}
+        onClose={useCallback(() => router.back(), [router])}
+        onRequestDenomChange={useCallback(
+          (denom) =>
+            router.replace(
+              `balances?action=import&denom=${encodeURIComponent(denom ?? "")}`,
+            ),
+          [router],
+        )}
       />
       <ExportModal
         denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "export"}
-        onClose={() => router.back()}
+        onClose={useCallback(() => router.back(), [router])}
       />
     </>
   );
