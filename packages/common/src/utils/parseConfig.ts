@@ -109,7 +109,9 @@ export function parseConfig(
   chainConfigsByNetwork: NetworkChainConfigLookup,
   peggyCompatibleCosmosBaseDenoms: Set<string>,
 ) {
-  const nativeAsset = assets.find((a) => a.symbol === config.nativeAsset);
+  const nativeAsset = assets.find(
+    (a) => a.symbol.toLowerCase() === config.nativeAsset.toLowerCase(),
+  );
 
   if (!nativeAsset)
     throw new Error(
