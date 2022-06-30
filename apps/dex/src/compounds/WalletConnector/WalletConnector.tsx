@@ -9,12 +9,14 @@ import {
   CoinbaseIcon,
   ConnectedAccount,
   CosmostationIcon,
+  formatNumberAsCurrency,
   KeplrIcon,
   MetamaskIcon,
   RenderConnectedAccount,
   WalletconnectCircleIcon,
   WalletSelector,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
@@ -23,6 +25,7 @@ import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
 } from "wagmi";
+import { usePoolStatsQuery } from "~/domains/clp";
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
@@ -47,36 +50,61 @@ const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
   dollarValue: "$0",
 };
 
-export function useNativeBalance(chainId: string, address: string) {
-  const { data } = useDexEnvironment();
-
+export function useNativeBalanceQuery(chainId: string, address: string) {
   const { client } = useSigningStargateClient(chainId);
+  const { data: dexEnv } = useDexEnvironment();
+  const { data: tokenStats } = usePoolStatsQuery();
 
   const query = useCallback(async () => {
-    if (!client || !data) {
+    if (!client || !dexEnv) {
       return DEFAULT_NATIVE_BALANCE;
     }
 
-    const chain = data.chainConfigsByNetwork[chainId as NetworkKind];
+    const chain = dexEnv.chainConfigsByNetwork[chainId as NetworkKind];
 
-    if (!chain) {
-      return {
-        denom: "",
-        amount: "",
-        dollarValue: "",
-      };
+    if (!chain || !tokenStats?.pools) {
+      return DEFAULT_NATIVE_BALANCE;
     }
+
+    const nativeSymbol = chain.nativeAssetSymbol.toLowerCase();
+
+    const stat = tokenStats.pools.find(
+      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol,
+    );
+
+    const asset = dexEnv.assets.find(
+      ({ symbol }) =>
+        symbol.toLowerCase() === nativeSymbol ||
+        `u${symbol.toLowerCase()}` === nativeSymbol,
+    );
 
     const result = await client.getBalance(
       address,
       chain.nativeAssetSymbol.toLowerCase(),
     );
 
-    return result ?? DEFAULT_NATIVE_BALANCE;
-  }, [address, chainId, client, data]);
+    if (!result || !asset) {
+      return DEFAULT_NATIVE_BALANCE;
+    }
+
+    const tokenPrice =
+      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken;
+
+    const bn = new BigNumber(result.amount);
+
+    const normalizedBalance = bn.shiftedBy(-asset.decimals).toNumber();
+
+    const dollarValue = normalizedBalance * Number(tokenPrice ?? 0);
+
+    return {
+      amount: normalizedBalance.toFixed(4),
+      denom: result.denom,
+      dollarValue: formatNumberAsCurrency(dollarValue),
+    };
+  }, [address, chainId, client, dexEnv, tokenStats]);
 
   return useQuery(["native-balance", chainId, address], query, {
-    enabled: Boolean(data && client),
+    enabled: Boolean(dexEnv && client && tokenStats),
     staleTime: 60_000,
   });
 }
@@ -281,12 +309,12 @@ const WalletConnector: FC = () => {
 };
 
 const ConnectedAccountItem: RenderConnectedAccount = (props) => {
-  const { data } = useNativeBalance(props.chainId, props.account);
+  const { data } = useNativeBalanceQuery(props.chainId, props.account);
 
   return (
     <ConnectedAccount
       {...props}
-      nativeAssetDollarValue={""}
+      nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
       nativeAssetBalance={(data as Coin)?.amount ?? ""}
     />
