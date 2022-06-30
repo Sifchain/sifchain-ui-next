@@ -1,5 +1,8 @@
 import type { ChainConfig } from "@sifchain/common";
-import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
+import {
+  useConnect as useCosmConnect,
+  useSigningStargateClient,
+} from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
   CoinbaseIcon,
@@ -16,6 +19,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
+  useQuery,
 } from "wagmi";
 import { useDexEnvironment } from "~/domains/core/envs";
 
@@ -27,6 +31,26 @@ const WALLET_ICONS = {
   coinbaseWallet: <CoinbaseIcon />,
   cosmostation: <CosmostationIcon />,
 };
+
+function useNativeBalance(chainId: string, address: string) {
+  const { data } = useDexEnvironment();
+
+  const { client } = useSigningStargateClient(chainId);
+
+  return useQuery(
+    ["native-balance", chainId, address],
+    () => {
+      if (!client) {
+        return;
+      }
+
+      return client.getAllBalances(address);
+    },
+    {
+      enabled: Boolean(data && client),
+    },
+  );
+}
 
 const WalletConnector: FC = () => {
   const { data } = useDexEnvironment();
@@ -178,8 +202,8 @@ const WalletConnector: FC = () => {
     [
       connectorsById,
       cosmosConnectors,
-      connectCosmos,
       evmConnectors,
+      connectCosmos,
       connectEvm,
     ],
   );
