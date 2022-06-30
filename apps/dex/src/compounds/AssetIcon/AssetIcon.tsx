@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { type FC, useMemo, memo, useRef, useEffect } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 type Props = {
   network: "ethereum" | "sifchain" | "cosmoshub";
@@ -30,14 +31,16 @@ const AssetIcon: FC<Props> = memo((props) => {
     isLoading: isLoadingAsset,
     indexedBySymbol,
     indexedByDisplaySymbol,
-  } = useAssetsQuery();
+    indexedByIBCDenom,
+  } = useTokenRegistryQuery();
 
   const asset = useMemo(
     () =>
+      indexedByIBCDenom[props.symbol] ||
       indexedBySymbol[props.symbol.toLowerCase()] ||
       indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
       indexedByDisplaySymbol[props.symbol.toLowerCase()],
-    [indexedByDisplaySymbol, indexedBySymbol, props.symbol],
+    [indexedByDisplaySymbol, indexedByIBCDenom, indexedBySymbol, props.symbol],
   );
 
   if (!asset) {

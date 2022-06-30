@@ -15,7 +15,7 @@ export default function useTokenRegistryQuery() {
 
   const entries = useMemo(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [] as IAsset[];
+      return [] as Array<IAsset & { chainId: string; ibcDenom: string }>;
     }
 
     const filteredEntries = data?.registry?.entries
@@ -30,7 +30,8 @@ export default function useTokenRegistryQuery() {
 
     return filteredEntries.map(({ asset, entry }) => ({
       ...(asset as IAsset),
-      ibcDenom: asset?.ibcDenom ?? entry.denom ?? "",
+      chainId: entry.ibcCounterpartyChainId,
+      ibcDenom: asset?.ibcDenom ?? entry.denom,
     }));
   }, [data?.registry?.entries, indexedBySymbol]);
 

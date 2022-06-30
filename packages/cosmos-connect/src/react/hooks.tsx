@@ -71,3 +71,24 @@ export const useSigningStargateClient = (
 
   return { client, status };
 };
+
+export const useAccounts = (
+  chainId: string,
+  options: HookOptions = { enabled: true },
+) => {
+  const { signer } = useSigner(chainId, options);
+
+  const {
+    data: accounts,
+    fetch,
+    status,
+  } = useAsyncFunc(async () => signer?.getAccounts(), [signer, chainId]);
+
+  useEffect(() => {
+    if (options.enabled) {
+      fetch();
+    }
+  }, [fetch, options.enabled]);
+
+  return { accounts, status };
+};

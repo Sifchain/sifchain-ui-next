@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 import tw from "tailwind-styled-components";
 
 export type ButtonProps = JSX.IntrinsicElements["button"] & {
+  as?: "button" | "a";
   size?: "xs" | "sm" | "md" | "lg";
   variant?: "primary" | "secondary" | "tertiary" | "outline";
 };
@@ -11,12 +12,14 @@ const StyledButton = tw.button<ButtonProps>`
   rounded-lg font-semibold transition-colors 
   flex items-center justify-center gap-2
   disabled:cursor-not-allowed
+  cursor-pointer
 `;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => (
+  ({ as = "button", className, variant, size, ...props }, ref) => (
     <StyledButton
       {...props}
+      $as={as}
       ref={ref}
       className={clsx(
         {
