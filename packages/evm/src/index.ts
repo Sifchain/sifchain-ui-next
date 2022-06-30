@@ -56,3 +56,17 @@ export const getDevnetSdk = (defaultSigner: Signer) =>
       ),
     },
   });
+
+export const getSdk = (
+  defaultSigner: Signer,
+  options: { bridgeBankContractAddress: string },
+) =>
+  enhanceSdk({
+    peggy: {
+      bridgeBank: getContract(
+        options.bridgeBankContractAddress,
+        mainnetPeggyBridgeBankAbi,
+        defaultSigner,
+      ),
+    },
+  });
