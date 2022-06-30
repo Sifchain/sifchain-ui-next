@@ -1,5 +1,8 @@
 import type { ChainConfig } from "@sifchain/common";
-import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
+import {
+  useConnect as useCosmConnect,
+  useSigningStargateClient,
+} from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
   CoinbaseIcon,
@@ -16,6 +19,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
+  useQuery,
 } from "wagmi";
 import { useDexEnvironment } from "~/domains/core/envs";
 
@@ -27,6 +31,26 @@ const WALLET_ICONS = {
   coinbaseWallet: <CoinbaseIcon />,
   cosmostation: <CosmostationIcon />,
 };
+
+function useNativeBalance(chainId: string, address: string) {
+  const { data } = useDexEnvironment();
+
+  const { client } = useSigningStargateClient(chainId);
+
+  return useQuery(
+    ["native-balance", chainId, address],
+    () => {
+      if (!client) {
+        return;
+      }
+
+      return client.getAllBalances(address);
+    },
+    {
+      enabled: Boolean(data && client),
+    },
+  );
+}
 
 const WalletConnector: FC = () => {
   const { data } = useDexEnvironment();
@@ -41,6 +65,7 @@ const WalletConnector: FC = () => {
         id,
         name: config.displayName,
         type: config.chainType,
+        nativeAssetSymbol: config.nativeAssetSymbol,
         connected: false,
         icon: (
           <figure
@@ -80,7 +105,7 @@ const WalletConnector: FC = () => {
 
   const syncCosmosAccounts = useCallback(async () => {
     if (cosmosActiveConnector) {
-      Promise.all(
+      const entries = await Promise.all(
         chains.flatMap(async (chain) => {
           try {
             const signer = await cosmosActiveConnector.getSigner(chain.id);
@@ -91,15 +116,15 @@ const WalletConnector: FC = () => {
             return [chain.id, []];
           }
         }),
-      ).then((entries) => {
-        const cosmosAccounts = Object.fromEntries(
-          entries.filter(([_, xs]) => xs),
-        );
-        setAccounts((accounts) => ({
-          ...accounts,
-          ...cosmosAccounts,
-        }));
-      });
+      );
+
+      const cosmosAccounts = Object.fromEntries(
+        entries.filter(([_, xs]) => xs),
+      );
+      setAccounts((accounts) => ({
+        ...accounts,
+        ...cosmosAccounts,
+      }));
     }
   }, [chains, cosmosActiveConnector]);
 
@@ -177,8 +202,8 @@ const WalletConnector: FC = () => {
     [
       connectorsById,
       cosmosConnectors,
-      connectCosmos,
       evmConnectors,
+      connectCosmos,
       connectEvm,
     ],
   );
@@ -186,12 +211,33 @@ const WalletConnector: FC = () => {
   const handleDisconnectionRequest = useCallback(
     async ({ walletId = "", chainId = "" }) => {
       const selected = connectorsById[walletId];
-      if (selected) {
-        await selected.disconnect();
+
+      if (!selected) {
+        console.error(`Unknown wallet ${walletId}`);
+        return;
+      }
+
+      switch (selected.type) {
+        case "ibc":
+          const connector = cosmosConnectors.find((x) => x.id === walletId);
+          if (connector) {
+            await disconnectCosmos(connector);
+          }
+          break;
+        case "eth":
+          disconnectEVM();
       }
     },
     [connectorsById],
   );
+
+  const balances = useMemo(() => {
+    return {
+      sifchain: {
+        balance: "0",
+      },
+    };
+  }, [accounts]);
 
   return (
     <WalletSelector
@@ -201,6 +247,7 @@ const WalletConnector: FC = () => {
       }))}
       wallets={wallets}
       accounts={accounts}
+      balances={balances}
       isLoading={
         Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
       }

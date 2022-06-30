@@ -1,5 +1,5 @@
 import type { IAsset } from "@sifchain/common";
-import type { GetTokenStatsResponsePools } from "@sifchain/sif-api/build/commonjs";
+import type { GetTokenStatsResponsePools } from "@sifchain/sif-api";
 import { indexBy } from "rambda";
 import { ascend, descend, sortWith } from "ramda";
 import { useMemo } from "react";
