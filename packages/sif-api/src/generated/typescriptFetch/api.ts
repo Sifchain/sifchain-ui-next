@@ -578,6 +578,116 @@ export interface GetSummaryResponse {
 /**
  *
  * @export
+ * @interface GetTokenStatsResponse
+ */
+export interface GetTokenStatsResponse {
+  /**
+   *
+   * @type {string}
+   * @memberof GetTokenStatsResponse
+   */
+  rowanUSD?: string;
+  /**
+   *
+   * @type {Array<GetTokenStatsResponsePools>}
+   * @memberof GetTokenStatsResponse
+   */
+  pools?: Array<GetTokenStatsResponsePools>;
+}
+/**
+ *
+ * @export
+ * @interface GetTokenStatsResponsePools
+ */
+export interface GetTokenStatsResponsePools {
+  /**
+   *
+   * @type {string}
+   * @memberof GetTokenStatsResponsePools
+   */
+  symbol?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  priceToken?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  poolDepth?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  poolTVL?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  volume?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  arb?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  dailySwapFees?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  poolBalance?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  poolBalanceInRowan?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  accruedNumBlocksRewards?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  rewardPeriodNativeDistributed?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  blocksPerYear?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  rewardApr?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof GetTokenStatsResponsePools
+   */
+  poolApr?: number;
+}
+/**
+ *
+ * @export
  * @interface GetTokenValueResponse
  */
 export interface GetTokenValueResponse {
@@ -853,10 +963,7 @@ export const AssetsApiFp = function (configuration?: Configuration) {
      */
     getTokenStats(
       options?: any,
-    ): (
-      fetch?: FetchAPI,
-      basePath?: string,
-    ) => Promise<GetCirculatingSupplyResponse> {
+    ): (fetch?: FetchAPI, basePath?: string) => Promise<GetTokenStatsResponse> {
       const localVarFetchArgs =
         AssetsApiFetchParamCreator(configuration).getTokenStats(options);
       return (
