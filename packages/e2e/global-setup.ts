@@ -8,7 +8,7 @@ import { chromium } from "@playwright/test";
 async function globalSetup() {
   await extractExtensionPackage(MM_CONFIG.id);
   await extractExtensionPackage(KEPLR_CONFIG.id);
-  const dirname = path.resolve(path.dirname(''));
+  const dirname = path.resolve(path.dirname(""));
   const pathToKeplrExtension = path.join(dirname, KEPLR_CONFIG.path);
   const pathToMmExtension = path.join(dirname, MM_CONFIG.path);
   const userDataDir = path.join(dirname, "./playwright");
@@ -31,7 +31,6 @@ async function globalSetup() {
   });
   console.log("Global setup end");
   const page = await context.pages();
-  
 }
 
 export default globalSetup;

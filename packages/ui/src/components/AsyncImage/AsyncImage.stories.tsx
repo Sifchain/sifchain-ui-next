@@ -14,4 +14,3 @@ const Template: ComponentStory<typeof AsyncImage> = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {};
-

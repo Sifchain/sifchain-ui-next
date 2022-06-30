@@ -14,4 +14,3 @@ const Template: ComponentStory<typeof Identicon> = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {};
-
