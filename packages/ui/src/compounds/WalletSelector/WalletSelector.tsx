@@ -37,6 +37,9 @@ export type ChainEntry = {
   type: string;
   icon: ReactNode;
   connected?: boolean;
+  nativeAssetSymbol?: string;
+  nativeAssetDecimals?: number;
+  nativeAssetPrice?: string;
 };
 
 export type WalletEntry = {
@@ -46,10 +49,6 @@ export type WalletEntry = {
   type: string;
   isConnected?: boolean;
   account?: string;
-  nativeAssetSymbol?: string;
-  nativeAssetBalance?: string;
-  nativeAssetDecimals?: number;
-  nativeAssetPrice?: string;
 };
 
 export type WalletSelectorProps = {
@@ -60,6 +59,11 @@ export type WalletSelectorProps = {
   selectedChainId?: string;
   accounts: {
     [chainId: string]: string[];
+  };
+  balances: {
+    [chainId: string]: {
+      balance: string;
+    };
   };
   onConnect?: (selection: { chainId: string; walletId: string }) => void;
   onDisconnect?: (selection: { chainId: string; walletId: string }) => void;
@@ -323,6 +327,7 @@ const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 }
                 walletId={""}
                 onDisconnect={props.onDisconnect}
+                onConnectAnotherWallet={props.onConnectAnotherWallet}
               />
             ))}
           </ul>
@@ -350,7 +355,8 @@ type OverflowAction = {
 function useOverflowActions(options: {
   chainId: string;
   account: string;
-  onDisconnect: () => void;
+  onDisconnect(): void;
+  onConnectAnotherWallet(): void;
 }) {
   const actions: OverflowAction[] = [
     {
@@ -421,6 +427,9 @@ function useOverflowActions(options: {
             });
         }
         break;
+      case "connect-another":
+        options.onConnectAnotherWallet();
+        break;
       case "disconnect":
         options.onDisconnect();
         break;
@@ -430,19 +439,23 @@ function useOverflowActions(options: {
   return [actions, handleAction, isCopied] as const;
 }
 
-const ConnectedAccount: FC<{
+type ConnectedAccountProps = {
   chainId: string;
   chainName: string;
   walletId: string;
   accounts: string[];
-  onDisconnect: ConnectedWalletsProps["onDisconnect"];
-}> = ({ chainId, chainName, walletId, accounts, onDisconnect }) => {
+  onDisconnect(): void;
+  onConnectAnotherWallet(): void;
+};
+
+const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
+  const account = props.accounts[0] as string;
+
   const [actions, handleAction, isCopied] = useOverflowActions({
-    chainId,
-    account: accounts[0] as string,
-    onDisconnect: () => {
-      onDisconnect?.({ chainId, walletId });
-    },
+    account,
+    chainId: props.chainId,
+    onDisconnect: props.onDisconnect,
+    onConnectAnotherWallet: props.onConnectAnotherWallet,
   });
 
   return (
@@ -455,10 +468,10 @@ const ConnectedAccount: FC<{
           <>
             <Menu.Button className="flex items-center justify-between">
               <div className="flex gap-2.5 items-center w-full">
-                <Identicon diameter={32} address={accounts[0] ?? ""} />
+                <Identicon diameter={32} address={account} />
                 <div className="grid gap-1 flex-1 text-left">
-                  <div>{maskWalletAddress(accounts[0] ?? "")}</div>
-                  <div className="text-xs">{chainName}</div>
+                  <div>{maskWalletAddress(account)}</div>
+                  <div className="text-xs">{props.chainName}</div>
                 </div>
               </div>
               <div

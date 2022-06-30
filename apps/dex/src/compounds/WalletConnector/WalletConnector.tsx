@@ -41,6 +41,7 @@ const WalletConnector: FC = () => {
         id,
         name: config.displayName,
         type: config.chainType,
+        nativeAssetSymbol: config.nativeAssetSymbol,
         connected: false,
         icon: (
           <figure
@@ -187,7 +188,6 @@ const WalletConnector: FC = () => {
     async ({ walletId = "", chainId = "" }) => {
       const selected = connectorsById[walletId];
 
-      console.log({ walletId, chainId, selected });
       if (!selected) {
         console.error(`Unknown wallet ${walletId}`);
         return;
@@ -207,6 +207,14 @@ const WalletConnector: FC = () => {
     [connectorsById],
   );
 
+  const balances = useMemo(() => {
+    return {
+      sifchain: {
+        balance: "0",
+      },
+    };
+  }, [accounts]);
+
   return (
     <WalletSelector
       chains={chains.map((x) => ({
@@ -215,6 +223,7 @@ const WalletConnector: FC = () => {
       }))}
       wallets={wallets}
       accounts={accounts}
+      balances={balances}
       isLoading={
         Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
       }
