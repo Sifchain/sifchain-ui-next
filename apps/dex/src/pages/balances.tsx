@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
+import { useAccounts } from "@sifchain/cosmos-connect";
 import {
   ArrowDownIcon,
   Button,
@@ -15,6 +16,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, FC, useCallback, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalances } from "~/domains/bank/hooks/balances";
 import { useLiquidityProviders } from "~/domains/clp";
@@ -61,6 +63,12 @@ const ImportModal = (
   const { data: tokenRegistry, indexedByIBCDenom } = useTokenRegistryQuery();
   const balances = useAllBalances();
   const balance = balances.indexedByDenom?.[props.denom];
+
+  const { data: env } = useDexEnvironment();
+  const { accounts: cosmAccounts } = useAccounts(env?.sifChainId ?? "", {
+    enabled: env !== undefined,
+  });
+  const recipientAddress = cosmAccounts?.[0]?.address;
 
   const tokenOptions = useMemo(
     () =>
@@ -122,11 +130,11 @@ const ImportModal = (
           />
         </fieldset>
         <Input
-          className="!bg-gray-750"
+          className="!bg-gray-750 text-ellipsis"
           label="Recipient address"
-          value="sif1v5zezuttfk6z6yalzhef0p44z4yywd56f837lm"
-          disabled
+          value={recipientAddress}
           fullWidth
+          disabled
         />
         <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
           <div>
@@ -174,6 +182,16 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const balances = useAllBalances();
   const balance = balances.indexedByDenom?.[props.denom];
 
+  const token = indexedByIBCDenom[props.denom];
+  const isEthToken = token?.ibcDenom.startsWith("c");
+  const { accounts: cosmAccounts } = useAccounts(token?.chainId ?? "", {
+    enabled: token !== undefined && !isEthToken,
+  });
+  const { data: ethAccount } = useAccount();
+  const recipientAddress = isEthToken
+    ? ethAccount?.address
+    : cosmAccounts?.[0]?.address;
+
   const [amount, setAmount] = useState("");
   const amountDecimal = useMemo(
     () =>
@@ -210,11 +228,11 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
           />
         </fieldset>
         <Input
-          className="!bg-gray-750"
+          className="!bg-gray-750 text-ellipsis"
           label="Recipient address"
-          value="sif1v5zezuttfk6z6yalzhef0p44z4yywd56f837lm"
-          disabled
+          value={recipientAddress}
           fullWidth
+          disabled
         />
         <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
           <div>
