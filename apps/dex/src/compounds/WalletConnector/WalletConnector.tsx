@@ -80,7 +80,7 @@ const WalletConnector: FC = () => {
 
   const syncCosmosAccounts = useCallback(async () => {
     if (cosmosActiveConnector) {
-      Promise.all(
+      const entries = await Promise.all(
         chains.flatMap(async (chain) => {
           try {
             const signer = await cosmosActiveConnector.getSigner(chain.id);
@@ -91,15 +91,15 @@ const WalletConnector: FC = () => {
             return [chain.id, []];
           }
         }),
-      ).then((entries) => {
-        const cosmosAccounts = Object.fromEntries(
-          entries.filter(([_, xs]) => xs),
-        );
-        setAccounts((accounts) => ({
-          ...accounts,
-          ...cosmosAccounts,
-        }));
-      });
+      );
+
+      const cosmosAccounts = Object.fromEntries(
+        entries.filter(([_, xs]) => xs),
+      );
+      setAccounts((accounts) => ({
+        ...accounts,
+        ...cosmosAccounts,
+      }));
     }
   }, [chains, cosmosActiveConnector]);
 
@@ -186,8 +186,22 @@ const WalletConnector: FC = () => {
   const handleDisconnectionRequest = useCallback(
     async ({ walletId = "", chainId = "" }) => {
       const selected = connectorsById[walletId];
-      if (selected) {
-        await selected.disconnect();
+
+      console.log({ walletId, chainId, selected });
+      if (!selected) {
+        console.error(`Unknown wallet ${walletId}`);
+        return;
+      }
+
+      switch (selected.type) {
+        case "ibc":
+          const connector = cosmosConnectors.find((x) => x.id === walletId);
+          if (connector) {
+            await disconnectCosmos(connector);
+          }
+          break;
+        case "eth":
+          disconnectEVM();
       }
     },
     [connectorsById],

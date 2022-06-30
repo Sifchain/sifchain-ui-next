@@ -254,7 +254,10 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           accounts={accountEntries}
           chains={props.chains}
           isModalOpen={isModalOpen}
-          onDisconnect={props.onDisconnect}
+          onDisconnect={props.onDisconnect?.bind(null, {
+            chainId: networkId ?? "",
+            walletId: walletId ?? "",
+          })}
           onConnectAnotherWallet={setIsModalOpen.bind(null, true)}
         />
       ) : (
@@ -437,7 +440,9 @@ const ConnectedAccount: FC<{
   const [actions, handleAction, isCopied] = useOverflowActions({
     chainId,
     account: accounts[0] as string,
-    onDisconnect: () => onDisconnect?.({ chainId, walletId }),
+    onDisconnect: () => {
+      onDisconnect?.({ chainId, walletId });
+    },
   });
 
   return (
