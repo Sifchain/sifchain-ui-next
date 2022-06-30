@@ -21,18 +21,8 @@ describe("AssetsApi", () => {
     instance = new api.AssetsApi(config);
   });
 
-  test("getAssets", () => {
-    return expect(instance.getAssets({})).resolves.toBe(null);
-  });
   test("getTokenStats", () => {
     return expect(instance.getTokenStats({})).resolves.toBe(null);
-  });
-  test("getTokenStatsPMTP", () => {
-    return expect(instance.getTokenStatsPMTP({})).resolves.toBe(null);
-  });
-  test("getTokenValue", () => {
-    const symbol: string = "symbol_example";
-    return expect(instance.getTokenValue(symbol, {})).resolves.toBe(null);
   });
 });
 
@@ -51,31 +41,12 @@ describe("NetworkApi", () => {
   test("getDailyPrice", () => {
     return expect(instance.getDailyPrice({})).resolves.toBe(null);
   });
-  test("getDispensation", () => {
-    const type: string = "type_example";
-    return expect(instance.getDispensation(type, {})).resolves.toBe(null);
-  });
   test("getHistoricalPrice", () => {
     const symbol: string = "symbol_example";
     return expect(instance.getHistoricalPrice(symbol, {})).resolves.toBe(null);
   });
-  test("getNetChange", () => {
-    const symbol: string = "symbol_example";
-    const lpAddress: string = "lpAddress_example";
-    return expect(instance.getNetChange(symbol, lpAddress, {})).resolves.toBe(
-      null,
-    );
-  });
   test("getNetworkInfo", () => {
     return expect(instance.getNetworkInfo({})).resolves.toBe(null);
-  });
-  test("getRewardConfig", () => {
-    const type: string = "type_example";
-    return expect(instance.getRewardConfig(type, {})).resolves.toBe(null);
-  });
-  test("getRewardUser", () => {
-    const address: string = "address_example";
-    return expect(instance.getRewardUser(address, {})).resolves.toBe(null);
   });
   test("getSummary", () => {
     return expect(instance.getSummary({})).resolves.toBe(null);
@@ -100,10 +71,6 @@ describe("PoolsApi", () => {
     return expect(instance.getLiquidityProviders(symbol, {})).resolves.toBe(
       null,
     );
-  });
-  test("getLuca", () => {
-    const symbol: string = "symbol_example";
-    return expect(instance.getLuca(symbol, {})).resolves.toBe(null);
   });
   test("getPool", () => {
     const symbol: string = "symbol_example";
@@ -150,17 +117,6 @@ describe("TradesApi", () => {
     instance = new api.TradesApi(config);
   });
 
-  test("getCompetitionRanks", () => {
-    const type: string = "type_example";
-    return expect(instance.getCompetitionRanks(type, {})).resolves.toBe(null);
-  });
-  test("getCompetitionRanksByToken", () => {
-    const token: string = "token_example";
-    const type: string = "type_example";
-    return expect(
-      instance.getCompetitionRanksByToken(token, type, {}),
-    ).resolves.toBe(null);
-  });
   test("getTrades", () => {
     const marketPair: string = "marketPair_example";
     return expect(instance.getTrades(marketPair, {})).resolves.toBe(null);
