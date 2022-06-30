@@ -46,6 +46,10 @@ export type WalletEntry = {
   type: string;
   isConnected?: boolean;
   account?: string;
+  nativeAssetSymbol?: string;
+  nativeAssetBalance?: string;
+  nativeAssetDecimals?: number;
+  nativeAssetPrice?: string;
 };
 
 export type WalletSelectorProps = {
