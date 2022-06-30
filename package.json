@@ -10,7 +10,7 @@
     "dev": "turbo run dev --filter=@sifchain/dex",
     "dev:registry": "turbo run dev --filter=@sifchain/registry",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format": "bash -c 'prettier --ignore-path <(cat .prettierignore **/*/.gitignore) --write .'",
     "storybook": "pnpm -C ./packages/ui run storybook ",
     "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
