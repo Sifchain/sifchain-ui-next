@@ -1,8 +1,8 @@
-build
-proto
+build/
+/proto/
 
 # Top level folders for node <10.7 support
-cosmos
-gogoproto
-google
-sifnode
+/cosmos
+/gogoproto
+/google
+/sifnode

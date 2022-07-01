@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Asset } from "./types";
 import Long from "long";
-import { RewardPeriod } from "./params";
+import { RewardPeriod, ProviderDistributionPeriod } from "./params";
 import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sifnode.clp.v1";
@@ -125,6 +125,30 @@ export interface MsgCancelUnlock {
 }
 
 export interface MsgCancelUnlockResponse {}
+
+export interface MsgModifyLiquidityProtectionRates {
+  signer: string;
+  currentRowanLiquidityThreshold: string;
+}
+
+export interface MsgModifyLiquidityProtectionRatesResponse {}
+
+export interface MsgUpdateLiquidityProtectionParams {
+  signer: string;
+  maxRowanLiquidityThreshold: string;
+  maxRowanLiquidityThresholdAsset: string;
+  epochLength: Long;
+  isActive: boolean;
+}
+
+export interface MsgUpdateLiquidityProtectionParamsResponse {}
+
+export interface MsgAddProviderDistributionPeriodRequest {
+  signer: string;
+  distributionPeriods: ProviderDistributionPeriod[];
+}
+
+export interface MsgAddProviderDistributionPeriodResponse {}
 
 function createBaseMsgUpdateStakingRewardParams(): MsgUpdateStakingRewardParams {
   return { signer: "", minter: "", params: "" };
@@ -2035,6 +2059,417 @@ export const MsgCancelUnlockResponse = {
   },
 };
 
+function createBaseMsgModifyLiquidityProtectionRates(): MsgModifyLiquidityProtectionRates {
+  return { signer: "", currentRowanLiquidityThreshold: "" };
+}
+
+export const MsgModifyLiquidityProtectionRates = {
+  encode(
+    message: MsgModifyLiquidityProtectionRates,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.currentRowanLiquidityThreshold !== "") {
+      writer.uint32(18).string(message.currentRowanLiquidityThreshold);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgModifyLiquidityProtectionRates {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgModifyLiquidityProtectionRates();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.currentRowanLiquidityThreshold = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgModifyLiquidityProtectionRates {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      currentRowanLiquidityThreshold: isSet(
+        object.currentRowanLiquidityThreshold,
+      )
+        ? String(object.currentRowanLiquidityThreshold)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgModifyLiquidityProtectionRates): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.currentRowanLiquidityThreshold !== undefined &&
+      (obj.currentRowanLiquidityThreshold =
+        message.currentRowanLiquidityThreshold);
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRates>, I>,
+  >(object: I): MsgModifyLiquidityProtectionRates {
+    const message = createBaseMsgModifyLiquidityProtectionRates();
+    message.signer = object.signer ?? "";
+    message.currentRowanLiquidityThreshold =
+      object.currentRowanLiquidityThreshold ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgModifyLiquidityProtectionRatesResponse(): MsgModifyLiquidityProtectionRatesResponse {
+  return {};
+}
+
+export const MsgModifyLiquidityProtectionRatesResponse = {
+  encode(
+    _: MsgModifyLiquidityProtectionRatesResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgModifyLiquidityProtectionRatesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgModifyLiquidityProtectionRatesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgModifyLiquidityProtectionRatesResponse {
+    return {};
+  },
+
+  toJSON(_: MsgModifyLiquidityProtectionRatesResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRatesResponse>, I>,
+  >(_: I): MsgModifyLiquidityProtectionRatesResponse {
+    const message = createBaseMsgModifyLiquidityProtectionRatesResponse();
+    return message;
+  },
+};
+
+function createBaseMsgUpdateLiquidityProtectionParams(): MsgUpdateLiquidityProtectionParams {
+  return {
+    signer: "",
+    maxRowanLiquidityThreshold: "",
+    maxRowanLiquidityThresholdAsset: "",
+    epochLength: Long.UZERO,
+    isActive: false,
+  };
+}
+
+export const MsgUpdateLiquidityProtectionParams = {
+  encode(
+    message: MsgUpdateLiquidityProtectionParams,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.maxRowanLiquidityThreshold !== "") {
+      writer.uint32(18).string(message.maxRowanLiquidityThreshold);
+    }
+    if (message.maxRowanLiquidityThresholdAsset !== "") {
+      writer.uint32(34).string(message.maxRowanLiquidityThresholdAsset);
+    }
+    if (!message.epochLength.isZero()) {
+      writer.uint32(24).uint64(message.epochLength);
+    }
+    if (message.isActive === true) {
+      writer.uint32(40).bool(message.isActive);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgUpdateLiquidityProtectionParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateLiquidityProtectionParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.maxRowanLiquidityThreshold = reader.string();
+          break;
+        case 4:
+          message.maxRowanLiquidityThresholdAsset = reader.string();
+          break;
+        case 3:
+          message.epochLength = reader.uint64() as Long;
+          break;
+        case 5:
+          message.isActive = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateLiquidityProtectionParams {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      maxRowanLiquidityThreshold: isSet(object.maxRowanLiquidityThreshold)
+        ? String(object.maxRowanLiquidityThreshold)
+        : "",
+      maxRowanLiquidityThresholdAsset: isSet(
+        object.maxRowanLiquidityThresholdAsset,
+      )
+        ? String(object.maxRowanLiquidityThresholdAsset)
+        : "",
+      epochLength: isSet(object.epochLength)
+        ? Long.fromValue(object.epochLength)
+        : Long.UZERO,
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
+    };
+  },
+
+  toJSON(message: MsgUpdateLiquidityProtectionParams): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.maxRowanLiquidityThreshold !== undefined &&
+      (obj.maxRowanLiquidityThreshold = message.maxRowanLiquidityThreshold);
+    message.maxRowanLiquidityThresholdAsset !== undefined &&
+      (obj.maxRowanLiquidityThresholdAsset =
+        message.maxRowanLiquidityThresholdAsset);
+    message.epochLength !== undefined &&
+      (obj.epochLength = (message.epochLength || Long.UZERO).toString());
+    message.isActive !== undefined && (obj.isActive = message.isActive);
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParams>, I>,
+  >(object: I): MsgUpdateLiquidityProtectionParams {
+    const message = createBaseMsgUpdateLiquidityProtectionParams();
+    message.signer = object.signer ?? "";
+    message.maxRowanLiquidityThreshold =
+      object.maxRowanLiquidityThreshold ?? "";
+    message.maxRowanLiquidityThresholdAsset =
+      object.maxRowanLiquidityThresholdAsset ?? "";
+    message.epochLength =
+      object.epochLength !== undefined && object.epochLength !== null
+        ? Long.fromValue(object.epochLength)
+        : Long.UZERO;
+    message.isActive = object.isActive ?? false;
+    return message;
+  },
+};
+
+function createBaseMsgUpdateLiquidityProtectionParamsResponse(): MsgUpdateLiquidityProtectionParamsResponse {
+  return {};
+}
+
+export const MsgUpdateLiquidityProtectionParamsResponse = {
+  encode(
+    _: MsgUpdateLiquidityProtectionParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgUpdateLiquidityProtectionParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateLiquidityProtectionParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateLiquidityProtectionParamsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateLiquidityProtectionParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParamsResponse>, I>,
+  >(_: I): MsgUpdateLiquidityProtectionParamsResponse {
+    const message = createBaseMsgUpdateLiquidityProtectionParamsResponse();
+    return message;
+  },
+};
+
+function createBaseMsgAddProviderDistributionPeriodRequest(): MsgAddProviderDistributionPeriodRequest {
+  return { signer: "", distributionPeriods: [] };
+}
+
+export const MsgAddProviderDistributionPeriodRequest = {
+  encode(
+    message: MsgAddProviderDistributionPeriodRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    for (const v of message.distributionPeriods) {
+      ProviderDistributionPeriod.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgAddProviderDistributionPeriodRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAddProviderDistributionPeriodRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.distributionPeriods.push(
+            ProviderDistributionPeriod.decode(reader, reader.uint32()),
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddProviderDistributionPeriodRequest {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      distributionPeriods: Array.isArray(object?.distributionPeriods)
+        ? object.distributionPeriods.map((e: any) =>
+            ProviderDistributionPeriod.fromJSON(e),
+          )
+        : [],
+    };
+  },
+
+  toJSON(message: MsgAddProviderDistributionPeriodRequest): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    if (message.distributionPeriods) {
+      obj.distributionPeriods = message.distributionPeriods.map((e) =>
+        e ? ProviderDistributionPeriod.toJSON(e) : undefined,
+      );
+    } else {
+      obj.distributionPeriods = [];
+    }
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodRequest>, I>,
+  >(object: I): MsgAddProviderDistributionPeriodRequest {
+    const message = createBaseMsgAddProviderDistributionPeriodRequest();
+    message.signer = object.signer ?? "";
+    message.distributionPeriods =
+      object.distributionPeriods?.map((e) =>
+        ProviderDistributionPeriod.fromPartial(e),
+      ) || [];
+    return message;
+  },
+};
+
+function createBaseMsgAddProviderDistributionPeriodResponse(): MsgAddProviderDistributionPeriodResponse {
+  return {};
+}
+
+export const MsgAddProviderDistributionPeriodResponse = {
+  encode(
+    _: MsgAddProviderDistributionPeriodResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgAddProviderDistributionPeriodResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAddProviderDistributionPeriodResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddProviderDistributionPeriodResponse {
+    return {};
+  },
+
+  toJSON(_: MsgAddProviderDistributionPeriodResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodResponse>, I>,
+  >(_: I): MsgAddProviderDistributionPeriodResponse {
+    const message = createBaseMsgAddProviderDistributionPeriodResponse();
+    return message;
+  },
+};
+
 export interface Msg {
   RemoveLiquidity(
     request: MsgRemoveLiquidity,
@@ -2072,6 +2507,15 @@ export interface Msg {
   CancelUnlockLiquidity(
     request: MsgCancelUnlock,
   ): Promise<MsgCancelUnlockResponse>;
+  UpdateLiquidityProtectionParams(
+    request: MsgUpdateLiquidityProtectionParams,
+  ): Promise<MsgUpdateLiquidityProtectionParamsResponse>;
+  ModifyLiquidityProtectionRates(
+    request: MsgModifyLiquidityProtectionRates,
+  ): Promise<MsgModifyLiquidityProtectionRatesResponse>;
+  AddProviderDistributionPeriod(
+    request: MsgAddProviderDistributionPeriodRequest,
+  ): Promise<MsgAddProviderDistributionPeriodResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2092,6 +2536,12 @@ export class MsgClientImpl implements Msg {
     this.UpdateStakingRewardParams = this.UpdateStakingRewardParams.bind(this);
     this.SetSymmetryThreshold = this.SetSymmetryThreshold.bind(this);
     this.CancelUnlockLiquidity = this.CancelUnlockLiquidity.bind(this);
+    this.UpdateLiquidityProtectionParams =
+      this.UpdateLiquidityProtectionParams.bind(this);
+    this.ModifyLiquidityProtectionRates =
+      this.ModifyLiquidityProtectionRates.bind(this);
+    this.AddProviderDistributionPeriod =
+      this.AddProviderDistributionPeriod.bind(this);
   }
   RemoveLiquidity(
     request: MsgRemoveLiquidity,
@@ -2270,6 +2720,49 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCancelUnlockResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  UpdateLiquidityProtectionParams(
+    request: MsgUpdateLiquidityProtectionParams,
+  ): Promise<MsgUpdateLiquidityProtectionParamsResponse> {
+    const data = MsgUpdateLiquidityProtectionParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.clp.v1.Msg",
+      "UpdateLiquidityProtectionParams",
+      data,
+    );
+    return promise.then((data) =>
+      MsgUpdateLiquidityProtectionParamsResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  ModifyLiquidityProtectionRates(
+    request: MsgModifyLiquidityProtectionRates,
+  ): Promise<MsgModifyLiquidityProtectionRatesResponse> {
+    const data = MsgModifyLiquidityProtectionRates.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.clp.v1.Msg",
+      "ModifyLiquidityProtectionRates",
+      data,
+    );
+    return promise.then((data) =>
+      MsgModifyLiquidityProtectionRatesResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  AddProviderDistributionPeriod(
+    request: MsgAddProviderDistributionPeriodRequest,
+  ): Promise<MsgAddProviderDistributionPeriodResponse> {
+    const data =
+      MsgAddProviderDistributionPeriodRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.clp.v1.Msg",
+      "AddProviderDistributionPeriod",
+      data,
+    );
+    return promise.then((data) =>
+      MsgAddProviderDistributionPeriodResponse.decode(new _m0.Reader(data)),
     );
   }
 }
