@@ -6,7 +6,6 @@ import {
   Button,
   Modal,
   SearchInput,
-  Tooltip,
   WalletIcon,
 } from "../../components";
 import {
@@ -155,13 +154,6 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                     <div className="flex gap-2 items-center">
                       <figure className="text-lg">{x.icon}</figure>
                       {x.name}{" "}
-                      {x.isConnected && (
-                        <Tooltip content={x.account || "no account"}>
-                          <div>
-                            <WalletIcon className="text-green-600" />
-                          </div>
-                        </Tooltip>
-                      )}
                     </div>
                     <ArrowLeftIcon className="rotate-180 text-gray-400" />
                   </ListItem>
