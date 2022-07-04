@@ -1,33 +1,27 @@
-import type { ChainConfig, NetworkKind } from "@sifchain/common";
-import {
-  useConnect as useCosmConnect,
-  useSigningStargateClient,
-} from "@sifchain/cosmos-connect";
+import type { ChainConfig } from "@sifchain/common";
+import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import type { Coin } from "@sifchain/proto-types/cosmos/base/coin";
 import {
   ChainEntry,
   CoinbaseIcon,
   ConnectedAccount,
   CosmostationIcon,
-  formatNumberAsCurrency,
   KeplrIcon,
   MetamaskIcon,
   RenderConnectedAccount,
   WalletconnectCircleIcon,
   WalletSelector,
 } from "@sifchain/ui";
-import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import { assoc, indexBy, prop } from "rambda";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
 import {
   useConnect as useEtherConnect,
   useDisconnect as useEtherDisconnect,
 } from "wagmi";
-import { usePoolStatsQuery } from "~/domains/clp";
 
 import { useDexEnvironment } from "~/domains/core/envs";
+import { useNativeBalanceQuery } from "./hooks";
 
 const WALLET_ICONS = {
   keplr: <KeplrIcon />,
@@ -37,77 +31,6 @@ const WALLET_ICONS = {
   coinbaseWallet: <CoinbaseIcon />,
   cosmostation: <CosmostationIcon />,
 };
-
-type NativeBalanceResult = {
-  amount: string;
-  denom: string;
-  dollarValue: string;
-};
-
-const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
-  amount: "0",
-  denom: "",
-  dollarValue: "$0",
-};
-
-export function useNativeBalanceQuery(chainId: string, address: string) {
-  const { client } = useSigningStargateClient(chainId);
-  const { data: dexEnv } = useDexEnvironment();
-  const { data: tokenStats } = usePoolStatsQuery();
-
-  const query = useCallback(async () => {
-    if (!client || !dexEnv) {
-      return DEFAULT_NATIVE_BALANCE;
-    }
-
-    const chain = dexEnv.chainConfigsByNetwork[chainId as NetworkKind];
-
-    if (!chain || !tokenStats?.pools) {
-      return DEFAULT_NATIVE_BALANCE;
-    }
-
-    const nativeSymbol = chain.nativeAssetSymbol.toLowerCase();
-
-    const stat = tokenStats.pools.find(
-      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol,
-    );
-
-    const asset = dexEnv.assets.find(
-      ({ symbol }) =>
-        symbol.toLowerCase() === nativeSymbol ||
-        `u${symbol.toLowerCase()}` === nativeSymbol,
-    );
-
-    const result = await client.getBalance(
-      address,
-      chain.nativeAssetSymbol.toLowerCase(),
-    );
-
-    if (!result || !asset) {
-      return DEFAULT_NATIVE_BALANCE;
-    }
-
-    const tokenPrice =
-      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken;
-
-    const bn = new BigNumber(result.amount);
-
-    const normalizedBalance = bn.shiftedBy(-asset.decimals).toNumber();
-
-    const dollarValue = normalizedBalance * Number(tokenPrice ?? 0);
-
-    return {
-      amount: normalizedBalance.toFixed(4),
-      denom: result.denom,
-      dollarValue: formatNumberAsCurrency(dollarValue),
-    };
-  }, [address, chainId, client, dexEnv, tokenStats]);
-
-  return useQuery(["native-balance", chainId, address], query, {
-    enabled: Boolean(dexEnv && client && tokenStats),
-    staleTime: 60_000,
-  });
-}
 
 const WalletConnector: FC = () => {
   const { data } = useDexEnvironment();
@@ -266,20 +189,23 @@ const WalletConnector: FC = () => {
   );
 
   const handleDisconnectionRequest = useCallback(
-    async ({ walletId = "", chainId = "" }) => {
-      const selected = connectorsById[walletId];
+    async ({ chainId = "" }) => {
+      const selected = chains.find((x) => x.id === chainId);
 
       if (!selected) {
-        console.error(`Unknown wallet ${walletId}`);
+        console.error(`Unknown chain ${chainId}`);
         return;
       }
 
       switch (selected.type) {
         case "ibc":
           {
-            const connector = cosmosConnectors.find((x) => x.id === walletId);
+            const connector = cosmosConnectors.find((x) =>
+              x.id.startsWith("keplr"),
+            );
             if (connector) {
-              await disconnectCosmos(connector);
+              console.log("disconnecting from", connector);
+              disconnectCosmos(connector);
             }
           }
           break;
@@ -287,7 +213,7 @@ const WalletConnector: FC = () => {
           disconnectEVM();
       }
     },
-    [connectorsById, cosmosConnectors, disconnectCosmos, disconnectEVM],
+    [chains, cosmosConnectors, disconnectCosmos, disconnectEVM],
   );
 
   return (

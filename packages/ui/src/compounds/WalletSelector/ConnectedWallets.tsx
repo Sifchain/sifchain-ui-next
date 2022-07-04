@@ -17,8 +17,8 @@ export type ConnectedWalletsProps = {
   isModalOpen: boolean;
   accounts: [chainId: string, accounts: string[]][];
   chains: ChainEntry[];
-  onDisconnect?: (selection: { chainId: string }) => void;
   onConnectAnotherWallet(): void;
+  onDisconnect?: ((selection: { chainId: string }) => void) | undefined;
   renderConnectedAccount?: RenderConnectedAccount | undefined;
 };
 
@@ -47,7 +47,7 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
           <ul className="grid gap-1">
             {props.accounts.map(([chainId, accounts]) => {
               const chain = props.chains.find((x) => x.id === chainId);
-              const walletId = chain?.type === "ledger" ? "ledger" : "web3";
+
               const connectedAccountProps: ConnectedAccountProps = {
                 account: accounts[0] ?? "",
                 chainId: chainId,
@@ -55,7 +55,6 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 nativeAssetSymbol: "ETH",
                 nativeAssetBalance: "0",
                 nativeAssetDollarValue: "$2,000",
-                walletId: walletId,
                 onDisconnect: () => props.onDisconnect?.({ chainId }),
                 onConnectAnotherWallet: props.onConnectAnotherWallet,
               };

@@ -22,7 +22,13 @@ export const useDexEnvironmentType = () => {
 export function useDexEnvironment() {
   const environment = useDexEnvironmentType();
 
-  return useQuery(`dex_env_${environment}`, async () =>
-    getSdkConfig({ environment }),
+  return useQuery(
+    `dex_env_${environment}`,
+    async () => getSdkConfig({ environment }),
+    {
+      staleTime: 3600_000,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
   );
 }

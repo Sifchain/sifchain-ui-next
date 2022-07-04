@@ -16,6 +16,19 @@ import {
 } from "./ConnectedWallets";
 import type { ChainEntry, WalletEntry } from "./types";
 
+export type WalletSelectorStep =
+  | "choose-network"
+  | "choose-wallet"
+  | "await-confirmation";
+
+const ListContainer = tw.ul`
+  grid gap-2 max-h-64 overflow-y-scroll -mx-3
+`;
+
+const ListItem = tw.li`
+  flex items-center justify-between p-4 hover:opacity-60 rounded
+`;
+
 export type WalletSelectorProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
@@ -31,19 +44,6 @@ export type WalletSelectorProps = {
   onCancel?: () => void;
   renderConnectedAccount?: RenderConnectedAccount;
 };
-
-export type WalletSelectorStep =
-  | "choose-network"
-  | "choose-wallet"
-  | "await-confirmation";
-
-const ListContainer = tw.ul`
-  grid gap-2 max-h-64 overflow-y-scroll -mx-3
-`;
-
-const ListItem = tw.li`
-  flex items-center justify-between p-4 hover:opacity-60 rounded
-`;
 
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -219,11 +219,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           accounts={accountEntries}
           chains={props.chains}
           isModalOpen={isModalOpen}
-          onDisconnect={() =>
-            props.onDisconnect?.({
-              chainId: networkId ?? "",
-            })
-          }
+          onDisconnect={props.onDisconnect}
           onConnectAnotherWallet={setIsModalOpen.bind(null, true)}
           renderConnectedAccount={props.renderConnectedAccount}
         />
