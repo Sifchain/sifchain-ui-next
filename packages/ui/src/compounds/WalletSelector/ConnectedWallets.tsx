@@ -31,9 +31,9 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
         className="flex justify-between flex-1 items-center"
         variant="outline"
       >
-        <span>Connected wallets</span>
+        <span className="text-white">Connected wallets</span>
         <div className="flex items-center gap-2">
-          <span className="h-5 w-5 bg-gray-600 rounded-full grid place-items-center">
+          <span className="h-5 w-5 bg-gray-600 text-gray-50 rounded-full grid place-items-center">
             {props.accounts.length}
           </span>
           <ChevronDownIcon aria-hidden />

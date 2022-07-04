@@ -16,6 +16,7 @@ export { default as KeplrIcon } from "./KeplrIcon";
 export { default as LockIcon } from "./LockIcon";
 export { default as LogoutIcon } from "./LogoutIcon";
 export { default as MetamaskIcon } from "./MetamaskIcon";
+export { default as PencilIcon } from "./PencilIcon";
 export { default as PlusIcon } from "./PlusIcon";
 export { default as PolygonIcon } from "./PolygonIcon";
 export { default as PoolsIcon } from "./PoolsIcon";

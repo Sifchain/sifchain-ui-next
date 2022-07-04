@@ -143,8 +143,10 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
               <div className="flex gap-2.5 items-center w-full">
                 <Identicon diameter={32} address={account} />
                 <div className="grid gap-1 flex-1 text-left">
-                  <div>{maskWalletAddress(account)}</div>
-                  <div className="text-xs">{props.chainName}</div>
+                  <div className="text-gray-200">
+                    {maskWalletAddress(account)}
+                  </div>
+                  <div className="text-xs text-gray-300">{props.chainName}</div>
                 </div>
               </div>
               <div className="grid gap-1 pr-4 text-right">
