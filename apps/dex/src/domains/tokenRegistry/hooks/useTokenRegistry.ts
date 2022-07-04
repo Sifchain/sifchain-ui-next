@@ -28,11 +28,16 @@ export default function useTokenRegistryQuery() {
       }))
       .filter((x) => Boolean(x.asset));
 
-    return filteredEntries.map(({ asset, entry }) => ({
-      ...(asset as IAsset),
-      chainId: entry.ibcCounterpartyChainId,
-      ibcDenom: asset?.ibcDenom ?? entry.denom,
-    }));
+    return filteredEntries.map(({ asset, entry }) => {
+      return {
+        ...(asset as IAsset),
+        chainId: entry.ibcCounterpartyChainId,
+        ibcDenom: asset?.ibcDenom ?? entry.denom,
+        address:
+          indexedBySymbol[(asset?.ibcDenom ?? entry.denom).replace(/^c/, "")]
+            ?.address ?? "",
+      };
+    });
   }, [data?.registry?.entries, indexedBySymbol]);
 
   const indices = useMemo(() => {
