@@ -4,6 +4,7 @@
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "module": "ESNext",
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]

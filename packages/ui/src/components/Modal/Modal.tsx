@@ -12,6 +12,7 @@ export type ModalProps = PropsWithChildren<{
   className?: string;
   onClose: (isOpen: boolean) => void;
   onGoBack?: null | undefined | (() => void);
+  titlePlacement?: "left" | "center";
 }>;
 
 export const Modal: FC<ModalProps> = (props) => {

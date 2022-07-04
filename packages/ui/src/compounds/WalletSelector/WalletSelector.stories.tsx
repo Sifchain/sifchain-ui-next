@@ -1,6 +1,7 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
 import { useState } from "react";
 import {
+  AsyncImage,
   CoinbaseIcon,
   CosmostationIcon,
   KeplrIcon,
@@ -42,49 +43,49 @@ Default.args = {
     {
       id: "sifchain",
       name: "Sifchain",
-      icon: <img src="/chains/sifchain.png" />,
+      icon: <AsyncImage src="/chains/sifchain.png" />,
       type: "ibc",
     },
     {
       id: "ethereum",
       name: "Ethereum",
-      icon: <img src="/chains/ethereum.png" />,
+      icon: <AsyncImage src="/chains/ethereum.png" />,
       type: "eth",
     },
     {
       id: "akash",
       name: "Akash",
-      icon: <img src="/chains/akash.png" />,
+      icon: <AsyncImage src="/chains/akash.png" />,
       type: "ibc",
     },
     {
       id: "cerberus",
       name: "Cerberus",
-      icon: <img src="/chains/cerberus.png" />,
+      icon: <AsyncImage src="/chains/cerberus.png" />,
       type: "ibc",
     },
     {
       id: "comdex",
       name: "comdex",
-      icon: <img src="/chains/comdex.png" />,
+      icon: <AsyncImage src="/chains/comdex.png" />,
       type: "ibc",
     },
     {
       id: "bitsong",
       name: "Bitsong",
-      icon: <img src="/chains/bitsong.png" />,
+      icon: <AsyncImage src="/chains/bitsong.png" />,
       type: "ibc",
     },
     {
       id: "crypto-org",
       name: "Crypto.org",
-      icon: <img src="/chains/crypto-org.png" />,
+      icon: <AsyncImage src="/chains/crypto-org.png" />,
       type: "ibc",
     },
     {
       id: "cosmos",
       name: "Cosmos",
-      icon: <img src="/chains/cosmos.png" />,
+      icon: <AsyncImage src="/chains/cosmos.png" />,
       type: "ibc",
     },
   ],

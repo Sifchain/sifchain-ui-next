@@ -1,5 +1,6 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
 
+import { tokens } from "./TokenSelector.data";
 import { TokenSelector } from ".";
 
 export default {
@@ -16,4 +17,5 @@ export const Default = Template.bind({});
 Default.args = {
   label: "Token",
   modalTitle: "From",
+  tokens: [...tokens],
 };
