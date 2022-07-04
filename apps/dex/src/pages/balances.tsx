@@ -8,6 +8,7 @@ import {
   Modal,
   ModalProps,
   PoolsIcon,
+  RacetrackSpinnerIcon,
   Select,
   SwapIcon,
 } from "@sifchain/ui";
@@ -16,9 +17,11 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, FC, useCallback, useMemo, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalances } from "~/domains/bank/hooks/balances";
+import { useExportTokensMutation } from "~/domains/bank/hooks/export";
+import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -60,9 +63,19 @@ const ImportModal = (
     onRequestDenomChange: (denom: string) => unknown;
   },
 ) => {
+  const importTokensMutation = useImportTokensMutation();
+
   const { data: tokenRegistry, indexedByIBCDenom } = useTokenRegistryQuery();
+  const token = indexedByIBCDenom[props.denom];
   const balances = useAllBalances();
   const balance = balances.indexedByDenom?.[props.denom];
+
+  const { data: evmAccount } = useAccount();
+  const { data: evmWalletBalance } = useBalance({
+    addressOrName: evmAccount?.address ?? "",
+    token: token?.symbol === "CETH" ? (undefined as any) : token?.address,
+  });
+  const walletBalance = Number(evmWalletBalance?.formatted ?? 0);
 
   const { data: env } = useDexEnvironment();
   const { accounts: cosmAccounts } = useAccounts(env?.sifChainId ?? "", {
@@ -104,6 +117,15 @@ const ImportModal = (
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          importTokensMutation.mutate({
+            chainId: token?.chainId ?? "",
+            tokenAddress: token?.address ?? "",
+            recipientAddress: recipientAddress ?? "",
+            amount: {
+              denom: props.denom,
+              amount: amountDecimal?.atomics ?? "0",
+            },
+          });
         }}
       >
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
@@ -118,9 +140,10 @@ const ImportModal = (
           />
           <Input
             label="Amount"
-            secondaryLabel={`Balance: ${(
-              balance?.amount.toFloatApproximation() ?? 0
-            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
+              undefined,
+              { maximumFractionDigits: 6 },
+            )}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),
@@ -140,10 +163,7 @@ const ImportModal = (
           <div>
             <dt>Direction</dt>
             <dd>
-              <span className="capitalize">
-                {indexedByIBCDenom[props.denom]?.network}
-              </span>
-              → Sifchain
+              <span className="capitalize">{token?.network}</span>→ Sifchain
             </dd>
           </div>
           <div>
@@ -169,8 +189,16 @@ const ImportModal = (
             </dd>
           </div>
         </dl>
-        <Button className="w-full mt-6">
-          <ArrowDownIcon /> Import
+        <Button
+          className="w-full mt-6"
+          disabled={importTokensMutation.isLoading}
+        >
+          {importTokensMutation.isLoading ? (
+            <RacetrackSpinnerIcon />
+          ) : (
+            <ArrowDownIcon />
+          )}{" "}
+          Import
         </Button>
       </form>
     </Modal>
@@ -178,12 +206,18 @@ const ImportModal = (
 };
 
 const ExportModal = (props: ModalProps & { denom: string }) => {
+  const exportTokensMutation = useExportTokensMutation();
+
   const { indexedByIBCDenom } = useTokenRegistryQuery();
   const balances = useAllBalances();
   const balance = balances.indexedByDenom?.[props.denom];
 
   const token = indexedByIBCDenom[props.denom];
   const isEthToken = token?.ibcDenom.startsWith("c");
+  const { data: env } = useDexEnvironment();
+  const { accounts: sifAccounts } = useAccounts(env?.sifChainId ?? "", {
+    enabled: env !== undefined,
+  });
   const { accounts: cosmAccounts } = useAccounts(token?.chainId ?? "", {
     enabled: token !== undefined && !isEthToken,
   });
@@ -211,6 +245,14 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          exportTokensMutation.mutate({
+            senderAddress: sifAccounts?.[0]?.address ?? "",
+            recipientAddress: recipientAddress ?? "",
+            amount: {
+              amount: amountDecimal?.atomics ?? "0",
+              denom: props.denom,
+            },
+          });
         }}
       >
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
@@ -271,8 +313,16 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
         </dl>
-        <Button className="w-full mt-6">
-          <ArrowDownIcon className="rotate-180" /> Export
+        <Button
+          className="w-full mt-6"
+          disabled={exportTokensMutation.isLoading}
+        >
+          {exportTokensMutation.isLoading ? (
+            <RacetrackSpinnerIcon />
+          ) : (
+            <ArrowDownIcon className="rotate-180" />
+          )}{" "}
+          Export
         </Button>
       </form>
     </Modal>

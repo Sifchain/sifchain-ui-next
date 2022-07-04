@@ -22,7 +22,6 @@ const Pools: NextPage = () => {
           {enhancedPools?.map((pool) => (
             <PoolItem
               key={pool.externalAsset?.symbol}
-              pool={pool}
               stats={pool.stats}
               asset={pool.asset}
             />
@@ -34,7 +33,6 @@ const Pools: NextPage = () => {
 };
 
 const PoolItem: FC<{
-  pool: Pool;
   asset: IAsset;
   stats?: GetTokenStatsResponsePools;
 }> = ({ asset, stats }) => {

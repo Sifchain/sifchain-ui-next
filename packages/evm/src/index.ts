@@ -1,4 +1,4 @@
-import type { BigNumberish, Overrides, Signer } from "ethers";
+import type { BigNumberish, BytesLike, Signer } from "ethers";
 import mainnetPeggyBridgeBankAbi from "./eth-sdk/abis/mainnet/peggy/bridgeBank.json";
 import {
   getContract,
@@ -13,19 +13,16 @@ const enhanceSdk = (sdk: MainnetSdk) => ({
   peggy: {
     ...sdk.peggy,
     sendTokensToCosmos: async (
-      recipient: string,
+      recipient: BytesLike,
       token: string,
       amount: BigNumberish,
-      overrides?: Overrides & {
-        from?: string | Promise<string>;
-      },
     ) => {
       const isBridgedToken =
         await sdk.peggy.bridgeBank.getCosmosTokenInWhiteList(token);
 
       return isBridgedToken
-        ? sdk.peggy.bridgeBank.burn(recipient, token, amount, overrides)
-        : sdk.peggy.bridgeBank.lock(recipient, token, amount, overrides);
+        ? sdk.peggy.bridgeBank.burn(recipient, token, amount)
+        : sdk.peggy.bridgeBank.lock(recipient, token, amount);
     },
   },
 });

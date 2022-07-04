@@ -1,10 +1,8 @@
-import { AssetAmount, formatAssetAmount } from "@sifchain/common";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { FC, useMemo } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
-import { ROWAN } from "~/domains/assets";
 
 import { useEnhancedPoolQuery } from "~/domains/clp";
 import PageLayout from "~/layouts/PageLayout";
@@ -56,15 +54,15 @@ const PoolDetails: NextPage = () => {
       },
       {
         label: "Total amount (ROWAN)",
-        value: `${
-          formatAssetAmount(AssetAmount(ROWAN, nativeAssetBalance)) ?? 0
-        }`,
+        value: nativeAssetBalance
+          .toFloatApproximation()
+          .toLocaleString(undefined, { maximumFractionDigits: 6 }),
       },
       {
         label: `Total amount (${externalAssetSymbol.toUpperCase()})`,
-        value: `${
-          formatAssetAmount(AssetAmount(pool.asset, externalAssetBalance)) ?? 0
-        }`,
+        value: externalAssetBalance
+          .toFloatApproximation()
+          .toLocaleString(undefined, { maximumFractionDigits: 6 }),
       },
     ];
   }, [externalAssetSymbol, pool]);
