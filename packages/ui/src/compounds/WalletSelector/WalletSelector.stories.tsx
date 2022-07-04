@@ -120,4 +120,16 @@ Default.args = {
       type: "ibc",
     },
   ],
+  accounts: {
+    // sifchain: ["sifs15hazsfjrl0k6lhv00anz45zwzp06un2qz2s4mp"],
+  },
+};
+
+export const Connected = Template.bind({});
+
+Connected.args = {
+  ...Default.args,
+  accounts: {
+    sifchain: ["sifs15hazsfjrl0k6lhv00anz45zwzp06un2qz2s4mp"],
+  },
 };

@@ -28,10 +28,13 @@ export type SelectOption = {
 
 export type SelectProps = {
   value?: SelectOption | undefined;
-  onChange: (value: SelectOption) => void;
   options: SelectOption[];
   label?: string;
+  hideLabel?: boolean;
   className?: string;
+  fullWidth?: boolean;
+  onChange: (value: SelectOption) => void;
+  onClick?: () => void;
 };
 
 export const Select: FC<SelectProps> = (props) => {
@@ -45,13 +48,13 @@ export const Select: FC<SelectProps> = (props) => {
   );
   return (
     <Listbox value={props.value} onChange={props.onChange}>
-      <div className={clsx("relative mt-1", props.className)}>
+      <div className={clsx("relative", props.className)}>
         {props.label && (
           <Listbox.Label className="text-gray-200 text-sm">
             {props.label}
           </Listbox.Label>
         )}
-        <Listbox.Button as={StyledListboxButton}>
+        <Listbox.Button as={StyledListboxButton} onClick={props.onClick}>
           <span className="block truncate">
             {selected?.label ?? <span className="opacity-0">.</span>}
           </span>
