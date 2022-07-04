@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import clsx from "clsx";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
 import {
@@ -10,6 +10,7 @@ import {
   PencilIcon,
   SearchInput,
   Select,
+  SortUnderterminedIcon,
 } from "../../components";
 
 const NO_OP = () => {
@@ -30,6 +31,7 @@ export type TokenEntry = {
   label?: string;
   imageUrl?: string;
   hasDarkIcon?: boolean;
+  balance?: string;
 };
 
 export type TokenSelectorProps = {
@@ -39,25 +41,60 @@ export type TokenSelectorProps = {
   renderTokenItem?: FC<TokenItemProps>;
 };
 
+type SortKeys = keyof TokenEntry;
+
+const SORT_KEYS: SortKeys[] = ["name", "balance"];
+
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenEntry | undefined>(
     props.tokens[0],
   );
   const [query, setQuery] = useState("");
+  const [sortKey, setSortKey] = useState<SortKeys>("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const sanitizedQuery = query.toLowerCase().trim();
 
+  const sorted = useMemo(() => {
+    return props.tokens.sort((a, b) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+
+      if (sortKey === "balance") {
+        return sortOrder === "asc"
+          ? Number(aValue) - Number(bValue)
+          : Number(bValue) - Number(aValue);
+      }
+
+      return sortOrder === "asc"
+        ? String(aValue).localeCompare(String(bValue))
+        : String(bValue).localeCompare(String(aValue));
+    });
+  }, [props.tokens, sortKey, sortOrder]);
+
   const filtered = useMemo(() => {
     return sanitizedQuery.length
-      ? props.tokens.filter(
+      ? sorted.filter(
           (token) =>
             token.name.toLowerCase().includes(sanitizedQuery) ||
             token.symbol.toLowerCase().includes(sanitizedQuery) ||
             token.displaySymbol.toLowerCase().includes(sanitizedQuery),
         )
-      : props.tokens;
-  }, [props.tokens, sanitizedQuery]);
+      : sorted;
+  }, [sorted, sanitizedQuery]);
+
+  const handleSortClick = useCallback(
+    (key: SortKeys) => {
+      if (sortKey === key) {
+        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+      } else {
+        setSortKey(key);
+        setSortOrder("asc");
+      }
+    },
+    [sortOrder],
+  );
 
   return (
     <>
@@ -87,6 +124,17 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
               <Button variant="secondary" className="h-11 w-11 !p-0">
                 <PencilIcon className="text-lg" />
               </Button>
+            </div>
+            <div className="flex items-center py-1 px-4 justify-between transition-colors">
+              {SORT_KEYS.map((key) => (
+                <button
+                  key={key}
+                  className="uppercase text-gray-300 flex gap-2 items-center"
+                  onClick={handleSortClick.bind(null, key)}
+                >
+                  {key} <SortUnderterminedIcon />
+                </button>
+              ))}
             </div>
 
             <Combobox.Options as={ListContainer} static>
@@ -143,7 +191,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
       </figure>
       <div className="grid flex-1">
         <span className="text-white text-base font-semibold uppercase">
-          {props.symbol}
+          {props.displaySymbol}
         </span>
         <span className="text-gray-300 text-sm font-normal">{props.name}</span>
       </div>
