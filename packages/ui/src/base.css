@@ -33,3 +33,10 @@
     -webkit-appearance: none;
   }
 }
+
+@layer components {
+  .input {
+    @apply bg-gray-700 border border-gray-600 p-2 rounded-lg;
+    @apply px-2.5;
+  }
+}

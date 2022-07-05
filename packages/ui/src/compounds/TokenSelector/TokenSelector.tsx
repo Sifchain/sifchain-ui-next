@@ -7,10 +7,10 @@ import { useSortedArray } from "../../hooks";
 import {
   AsyncImage,
   Button,
+  ChevronDownIcon,
   Modal,
   PencilIcon,
   SearchInput,
-  Select,
   SortIcon,
 } from "../../components";
 
@@ -35,6 +35,19 @@ export type TokenEntry = {
   balance?: string;
 };
 
+const AssetIcon: FC<{ imageUrl: string; hasDarkIcon?: boolean }> = (props) => (
+  <figure
+    className={clsx(
+      "h-7 w-7 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
+      {
+        "!bg-white": props.hasDarkIcon,
+      },
+    )}
+  >
+    <AsyncImage src={props.imageUrl} />
+  </figure>
+);
+
 export type TokenSelectorProps = {
   label: string;
   modalTitle: string;
@@ -51,7 +64,7 @@ const SORT_KEYS: SortKeys[] = ["name", "balance"];
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenEntry | undefined>(
-    props.tokens[0],
+    props.value ?? props.tokens[0],
   );
   const [query, setQuery] = useState("");
   const { sorted, sort, sortKey, sortDirection } = useSortedArray(
@@ -81,12 +94,23 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
   return (
     <>
-      <Select
-        label={props.label}
-        options={[]}
-        onChange={NO_OP}
-        onClick={() => setIsOpen(true)}
-      />
+      <button
+        className="input flex flex-1 items-center gap-4"
+        onClick={setIsOpen.bind(null, true)}
+      >
+        {selectedToken && (
+          <>
+            <AssetIcon
+              imageUrl={selectedToken.imageUrl ?? ""}
+              hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
+            />
+            <span className="uppercase text-white">
+              {selectedToken.displaySymbol}
+            </span>
+          </>
+        )}
+        <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+      </button>
       <Modal
         title={props.modalTitle}
         isOpen={isOpen}
@@ -166,16 +190,11 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
         "bg-gray-600": props.active || props.selected,
       })}
     >
-      <figure
-        className={clsx(
-          "h-7 w-7 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
-          {
-            "!bg-white": props.hasDarkIcon,
-          },
-        )}
-      >
-        <AsyncImage src={props.imageUrl} />
-      </figure>
+      <AssetIcon
+        imageUrl={props.imageUrl ?? ""}
+        hasDarkIcon={Boolean(props.hasDarkIcon)}
+      />
+
       <div className="grid flex-1">
         <span className="text-white text-base font-semibold uppercase">
           {props.displaySymbol}
