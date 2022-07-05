@@ -14,3 +14,4 @@ export * from "./Select";
 export * from "./Toggle";
 export * from "./Tooltip";
 export * from "./transitions";
+export * from "./SortIcon";
