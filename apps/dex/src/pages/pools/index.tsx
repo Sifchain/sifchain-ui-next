@@ -1,6 +1,5 @@
 import { Disclosure } from "@headlessui/react";
 import type { IAsset } from "@sifchain/common";
-import type { Pool } from "@sifchain/proto-types/sifnode/clp/v1/types";
 import type { GetTokenStatsResponsePools } from "@sifchain/sif-api";
 import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import clsx from "clsx";
