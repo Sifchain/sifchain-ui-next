@@ -164,7 +164,7 @@ const AssetsPage: NextPage = () => {
         <div className="flex flex-col gap-4 md:hidden">
           {sortedBalance?.map((balance) => {
             const pooledAmount =
-              balance.denom === env?.nativeAsset.symbol
+              balance.denom === env?.nativeAsset.symbol.toLowerCase()
                 ? totalRowan
                 : balance.pool?.externalAssetBalance;
 
@@ -269,7 +269,7 @@ const AssetsPage: NextPage = () => {
           <tbody>
             {sortedBalance.map((balance) => {
               const pooledAmount =
-                balance.denom === env?.nativeAsset.symbol
+                balance.denom === env?.nativeAsset.symbol.toLowerCase()
                   ? totalRowan
                   : balance.pool?.externalAssetBalance;
 
