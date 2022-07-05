@@ -44,6 +44,10 @@ Do you want to continue?
 
   const answer = await prompt(message, ["y", "n"], "y");
 
+  /**
+   * @param {string} content
+   * @returns
+   */
   const replaceName = (content) =>
     content.replace(/ReactComponent/gi, component);
 
