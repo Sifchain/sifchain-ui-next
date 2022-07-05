@@ -94,7 +94,10 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
         <span className="input-label">{props.label}</span>
         <button
           className="input flex flex-1 items-center gap-4"
-          onClick={setIsOpen.bind(null, true)}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsOpen(true);
+          }}
         >
           {selectedToken && (
             <>

@@ -159,6 +159,7 @@ const toTokenEntry = <T extends IAsset>(x: T) => ({
   network: x.network,
   imageUrl: x.imageUrl ?? "",
   balance: "",
+  hasDarkIcon: Boolean(x.hasDarkIcon),
 });
 
 const SwapPage = () => {
