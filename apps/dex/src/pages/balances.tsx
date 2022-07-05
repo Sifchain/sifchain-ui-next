@@ -7,9 +7,11 @@ import {
   SwapIcon,
 } from "@sifchain/ui";
 import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
+import clsx from "clsx";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ascend, descend, prop, sort, sortBy } from "ramda";
 import { FC, useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
@@ -101,6 +103,41 @@ const AssetsPage: NextPage = () => {
     [balances, selectedDenom],
   );
 
+  const [[sortByOrder, sortByProperty], setSortBy] = useState<
+    ["asc" | "desc", "token" | "available" | "balance" | "pooled" | undefined]
+  >(["asc", undefined]);
+
+  const sortedBalance = useMemo(() => {
+    const sortFunc = sortByOrder === "asc" ? ascend : descend;
+    switch (sortByProperty) {
+      case "token":
+        return sort(
+          sortFunc((x) => x.symbol ?? ""),
+          balances,
+        );
+      case "available":
+        return sort(
+          sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
+          balances,
+        );
+      case "balance":
+        return sort(
+          sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
+          balances,
+        );
+      case "pooled":
+        return sort(
+          sortFunc(
+            (x) => x.pool?.nativeAssetBalance.toFloatApproximation() ?? 0,
+          ),
+          balances,
+        );
+      case undefined:
+      default:
+        return balances;
+    }
+  }, [balances, sortByOrder, sortByProperty]);
+
   const stats = useMemo(() => {
     return [
       {
@@ -172,7 +209,7 @@ const AssetsPage: NextPage = () => {
           </div>
         </header>
         <div className="flex flex-col gap-4 md:hidden">
-          {balances?.map((balance) => {
+          {sortedBalance?.map((balance) => {
             const pooledAmount =
               balance.denom === env?.nativeAsset.symbol
                 ? totalRowan
@@ -241,14 +278,43 @@ const AssetsPage: NextPage = () => {
         </div>
         <table className="hidden w-full md:table">
           <thead className="text-left uppercase text-xs [&>th]:font-normal [&>th]:opacity-80 [&>th]:pb-6">
-            <th>Token</th>
-            <th>Balance</th>
-            <th>Available</th>
-            <th>Pooled</th>
-            <th>Action</th>
+            {(["token", "available", "balance", "pooled"] as const).map((x) => (
+              <th
+                key={x}
+                className="cursor-pointer select-none"
+                onClick={() =>
+                  setSortBy((y) => [
+                    y[1] !== x ? "asc" : y[0] === "asc" ? "desc" : "asc",
+                    x,
+                  ])
+                }
+              >
+                <div className="flex items-center gap-2">
+                  {x}
+                  <div className="text-[0.75em]">
+                    <div
+                      className={clsx("mb-[-0.75em]", {
+                        "opacity-0":
+                          sortByProperty === x && sortByOrder === "desc",
+                      })}
+                    >
+                      ▲
+                    </div>
+                    <div
+                      className={clsx({
+                        "opacity-0":
+                          sortByProperty === x && sortByOrder === "asc",
+                      })}
+                    >
+                      ▼
+                    </div>
+                  </div>
+                </div>
+              </th>
+            ))}
           </thead>
           <tbody>
-            {balances?.map((balance) => {
+            {sortedBalance.map((balance) => {
               const pooledAmount =
                 balance.denom === env?.nativeAsset.symbol
                   ? totalRowan
