@@ -53,9 +53,27 @@ const useBalancesWithPool = () => {
 const Stat: FC<{ label: string; value: string }> = (props) => (
   <div className="flex-1 grid gap-1">
     <span className="opacity-80">{props.label}</span>
-    <span className="font-semibold">{props.value}</span>
+    <span className="font-semibold md:text-2xl">{props.value}</span>
   </div>
 );
+
+const TokenFigure = (props: {
+  symbol: string;
+  displaySymbol: string;
+  network: string;
+}) => {
+  return (
+    <figcaption className="flex items-center gap-4">
+      <figure>
+        <AssetIcon network="sifchain" symbol={props.symbol ?? ""} size="md" />
+      </figure>
+      <div>
+        <h2 className="uppercase font-bold">{props.displaySymbol}</h2>
+        <h3>{props.network}</h3>
+      </div>
+    </figcaption>
+  );
+};
 
 const ImportModal = (
   props: ModalProps & {
@@ -358,33 +376,135 @@ const AssetsPage: NextPage = () => {
     ];
   }, []);
 
+  const actions = useMemo(
+    () => [
+      {
+        label: "Import",
+        Icon: ArrowDownIcon,
+        href: (denom: string) =>
+          `balances?action=import&denom=${encodeURIComponent(denom)}`,
+      },
+      {
+        label: "Export",
+        Icon: () => <ArrowDownIcon className="rotate-180" />,
+        href: (denom: string) =>
+          `balances?action=export&denom=${encodeURIComponent(denom)}`,
+      },
+      {
+        label: "Pools",
+        Icon: PoolsIcon,
+        href: (denom: string) => `/pools?denom=${encodeURIComponent(denom)}`,
+      },
+      {
+        label: "Swap",
+        Icon: SwapIcon,
+        href: (denom: string) => `/swap?fromDenom=${encodeURIComponent(denom)}`,
+      },
+    ],
+    [],
+  );
+
   return (
     <>
-      <div className="flex-1 flex flex-col justify-center items-center">
-        <section className="flex-1 w-full bg-black p-6">
-          <header className="mb-10">
-            <div className="flex items-center justify-between pb-6">
-              <h2 className="text-2xl font-bold text-white">Balances</h2>
-              <Link href={`balances?action=import&denom=cusdc`}>
-                <Button as="a">
-                  <ArrowDownIcon /> Import
-                </Button>
-              </Link>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              {stats.map((stat) => (
-                <Stat
-                  key={stat.label}
-                  label={stat.label}
-                  value={stat.value.toLocaleString(undefined, {
-                    style: "currency",
-                    currency: "USD",
-                  })}
-                />
-              ))}
-            </div>
-          </header>
-          <div className="flex flex-col gap-4">
+      <section className="flex-1 w-full bg-black p-6 md:py-12 md:px-24">
+        <header className="mb-10 md:mb-12">
+          <div className="flex items-center justify-between pb-6 md:pb-8">
+            <h2 className="text-2xl font-bold text-white">Balances</h2>
+            <Link href={`balances?action=import&denom=cusdc`}>
+              <Button as="a">
+                <ArrowDownIcon /> Import
+              </Button>
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            {stats.map((stat) => (
+              <Stat
+                key={stat.label}
+                label={stat.label}
+                value={stat.value.toLocaleString(undefined, {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              />
+            ))}
+          </div>
+        </header>
+        <div className="flex flex-col gap-4 md:hidden">
+          {balances?.map((balance) => {
+            const pooledAmount =
+              balance.denom === env?.nativeAsset.symbol
+                ? totalRowan
+                : balance.pool?.externalAssetBalance;
+
+            return (
+              <details
+                key={balance.denom}
+                className="[&[open]>summary>div>.marker]:rotate-180"
+              >
+                <summary className="flex justify-between items-center mb-2">
+                  <TokenFigure
+                    symbol={balance.symbol ?? ""}
+                    displaySymbol={balance.displaySymbol ?? ""}
+                    network={balance.network ?? ""}
+                  />
+                  <div className="flex items-center gap-4">
+                    <strong>
+                      {balance.amount
+                        .plus(
+                          pooledAmount ??
+                            Decimal.zero(balance.amount.fractionalDigits),
+                        )
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        })}
+                    </strong>
+                    <span className="marker p-2 cursor-pointer select-none">
+                      ▼
+                    </span>
+                    <button
+                      className="p-2"
+                      onClick={() => setSelectedDenom(balance.denom)}
+                    >
+                      <SvgDotsVerticalIcon />
+                    </button>
+                  </div>
+                </summary>
+                <div className="flex pl-10">
+                  <div className="flex-1">
+                    <header className="opacity-80">Available</header>
+                    <div>
+                      {balance.amount
+                        .toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        })}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <header className="opacity-80">Pooled</header>
+                    <div>
+                      {(pooledAmount ?? Decimal.zero(0))
+                        ?.toFloatApproximation()
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 6,
+                        })}
+                    </div>
+                  </div>
+                </div>
+              </details>
+            );
+          })}
+        </div>
+        <table className="hidden w-full md:table">
+          <thead className="text-left uppercase text-xs [&>th]:font-normal [&>th]:opacity-80 [&>th]:pb-6">
+            <th>Token</th>
+            <th>Balance</th>
+            <th>Available</th>
+            <th>Pooled</th>
+            <th>Action</th>
+          </thead>
+          <tbody>
             {balances?.map((balance) => {
               const pooledAmount =
                 balance.denom === env?.nativeAsset.symbol
@@ -392,113 +512,63 @@ const AssetsPage: NextPage = () => {
                   : balance.pool?.externalAssetBalance;
 
               return (
-                <details
-                  key={balance.denom}
-                  className="[&[open]>summary>div>.marker]:rotate-180"
-                >
-                  <summary className="flex justify-between items-center mb-2">
-                    <figcaption className="flex items-center gap-4">
-                      <figure>
-                        <AssetIcon
-                          network="sifchain"
-                          symbol={balance.symbol ?? ""}
-                          size="md"
-                        />
-                      </figure>
-                      <div>
-                        <h2 className="uppercase font-bold">
-                          {balance.displaySymbol}
-                        </h2>
-                        <h3>{balance.network}</h3>
-                      </div>
-                    </figcaption>
-                    <div className="flex items-center gap-4">
-                      <strong>
-                        {balance.amount
-                          .plus(
-                            pooledAmount ??
-                              Decimal.zero(balance.amount.fractionalDigits),
-                          )
-                          .toFloatApproximation()
-                          .toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}
-                      </strong>
-                      <span className="marker p-2 cursor-pointer select-none">
-                        ▼
-                      </span>
-                      <button
-                        className="p-2"
-                        onClick={() => setSelectedDenom(balance.denom)}
-                      >
-                        <SvgDotsVerticalIcon />
-                      </button>
+                <tr key={balance.denom} className="[&>td]:pb-2">
+                  <td>
+                    <TokenFigure
+                      symbol={balance.symbol ?? ""}
+                      displaySymbol={balance.displaySymbol ?? ""}
+                      network={balance.network ?? ""}
+                    />
+                  </td>
+                  <td>
+                    {balance.amount
+                      .plus(
+                        pooledAmount ??
+                          Decimal.zero(balance.amount.fractionalDigits),
+                      )
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
+                  </td>
+                  <td>
+                    {balance.amount
+                      .toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
+                  </td>
+                  <td>
+                    {(pooledAmount ?? Decimal.zero(0))
+                      ?.toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
+                  </td>
+                  <td className="w-0">
+                    <div className="flex gap-3">
+                      {actions.map(({ label, href }, index) => (
+                        <Link key={index} href={href(balance.denom)}>
+                          <a className="flex-1 text-center h-full px-4 py-3 rounded first:bg-gray-750 hover:bg-gray-700">
+                            <span>{label}</span>
+                          </a>
+                        </Link>
+                      ))}
                     </div>
-                  </summary>
-                  <div className="flex pl-10">
-                    <div className="flex-1">
-                      <header className="opacity-80">Available</header>
-                      <div>
-                        {balance.amount
-                          .toFloatApproximation()
-                          .toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <header className="opacity-80">Pooled</header>
-                      <div>
-                        {(pooledAmount ?? Decimal.zero(0))
-                          ?.toFloatApproximation()
-                          .toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}
-                      </div>
-                    </div>
-                  </div>
-                </details>
+                  </td>
+                </tr>
               );
             })}
-          </div>
-        </section>
-      </div>
+          </tbody>
+        </table>
+      </section>
       <Modal
         title={selectedBalance?.displaySymbol?.toUpperCase()}
         isOpen={selectedDenom !== undefined}
         onClose={useCallback(() => setSelectedDenom(undefined), [])}
       >
-        {[
-          {
-            label: "Import",
-            Icon: ArrowDownIcon,
-            href: `balances?action=import&denom=${encodeURIComponent(
-              selectedBalance?.denom ?? "",
-            )}`,
-          },
-          {
-            label: "Export",
-            Icon: () => <ArrowDownIcon className="rotate-180" />,
-            href: `balances?action=export&denom=${encodeURIComponent(
-              selectedBalance?.denom ?? "",
-            )}`,
-          },
-          {
-            label: "Pools",
-            Icon: PoolsIcon,
-            href: `/pools?denom=${encodeURIComponent(
-              selectedBalance?.denom ?? "",
-            )}`,
-          },
-          {
-            label: "Swap",
-            Icon: SwapIcon,
-            href: `/swap?fromDenom=${encodeURIComponent(
-              selectedBalance?.denom ?? "",
-            )}`,
-          },
-        ].map(({ label, Icon, href }, index) => (
-          <Link key={index} href={href}>
+        {actions.map(({ label, Icon, href }, index) => (
+          <Link key={index} href={href(selectedDenom ?? "")}>
             <a className="flex items-center gap-2 w-full px-2 py-3 rounded hover:bg-gray-700">
               <Icon />
               <span>{label}</span>
