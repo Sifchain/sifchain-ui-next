@@ -27,6 +27,8 @@ export { default as SearchIcon } from "./SearchIcon";
 export { default as SettingsIcon } from "./SettingsIcon";
 export { default as SifchainLogoSmall } from "./SifchainLogoSmall";
 export { default as SifchainLogo } from "./SifchainLogo";
+export { default as SortAscendingIcon } from "./SortAscendingIcon";
+export { default as SortDescendingIcon } from "./SortDescendingIcon";
 export { default as SortUnderterminedIcon } from "./SortUnderterminedIcon";
 export { default as SwapIcon } from "./SwapIcon";
 export { default as TerraIcon } from "./TerraIcon";
