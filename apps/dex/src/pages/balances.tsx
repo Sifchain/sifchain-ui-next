@@ -80,9 +80,7 @@ const AssetsPage: NextPage = () => {
         );
       case "pooled":
         return sort(
-          sortFunc(
-            (x) => x.pool?.nativeAssetBalance.toFloatApproximation() ?? 0,
-          ),
+          sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0),
           balances,
         );
       case undefined:
@@ -162,72 +160,65 @@ const AssetsPage: NextPage = () => {
           </div>
         </header>
         <div className="flex flex-col gap-4 md:hidden">
-          {sortedBalance?.map((balance) => {
-            const pooledAmount =
-              balance.denom === env?.nativeAsset.symbol.toLowerCase()
-                ? totalRowan
-                : balance.pool?.externalAssetBalance;
-
-            return (
-              <details
-                key={balance.denom}
-                className="[&[open]>summary>div>.marker]:rotate-180"
-              >
-                <summary className="flex justify-between items-center mb-2">
-                  <TokenFigure
-                    symbol={balance.symbol ?? ""}
-                    displaySymbol={balance.displaySymbol ?? ""}
-                    network={balance.network ?? ""}
-                  />
-                  <div className="flex items-center gap-4">
-                    <strong>
-                      {(
-                        balance.amount
-                          ?.plus(
-                            pooledAmount ??
-                              Decimal.zero(balance.amount.fractionalDigits),
-                          )
-                          .toFloatApproximation() ?? 0
-                      ).toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
-                    </strong>
-                    <span className="marker p-2 cursor-pointer select-none">
-                      ▼
-                    </span>
-                    <button
-                      className="p-2"
-                      onClick={() => setSelectedDenom(balance.denom)}
-                    >
-                      <SvgDotsVerticalIcon />
-                    </button>
-                  </div>
-                </summary>
-                <div className="flex pl-10">
-                  <div className="flex-1">
-                    <header className="opacity-80">Available</header>
-                    <div>
-                      {(
-                        balance.amount?.toFloatApproximation() ?? 0
-                      ).toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <header className="opacity-80">Pooled</header>
-                    <div>
-                      {(pooledAmount ?? Decimal.zero(0))
-                        ?.toFloatApproximation()
-                        .toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        })}
-                    </div>
+          {sortedBalance?.map((balance) => (
+            <details
+              key={balance.denom}
+              className="[&[open]>summary>div>.marker]:rotate-180"
+            >
+              <summary className="flex justify-between items-center mb-2">
+                <TokenFigure
+                  symbol={balance.symbol ?? ""}
+                  displaySymbol={balance.displaySymbol ?? ""}
+                  network={balance.network ?? ""}
+                />
+                <div className="flex items-center gap-4">
+                  <strong>
+                    {(
+                      balance.amount
+                        ?.plus(
+                          balance.pooledAmount ??
+                            Decimal.zero(balance.amount.fractionalDigits),
+                        )
+                        .toFloatApproximation() ?? 0
+                    ).toLocaleString(undefined, {
+                      maximumFractionDigits: 6,
+                    })}
+                  </strong>
+                  <span className="marker p-2 cursor-pointer select-none">
+                    ▼
+                  </span>
+                  <button
+                    className="p-2"
+                    onClick={() => setSelectedDenom(balance.denom)}
+                  >
+                    <SvgDotsVerticalIcon />
+                  </button>
+                </div>
+              </summary>
+              <div className="flex pl-10">
+                <div className="flex-1">
+                  <header className="opacity-80">Available</header>
+                  <div>
+                    {(
+                      balance.amount?.toFloatApproximation() ?? 0
+                    ).toLocaleString(undefined, {
+                      maximumFractionDigits: 6,
+                    })}
                   </div>
                 </div>
-              </details>
-            );
-          })}
+                <div className="flex-1">
+                  <header className="opacity-80">Pooled</header>
+                  <div>
+                    {(balance.pooledAmount ?? Decimal.zero(0))
+                      ?.toFloatApproximation()
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
         </div>
         <table className="hidden w-full md:table">
           <thead className="text-left uppercase text-xs [&>th]:font-normal [&>th]:opacity-80 [&>th]:pb-6">
@@ -267,61 +258,55 @@ const AssetsPage: NextPage = () => {
             ))}
           </thead>
           <tbody>
-            {sortedBalance.map((balance) => {
-              const pooledAmount =
-                balance.denom === env?.nativeAsset.symbol.toLowerCase()
-                  ? totalRowan
-                  : balance.pool?.externalAssetBalance;
-
-              return (
-                <tr key={balance.denom} className="[&>td]:pb-2">
-                  <td>
-                    <TokenFigure
-                      symbol={balance.symbol ?? ""}
-                      displaySymbol={balance.displaySymbol ?? ""}
-                      network={balance.network ?? ""}
-                    />
-                  </td>
-                  <td>
-                    {(
-                      balance.amount
-                        ?.plus(
-                          pooledAmount ??
-                            Decimal.zero(balance.amount.fractionalDigits),
-                        )
-                        .toFloatApproximation() ?? 0
-                    ).toLocaleString(undefined, {
+            {sortedBalance.map((balance) => (
+              <tr key={balance.denom} className="[&>td]:pb-2">
+                <td>
+                  <TokenFigure
+                    symbol={balance.symbol ?? ""}
+                    displaySymbol={balance.displaySymbol ?? ""}
+                    network={balance.network ?? ""}
+                  />
+                </td>
+                <td>
+                  {(
+                    balance.amount
+                      ?.plus(
+                        balance.pooledAmount ??
+                          Decimal.zero(balance.amount.fractionalDigits),
+                      )
+                      .toFloatApproximation() ?? 0
+                  ).toLocaleString(undefined, {
+                    maximumFractionDigits: 6,
+                  })}
+                </td>
+                <td>
+                  {(balance.amount?.toFloatApproximation() ?? 0).toLocaleString(
+                    undefined,
+                    {
+                      maximumFractionDigits: 6,
+                    },
+                  )}
+                </td>
+                <td>
+                  {(balance.pooledAmount ?? Decimal.zero(0))
+                    ?.toFloatApproximation()
+                    .toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
-                  </td>
-                  <td>
-                    {(
-                      balance.amount?.toFloatApproximation() ?? 0
-                    ).toLocaleString(undefined, {
-                      maximumFractionDigits: 6,
-                    })}
-                  </td>
-                  <td>
-                    {(pooledAmount ?? Decimal.zero(0))
-                      ?.toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
-                  </td>
-                  <td className="w-0">
-                    <div className="flex gap-3">
-                      {actions.map(({ label, href }, index) => (
-                        <Link key={index} href={href(balance.denom)}>
-                          <a className="flex-1 text-center h-full px-4 py-3 rounded first:bg-gray-750 hover:bg-gray-700">
-                            <span>{label}</span>
-                          </a>
-                        </Link>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+                </td>
+                <td className="w-0">
+                  <div className="flex gap-3">
+                    {actions.map(({ label, href }, index) => (
+                      <Link key={index} href={href(balance.denom)}>
+                        <a className="flex-1 text-center h-full px-4 py-3 rounded first:bg-gray-750 hover:bg-gray-700">
+                          <span>{label}</span>
+                        </a>
+                      </Link>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>

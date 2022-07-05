@@ -54,6 +54,7 @@ export const useBalancesWithPool = () => {
   const { indexedByIBCDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProviders();
   const { data: balances } = useAllBalances();
+  const { data: env } = useDexEnvironment();
 
   const totalRowan = liquidityProviders?.pools.reduce(
     (prev, curr) => prev.plus(curr.nativeAssetBalance),
@@ -86,10 +87,20 @@ export const useBalancesWithPool = () => {
             displaySymbol: token?.displaySymbol,
             network: token?.network,
             amount: balance?.amount,
-            pool,
+            pooledAmount:
+              x === env?.nativeAsset.symbol.toLowerCase()
+                ? totalRowan
+                : pool?.externalAssetBalance,
           };
         }),
-      [balances, denomSet, indexedByIBCDenom, liquidityProviders?.pools],
+      [
+        balances,
+        denomSet,
+        env?.nativeAsset.symbol,
+        indexedByIBCDenom,
+        liquidityProviders?.pools,
+        totalRowan,
+      ],
     ),
     totalRowan,
   };
