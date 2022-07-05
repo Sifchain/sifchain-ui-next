@@ -1,8 +1,9 @@
 import { Combobox } from "@headlessui/react";
 import clsx from "clsx";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, SVGProps, useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
+import { useSortedArray } from "../../hooks";
 import {
   AsyncImage,
   Button,
@@ -10,7 +11,7 @@ import {
   PencilIcon,
   SearchInput,
   Select,
-  SortUnderterminedIcon,
+  SortIcon,
 } from "../../components";
 
 const NO_OP = () => {
@@ -39,6 +40,8 @@ export type TokenSelectorProps = {
   modalTitle: string;
   tokens: TokenEntry[];
   renderTokenItem?: FC<TokenItemProps>;
+  value?: TokenEntry;
+  onChange?: (token: TokenEntry) => void;
 };
 
 type SortKeys = keyof TokenEntry;
@@ -51,50 +54,30 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     props.tokens[0],
   );
   const [query, setQuery] = useState("");
-  const [sortKey, setSortKey] = useState<SortKeys>("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const { sorted, sort, sortKey, sortDirection } = useSortedArray(
+    props.tokens,
+    "name",
+  );
 
   const sanitizedQuery = query.toLowerCase().trim();
 
-  const sorted = useMemo(() => {
-    return props.tokens.sort((a, b) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
-
-      if (sortKey === "balance") {
-        return sortOrder === "asc"
-          ? Number(aValue) - Number(bValue)
-          : Number(bValue) - Number(aValue);
-      }
-
-      return sortOrder === "asc"
-        ? String(aValue).localeCompare(String(bValue))
-        : String(bValue).localeCompare(String(aValue));
-    });
-  }, [props.tokens, sortKey, sortOrder]);
-
   const filtered = useMemo(() => {
-    return sanitizedQuery.length
-      ? sorted.filter(
+    return !sanitizedQuery.length
+      ? sorted
+      : sorted.filter(
           (token) =>
             token.name.toLowerCase().includes(sanitizedQuery) ||
             token.symbol.toLowerCase().includes(sanitizedQuery) ||
             token.displaySymbol.toLowerCase().includes(sanitizedQuery),
-        )
-      : sorted;
+        );
   }, [sorted, sanitizedQuery]);
 
-  const handleSortClick = useCallback(
-    (key: SortKeys) => {
-      if (sortKey === key) {
-        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-      } else {
-        setSortKey(key);
-        setSortOrder("asc");
-      }
-    },
-    [sortOrder],
-  );
+  useEffect(() => {
+    if (!selectedToken) return;
+    if (props.onChange && selectedToken?.symbol !== props.value?.symbol) {
+      props.onChange(selectedToken);
+    }
+  }, [selectedToken]);
 
   return (
     <>
@@ -130,9 +113,13 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 <button
                   key={key}
                   className="uppercase text-gray-300 flex gap-2 items-center"
-                  onClick={handleSortClick.bind(null, key)}
+                  onClick={sort.bind(null, key)}
                 >
-                  {key} <SortUnderterminedIcon />
+                  {key}{" "}
+                  <SortIcon
+                    active={key === sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               ))}
             </div>
