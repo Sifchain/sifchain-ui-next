@@ -72,36 +72,33 @@ export const useBalancesWithPool = () => {
     [balances, liquidityProviders?.pools],
   );
 
-  return {
-    balances: useMemo(
-      () =>
-        Array.from(denomSet).map((x) => {
-          const token = indexedByIBCDenom[x];
-          const balance = balances?.find((y) => y.denom === x);
-          const pool = liquidityProviders?.pools.find(
-            (y) => y.liquidityProvider?.asset?.symbol === x,
-          );
-          return {
-            denom: x,
-            symbol: token?.symbol,
-            displaySymbol: token?.displaySymbol,
-            network: token?.network,
-            amount: balance?.amount,
-            pooledAmount:
-              x === env?.nativeAsset.symbol.toLowerCase()
-                ? totalRowan
-                : pool?.externalAssetBalance,
-          };
-        }),
-      [
-        balances,
-        denomSet,
-        env?.nativeAsset.symbol,
-        indexedByIBCDenom,
-        liquidityProviders?.pools,
-        totalRowan,
-      ],
-    ),
-    totalRowan,
-  };
+  return useMemo(
+    () =>
+      Array.from(denomSet).map((x) => {
+        const token = indexedByIBCDenom[x];
+        const balance = balances?.find((y) => y.denom === x);
+        const pool = liquidityProviders?.pools.find(
+          (y) => y.liquidityProvider?.asset?.symbol === x,
+        );
+        return {
+          denom: x,
+          symbol: token?.symbol,
+          displaySymbol: token?.displaySymbol,
+          network: token?.network,
+          amount: balance?.amount,
+          pooledAmount:
+            x === env?.nativeAsset.symbol.toLowerCase()
+              ? totalRowan
+              : pool?.externalAssetBalance,
+        };
+      }),
+    [
+      balances,
+      denomSet,
+      env?.nativeAsset.symbol,
+      indexedByIBCDenom,
+      liquidityProviders?.pools,
+      totalRowan,
+    ],
+  );
 };

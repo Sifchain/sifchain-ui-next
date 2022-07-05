@@ -17,7 +17,6 @@ import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
 import { useBalancesWithPool } from "~/domains/bank/hooks/balances";
-import { useDexEnvironment } from "~/domains/core/envs";
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
   <div className="flex-1 grid gap-1">
@@ -46,9 +45,7 @@ const TokenFigure = (props: {
 
 const AssetsPage: NextPage = () => {
   const router = useRouter();
-
-  const { data: env } = useDexEnvironment();
-  const { balances, totalRowan } = useBalancesWithPool();
+  const balances = useBalancesWithPool();
 
   const [selectedDenom, setSelectedDenom] = useState<string | undefined>();
   const selectedBalance = useMemo(
