@@ -197,6 +197,13 @@ const SwapPage = () => {
     TokenEntry | undefined
   >(defaultToToken);
 
+  useEffect(() => {
+    if (defaultFromToken && defaultToToken) {
+      setFromSelectedOption(defaultFromToken);
+      setToSelectedOption(defaultToToken);
+    }
+  }, [defaultFromToken, defaultToToken]);
+
   const [hasBeenReversed, setHasBeenReversed] = useState(false);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
