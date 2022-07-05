@@ -11,60 +11,13 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ascend, descend, prop, sort, sortBy } from "ramda";
+import { ascend, descend, sort } from "ramda";
 import { FC, useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
-import { useAllBalances } from "~/domains/bank/hooks/balances";
-import { useLiquidityProviders } from "~/domains/clp";
+import { useBalancesWithPool } from "~/domains/bank/hooks/balances";
 import { useDexEnvironment } from "~/domains/core/envs";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-
-const useBalancesWithPool = () => {
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
-  const { data: liquidityProviders } = useLiquidityProviders();
-  const { data: balances } = useAllBalances();
-
-  const totalRowan = liquidityProviders?.pools.reduce(
-    (prev, curr) => prev.plus(curr.nativeAssetBalance),
-    Decimal.zero(18),
-  );
-
-  const denomSet = useMemo(
-    () =>
-      new Set([
-        ...(balances?.map((x) => x.denom) ?? []),
-        ...(liquidityProviders?.pools
-          .map((x) => x.liquidityProvider?.asset?.symbol as string)
-          .filter((x) => x !== undefined) ?? []),
-      ]),
-    [balances, liquidityProviders?.pools],
-  );
-
-  return {
-    balances: useMemo(
-      () =>
-        Array.from(denomSet).map((x) => {
-          const token = indexedByIBCDenom[x];
-          const balance = balances?.find((y) => y.denom === x);
-          const pool = liquidityProviders?.pools.find(
-            (y) => y.liquidityProvider?.asset?.symbol === x,
-          );
-          return {
-            denom: x,
-            symbol: token?.symbol,
-            displaySymbol: token?.displaySymbol,
-            network: token?.network,
-            amount: balance?.amount,
-            pool,
-          };
-        }),
-      [balances, denomSet, indexedByIBCDenom, liquidityProviders?.pools],
-    ),
-    totalRowan,
-  };
-};
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
   <div className="flex-1 grid gap-1">
