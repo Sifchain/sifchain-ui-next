@@ -65,7 +65,7 @@ const AssetsPage: NextPage = () => {
     switch (sortByProperty) {
       case "token":
         return sort(
-          sortFunc((x) => x.symbol ?? ""),
+          sortFunc((x) => x.displaySymbol ?? ""),
           balances,
         );
       case "available":
