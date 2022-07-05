@@ -25,9 +25,6 @@ export const useAllBalances = () => {
 
       return balances?.map((x) => ({
         ...x,
-        symbol: indexedByIBCDenom[x.denom]?.symbol,
-        displaySymbol: indexedByIBCDenom[x.denom]?.displaySymbol,
-        network: indexedByIBCDenom[x.denom]?.network,
         amount: Decimal.fromAtomics(
           x.amount,
           indexedByIBCDenom[x.denom]?.decimals ?? 0,

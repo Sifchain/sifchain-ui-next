@@ -17,8 +17,10 @@ import ImportModal from "~/compounds/ImportModal";
 import { useAllBalances } from "~/domains/bank/hooks/balances";
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 const useBalancesWithPool = () => {
+  const { indexedByIBCDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProviders();
   const { data: balances } = useAllBalances();
 
@@ -27,16 +29,36 @@ const useBalancesWithPool = () => {
     Decimal.zero(18),
   );
 
+  const denomSet = useMemo(
+    () =>
+      new Set([
+        ...(balances?.map((x) => x.denom) ?? []),
+        ...(liquidityProviders?.pools
+          .map((x) => x.liquidityProvider?.asset?.symbol as string)
+          .filter((x) => x !== undefined) ?? []),
+      ]),
+    [balances, liquidityProviders?.pools],
+  );
+
   return {
     balances: useMemo(
       () =>
-        balances?.map((x) => ({
-          ...x,
-          pool: liquidityProviders?.pools.find(
-            (y) => y.liquidityProvider?.asset?.symbol === x.denom,
-          ),
-        })),
-      [balances, liquidityProviders?.pools],
+        Array.from(denomSet).map((x) => {
+          const token = indexedByIBCDenom[x];
+          const balance = balances?.find((y) => y.denom === x);
+          const pool = liquidityProviders?.pools.find(
+            (y) => y.liquidityProvider?.asset?.symbol === x,
+          );
+          return {
+            denom: x,
+            symbol: token?.symbol,
+            displaySymbol: token?.displaySymbol,
+            network: token?.network,
+            amount: balance?.amount,
+            pool,
+          };
+        }),
+      [balances, denomSet, indexedByIBCDenom, liquidityProviders?.pools],
     ),
     totalRowan,
   };
@@ -169,15 +191,16 @@ const AssetsPage: NextPage = () => {
                   />
                   <div className="flex items-center gap-4">
                     <strong>
-                      {balance.amount
-                        .plus(
-                          pooledAmount ??
-                            Decimal.zero(balance.amount.fractionalDigits),
-                        )
-                        .toFloatApproximation()
-                        .toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        })}
+                      {(
+                        balance.amount
+                          ?.plus(
+                            pooledAmount ??
+                              Decimal.zero(balance.amount.fractionalDigits),
+                          )
+                          .toFloatApproximation() ?? 0
+                      ).toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
                     </strong>
                     <span className="marker p-2 cursor-pointer select-none">
                       ▼
@@ -194,11 +217,11 @@ const AssetsPage: NextPage = () => {
                   <div className="flex-1">
                     <header className="opacity-80">Available</header>
                     <div>
-                      {balance.amount
-                        .toFloatApproximation()
-                        .toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        })}
+                      {(
+                        balance.amount?.toFloatApproximation() ?? 0
+                      ).toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}
                     </div>
                   </div>
                   <div className="flex-1">
@@ -241,22 +264,23 @@ const AssetsPage: NextPage = () => {
                     />
                   </td>
                   <td>
-                    {balance.amount
-                      .plus(
-                        pooledAmount ??
-                          Decimal.zero(balance.amount.fractionalDigits),
-                      )
-                      .toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
+                    {(
+                      balance.amount
+                        ?.plus(
+                          pooledAmount ??
+                            Decimal.zero(balance.amount.fractionalDigits),
+                        )
+                        .toFloatApproximation() ?? 0
+                    ).toLocaleString(undefined, {
+                      maximumFractionDigits: 6,
+                    })}
                   </td>
                   <td>
-                    {balance.amount
-                      .toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
+                    {(
+                      balance.amount?.toFloatApproximation() ?? 0
+                    ).toLocaleString(undefined, {
+                      maximumFractionDigits: 6,
+                    })}
                   </td>
                   <td>
                     {(pooledAmount ?? Decimal.zero(0))
