@@ -49,7 +49,7 @@ export type TokenSelectorProps = {
   modalTitle: string;
   tokens: TokenEntry[];
   renderTokenItem?: FC<TokenItemProps>;
-  value?: TokenEntry;
+  value?: TokenEntry | undefined;
   onChange?: (token: TokenEntry) => void;
 };
 
@@ -90,23 +90,26 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
   return (
     <>
-      <button
-        className="input flex flex-1 items-center gap-4"
-        onClick={setIsOpen.bind(null, true)}
-      >
-        {selectedToken && (
-          <>
-            <AssetIcon
-              imageUrl={selectedToken.imageUrl ?? ""}
-              hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
-            />
-            <span className="uppercase text-white">
-              {selectedToken.displaySymbol}
-            </span>
-          </>
-        )}
-        <ChevronDownIcon className="h-4 w-4 text-gray-400" />
-      </button>
+      <div>
+        <span className="input-label">{props.label}</span>
+        <button
+          className="input flex flex-1 items-center gap-4"
+          onClick={setIsOpen.bind(null, true)}
+        >
+          {selectedToken && (
+            <>
+              <AssetIcon
+                imageUrl={selectedToken.imageUrl ?? ""}
+                hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
+              />
+              <span className="uppercase text-white">
+                {selectedToken.displaySymbol}
+              </span>
+            </>
+          )}
+          <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+        </button>
+      </div>
       <Modal
         title={props.modalTitle}
         isOpen={isOpen}

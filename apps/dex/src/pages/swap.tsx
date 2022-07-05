@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Transition } from "@headlessui/react";
-import { runCatching } from "@sifchain/common";
+import { IAsset, runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
   Button,
@@ -9,9 +9,9 @@ import {
   Input,
   Modal,
   RacetrackSpinnerIcon,
-  Select,
-  SelectOption,
   SwapIcon,
+  TokenEntry,
+  TokenSelector,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
@@ -146,12 +146,28 @@ const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
   );
 };
 
+const formatBalance = (amount: Decimal) =>
+  amount.toFloatApproximation().toLocaleString(undefined, {
+    maximumFractionDigits: 6,
+  }) ?? 0;
+
+const toTokenEntry = <T extends IAsset>(x: T) => ({
+  name: x.name,
+  symbol: x.symbol,
+  displaySymbol: x.displaySymbol,
+  decimals: x.decimals,
+  network: x.network,
+  imageUrl: x.imageUrl ?? "",
+  balance: "",
+});
+
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalances();
   const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
     useSifStargateClient();
   const { signer, status: signerStatus } = useSifSigner();
+  const tokenRegistryQuery = useTokenRegistryQuery();
 
   const isReady = useMemo(
     () =>
@@ -161,22 +177,32 @@ const SwapPage = () => {
     [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const [fromSelectedOption, setFromSelectedOption] = useState<SelectOption>({
-    id: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    label: "atom",
-    body: "atom",
-  });
-  const [toSelectedOption, setToSelectedOption] = useState<SelectOption>({
-    id: "rowan",
-    label: "rowan",
-    body: "rowan",
-  });
+  const [defaultFromToken, defaultToToken] = useMemo(
+    () => [
+      tokenRegistryQuery.data?.find(
+        (x) => x.displaySymbol.toUpperCase() === "ROWAN",
+      ),
+      tokenRegistryQuery.data?.find(
+        (x) => x.displaySymbol.toUpperCase() === "ATOM",
+      ),
+    ],
+    [tokenRegistryQuery.data],
+  );
+
+  const [fromSelectedOption, setFromSelectedOption] = useState<
+    TokenEntry | undefined
+  >(defaultFromToken);
+  //
+  const [toSelectedOption, setToSelectedOption] = useState<
+    TokenEntry | undefined
+  >(defaultToToken);
+
   const [hasBeenReversed, setHasBeenReversed] = useState(false);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
-  const fromDenom = fromSelectedOption.id;
-  const toDenom = toSelectedOption.id;
+  const fromDenom = fromSelectedOption?.symbol ?? "";
+  const toDenom = toSelectedOption?.symbol ?? "";
 
   const slippageOptions = [
     { label: "0.5%", value: 0.005 },
@@ -184,14 +210,14 @@ const SwapPage = () => {
     { label: "1.5%", value: 0.015 },
   ];
   const [selectedSlippageIndex, setSelectedSlippageIndex] = useState(0);
-  const slippage = slippageOptions[selectedSlippageIndex]?.value;
-
   const [fromAmount, setFromAmount] = useState("");
+  const slippage = slippageOptions[selectedSlippageIndex]?.value;
 
   const commonOptions = {
     refetchInterval: 6000,
     enabled: !isConfirmationModalOpen,
   };
+
   const pmtpParamsQuery = useSifnodeQuery(
     "clp.getPmtpParams",
     [{}],
@@ -203,6 +229,7 @@ const SwapPage = () => {
     [{ symbol: fromDenom }],
     commonOptions,
   );
+
   const toPoolQuery = useSifnodeQuery(
     "clp.getPool",
     [{ symbol: toDenom }],
@@ -217,13 +244,7 @@ const SwapPage = () => {
   const fromPool = fromPoolQuery.data?.pool ?? toPoolQuery.data?.pool;
   const toPool = toPoolQuery.data?.pool ?? fromPoolQuery.data?.pool;
 
-  const tokenRegistryQuery = useTokenRegistryQuery();
-
-  const tokenOptions = tokenRegistryQuery.data.map((x) => ({
-    id: x.ibcDenom ?? "",
-    label: x.displaySymbol,
-    body: x.displaySymbol,
-  }));
+  const tokenOptions: TokenEntry[] = tokenRegistryQuery.data.map(toTokenEntry);
 
   const fromAmountDecimal = runCatching(() =>
     Decimal.fromUserInput(
@@ -347,22 +368,18 @@ const SwapPage = () => {
                   From
                 </legend>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-                  <Select
-                    className="relative z-20 md:flex-1"
+                  <TokenSelector
                     label="Token"
+                    modalTitle="From"
+                    tokens={tokenOptions}
                     value={fromSelectedOption}
-                    options={tokenOptions}
                     onChange={setFromSelectedOption}
                   />
                   <Input
                     className="text-right md:flex-1"
                     label="Amount"
                     secondaryLabel={`Balance: ${
-                      fromBalance?.amount
-                        .toFloatApproximation()
-                        .toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        }) ?? 0
+                      fromBalance ? formatBalance(fromBalance.amount) : 0
                     }`}
                     placeholder="Swap amount"
                     value={fromAmount}
@@ -400,21 +417,17 @@ const SwapPage = () => {
                   To
                 </legend>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-                  <Select
-                    className="relative z-10 md:flex-1"
+                  <TokenSelector
                     label="Token"
+                    modalTitle="From"
+                    tokens={tokenOptions}
                     value={toSelectedOption}
-                    options={tokenOptions}
                     onChange={setToSelectedOption}
                   />
                   <Input
                     className="text-right md:flex-1"
                     secondaryLabel={`Balance: ${
-                      toBalance?.amount
-                        .toFloatApproximation()
-                        .toLocaleString(undefined, {
-                          maximumFractionDigits: 6,
-                        }) ?? 0
+                      toBalance ? formatBalance(toBalance.amount) : 0
                     }`}
                     label="Amount"
                     value={

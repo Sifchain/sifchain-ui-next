@@ -39,4 +39,8 @@
     @apply bg-gray-700 border border-gray-600 p-2 rounded-lg;
     @apply px-2.5;
   }
+
+  .input-label {
+    @apply text-gray-200 text-sm font-normal;
+  }
 }
