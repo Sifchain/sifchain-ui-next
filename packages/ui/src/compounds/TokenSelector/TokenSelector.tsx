@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import clsx from "clsx";
-import { FC, SVGProps, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
 import { useSortedArray } from "../../hooks";
