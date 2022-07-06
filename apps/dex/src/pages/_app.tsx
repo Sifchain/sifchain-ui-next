@@ -19,9 +19,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       }),
   );
   return (
-    <CosmConnectProvider>
-      <WagmiProvider>
-        <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <CosmConnectProvider>
+        <WagmiProvider>
           <Hydrate state={pageProps.dehydratedState}>
             <CookiesProvider>
               <MainLayout>
@@ -30,9 +30,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </CookiesProvider>
           </Hydrate>
           <ReactQueryDevtools position="bottom-right" />
-        </QueryClientProvider>
-      </WagmiProvider>
-    </CosmConnectProvider>
+        </WagmiProvider>
+      </CosmConnectProvider>
+    </QueryClientProvider>
   );
 }
 
