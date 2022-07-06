@@ -36,8 +36,6 @@ export function useDexEnvironmentType(): NetworkEnv {
 export function useDexEnvironment() {
   const environment = useDexEnvironmentType();
 
-  console.log({ environment });
-
   return useQuery(
     `dex_env_${environment}`,
     async () => getSdkConfig({ environment }),
