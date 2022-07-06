@@ -13,6 +13,7 @@ export type ModalProps = PropsWithChildren<{
   onClose: (isOpen: boolean) => void;
   onGoBack?: null | undefined | (() => void);
   titlePlacement?: "left" | "center";
+  onTransitionEnd?: () => void;
 }>;
 
 export const Modal: FC<ModalProps> = (props) => {
@@ -27,6 +28,9 @@ export const Modal: FC<ModalProps> = (props) => {
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
+          afterLeave={() => {
+            props.onTransitionEnd?.();
+          }}
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
