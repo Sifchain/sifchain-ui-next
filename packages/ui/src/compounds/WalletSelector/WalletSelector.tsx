@@ -56,14 +56,18 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     setSearch("");
   }, []);
 
+  const resetState = useCallback(() => {
+    setIsModalOpen(false);
+    setNetworkId("");
+    setWalletId("");
+    setSearch("");
+    setStep("choose-network");
+  }, []);
+
   const goBack = useCallback(() => {
     switch (step) {
       case "choose-network":
-        setIsModalOpen(false);
-        setNetworkId("");
-        setWalletId("");
-        setSearch("");
-        setStep("choose-network");
+        resetState();
         props.onCancel?.();
         return;
       case "choose-wallet":
@@ -230,6 +234,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
         onClose={setIsModalOpen}
         onGoBack={goBack}
         subTitle={subHeading}
+        onTransitionEnd={resetState}
       >
         {content}
       </Modal>
