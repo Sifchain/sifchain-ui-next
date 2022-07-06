@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 export type ChainEntry = {
   id: string;
+  chainId: string;
   name: string;
   type: string;
   icon: ReactNode;
