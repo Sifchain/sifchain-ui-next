@@ -1,5 +1,5 @@
-import { getSdkConfig, NetworkEnv } from "@sifchain/common";
-import { useMemo } from "react";
+import { getSdkConfig, NetworkEnv, NETWORK_ENVS } from "@sifchain/common";
+import { useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 
@@ -10,17 +10,33 @@ export type DexEnvironment = {
   registryUrl: string;
 };
 
-export const useDexEnvironmentType = () => {
-  const [{ sif_dex_env }] = useCookies(["sif_dex_env"]);
+export function useDexEnvironmentType(): NetworkEnv {
+  const [{ sif_dex_env }, setCookie] = useCookies(["sif_dex_env"]);
+  const [resolvedEnv, setResolvedEnv] = useState<NetworkEnv | null>(null);
+
+  useEffect(() => {
+    const queryString = new URLSearchParams(window.location.search);
+    const envKind = queryString.get("_env");
+    if (
+      envKind &&
+      NETWORK_ENVS.has(envKind as NetworkEnv) &&
+      envKind !== sif_dex_env
+    ) {
+      setCookie("sif_dex_env", envKind);
+      setResolvedEnv(envKind as NetworkEnv);
+    }
+  }, [setCookie, sif_dex_env]);
 
   return useMemo(
-    () => String(sif_dex_env ?? "mainnet") as NetworkEnv,
-    [sif_dex_env],
+    () => resolvedEnv ?? sif_dex_env ?? "mainnet",
+    [resolvedEnv, sif_dex_env],
   );
-};
+}
 
 export function useDexEnvironment() {
   const environment = useDexEnvironmentType();
+
+  console.log({ environment });
 
   return useQuery(
     `dex_env_${environment}`,
