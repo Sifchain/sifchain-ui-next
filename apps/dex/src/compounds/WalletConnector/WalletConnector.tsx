@@ -13,7 +13,7 @@ import {
   WalletSelector,
 } from "@sifchain/ui";
 import clsx from "clsx";
-import { assoc, indexBy, prop } from "rambda";
+import { assoc, indexBy, prop, omit } from "rambda";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useConnect as useEtherConnect,
@@ -43,6 +43,7 @@ const WalletConnector: FC = () => {
     return Object.entries(data.chainConfigsByNetwork).map(
       ([id, config]): ChainEntry => ({
         id,
+        chainId: config.chainId,
         name: config.displayName,
         type: config.chainType,
         nativeAssetSymbol: config.nativeAssetSymbol,
@@ -91,9 +92,9 @@ const WalletConnector: FC = () => {
             const signer = await cosmosActiveConnector.getSigner(chain.id);
             const accounts = await signer.getAccounts();
 
-            return [chain.id, accounts.map((x) => x.address)];
+            return [chain.chainId, accounts.map((x) => x.address)];
           } catch (error) {
-            return [chain.id, []];
+            return [chain.chainId, []];
           }
         }),
       );
@@ -101,6 +102,7 @@ const WalletConnector: FC = () => {
       const cosmosAccounts = Object.fromEntries(
         entries.filter(([_, xs]) => xs),
       );
+
       setAccounts((accounts) => ({
         ...accounts,
         ...cosmosAccounts,
@@ -190,7 +192,7 @@ const WalletConnector: FC = () => {
 
   const handleDisconnectionRequest = useCallback(
     async ({ chainId = "" }) => {
-      const selected = chains.find((x) => x.id === chainId);
+      const selected = chains.find((x) => x.chainId === chainId);
 
       if (!selected) {
         console.error(`Unknown chain ${chainId}`);
@@ -200,12 +202,14 @@ const WalletConnector: FC = () => {
       switch (selected.type) {
         case "ibc":
           {
-            const connector = cosmosConnectors.find((x) =>
-              x.id.startsWith("keplr"),
-            );
-            if (connector) {
-              console.log("disconnecting from", connector);
-              disconnectCosmos(connector);
+            if (cosmosActiveConnector) {
+              console.log("disconnecting from", cosmosActiveConnector); //
+              disconnectCosmos(cosmosActiveConnector);
+              const { chainInfos } = cosmosActiveConnector.options;
+              const chainIds = chainInfos.map(
+                (chain: ChainConfig) => chain.chainId,
+              );
+              setAccounts(omit(chainIds));
             }
           }
           break;
@@ -213,7 +217,7 @@ const WalletConnector: FC = () => {
           disconnectEVM();
       }
     },
-    [chains, cosmosConnectors, disconnectCosmos, disconnectEVM],
+    [chains, accounts, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
   );
 
   return (
