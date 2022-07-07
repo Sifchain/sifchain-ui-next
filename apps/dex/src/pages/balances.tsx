@@ -16,7 +16,10 @@ import { FC, useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
-import { useBalancesWithPool } from "~/domains/bank/hooks/balances";
+import {
+  useBalancesStats,
+  useBalancesWithPool,
+} from "~/domains/bank/hooks/balances";
 
 const Stat: FC<{ label: string; value: string }> = (props) => (
   <div className="flex-1 grid gap-1">
@@ -46,6 +49,7 @@ const TokenFigure = (props: {
 const AssetsPage: NextPage = () => {
   const router = useRouter();
   const balances = useBalancesWithPool();
+  const balancesStats = useBalancesStats();
 
   const [selectedDenom, setSelectedDenom] = useState<string | undefined>();
   const selectedBalance = useMemo(
@@ -90,18 +94,40 @@ const AssetsPage: NextPage = () => {
     return [
       {
         label: "Total",
-        value: 10,
+        value:
+          balancesStats.data?.totalInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
       {
         label: "Available",
-        value: 100000,
+        value:
+          balancesStats.data?.availableInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
       {
         label: "Pooled",
-        value: 100000,
+        value:
+          balancesStats.data?.pooledInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
     ];
-  }, []);
+  }, [
+    balancesStats.data?.availableInUsdc,
+    balancesStats.data?.pooledInUsdc,
+    balancesStats.data?.totalInUsdc,
+  ]);
 
   const actions = useMemo(
     () => [
@@ -145,14 +171,7 @@ const AssetsPage: NextPage = () => {
           </div>
           <div className="flex flex-wrap gap-4">
             {stats.map((stat) => (
-              <Stat
-                key={stat.label}
-                label={stat.label}
-                value={stat.value.toLocaleString(undefined, {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              />
+              <Stat key={stat.label} label={stat.label} value={stat.value} />
             ))}
           </div>
         </header>
