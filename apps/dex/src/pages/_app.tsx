@@ -1,5 +1,6 @@
+import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { useState } from "react";
+import React, { FC, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -9,7 +10,7 @@ import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
 import "~/styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -18,22 +19,21 @@ function MyApp({ Component, pageProps }: AppProps) {
         },
       }),
   );
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <CosmConnectProvider>
-        <WagmiProvider>
+    <ComposeProviders providers={[CosmConnectProvider, WagmiProvider]}>
+      <CookiesProvider>
+        <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
-            <CookiesProvider>
-              <MainLayout>
-                <Component {...pageProps} />
-              </MainLayout>
-            </CookiesProvider>
+            <MainLayout>
+              <Component {...pageProps} />
+            </MainLayout>
           </Hydrate>
           <ReactQueryDevtools position="bottom-right" />
-        </WagmiProvider>
-      </CosmConnectProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </CookiesProvider>
+    </ComposeProviders>
   );
-}
+};
 
 export default MyApp;

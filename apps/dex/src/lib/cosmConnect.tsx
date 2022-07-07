@@ -1,33 +1,32 @@
-import type { IBCChainConfig } from "@sifchain/common";
+import {
+  CHAINCONFIG_BY_NETWORK_ENV,
+  IBCChainConfig,
+  NETWORK_CHAIN_LOOKUP,
+} from "@sifchain/common";
 import {
   CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
   KeplrWalletConnectConnector,
 } from "@sifchain/cosmos-connect";
-import type { PropsWithChildren } from "react";
-import { useQuery } from "react-query";
-import { useDexEnvironment } from "~/domains/core/envs";
+import { PropsWithChildren, useMemo } from "react";
+import { useDexEnvKind } from "~/domains/core/envs";
 
 function useKeplrConnectors() {
-  const { data: dexEnv, isSuccess: isDexEnvReady } = useDexEnvironment();
+  const networkEnv = useDexEnvKind();
 
-  return useQuery(
-    "keplr-connectors",
-    () => {
-      if (!dexEnv) {
-        return [];
-      }
+  return useMemo(() => {
+    const chainInfos = Object.entries(CHAINCONFIG_BY_NETWORK_ENV[networkEnv])
+      .filter(([, chain]) => "keplrChainInfo" in chain)
+      .map(([, chain]) => (chain as IBCChainConfig).keplrChainInfo);
 
-      const chainInfos = Object.entries(dexEnv.chainConfigsByNetwork)
-        .filter(([, chain]) => "keplrChainInfo" in chain)
-        .map(([, chain]) => (chain as IBCChainConfig).keplrChainInfo);
+    const intjectedConnectors = chainInfos.map(
+      (chainInfo) => new InjectedKeplrConnector({ chainInfos: [chainInfo] }),
+    );
 
-      return [
-        new InjectedKeplrConnector({
-          chainInfos,
-        }),
+    const walletConnectConnectors = chainInfos.map(
+      (chainInfo) =>
         new KeplrWalletConnectConnector({
-          chainInfos,
+          chainInfos: [chainInfo],
           modalUiOptions: {
             backdrop: {
               style: { zIndex: 11 },
@@ -42,16 +41,34 @@ function useKeplrConnectors() {
             ],
           },
         }),
-      ];
-    },
-    {
-      enabled: isDexEnvReady,
-    },
-  );
+    );
+
+    return [
+      new InjectedKeplrConnector({
+        chainInfos,
+      }),
+      new KeplrWalletConnectConnector({
+        chainInfos,
+        modalUiOptions: {
+          backdrop: {
+            style: { zIndex: 11 },
+          },
+        },
+        clientMeta: {
+          name: "Sifchain",
+          description: "The omni chain",
+          url: "https://sifchain.network",
+          icons: [
+            "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
+          ],
+        },
+      }),
+    ];
+  }, [networkEnv]);
 }
 
 export const CosmConnectProvider = (props: PropsWithChildren<unknown>) => {
-  const { data: keplrConnectors = [] } = useKeplrConnectors();
+  const keplrConnectors = useKeplrConnectors();
 
   return (
     <BaseCosmConnectProvider
