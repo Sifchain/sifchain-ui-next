@@ -6,7 +6,10 @@ import { useQuery } from "react-query";
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import {
+  useSifSigningStargateClient,
+  useSifStargateClient,
+} from "~/hooks/useSifStargateClient";
 
 export const useAllBalances = () => {
   const { data: env } = useDexEnvironment();
@@ -80,6 +83,7 @@ export const useBalancesWithPool = () => {
         const pool = liquidityProviders?.pools.find(
           (y) => y.liquidityProvider?.asset?.symbol === x,
         );
+
         return {
           denom: x,
           symbol: token?.symbol,
@@ -100,5 +104,52 @@ export const useBalancesWithPool = () => {
       liquidityProviders?.pools,
       totalRowan,
     ],
+  );
+};
+
+export const useBalancesStats = () => {
+  const { data: stargateClient } = useSifStargateClient();
+  const balances = useBalancesWithPool();
+
+  return useQuery(
+    ["balances-stats", balances],
+    () => {
+      const promises = balances!.map(async (x) => ({
+        available:
+          x.denom === "cusdc"
+            ? { rawReceiving: x.amount ?? Decimal.zero(6) }
+            : await stargateClient!.simulateSwap(
+                { denom: x.denom, amount: x.amount?.atomics ?? "0" },
+                { denom: "cusdc" },
+              ),
+        pooled:
+          x.denom === "cusdc"
+            ? { rawReceiving: x.amount ?? Decimal.zero(6) }
+            : await stargateClient!.simulateSwap(
+                { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
+                { denom: "cusdc" },
+              ),
+      }));
+
+      return Promise.all(promises).then((x) =>
+        x.reduce(
+          (prev, curr) => ({
+            totalInUsdc: prev.totalInUsdc
+              .plus(curr.available.rawReceiving)
+              .plus(curr.pooled.rawReceiving),
+            availableInUsdc: prev.availableInUsdc.plus(
+              curr.available.rawReceiving,
+            ),
+            pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
+          }),
+          {
+            totalInUsdc: Decimal.zero(6),
+            availableInUsdc: Decimal.zero(6),
+            pooledInUsdc: Decimal.zero(6),
+          },
+        ),
+      );
+    },
+    { enabled: stargateClient !== undefined && balances !== undefined },
   );
 };
