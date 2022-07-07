@@ -1,14 +1,11 @@
-import {
-  CHAINCONFIG_BY_NETWORK_ENV,
-  IBCChainConfig,
-  NETWORK_CHAIN_LOOKUP,
-} from "@sifchain/common";
+import { CHAINCONFIG_BY_NETWORK_ENV, IBCChainConfig } from "@sifchain/common";
 import {
   CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
   KeplrWalletConnectConnector,
 } from "@sifchain/cosmos-connect";
 import { PropsWithChildren, useMemo } from "react";
+
 import { useDexEnvKind } from "~/domains/core/envs";
 
 function useKeplrConnectors() {
@@ -18,30 +15,6 @@ function useKeplrConnectors() {
     const chainInfos = Object.entries(CHAINCONFIG_BY_NETWORK_ENV[networkEnv])
       .filter(([, chain]) => "keplrChainInfo" in chain)
       .map(([, chain]) => (chain as IBCChainConfig).keplrChainInfo);
-
-    const intjectedConnectors = chainInfos.map(
-      (chainInfo) => new InjectedKeplrConnector({ chainInfos: [chainInfo] }),
-    );
-
-    const walletConnectConnectors = chainInfos.map(
-      (chainInfo) =>
-        new KeplrWalletConnectConnector({
-          chainInfos: [chainInfo],
-          modalUiOptions: {
-            backdrop: {
-              style: { zIndex: 11 },
-            },
-          },
-          clientMeta: {
-            name: "Sifchain",
-            description: "The omni chain",
-            url: "https://sifchain.network",
-            icons: [
-              "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
-            ],
-          },
-        }),
-    );
 
     return [
       new InjectedKeplrConnector({
