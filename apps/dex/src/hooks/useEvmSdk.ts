@@ -1,10 +1,10 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
 import { useQuery } from "react-query";
 import { useSigner } from "wagmi";
-import { useDexEnvironmentType } from "~/domains/core/envs";
+import { useDexEnvKind } from "~/domains/core/envs";
 
 const useEvmSdk = () => {
-  const environment = useDexEnvironmentType();
+  const environment = useDexEnvKind();
   const { data: signer } = useSigner();
 
   return useQuery(

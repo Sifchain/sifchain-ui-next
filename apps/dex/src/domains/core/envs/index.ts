@@ -10,7 +10,7 @@ export type DexEnvironment = {
   registryUrl: string;
 };
 
-export function useDexEnvironmentType(): NetworkEnv {
+export function useDexEnvKind(): NetworkEnv {
   const [{ sif_dex_env }, setCookie] = useCookies(["sif_dex_env"]);
   const [resolvedEnv, setResolvedEnv] = useState<NetworkEnv | null>(null);
 
@@ -34,7 +34,7 @@ export function useDexEnvironmentType(): NetworkEnv {
 }
 
 export function useDexEnvironment() {
-  const environment = useDexEnvironmentType();
+  const environment = useDexEnvKind();
 
   return useQuery(
     `dex_env_${environment}`,
