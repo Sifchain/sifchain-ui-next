@@ -94,15 +94,33 @@ const AssetsPage: NextPage = () => {
     return [
       {
         label: "Total",
-        value: balancesStats.data?.totalInUsdc.toFloatApproximation() ?? 0,
+        value:
+          balancesStats.data?.totalInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
       {
         label: "Available",
-        value: balancesStats.data?.availableInUsdc.toFloatApproximation() ?? 0,
+        value:
+          balancesStats.data?.availableInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
       {
         label: "Pooled",
-        value: balancesStats.data?.pooledInUsdc.toFloatApproximation() ?? 0,
+        value:
+          balancesStats.data?.pooledInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
       },
     ];
   }, [
@@ -153,14 +171,7 @@ const AssetsPage: NextPage = () => {
           </div>
           <div className="flex flex-wrap gap-4">
             {stats.map((stat) => (
-              <Stat
-                key={stat.label}
-                label={stat.label}
-                value={stat.value.toLocaleString(undefined, {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              />
+              <Stat key={stat.label} label={stat.label} value={stat.value} />
             ))}
           </div>
         </header>
