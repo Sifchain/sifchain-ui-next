@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { useSigner } from "@sifchain/cosmos-connect";
-import type { StringIndexed } from "@sifchain/ui";
+import { type StringIndexed, invariant } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
@@ -178,18 +178,21 @@ export function useBalancesStats() {
   return useQuery(
     ["balances-stats", balances],
     async () => {
-      const promises = balances!.map(async (x) => ({
+      invariant(stargateClient !== undefined, "stargateClient is undefined");
+      invariant(balances !== undefined, "balances is undefined");
+
+      const promises = balances.map(async (x) => ({
         available:
           x.denom === "cusdc"
             ? { rawReceiving: x.amount ?? Decimal.zero(6) }
-            : await stargateClient!.simulateSwap(
+            : await stargateClient.simulateSwap(
                 { denom: x.denom, amount: x.amount?.atomics ?? "0" },
                 { denom: "cusdc" },
               ),
         pooled:
           x.denom === "cusdc"
             ? { rawReceiving: x.amount ?? Decimal.zero(6) }
-            : await stargateClient!.simulateSwap(
+            : await stargateClient.simulateSwap(
                 { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
                 { denom: "cusdc" },
               ),

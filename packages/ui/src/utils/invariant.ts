@@ -4,7 +4,7 @@ const prefix = "Invariant failed";
 // Throw an error if the condition fails
 // Strip out error messages for production
 // > Not providing an inline default argument for message as the result is smaller
-export default function invarian<
+export function invariant<
   T extends boolean | string | number | Record<string, unknown>,
 >(
   condition: T,
