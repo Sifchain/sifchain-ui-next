@@ -76,7 +76,14 @@ const AssetsPage: NextPage = () => {
         );
       case "balance":
         return sort(
-          sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
+          sortFunc(
+            (x) =>
+              x.amount
+                ?.plus(
+                  x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits),
+                )
+                .toFloatApproximation() ?? 0,
+          ),
           balances,
         );
       case "pooled":
