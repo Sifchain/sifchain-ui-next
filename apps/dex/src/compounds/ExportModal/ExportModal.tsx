@@ -12,7 +12,7 @@ import {
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllBalances } from "~/domains/bank/hooks/balances";
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useExportTokensMutation } from "~/domains/bank/hooks/export";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -21,16 +21,16 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const exportTokensMutation = useExportTokensMutation();
 
   const { indexedByIBCDenom } = useTokenRegistryQuery();
-  const balances = useAllBalances();
+  const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
   const token = indexedByIBCDenom[props.denom];
-  const isEthToken = token?.ibcDenom.startsWith("c");
+  const isEthToken = token?.ibcDenom?.startsWith("c");
   const { data: env } = useDexEnvironment();
   const { accounts: sifAccounts } = useAccounts(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
-  const { accounts: cosmAccounts } = useAccounts(token?.chainId ?? "", {
+  const { accounts: cosmAccounts } = useAccounts(token?.network ?? "", {
     enabled: token !== undefined && !isEthToken,
   });
   const { data: ethAccount } = useAccount();

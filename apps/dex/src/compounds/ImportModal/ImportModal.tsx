@@ -13,7 +13,7 @@ import {
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllBalances } from "~/domains/bank/hooks/balances";
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -28,7 +28,7 @@ const ImportModal = (
 
   const { data: tokenRegistry, indexedByIBCDenom } = useTokenRegistryQuery();
   const token = indexedByIBCDenom[props.denom];
-  const balances = useAllBalances();
+  const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
   const { data: evmAccount } = useAccount();
@@ -79,7 +79,7 @@ const ImportModal = (
         onSubmit={(e) => {
           e.preventDefault();
           importTokensMutation.mutate({
-            chainId: token?.chainId ?? "",
+            chainId: token?.network ?? "",
             tokenAddress: token?.address ?? "",
             recipientAddress: recipientAddress ?? "",
             amount: {

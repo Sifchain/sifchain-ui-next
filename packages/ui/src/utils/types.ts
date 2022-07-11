@@ -1,4 +1,10 @@
-export type StringIndexable = { [key: string]: any };
+export type StringIndexable = {
+  [key: string]: any;
+};
+
+export type StringIndexed<T> = {
+  [key: string]: T;
+};
 
 export type IndexableKeys<T extends StringIndexable, K = keyof T> = K extends
   | string

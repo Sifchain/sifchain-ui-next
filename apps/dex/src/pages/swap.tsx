@@ -22,8 +22,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useQuery } from "react-query";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllBalances } from "~/domains/bank/hooks/balances";
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
@@ -162,13 +163,86 @@ const toTokenEntry = <T extends IAsset>(x: T) => ({
   hasDarkIcon: Boolean(x.hasDarkIcon),
 });
 
+function useEnhancedToken(symbolOrDenom: string) {
+  const sanitized = symbolOrDenom.toLowerCase();
+  const registryQuery = useTokenRegistryQuery();
+  const allBalancesQuery = useAllBalancesQuery();
+
+  const registryEntry = registryQuery.findBySymbolOrDenom(sanitized);
+  const balanceEntry = allBalancesQuery.findBySymbolOrDenom(
+    registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
+  );
+
+  const poolQuery = useSifnodeQuery("clp.getPool", [
+    {
+      symbol: registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
+    },
+  ]);
+
+  const derivedQuery = useQuery(
+    ["enhanced-token", symbolOrDenom],
+    () => {
+      if (!registryEntry) {
+        console.log(`Token registry entry not found for ${symbolOrDenom}`);
+        return;
+      }
+
+      return {
+        ...registryEntry,
+        balance: balanceEntry?.amount,
+        pool: poolQuery.data?.pool,
+      };
+    },
+    {
+      enabled:
+        Boolean(symbolOrDenom) &&
+        registryQuery.isSuccess &&
+        allBalancesQuery.isSuccess &&
+        poolQuery.isSuccess,
+    },
+  );
+
+  return {
+    ...derivedQuery,
+    isLoading:
+      derivedQuery.isLoading ||
+      registryQuery.isLoading ||
+      allBalancesQuery.isLoading ||
+      poolQuery.isLoading,
+    error:
+      derivedQuery.error ??
+      registryQuery.error ??
+      allBalancesQuery.error ??
+      poolQuery.error,
+  };
+}
+
+function useTokenPair(
+  fromTokenSymbolOrDenom: string,
+  toTokenSymbolOrDenom: string,
+) {
+  const [isFlipped, setFlipped] = useState(false);
+
+  const flip = () => setFlipped(!isFlipped);
+
+  const fromTokenQuery = useEnhancedToken(fromTokenSymbolOrDenom);
+  const toTokenQuery = useEnhancedToken(toTokenSymbolOrDenom);
+
+  return {
+    isFlipped,
+    flip,
+    fromTokenQuery,
+    toTokenQuery,
+  };
+}
+
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
-  const allBalancesQuery = useAllBalances();
+  const allBalancesQuery = useAllBalancesQuery();
   const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
     useSifStargateClient();
   const { signer, status: signerStatus } = useSifSigner();
-  const tokenRegistryQuery = useTokenRegistryQuery();
+  const { data: registry } = useTokenRegistryQuery();
 
   const isReady = useMemo(
     () =>
@@ -178,39 +252,14 @@ const SwapPage = () => {
     [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const [defaultFromToken, defaultToToken] = useMemo(
-    () => [
-      tokenRegistryQuery.data?.find(
-        (x) => x.displaySymbol.toUpperCase() === "ROWAN",
-      ),
-      tokenRegistryQuery.data?.find(
-        (x) => x.displaySymbol.toUpperCase() === "ATOM",
-      ),
-    ],
-    [tokenRegistryQuery.data],
-  );
-
-  const [fromSelectedOption, setFromSelectedOption] = useState<
-    TokenEntry | undefined
-  >(defaultFromToken);
-  //
-  const [toSelectedOption, setToSelectedOption] = useState<
-    TokenEntry | undefined
-  >(defaultToToken);
-
-  useEffect(() => {
-    if (defaultFromToken && defaultToToken) {
-      setFromSelectedOption(defaultFromToken);
-      setToSelectedOption(defaultToToken);
-    }
-  }, [defaultFromToken, defaultToToken]);
-
-  const [hasBeenReversed, setHasBeenReversed] = useState(false);
+  const {
+    fromTokenQuery: { data: fromToken },
+    toTokenQuery: { data: toToken },
+    isFlipped,
+    flip,
+  } = useTokenPair("rowan", "atom");
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-
-  const fromDenom = fromSelectedOption?.symbol ?? "";
-  const toDenom = toSelectedOption?.symbol ?? "";
 
   const slippageOptions = [
     { label: "0.5%", value: 0.005 },
@@ -232,33 +281,10 @@ const SwapPage = () => {
     commonOptions,
   );
 
-  const fromPoolQuery = useSifnodeQuery(
-    "clp.getPool",
-    [{ symbol: fromDenom }],
-    commonOptions,
-  );
-
-  const toPoolQuery = useSifnodeQuery(
-    "clp.getPool",
-    [{ symbol: toDenom }],
-    commonOptions,
-  );
-
-  const fromBalance = allBalancesQuery.indexedByDenom?.[fromDenom];
-  const toBalance = allBalancesQuery.indexedByDenom?.[toDenom];
-
-  // because rowan pool doesn't exist, it will return nothing
-  // hence we doing this, if both selected token are rowan then we wouldn't allow the swap anyway
-  const fromPool = fromPoolQuery.data?.pool ?? toPoolQuery.data?.pool;
-  const toPool = toPoolQuery.data?.pool ?? fromPoolQuery.data?.pool;
-
-  const tokenOptions: TokenEntry[] = tokenRegistryQuery.data.map(toTokenEntry);
+  const tokenOptions: TokenEntry[] = registry.map(toTokenEntry);
 
   const fromAmountDecimal = runCatching(() =>
-    Decimal.fromUserInput(
-      fromAmount,
-      tokenRegistryQuery.indexedByIBCDenom[fromDenom]?.decimals ?? 0,
-    ),
+    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
   )[1];
 
   const swapSimulationResult = useMemo(
@@ -266,15 +292,18 @@ const SwapPage = () => {
       runCatching(() =>
         stargateClient?.simulateSwapSync(
           {
-            denom: fromDenom,
+            denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
             amount: fromAmountDecimal?.atomics ?? "0",
-            poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
-            poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
+            poolNativeAssetBalance:
+              fromToken?.pool?.externalAssetBalance ?? "0",
+            poolExternalAssetBalance:
+              fromToken?.pool?.externalAssetBalance ?? "0",
           },
           {
-            denom: toDenom,
-            poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
-            poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
+            denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
+            poolNativeAssetBalance: toToken?.pool?.externalAssetBalance ?? "0",
+            poolExternalAssetBalance:
+              toToken?.pool?.externalAssetBalance ?? "0",
           },
           pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
           slippage,
@@ -282,13 +311,13 @@ const SwapPage = () => {
       )[1],
     [
       stargateClient,
-      fromDenom,
+      fromToken?.ibcDenom,
+      fromToken?.symbol,
+      fromToken?.pool?.externalAssetBalance,
       fromAmountDecimal?.atomics,
-      fromPool?.nativeAssetBalance,
-      fromPool?.externalAssetBalance,
-      toDenom,
-      toPool?.nativeAssetBalance,
-      toPool?.externalAssetBalance,
+      toToken?.ibcDenom,
+      toToken?.symbol,
+      toToken?.pool?.externalAssetBalance,
       pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
       slippage,
     ],
@@ -299,7 +328,7 @@ const SwapPage = () => {
       ...swapSimulationResult,
       rawReceiving: Decimal.fromAtomics(
         swapSimulationResult?.rawReceiving ?? "0",
-        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+        toToken?.decimals ?? 0,
       ),
       receivingPreSlippage: Decimal.fromAtomics(
         BigNumber.max(
@@ -312,18 +341,18 @@ const SwapPage = () => {
         )
           .integerValue()
           .toFixed(0),
-        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+        toToken?.decimals ?? 0,
       ),
       minimumReceiving: Decimal.fromAtomics(
         swapSimulationResult?.minimumReceiving ?? "0",
-        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+        toToken?.decimals ?? 0,
       ),
       liquidityProviderFee: Decimal.fromAtomics(
         swapSimulationResult?.liquidityProviderFee ?? "0",
-        tokenRegistryQuery.indexedByIBCDenom[toDenom]?.decimals ?? 0,
+        toToken?.decimals ?? 0,
       ),
     }),
-    [swapSimulationResult, toDenom, tokenRegistryQuery.indexedByIBCDenom],
+    [swapSimulationResult, toToken?.decimals],
   );
 
   useEffect(
@@ -347,7 +376,7 @@ const SwapPage = () => {
 
     if (
       fromAmountDecimal?.isGreaterThan(
-        fromBalance?.amount ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
+        fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
       )
     ) {
       return "Insufficient balance";
@@ -377,17 +406,19 @@ const SwapPage = () => {
                 </legend>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
-                    label="Token"
+                    label=""
                     modalTitle="From"
                     tokens={tokenOptions}
-                    value={fromSelectedOption}
-                    onChange={setFromSelectedOption}
+                    value={fromToken ? toTokenEntry(fromToken) : undefined}
+                    onChange={() => {
+                      //
+                    }}
                   />
                   <Input
                     className="text-right md:flex-1"
-                    label="Amount"
+                    label=" "
                     secondaryLabel={`Balance: ${
-                      fromBalance ? formatBalance(fromBalance.amount) : 0
+                      fromToken?.balance ? formatBalance(fromToken.balance) : 0
                     }`}
                     placeholder="Swap amount"
                     value={fromAmount}
@@ -400,20 +431,20 @@ const SwapPage = () => {
                 <button
                   className={clsx(
                     "bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform	",
-                    { "rotate-180": hasBeenReversed },
+                    { "rotate-180": isFlipped },
                   )}
                   type="button"
                   onClick={() => {
                     startTransition(() => {
-                      setFromSelectedOption(toSelectedOption);
-                      setToSelectedOption(fromSelectedOption);
+                      // setFromSelectedOption(toSelectedOption);
+                      // setToSelectedOption(fromSelectedOption);
                       setFromAmount((x) =>
                         parsedSwapResult.minimumReceiving.toFloatApproximation() ===
                         0
                           ? x
                           : parsedSwapResult.minimumReceiving.toString(),
                       );
-                      setHasBeenReversed((x) => !x);
+                      flip();
                     });
                   }}
                 >
@@ -429,13 +460,15 @@ const SwapPage = () => {
                     label="Token"
                     modalTitle="From"
                     tokens={tokenOptions}
-                    value={toSelectedOption}
-                    onChange={setToSelectedOption}
+                    value={toToken ? toTokenEntry(toToken) : undefined}
+                    onChange={() => {
+                      //
+                    }}
                   />
                   <Input
                     className="text-right md:flex-1"
                     secondaryLabel={`Balance: ${
-                      toBalance ? formatBalance(toBalance.amount) : 0
+                      toToken?.balance ? formatBalance(toToken.balance) : 0
                     }`}
                     label="Amount"
                     value={
@@ -506,8 +539,8 @@ const SwapPage = () => {
             switch (swapMutation.status) {
               case "idle":
                 swapMutation.mutate({
-                  fromDenom,
-                  toDenom,
+                  fromDenom: fromToken?.ibcDenom ?? "",
+                  toDenom: toToken?.ibcDenom ?? "",
                   fromAmount: fromAmountDecimal?.atomics ?? "0",
                   minimumReceiving:
                     swapSimulationResult?.minimumReceiving ?? "0",
@@ -521,16 +554,13 @@ const SwapPage = () => {
           },
         }}
         fromCoin={{
-          denom:
-            tokenRegistryQuery.indexedByIBCDenom[fromDenom]?.displaySymbol ??
-            "",
+          denom: fromToken?.displaySymbol ?? "",
           amount: (
             fromAmountDecimal?.toFloatApproximation() ?? 0
           ).toLocaleString(undefined, { maximumFractionDigits: 6 }),
         }}
         toCoin={{
-          denom:
-            tokenRegistryQuery.indexedByIBCDenom[toDenom]?.displaySymbol ?? "",
+          denom: toToken?.displaySymbol ?? "",
           amount: parsedSwapResult.rawReceiving
             .toFloatApproximation()
             .toLocaleString(undefined, { maximumFractionDigits: 6 }),
