@@ -259,8 +259,6 @@ const SwapPage = () => {
     flip,
   } = useTokenPair("rowan", "atom");
 
-  console.log("fromToken:", fromToken?.balance, toToken?.balance);
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const slippageOptions = [
