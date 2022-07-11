@@ -13,7 +13,7 @@ import {
   WalletSelector,
 } from "@sifchain/ui";
 import clsx from "clsx";
-import { assoc, indexBy, prop, omit } from "rambda";
+import { assoc, indexBy, omit, prop } from "rambda";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useConnect as useEtherConnect,
@@ -217,7 +217,7 @@ const WalletConnector: FC = () => {
           disconnectEVM();
       }
     },
-    [chains, accounts, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
+    [chains, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
   );
 
   return (
@@ -238,12 +238,21 @@ const WalletConnector: FC = () => {
   );
 };
 
-const ConnectedAccountItem: RenderConnectedAccount = (props) => {
-  const { data } = useNativeBalanceQuery(props.chainId, props.account);
+const ConnectedAccountItem: RenderConnectedAccount = ({
+  chainId,
+  account,
+  ...props
+}) => {
+  const { data } = useNativeBalanceQuery(
+    chainId.match(/-\d+$/) !== null ? chainId.split("-")[0] ?? "" : chainId,
+    account,
+  );
 
   return (
     <ConnectedAccount
       {...props}
+      chainId={chainId}
+      account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
       nativeAssetBalance={(data as Coin)?.amount ?? ""}
