@@ -21,13 +21,6 @@ import {
   useBalancesWithPool,
 } from "~/domains/bank/hooks/balances";
 
-const Stat: FC<{ label: string; value: string }> = (props) => (
-  <div className="flex-1 grid gap-1">
-    <span className="opacity-80">{props.label}</span>
-    <span className="font-semibold md:text-2xl">{props.value}</span>
-  </div>
-);
-
 const TokenFigure = (props: {
   symbol: string;
   displaySymbol: string;
@@ -177,8 +170,11 @@ const AssetsPage: NextPage = () => {
             </Link>
           </div>
           <div className="flex flex-wrap gap-4">
-            {stats.map((stat) => (
-              <Stat key={stat.label} label={stat.label} value={stat.value} />
+            {stats.map((stat, index) => (
+              <div key={index} className="flex-1 grid gap-1">
+                <span className="opacity-80">{stat.label}</span>
+                <span className="font-semibold md:text-2xl">{stat.value}</span>
+              </div>
             ))}
           </div>
         </header>
