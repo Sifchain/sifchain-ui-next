@@ -12,7 +12,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ascend, descend, sort } from "ramda";
-import { FC, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
