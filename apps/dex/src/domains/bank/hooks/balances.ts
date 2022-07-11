@@ -81,7 +81,7 @@ export function useAllBalancesQuery() {
       baseQuery.data === undefined || registry === undefined
         ? {}
         : registry
-            .filter((x) => x.ibcDenom in indexedByDenom)
+            .filter((x) => x.ibcDenom in indexedByDenom && x.displaySymbol)
             .reduce(
               (acc, x) => ({
                 ...acc,
@@ -92,11 +92,6 @@ export function useAllBalancesQuery() {
               {} as StringIndexed<Balance>,
             );
 
-    console.log({
-      indexedByDenom,
-      indexedBySymbol,
-      indexedByDisplaySymbol,
-    });
     return {
       indexedByDenom,
       indexedBySymbol,

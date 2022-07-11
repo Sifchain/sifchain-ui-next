@@ -198,7 +198,7 @@ function useEnhancedToken(symbolOrDenom: string) {
         Boolean(symbolOrDenom) &&
         registryQuery.isSuccess &&
         allBalancesQuery.isSuccess &&
-        poolQuery.isSuccess,
+        (sanitized === "rowan" || poolQuery.isSuccess),
     },
   );
 
@@ -229,10 +229,10 @@ function useTokenPair(
   const toTokenQuery = useEnhancedToken(toTokenSymbolOrDenom);
 
   return {
-    isFlipped,
-    flip,
     fromTokenQuery,
     toTokenQuery,
+    isFlipped,
+    flip,
   };
 }
 
@@ -258,6 +258,8 @@ const SwapPage = () => {
     isFlipped,
     flip,
   } = useTokenPair("rowan", "atom");
+
+  console.log("fromToken:", fromToken?.balance, toToken?.balance);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
