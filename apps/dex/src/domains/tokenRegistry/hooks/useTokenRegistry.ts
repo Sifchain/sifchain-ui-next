@@ -7,6 +7,11 @@ import { useMemo } from "react";
 import { useAssetsQuery } from "~/domains/assets";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
+export type EnhancedRegitryAsset = IAsset & {
+  chainId: string;
+  ibcDenom: string;
+};
+
 export default function useTokenRegistryQuery() {
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
     refetchOnWindowFocus: false,
@@ -15,7 +20,7 @@ export default function useTokenRegistryQuery() {
 
   const { indexedBySymbol, ...assetsQuery } = useAssetsQuery();
 
-  const entries = useMemo(() => {
+  const entries = useMemo<EnhancedRegitryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
       return [] as Array<IAsset & { chainId: string; ibcDenom: string }>;
     }
@@ -30,24 +35,22 @@ export default function useTokenRegistryQuery() {
       }))
       .filter((x) => Boolean(x.asset));
 
-    return filteredEntries.map(({ asset, entry }) => {
-      return {
-        ...(asset as IAsset),
-        chainId: entry.ibcCounterpartyChainId,
-        ibcDenom: asset?.ibcDenom ?? entry.denom,
-        address:
-          indexedBySymbol[(asset?.ibcDenom ?? entry.denom).replace(/^c/, "")]
-            ?.address ?? "",
-      };
-    });
+    return filteredEntries.map(({ asset, entry }) => ({
+      ...(asset as IAsset),
+      chainId: entry.ibcCounterpartyChainId,
+      ibcDenom: asset?.ibcDenom ?? entry.denom,
+      address:
+        indexedBySymbol[(asset?.ibcDenom ?? entry.denom).replace(/^c/, "")]
+          ?.address ?? "",
+    }));
   }, [data?.registry?.entries, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {
       return {
-        indexedBySymbol: {} as StringIndexed<IAsset>,
-        indexedByDisplaySymbol: {} as StringIndexed<IAsset>,
-        indexedByIBCDenom: {} as StringIndexed<IAsset>,
+        indexedBySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
+        indexedByDisplaySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
+        indexedByIBCDenom: {} as StringIndexed<EnhancedRegitryAsset>,
       };
     }
 
