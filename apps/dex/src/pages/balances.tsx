@@ -12,7 +12,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ascend, descend, sort } from "ramda";
-import { FC, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
@@ -20,13 +20,6 @@ import {
   useBalancesStats,
   useBalancesWithPool,
 } from "~/domains/bank/hooks/balances";
-
-const Stat: FC<{ label: string; value: string }> = (props) => (
-  <div className="flex-1 grid gap-1">
-    <span className="opacity-80">{props.label}</span>
-    <span className="font-semibold md:text-2xl">{props.value}</span>
-  </div>
-);
 
 const TokenFigure = (props: {
   symbol: string;
@@ -76,7 +69,14 @@ const AssetsPage: NextPage = () => {
         );
       case "balance":
         return sort(
-          sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
+          sortFunc(
+            (x) =>
+              x.amount
+                ?.plus(
+                  x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits),
+                )
+                .toFloatApproximation() ?? 0,
+          ),
           balances,
         );
       case "pooled":
@@ -93,16 +93,6 @@ const AssetsPage: NextPage = () => {
   const stats = useMemo(() => {
     return [
       {
-        label: "Total",
-        value:
-          balancesStats.data?.totalInUsdc
-            .toFloatApproximation()
-            .toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-            }) ?? "...",
-      },
-      {
         label: "Available",
         value:
           balancesStats.data?.availableInUsdc
@@ -116,6 +106,16 @@ const AssetsPage: NextPage = () => {
         label: "Pooled",
         value:
           balancesStats.data?.pooledInUsdc
+            .toFloatApproximation()
+            .toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            }) ?? "...",
+      },
+      {
+        label: "Total",
+        value:
+          balancesStats.data?.totalInUsdc
             .toFloatApproximation()
             .toLocaleString(undefined, {
               style: "currency",
@@ -170,8 +170,11 @@ const AssetsPage: NextPage = () => {
             </Link>
           </div>
           <div className="flex flex-wrap gap-4">
-            {stats.map((stat) => (
-              <Stat key={stat.label} label={stat.label} value={stat.value} />
+            {stats.map((stat, index) => (
+              <div key={index} className="flex-1 grid gap-1">
+                <span className="opacity-80">{stat.label}</span>
+                <span className="font-semibold md:text-2xl">{stat.value}</span>
+              </div>
             ))}
           </div>
         </header>
@@ -238,7 +241,7 @@ const AssetsPage: NextPage = () => {
         </div>
         <table className="hidden w-full md:table">
           <thead className="text-left uppercase text-xs [&>th]:font-normal [&>th]:opacity-80 [&>th]:pb-6">
-            {(["token", "available", "balance", "pooled"] as const).map((x) => (
+            {(["token", "available", "pooled", "balance"] as const).map((x) => (
               <th
                 key={x}
                 className="cursor-pointer select-none"
@@ -284,18 +287,6 @@ const AssetsPage: NextPage = () => {
                   />
                 </td>
                 <td>
-                  {(
-                    balance.amount
-                      ?.plus(
-                        balance.pooledAmount ??
-                          Decimal.zero(balance.amount.fractionalDigits),
-                      )
-                      .toFloatApproximation() ?? 0
-                  ).toLocaleString(undefined, {
-                    maximumFractionDigits: 6,
-                  })}
-                </td>
-                <td>
                   {(balance.amount?.toFloatApproximation() ?? 0).toLocaleString(
                     undefined,
                     {
@@ -309,6 +300,18 @@ const AssetsPage: NextPage = () => {
                     .toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
+                </td>
+                <td>
+                  {(
+                    balance.amount
+                      ?.plus(
+                        balance.pooledAmount ??
+                          Decimal.zero(balance.amount.fractionalDigits),
+                      )
+                      .toFloatApproximation() ?? 0
+                  ).toLocaleString(undefined, {
+                    maximumFractionDigits: 6,
+                  })}
                 </td>
                 <td className="w-0">
                   <div className="flex gap-3">
