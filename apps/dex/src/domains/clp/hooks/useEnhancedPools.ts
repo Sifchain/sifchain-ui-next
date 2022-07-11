@@ -100,12 +100,12 @@ export function useEnhancedPoolsQuery() {
  * @returns
  */
 export function useEnhancedPoolQuery(externalAssetSymbol: string) {
-  const { findBySymbolOrDenom } = useEnhancedPoolsQuery();
+  const { findBySymbolOrDenom, ...query } = useEnhancedPoolsQuery();
 
   const sanitizedSymbol = externalAssetSymbol.toLowerCase();
 
-  return useMemo(
-    () => findBySymbolOrDenom(sanitizedSymbol) ?? {},
-    [findBySymbolOrDenom, sanitizedSymbol],
-  );
+  return {
+    ...query,
+    data: query.isSuccess ? findBySymbolOrDenom(sanitizedSymbol) : undefined,
+  };
 }
