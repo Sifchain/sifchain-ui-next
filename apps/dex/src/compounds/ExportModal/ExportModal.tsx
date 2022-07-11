@@ -30,7 +30,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const { accounts: sifAccounts } = useAccounts(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
-  const { accounts: cosmAccounts } = useAccounts(token?.network ?? "", {
+  const { accounts: cosmAccounts } = useAccounts(token?.chainId ?? "", {
     enabled: token !== undefined && !isEthToken,
   });
   const { data: ethAccount } = useAccount();

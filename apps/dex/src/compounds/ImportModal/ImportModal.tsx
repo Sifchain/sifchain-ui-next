@@ -79,7 +79,7 @@ const ImportModal = (
         onSubmit={(e) => {
           e.preventDefault();
           importTokensMutation.mutate({
-            chainId: token?.network ?? "",
+            chainId: token?.chainId ?? "",
             tokenAddress: token?.address ?? "",
             recipientAddress: recipientAddress ?? "",
             amount: {
