@@ -65,15 +65,24 @@ export function useEnhancedPoolsQuery() {
       return {
         indexedBySymbol: {},
         indexedByDisplaySymbol: {},
+        findBySymbolOrDenom: (symbolOrDenom: string) => undefined,
       };
     }
 
+    const indexedBySymbol = indexBy((x) => x.asset.symbol, derivedQuery.data);
+
+    const indexedByDisplaySymbol = indexBy(
+      ({ asset }) => asset.displaySymbol.toLowerCase(),
+      derivedQuery.data,
+    );
+
     return {
-      indexedBySymbol: indexBy((x) => x.asset.symbol, derivedQuery.data),
-      indexedByDisplaySymbol: indexBy(
-        (x) => x.asset.displaySymbol,
-        derivedQuery.data,
-      ),
+      indexedBySymbol,
+      indexedByDisplaySymbol,
+      findBySymbolOrDenom(symbolOrDenom: string) {
+        const sanitized = symbolOrDenom.toLowerCase();
+        return indexedBySymbol[sanitized] ?? indexedByDisplaySymbol[sanitized];
+      },
     };
   }, [derivedQuery.data]);
 
@@ -91,23 +100,12 @@ export function useEnhancedPoolsQuery() {
  * @returns
  */
 export function useEnhancedPoolQuery(externalAssetSymbol: string) {
-  const { data: pools, ...query } = useEnhancedPoolsQuery();
+  const { findBySymbolOrDenom } = useEnhancedPoolsQuery();
 
   const sanitizedSymbol = externalAssetSymbol.toLowerCase();
 
   return useMemo(
-    () => ({
-      data:
-        query.indexedByDisplaySymbol[sanitizedSymbol] ??
-        query.indexedBySymbol[sanitizedSymbol] ??
-        query.indexedBySymbol[`c${sanitizedSymbol}`],
-      ...query,
-    }),
-    [
-      query.isSuccess,
-      query.indexedBySymbol,
-      query.indexedByDisplaySymbol,
-      externalAssetSymbol,
-    ],
+    () => findBySymbolOrDenom(sanitizedSymbol) ?? {},
+    [findBySymbolOrDenom, sanitizedSymbol],
   );
 }

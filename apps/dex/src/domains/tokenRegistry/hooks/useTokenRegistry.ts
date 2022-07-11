@@ -1,5 +1,7 @@
 import type { IAsset } from "@sifchain/common";
-import { compose, indexBy, prop, toLower } from "rambda";
+import type { StringIndexed } from "@sifchain/ui";
+import { compose, identity, indexBy, prop, toLower } from "rambda";
+import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";
@@ -43,9 +45,9 @@ export default function useTokenRegistryQuery() {
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {
       return {
-        indexedBySymbol: {},
-        indexedByDisplaySymbol: {},
-        indexedByIBCDenom: {},
+        indexedBySymbol: {} as StringIndexed<IAsset>,
+        indexedByDisplaySymbol: {} as StringIndexed<IAsset>,
+        indexedByIBCDenom: {} as StringIndexed<IAsset>,
       };
     }
 
@@ -69,5 +71,13 @@ export default function useTokenRegistryQuery() {
     ...indices,
     isSuccess: query.isSuccess && assetsQuery.isSuccess,
     isLoading: query.isLoading || assetsQuery.isLoading,
+    findBySymbolOrDenom: memoizeWith(identity, (symbolOrDenom: string) => {
+      const sanitized = symbolOrDenom.toLowerCase();
+      return (
+        indices.indexedBySymbol[sanitized] ??
+        indices.indexedByDisplaySymbol[sanitized] ??
+        indices.indexedByIBCDenom[sanitized]
+      );
+    }),
   };
 }

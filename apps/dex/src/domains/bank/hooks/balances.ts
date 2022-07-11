@@ -1,8 +1,11 @@
 import { Decimal } from "@cosmjs/math";
 import { useSigner } from "@sifchain/cosmos-connect";
-import { indexBy, prop } from "rambda";
+import type { StringIndexed } from "@sifchain/ui";
+import { compose, identity, indexBy, prop, toLower } from "rambda";
+import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
+
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -11,32 +14,43 @@ import {
   useSifStargateClient,
 } from "~/hooks/useSifStargateClient";
 
-export const useAllBalances = () => {
+type Balance = {
+  amount: Decimal;
+  denom: string;
+};
+
+export function useAllBalancesQuery() {
   const { data: env } = useDexEnvironment();
   const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: signingStargateClient } = useSifSigningStargateClient();
-  const { indexedByIBCDenom, isSuccess: isTokenRegistryQuerySuccess } =
-    useTokenRegistryQuery();
+  const {
+    data: registry,
+    indexedByIBCDenom,
+    isSuccess: isTokenRegistryQuerySuccess,
+  } = useTokenRegistryQuery();
 
   const baseQuery = useQuery(
     "all-balances",
-    async () => {
+    async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await signingStargateClient?.getAllBalances(
         accounts?.[0]?.address ?? "",
       );
 
-      return balances?.map((x) => ({
-        ...x,
-        amount: Decimal.fromAtomics(
-          x.amount,
-          indexedByIBCDenom[x.denom]?.decimals ?? 0,
-        ),
-      }));
+      return (
+        balances?.map((x) => ({
+          ...x,
+          amount: Decimal.fromAtomics(
+            x.amount,
+            indexedByIBCDenom[x.denom.toLowerCase()]?.decimals ?? 0,
+          ),
+        })) ?? []
+      );
     },
     {
+      staleTime: 60000, // 1 minute
       enabled:
         signer !== undefined &&
         signingStargateClient !== undefined &&
@@ -44,19 +58,74 @@ export const useAllBalances = () => {
     },
   );
 
+  const indices = useMemo(() => {
+    const indexedByDenom = indexBy(
+      compose(toLower, prop("denom")),
+      baseQuery.data ?? [],
+    );
+
+    const indexedBySymbol =
+      baseQuery.data === undefined || registry === undefined
+        ? {}
+        : registry
+            .filter((x) => x.ibcDenom in indexedByDenom)
+            .reduce(
+              (acc, x) => ({
+                ...acc,
+                [x.symbol.toLowerCase()]: indexedByDenom[x.ibcDenom] as Balance,
+              }),
+              {} as StringIndexed<Balance>,
+            );
+
+    const indexedByDisplaySymbol =
+      baseQuery.data === undefined || registry === undefined
+        ? {}
+        : registry
+            .filter((x) => x.ibcDenom in indexedByDenom)
+            .reduce(
+              (acc, x) => ({
+                ...acc,
+                [x.displaySymbol.toLowerCase()]: indexedByDenom[
+                  x.ibcDenom
+                ] as Balance,
+              }),
+              {} as StringIndexed<Balance>,
+            );
+
+    console.log({
+      indexedByDenom,
+      indexedBySymbol,
+      indexedByDisplaySymbol,
+    });
+    return {
+      indexedByDenom,
+      indexedBySymbol,
+      indexedByDisplaySymbol,
+    };
+  }, [baseQuery.data, registry]);
+
   return {
     ...baseQuery,
-    indexedByDenom:
-      baseQuery.data === undefined
-        ? undefined
-        : indexBy(prop("denom"), baseQuery.data),
+    ...indices,
+    findBySymbolOrDenom: memoizeWith(identity, (symbolOrDenom: string) => {
+      const sanitized = symbolOrDenom.toLowerCase();
+      if (sanitized === "xrowan") {
+        const balance = indices.indexedByDenom["rowan"];
+        return balance;
+      }
+      return (
+        indices.indexedBySymbol[sanitized] ??
+        indices.indexedByDenom[sanitized] ??
+        indices.indexedByDisplaySymbol[sanitized]
+      );
+    }),
   };
-};
+}
 
-export const useBalancesWithPool = () => {
+export function useBalancesWithPool() {
   const { indexedByIBCDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProviders();
-  const { data: balances } = useAllBalances();
+  const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 
   const totalRowan = liquidityProviders?.pools.reduce(
@@ -105,15 +174,15 @@ export const useBalancesWithPool = () => {
       totalRowan,
     ],
   );
-};
+}
 
-export const useBalancesStats = () => {
+export function useBalancesStats() {
   const { data: stargateClient } = useSifStargateClient();
   const balances = useBalancesWithPool();
 
   return useQuery(
     ["balances-stats", balances],
-    () => {
+    async () => {
       const promises = balances!.map(async (x) => ({
         available:
           x.denom === "cusdc"
@@ -131,25 +200,25 @@ export const useBalancesStats = () => {
               ),
       }));
 
-      return Promise.all(promises).then((x) =>
-        x.reduce(
-          (prev, curr) => ({
-            totalInUsdc: prev.totalInUsdc
-              .plus(curr.available.rawReceiving)
-              .plus(curr.pooled.rawReceiving),
-            availableInUsdc: prev.availableInUsdc.plus(
-              curr.available.rawReceiving,
-            ),
-            pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
-          }),
-          {
-            totalInUsdc: Decimal.zero(6),
-            availableInUsdc: Decimal.zero(6),
-            pooledInUsdc: Decimal.zero(6),
-          },
-        ),
+      const results = await Promise.all(promises);
+
+      return results.reduce(
+        (prev, curr) => ({
+          totalInUsdc: prev.totalInUsdc
+            .plus(curr.available.rawReceiving)
+            .plus(curr.pooled.rawReceiving),
+          availableInUsdc: prev.availableInUsdc.plus(
+            curr.available.rawReceiving,
+          ),
+          pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
+        }),
+        {
+          totalInUsdc: Decimal.zero(6),
+          availableInUsdc: Decimal.zero(6),
+          pooledInUsdc: Decimal.zero(6),
+        },
       );
     },
     { enabled: stargateClient !== undefined && balances !== undefined },
   );
-};
+}
