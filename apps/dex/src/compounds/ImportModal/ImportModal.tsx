@@ -55,10 +55,12 @@ const ImportModal = (
     },
   );
   const walletBalance = isEvmBridgedCoin(props.denom)
-    ? Decimal.fromAtomics(
-        evmWalletBalance?.value.toString() ?? "0",
-        evmWalletBalance?.decimals ?? 0,
-      )
+    ? isNil(evmWalletBalance)
+      ? undefined
+      : Decimal.fromAtomics(
+          evmWalletBalance.value.toString(),
+          evmWalletBalance.decimals,
+        )
     : importTokenWalletBalance.data?.amount;
 
   const { data: env } = useDexEnvironment();
@@ -86,9 +88,11 @@ const ImportModal = (
   const amountDecimal = useMemo(
     () =>
       runCatching(() =>
-        Decimal.fromUserInput(amount, balance?.amount.fractionalDigits ?? 0),
+        token === undefined
+          ? undefined
+          : Decimal.fromUserInput(amount, token.decimals),
       )[1],
-    [amount, balance?.amount.fractionalDigits],
+    [amount, token],
   );
 
   const error = useMemo(() => {

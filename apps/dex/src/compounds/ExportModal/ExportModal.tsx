@@ -49,9 +49,11 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const amountDecimal = useMemo(
     () =>
       runCatching(() =>
-        Decimal.fromUserInput(amount, balance?.amount.fractionalDigits ?? 0),
+        token === undefined
+          ? undefined
+          : Decimal.fromUserInput(amount, token?.decimals),
       )[1],
-    [amount, balance?.amount.fractionalDigits],
+    [amount, token],
   );
 
   const error = useMemo(() => {
