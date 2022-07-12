@@ -1,5 +1,9 @@
 import { Decimal } from "@cosmjs/math";
-import { useSigner } from "@sifchain/cosmos-connect";
+import {
+  useAccounts,
+  useSigner,
+  useStargateClient,
+} from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
@@ -17,6 +21,41 @@ import {
 type Balance = {
   amount: Decimal;
   denom: string;
+};
+
+export const useBalanceQuery = (
+  chainId: string,
+  denom: string,
+  options: { enabled: boolean } = { enabled: true },
+) => {
+  const { client } = useStargateClient(chainId, options);
+  const { accounts } = useAccounts(chainId, options);
+  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const token = indexedByIBCDenom[denom];
+
+  return useQuery(
+    ["cosm-balance", chainId, denom],
+    async () => {
+      const result = await client?.getBalance(
+        accounts?.[0]?.address ?? "",
+        denom,
+      );
+
+      return result === undefined
+        ? undefined
+        : {
+            ...result,
+            amount: Decimal.fromAtomics(result.amount, token?.decimals ?? 0),
+          };
+    },
+    {
+      enabled:
+        options.enabled &&
+        client !== undefined &&
+        (accounts?.length ?? 0) > 0 &&
+        token !== undefined,
+    },
+  );
 };
 
 export function useAllBalancesQuery() {

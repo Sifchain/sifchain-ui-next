@@ -5,6 +5,7 @@ import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";
+import { useDexEnvironment } from "~/domains/core/envs";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export type EnhancedRegitryAsset = IAsset & {
@@ -13,6 +14,7 @@ export type EnhancedRegitryAsset = IAsset & {
 };
 
 export default function useTokenRegistryQuery() {
+  const { data: env } = useDexEnvironment();
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
     refetchOnWindowFocus: false,
     staleTime: 60000 * 5, // 5 minutes
@@ -37,13 +39,17 @@ export default function useTokenRegistryQuery() {
 
     return filteredEntries.map(({ asset, entry }) => ({
       ...(asset as IAsset),
-      chainId: entry.ibcCounterpartyChainId,
+      chainId:
+        env !== undefined &&
+        entry.denom === env.nativeAsset.symbol.toLowerCase()
+          ? env?.sifChainId
+          : entry.ibcCounterpartyChainId,
       ibcDenom: entry.denom,
       address: assetsQuery.data?.assets
         ?.filter((x) => x.address !== undefined)
         .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address,
     }));
-  }, [assetsQuery.data?.assets, data?.registry?.entries, indexedBySymbol]);
+  }, [assetsQuery.data?.assets, data?.registry?.entries, env, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {

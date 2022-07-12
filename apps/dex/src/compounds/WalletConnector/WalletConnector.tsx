@@ -334,7 +334,7 @@ const EthConnectedAccountItem: RenderConnectedAccount = ({
       account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={data?.amount.toString() ?? ""}
+      nativeAssetBalance={data?.amount?.toString() ?? ""}
     />
   );
 };

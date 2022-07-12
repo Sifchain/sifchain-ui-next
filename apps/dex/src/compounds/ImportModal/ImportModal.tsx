@@ -1,6 +1,10 @@
 import { Decimal } from "@cosmjs/math";
 import { isEvmBridgedCoin, runCatching } from "@sifchain/common";
-import { useAccounts } from "@sifchain/cosmos-connect";
+import {
+  useAccounts,
+  useAccounts as useCosmAccount,
+  useStargateClient,
+} from "@sifchain/cosmos-connect";
 import {
   ArrowDownIcon,
   Button,
@@ -18,9 +22,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useQuery } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
+import {
+  useAllBalancesQuery,
+  useBalanceQuery,
+} from "~/domains/bank/hooks/balances";
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -43,7 +50,20 @@ const ImportModal = (
     addressOrName: evmAccount?.address ?? "",
     token: token?.symbol === "CETH" ? (undefined as any) : token?.address,
   });
-  const walletBalance = Number(evmWalletBalance?.formatted ?? 0);
+
+  const importTokenWalletBalance = useBalanceQuery(
+    token?.chainId ?? "",
+    props.denom,
+    {
+      enabled: token?.chainId !== undefined,
+    },
+  );
+  const walletBalance = isEvmBridgedCoin(props.denom)
+    ? Decimal.fromAtomics(
+        evmWalletBalance?.value.toString() ?? "0",
+        evmWalletBalance?.decimals ?? 0,
+      )
+    : importTokenWalletBalance.data?.amount;
 
   const { data: env } = useDexEnvironment();
   const { accounts: cosmAccounts } = useAccounts(env?.sifChainId ?? "", {
@@ -84,16 +104,16 @@ const ImportModal = (
       return new Error("Please connect Sifchain wallet");
     }
 
-    // if (
-    //   amountDecimal?.isGreaterThan(
-    //     balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits),
-    //   )
-    // ) {
-    //   return new Error("Insufficient fund");
-    // }
+    if (
+      walletBalance?.isLessThan(
+        amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0),
+      )
+    ) {
+      return new Error("Insufficient fund");
+    }
 
     return;
-  }, [amountDecimal, balance?.amount, cosmAccounts, evmAccount, props.denom]);
+  }, [amountDecimal, cosmAccounts, evmAccount, props.denom, walletBalance]);
 
   const disabled = importTokensMutation.isLoading || error !== undefined;
 
