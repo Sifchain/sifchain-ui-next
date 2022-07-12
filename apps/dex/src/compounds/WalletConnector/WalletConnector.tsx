@@ -25,11 +25,22 @@ import { useCosmosNativeBalance, useEthNativeBalance } from "./hooks";
 
 const WALLET_ICONS = {
   keplr: <KeplrIcon />,
-  keplrWalletconnect: <WalletconnectCircleIcon />,
+  keplrWalletConnect: <WalletconnectCircleIcon />,
   metaMask: <MetamaskIcon />,
   walletConnect: <WalletconnectCircleIcon />,
   coinbaseWallet: <CoinbaseIcon />,
   cosmostation: <CosmostationIcon />,
+};
+
+type WalletKind = keyof typeof WALLET_ICONS;
+
+const WALLET_LABELS: Record<WalletKind, string> = {
+  keplr: "Keplr",
+  keplrWalletConnect: "WallectConnect (Keplr)",
+  metaMask: "MetaMask",
+  walletConnect: "WallectConnect",
+  coinbaseWallet: "Coinbase",
+  cosmostation: "Cosmostation",
 };
 
 const WalletConnector: FC = () => {
@@ -150,11 +161,9 @@ const WalletConnector: FC = () => {
 
     const wallets = connectors.map((x) => ({
       id: x.id,
-      name: x.name,
       type: x.type,
-      icon: WALLET_ICONS[x.id as keyof typeof WALLET_ICONS] ?? (
-        <WalletconnectCircleIcon />
-      ),
+      name: WALLET_LABELS[x.id as WalletKind],
+      icon: WALLET_ICONS[x.id as WalletKind],
       isConnected: x.type === "ibc" ? isCosmosConnected : isEthConnected,
       account: x.type === "ibc" ? "" : evmData?.account ?? "",
     }));
