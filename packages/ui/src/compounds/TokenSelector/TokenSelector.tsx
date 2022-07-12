@@ -113,7 +113,13 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       >
-        <Combobox value={selectedToken} onChange={setSelectedToken}>
+        <Combobox
+          value={selectedToken}
+          onChange={(token) => {
+            setSelectedToken(token);
+            setIsOpen(false);
+          }}
+        >
           <div className="grid gap-4">
             <div className="flex items-center gap-2">
               <Combobox.Input
