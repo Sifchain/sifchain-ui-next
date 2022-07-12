@@ -77,14 +77,20 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const disabled = exportTokensMutation.isLoading || error !== undefined;
 
   const title = useMemo(() => {
-    if (exportTokensMutation.isError) {
-      return "Transaction failed";
+    switch (exportTokensMutation.status) {
+      case "loading":
+        return "Waiting for confirmation";
+      case "success":
+        return "Transaction submitted";
+      case "error":
+        return "Transaction failed";
+      case "idle":
+      default:
+        return `Export ${indexedByIBCDenom[
+          props.denom
+        ]?.displaySymbol.toUpperCase()} from Sifchain`;
     }
-
-    return `Export ${indexedByIBCDenom[
-      props.denom
-    ]?.displaySymbol.toUpperCase()} from Sifchain`;
-  }, [exportTokensMutation.isError, indexedByIBCDenom, props.denom]);
+  }, [exportTokensMutation.status, indexedByIBCDenom, props.denom]);
 
   const buttonMessage = useMemo(() => {
     if (error !== undefined) {
