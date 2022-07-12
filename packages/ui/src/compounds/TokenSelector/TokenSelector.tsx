@@ -57,6 +57,12 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     "name",
   );
 
+  useEffect(() => {
+    if (props.value) {
+      setSelectedToken(props.value);
+    }
+  }, [props.value]);
+
   const sanitizedQuery = query.toLowerCase().trim();
 
   const filtered = useMemo(() => {
