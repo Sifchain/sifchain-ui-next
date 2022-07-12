@@ -13,6 +13,7 @@ export * from "./RecyclerView";
 export * from "./SearchInput";
 export * from "./Select";
 export * from "./SortIcon";
+export * from "./TabsWithSuspense";
 export * from "./Toggle";
 export * from "./Tooltip";
 export * from "./transitions";
