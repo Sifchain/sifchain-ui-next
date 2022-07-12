@@ -77,9 +77,9 @@ export default function useTokenRegistryQuery() {
     findBySymbolOrDenom: memoizeWith(identity, (symbolOrDenom: string) => {
       const sanitized = symbolOrDenom.toLowerCase();
       return (
+        indices.indexedByIBCDenom[sanitized] ??
         indices.indexedBySymbol[sanitized] ??
-        indices.indexedByDisplaySymbol[sanitized] ??
-        indices.indexedByIBCDenom[sanitized]
+        indices.indexedByDisplaySymbol[sanitized]
       );
     }),
   };

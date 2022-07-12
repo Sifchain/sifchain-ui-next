@@ -1,4 +1,5 @@
 export type TokenEntry = {
+  id?: string;
   name: string;
   symbol: string;
   displaySymbol: string;

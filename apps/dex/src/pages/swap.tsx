@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Transition } from "@headlessui/react";
-import { IAsset, runCatching } from "@sifchain/common";
+import { runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
   Button,
@@ -10,20 +10,20 @@ import {
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
-  TokenEntry,
-  TokenSelector,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import {
   PropsWithChildren,
   startTransition,
+  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useQuery } from "react-query";
 import AssetIcon from "~/compounds/AssetIcon";
+import TokenSelector from "~/compounds/TokenSelector";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -152,38 +152,24 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-const toTokenEntry = <T extends IAsset>(x: T) => ({
-  name: x.name,
-  symbol: x.symbol,
-  displaySymbol: x.displaySymbol,
-  decimals: x.decimals,
-  network: x.network,
-  imageUrl: x.imageUrl ?? "",
-  balance: "",
-  hasDarkIcon: Boolean(x.hasDarkIcon),
-});
-
-function useEnhancedToken(symbolOrDenom: string) {
-  const sanitized = symbolOrDenom.toLowerCase();
+function useEnhancedToken(denom: string) {
   const registryQuery = useTokenRegistryQuery();
   const allBalancesQuery = useAllBalancesQuery();
 
-  const registryEntry = registryQuery.findBySymbolOrDenom(sanitized);
-  const balanceEntry = allBalancesQuery.findBySymbolOrDenom(
-    registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
-  );
+  const registryEntry = registryQuery.indexedByIBCDenom[denom];
+  const balanceEntry = allBalancesQuery.indexedByDenom[denom];
 
   const poolQuery = useSifnodeQuery("clp.getPool", [
     {
-      symbol: registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
+      symbol: denom,
     },
   ]);
 
   const derivedQuery = useQuery(
-    ["enhanced-token", symbolOrDenom],
+    ["enhanced-token", denom],
     () => {
       if (!registryEntry) {
-        console.log(`Token registry entry not found for ${symbolOrDenom}`);
+        console.log(`Token registry entry not found for ${denom}`);
         return;
       }
 
@@ -195,10 +181,10 @@ function useEnhancedToken(symbolOrDenom: string) {
     },
     {
       enabled:
-        Boolean(symbolOrDenom) &&
+        Boolean(denom) &&
         registryQuery.isSuccess &&
         allBalancesQuery.isSuccess &&
-        (sanitized === "rowan" || poolQuery.isSuccess),
+        (denom === "rowan" || poolQuery.isSuccess),
     },
   );
 
@@ -217,32 +203,12 @@ function useEnhancedToken(symbolOrDenom: string) {
   };
 }
 
-function useTokenPair(
-  fromTokenSymbolOrDenom: string,
-  toTokenSymbolOrDenom: string,
-) {
-  const [isFlipped, setFlipped] = useState(false);
-
-  const flip = () => setFlipped(!isFlipped);
-
-  const fromTokenQuery = useEnhancedToken(fromTokenSymbolOrDenom);
-  const toTokenQuery = useEnhancedToken(toTokenSymbolOrDenom);
-
-  return {
-    fromTokenQuery,
-    toTokenQuery,
-    isFlipped,
-    flip,
-  };
-}
-
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalancesQuery();
   const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
     useSifStargateClient();
   const { signer, status: signerStatus } = useSifSigner();
-  const { data: registry } = useTokenRegistryQuery();
 
   const isReady = useMemo(
     () =>
@@ -252,12 +218,11 @@ const SwapPage = () => {
     [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const {
-    fromTokenQuery: { data: fromToken },
-    toTokenQuery: { data: toToken },
-    isFlipped,
-    flip,
-  } = useTokenPair("rowan", "atom");
+  const [fromDenom, setFromDenom] = useState("rowan");
+  const [toDenom, setToDenom] = useState("cusdt");
+
+  const { data: fromToken } = useEnhancedToken(fromDenom);
+  const { data: toToken } = useEnhancedToken(toDenom);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -281,47 +246,39 @@ const SwapPage = () => {
     commonOptions,
   );
 
-  const tokenOptions: TokenEntry[] = registry.map(toTokenEntry);
-
   const fromAmountDecimal = runCatching(() =>
     Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
   )[1];
 
-  const swapSimulationResult = useMemo(
-    () =>
-      runCatching(() =>
-        stargateClient?.simulateSwapSync(
-          {
-            denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
-            amount: fromAmountDecimal?.atomics ?? "0",
-            poolNativeAssetBalance:
-              fromToken?.pool?.externalAssetBalance ?? "0",
-            poolExternalAssetBalance:
-              fromToken?.pool?.externalAssetBalance ?? "0",
-          },
-          {
-            denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
-            poolNativeAssetBalance: toToken?.pool?.externalAssetBalance ?? "0",
-            poolExternalAssetBalance:
-              toToken?.pool?.externalAssetBalance ?? "0",
-          },
-          pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
-          slippage,
-        ),
-      )[1],
-    [
-      stargateClient,
-      fromToken?.ibcDenom,
-      fromToken?.symbol,
-      fromToken?.pool?.externalAssetBalance,
-      fromAmountDecimal?.atomics,
-      toToken?.ibcDenom,
-      toToken?.symbol,
-      toToken?.pool?.externalAssetBalance,
-      pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
-      slippage,
-    ],
-  );
+  const swapSimulationResult = useMemo(() => {
+    const fromPool = fromToken?.pool ?? toToken?.pool;
+    const toPool = toToken?.pool ?? fromToken?.pool;
+
+    return runCatching(() =>
+      stargateClient?.simulateSwapSync(
+        {
+          denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
+          amount: fromAmountDecimal?.atomics ?? "0",
+          poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
+        },
+        {
+          denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
+          poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
+        },
+        pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
+        slippage,
+      ),
+    )[1];
+  }, [
+    fromToken,
+    toToken,
+    stargateClient,
+    fromAmountDecimal?.atomics,
+    pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
+    slippage,
+  ]);
 
   const parsedSwapResult = useMemo(
     () => ({
@@ -364,6 +321,18 @@ const SwapPage = () => {
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
     [isConfirmationModalOpen],
   );
+
+  const [isFlipped, setFlipped] = useState(false);
+  const flip = useCallback(() => {
+    setFromDenom(toDenom);
+    setToDenom(fromDenom);
+    setFromAmount((x) =>
+      parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
+        ? x
+        : parsedSwapResult.minimumReceiving.toString(),
+    );
+    setFlipped(!isFlipped);
+  }, [fromDenom, isFlipped, parsedSwapResult.minimumReceiving, toDenom]);
 
   const swapButtonMsg = (() => {
     if (signerStatus === "resolved" && signer === undefined) {
@@ -408,11 +377,10 @@ const SwapPage = () => {
                   <TokenSelector
                     label=""
                     modalTitle="From"
-                    tokens={tokenOptions}
-                    value={fromToken ? toTokenEntry(fromToken) : undefined}
-                    onChange={() => {
-                      //
-                    }}
+                    value={fromDenom}
+                    onChange={(token) =>
+                      setFromDenom((x) => token?.ibcDenom ?? x)
+                    }
                   />
                   <Input
                     className="text-right md:flex-1"
@@ -459,11 +427,10 @@ const SwapPage = () => {
                   <TokenSelector
                     label="Token"
                     modalTitle="From"
-                    tokens={tokenOptions}
-                    value={toToken ? toTokenEntry(toToken) : undefined}
-                    onChange={() => {
-                      //
-                    }}
+                    value={toDenom}
+                    onChange={(token) =>
+                      setToDenom((x) => token?.ibcDenom ?? x)
+                    }
                   />
                   <Input
                     className="text-right md:flex-1"
