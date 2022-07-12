@@ -260,41 +260,39 @@ const SwapPage = () => {
     Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
   )[1];
 
-  const swapSimulationResult = useMemo(
-    () =>
-      runCatching(() =>
-        stargateClient?.simulateSwapSync(
-          {
-            denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
-            amount: fromAmountDecimal?.atomics ?? "0",
-            poolNativeAssetBalance:
-              fromToken?.pool?.externalAssetBalance ?? "0",
-            poolExternalAssetBalance:
-              fromToken?.pool?.externalAssetBalance ?? "0",
-          },
-          {
-            denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
-            poolNativeAssetBalance: toToken?.pool?.externalAssetBalance ?? "0",
-            poolExternalAssetBalance:
-              toToken?.pool?.externalAssetBalance ?? "0",
-          },
-          pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
-          slippage,
-        ),
-      )[1],
-    [
-      stargateClient,
-      fromToken?.ibcDenom,
-      fromToken?.symbol,
-      fromToken?.pool?.externalAssetBalance,
-      fromAmountDecimal?.atomics,
-      toToken?.ibcDenom,
-      toToken?.symbol,
-      toToken?.pool?.externalAssetBalance,
-      pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
-      slippage,
-    ],
-  );
+  const swapSimulationResult = useMemo(() => {
+    const fromPool = fromToken?.pool ?? toToken?.pool;
+    const toPool = toToken?.pool ?? fromToken?.pool;
+
+    return runCatching(() =>
+      stargateClient?.simulateSwapSync(
+        {
+          denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
+          amount: fromAmountDecimal?.atomics ?? "0",
+          poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
+        },
+        {
+          denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
+          poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
+          poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
+        },
+        pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
+        slippage,
+      ),
+    )[1];
+  }, [
+    fromToken?.pool,
+    fromToken?.ibcDenom,
+    fromToken?.symbol,
+    toToken?.pool,
+    toToken?.ibcDenom,
+    toToken?.symbol,
+    stargateClient,
+    fromAmountDecimal?.atomics,
+    pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
+    slippage,
+  ]);
 
   const parsedSwapResult = useMemo(
     () => ({
