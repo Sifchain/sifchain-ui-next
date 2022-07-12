@@ -1,12 +1,11 @@
+import { Decimal } from "@cosmjs/math";
 import type { NetworkKind } from "@sifchain/common";
 import { useSigningStargateClient } from "@sifchain/cosmos-connect";
 import { formatNumberAsCurrency } from "@sifchain/ui";
-import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 import { useQuery } from "react-query";
 import { useBalance } from "wagmi";
 import { usePoolStatsQuery } from "~/domains/clp";
-
 import { useDexEnvironment } from "~/domains/core/envs";
 
 type NativeBalanceResult = {
@@ -62,16 +61,17 @@ export function useCosmosNativeBalance(chainId: string, address: string) {
       asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0,
     );
 
-    const normalizedBalance = new BigNumber(result.amount).shiftedBy(
-      -asset.decimals,
+    const normalizedBalance = Decimal.fromAtomics(
+      result.amount,
+      asset.decimals,
     );
 
-    const dollarValue = normalizedBalance.multipliedBy(tokenPrice);
+    const dollarValue = normalizedBalance.toFloatApproximation() * tokenPrice;
 
     return {
-      amount: normalizedBalance.toFixed(4),
+      amount: normalizedBalance,
       denom: result.denom,
-      dollarValue: formatNumberAsCurrency(dollarValue.toNumber()),
+      dollarValue: formatNumberAsCurrency(dollarValue),
     };
   }, [address, chainId, client, dexEnv, tokenStats]);
 
