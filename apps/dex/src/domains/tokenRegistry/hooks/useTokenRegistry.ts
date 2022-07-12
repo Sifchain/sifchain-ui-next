@@ -38,12 +38,12 @@ export default function useTokenRegistryQuery() {
     return filteredEntries.map(({ asset, entry }) => ({
       ...(asset as IAsset),
       chainId: entry.ibcCounterpartyChainId,
-      ibcDenom: asset?.ibcDenom ?? entry.denom,
-      address:
-        indexedBySymbol[(asset?.ibcDenom ?? entry.denom).replace(/^c/, "")]
-          ?.address ?? "",
+      ibcDenom: entry.denom,
+      address: assetsQuery.data?.assets
+        ?.filter((x) => x.address !== undefined)
+        .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address,
     }));
-  }, [data?.registry?.entries, indexedBySymbol]);
+  }, [assetsQuery.data?.assets, data?.registry?.entries, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {

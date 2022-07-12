@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { runCatching } from "@sifchain/common";
+import { isEvmBridgedCoin, runCatching } from "@sifchain/common";
 import { useAccounts } from "@sifchain/cosmos-connect";
 import {
   ArrowDownIcon,
@@ -10,7 +10,14 @@ import {
   RacetrackSpinnerIcon,
   Select,
 } from "@sifchain/ui";
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { isNil } from "rambda";
+import {
+  ChangeEventHandler,
+  FormEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -68,27 +75,104 @@ const ImportModal = (
     [amount, balance?.amount.fractionalDigits],
   );
 
+  const error = useMemo(() => {
+    if (isEvmBridgedCoin(props.denom) && isNil(evmAccount)) {
+      return new Error("Please connect Ethereum wallet");
+    }
+
+    if (!isEvmBridgedCoin(props.denom) && isNil(cosmAccounts)) {
+      return new Error("Please connect Sifchain wallet");
+    }
+
+    // if (
+    //   amountDecimal?.isGreaterThan(
+    //     balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits),
+    //   )
+    // ) {
+    //   return new Error("Insufficient fund");
+    // }
+
+    return;
+  }, [amountDecimal, balance?.amount, cosmAccounts, evmAccount, props.denom]);
+
+  const disabled = importTokensMutation.isLoading || error !== undefined;
+
+  const title = useMemo(() => {
+    switch (importTokensMutation.status) {
+      case "loading":
+        return "Waiting for confirmation";
+      case "success":
+        return "Transaction submitted";
+      case "error":
+        return "Transaction failed";
+      case "idle":
+      default:
+        return `Import ${indexedByIBCDenom[
+          props.denom
+        ]?.displaySymbol.toUpperCase()} from Sifchain`;
+    }
+  }, [importTokensMutation.status, indexedByIBCDenom, props.denom]);
+
+  const buttonMessage = useMemo(() => {
+    if (error !== undefined) {
+      return error.message;
+    }
+
+    if (importTokensMutation.isError || importTokensMutation.isSuccess) {
+      return "Close";
+    }
+
+    return [
+      importTokensMutation.isLoading ? (
+        <RacetrackSpinnerIcon />
+      ) : (
+        <ArrowDownIcon />
+      ),
+      "Import",
+    ];
+  }, [
+    error,
+    importTokensMutation.isError,
+    importTokensMutation.isLoading,
+    importTokensMutation.isSuccess,
+  ]);
+
+  const onSubmit = useCallback(
+    (e: FormEvent<HTMLElement>) => {
+      e.preventDefault();
+
+      if (importTokensMutation.isError || importTokensMutation.isSuccess) {
+        props.onClose(false);
+        return;
+      }
+
+      importTokensMutation.mutate({
+        chainId: token?.chainId ?? "",
+        tokenAddress: token?.address ?? "",
+        recipientAddress: recipientAddress ?? "",
+        amount: {
+          denom: props.denom,
+          amount: amountDecimal?.atomics ?? "0",
+        },
+      });
+    },
+    [
+      amountDecimal?.atomics,
+      importTokensMutation,
+      props,
+      recipientAddress,
+      token?.address,
+      token?.chainId,
+    ],
+  );
+
   return (
     <Modal
       {...props}
-      title={`Import ${indexedByIBCDenom[
-        props.denom
-      ]?.displaySymbol.toUpperCase()} from Sifchain`}
+      onTransitionEnd={() => importTokensMutation.reset()}
+      title={title}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          importTokensMutation.mutate({
-            chainId: token?.chainId ?? "",
-            tokenAddress: token?.address ?? "",
-            recipientAddress: recipientAddress ?? "",
-            amount: {
-              denom: props.denom,
-              amount: amountDecimal?.atomics ?? "0",
-            },
-          });
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Select
             className="z-10"
@@ -150,16 +234,8 @@ const ImportModal = (
             </dd>
           </div>
         </dl>
-        <Button
-          className="w-full mt-6"
-          disabled={importTokensMutation.isLoading}
-        >
-          {importTokensMutation.isLoading ? (
-            <RacetrackSpinnerIcon />
-          ) : (
-            <ArrowDownIcon />
-          )}{" "}
-          Import
+        <Button className="w-full mt-6" disabled={disabled}>
+          {buttonMessage}
         </Button>
       </form>
     </Modal>
