@@ -63,11 +63,6 @@ const WalletConnector: FC = () => {
     );
   }, [data?.chainConfigsByNetwork]);
 
-  const chainsByChainId = useMemo(
-    () => indexBy(prop("chainId"), chains),
-    [chains],
-  );
-
   const {
     connectors: cosmosConnectors,
     connect: connectCosmos,
