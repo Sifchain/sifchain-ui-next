@@ -177,12 +177,6 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
           <div>
-            <dt>Export fee</dt>
-            <dd>
-              0.99 <AssetIcon network="sifchain" symbol="rowan" size="sm" />
-            </dd>
-          </div>
-          <div>
             <dt>New Sifchain Balance</dt>
             <dd>
               {(amountDecimal !== undefined &&
