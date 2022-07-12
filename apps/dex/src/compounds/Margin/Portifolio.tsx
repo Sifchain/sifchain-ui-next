@@ -26,6 +26,7 @@ const Portifolio: NextPage = () => {
     (router.query["option"] as string) || DEFAULT_OPTION_ITEM;
   const currentTab = OPTIONS_ITEMS.find((item) => item.slug === activeOption);
   const TabContent = currentTab?.content || null;
+
   return (
     <section className="mt-4 rounded bg-gray-800">
       <ul className="flex flex-row">
@@ -48,7 +49,11 @@ const Portifolio: NextPage = () => {
         })}
       </ul>
       {TabContent && (
-        <Suspense fallback="Loading...">
+        <Suspense
+          fallback={
+            <div className="bg-gray-850 p-10 text-center">Loading...</div>
+          }
+        >
           <TabContent />
         </Suspense>
       )}
