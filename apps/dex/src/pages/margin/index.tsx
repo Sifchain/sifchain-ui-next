@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
 
-import Link from "next/link";
+import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { TabsWithSuspense } from "@sifchain/ui";
+import Link from "next/link";
 
 import PageLayout from "~/layouts/PageLayout";
 
-const TAB_ITEMS = [
+const DEFAULT_TAB_ITEM = "portifolio";
+const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
   {
     title: "Portifolio",
     slug: "portifolio",
@@ -22,7 +23,7 @@ const TAB_ITEMS = [
 
 const Margin: NextPage = () => {
   const router = useRouter();
-  const activeTab = (router.query["tab"] as string) || "portifolio";
+  const activeTab = (router.query["tab"] as string) || DEFAULT_TAB_ITEM;
   return (
     <PageLayout heading="Margin">
       <TabsWithSuspense
