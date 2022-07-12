@@ -114,7 +114,7 @@ const WalletConnector: FC = () => {
       );
 
       const cosmosAccounts = Object.fromEntries(
-        entries.filter(([_, xs]) => xs),
+        entries.filter(([, xs]) => xs.length),
       );
 
       setAccounts((accounts) => ({
@@ -139,7 +139,9 @@ const WalletConnector: FC = () => {
           }),
       );
 
-      const ethAccounts = Object.fromEntries(entries.filter(([_, xs]) => xs));
+      const ethAccounts = Object.fromEntries(
+        entries.filter(([, xs]) => xs.length),
+      );
 
       setAccounts((accounts) => ({
         ...accounts,
