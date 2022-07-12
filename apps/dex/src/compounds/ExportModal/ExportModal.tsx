@@ -147,10 +147,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
     <Modal
       {...props}
       title={title}
-      onClose={(isOpen) => {
-        props.onClose(isOpen);
-        exportTokensMutation.reset();
-      }}
+      onTransitionEnd={() => exportTokensMutation.reset()}
     >
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
