@@ -13,12 +13,12 @@ const TAB_ITEMS = [
   {
     title: "Portifolio",
     tab: "portifolio",
-    Component: dynamic(() => import("./Portifolio")),
+    Component: dynamic(() => import("~/components/Portifolio")),
   },
   {
     title: "Trade",
     tab: "trade",
-    Component: dynamic(() => import("./Trade")),
+    Component: dynamic(() => import("~/components/Trade")),
   },
 ];
 
