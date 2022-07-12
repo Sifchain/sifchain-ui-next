@@ -76,7 +76,7 @@ export function useAllBalancesQuery() {
 
       return (
         balances?.map((x) => {
-          const token = indexedByIBCDenom[x.denom.toLowerCase()];
+          const token = indexedByIBCDenom[x.denom];
           return {
             ...x,
             amount:
