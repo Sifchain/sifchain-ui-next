@@ -9,6 +9,7 @@ import {
   ChevronDownIcon,
   Modal,
   PencilIcon,
+  RacetrackSpinnerIcon,
   SearchInput,
   SortIcon,
 } from "../../components";
@@ -23,13 +24,17 @@ const ListContainer = tw.ul`
 const AssetIcon: FC<{ imageUrl: string; hasDarkIcon?: boolean }> = (props) => (
   <figure
     className={clsx(
-      "h-7 w-7 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
+      "h-6 w-6 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
       },
     )}
   >
-    <AsyncImage src={props.imageUrl} />
+    {props.imageUrl ? (
+      <AsyncImage src={props.imageUrl} />
+    ) : (
+      <RacetrackSpinnerIcon className="h-6 w-6" />
+    )}
   </figure>
 );
 
@@ -94,7 +99,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
             setIsOpen(true);
           }}
         >
-          {selectedToken && (
+          {selectedToken ? (
             <>
               <AssetIcon
                 imageUrl={selectedToken.imageUrl ?? ""}
@@ -103,6 +108,11 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
               <span className="uppercase text-white">
                 {selectedToken.displaySymbol}
               </span>
+            </>
+          ) : (
+            <>
+              <AssetIcon imageUrl="" />
+              <span className="uppercase text-white">...</span>
             </>
           )}
           <ChevronDownIcon className="h-4 w-4 text-gray-400" />
