@@ -244,7 +244,7 @@ const ImportModal = (
             <dt>New Sifchain Balance</dt>
             <dd>
               {balance?.amount
-                .plus(
+                ?.plus(
                   amountDecimal ??
                     Decimal.zero(balance.amount.fractionalDigits),
                 )
