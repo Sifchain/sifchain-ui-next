@@ -234,7 +234,21 @@ const ImportModal = (
             </dd>
           </div>
         </dl>
-        <Button className="w-full mt-6" disabled={disabled}>
+        {isEvmBridgedCoin(props.denom) && (
+          <div className="flex items-center gap-4 p-4 bg-gray-750 rounded-lg">
+            <p className="text-lg">ℹ️</p>
+            <p className="text-gray-200 text-xs">
+              Your funds will be available for use on Sifchain after about 10
+              minutes. However in some cases, this action can take up to 60
+              minutes.
+              <br />
+              <br />
+              Up to 2 transactions might be needed, please do not close the
+              modal or leave the page while transactions are still inprogress
+            </p>
+          </div>
+        )}
+        <Button className="w-full mt-6 " disabled={disabled}>
           {buttonMessage}
         </Button>
       </form>
