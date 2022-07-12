@@ -85,6 +85,8 @@ const WalletConnector: FC = () => {
   const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
   const syncCosmosAccounts = useCallback(async () => {
+    const ethActiveConnector = evmConnectors.find((x) => x.ready);
+
     if (cosmosActiveConnector) {
       const entries = await Promise.all(
         chains
@@ -110,7 +112,31 @@ const WalletConnector: FC = () => {
         ...cosmosAccounts,
       }));
     }
-  }, [chains, cosmosActiveConnector]);
+
+    if (ethActiveConnector) {
+      const entries = await Promise.all(
+        chains
+          .filter((chain) => chain.type === "eth")
+          .flatMap(async (chain) => {
+            try {
+              const signer = await ethActiveConnector.getSigner();
+              const account = await signer.getAddress();
+
+              return [chain.id, [account]] as const;
+            } catch (error) {
+              return [chain.id, []] as const;
+            }
+          }),
+      );
+
+      const ethAccounts = Object.fromEntries(entries.filter(([_, xs]) => xs));
+
+      setAccounts((accounts) => ({
+        ...accounts,
+        ...ethAccounts,
+      }));
+    }
+  }, [chains, cosmosActiveConnector, evmConnectors]);
 
   useEffect(() => {
     syncCosmosAccounts();
@@ -249,9 +275,9 @@ const WalletConnector: FC = () => {
 
 const ConnectedAccountItem: RenderConnectedAccount = (props) => {
   const RenderComponent =
-    props.chainType === "ibc"
-      ? IbcConnectedAccountItem
-      : EthConnectedAccountItem;
+    props.chainType === "eth"
+      ? EthConnectedAccountItem
+      : IbcConnectedAccountItem;
 
   return <RenderComponent {...props} />;
 };

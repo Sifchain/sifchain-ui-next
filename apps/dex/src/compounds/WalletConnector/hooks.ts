@@ -75,7 +75,7 @@ export function useCosmosNativeBalance(chainId: string, address: string) {
     };
   }, [address, chainId, client, dexEnv, tokenStats]);
 
-  return useQuery(["native-balance", chainId, address], query, {
+  return useQuery(["ibc-native-balance", chainId, address], query, {
     enabled: Boolean(dexEnv && client && tokenStats),
     staleTime: 3600_000,
     refetchOnMount: false,
@@ -145,7 +145,7 @@ export function useEthNativeBalance(chainId: string | number, address: string) {
     tokenStats?.rowanUSD,
   ]);
 
-  return useQuery(["native-balance", chainId, address], query, {
+  return useQuery(["eth-native-balance", chainId, address], query, {
     enabled: Boolean(balanceQuery.isSuccess),
     staleTime: 3600_000,
     refetchOnMount: false,
