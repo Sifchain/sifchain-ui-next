@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Transition } from "@headlessui/react";
-import { IAsset, runCatching } from "@sifchain/common";
+import { runCatching } from "@sifchain/common";
 import {
   ArrowDownIcon,
   Button,
@@ -10,20 +10,20 @@ import {
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
-  TokenEntry,
-  TokenSelector,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import {
   PropsWithChildren,
   startTransition,
+  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useQuery } from "react-query";
 import AssetIcon from "~/compounds/AssetIcon";
+import TokenSelector from "~/compounds/TokenSelector";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -152,17 +152,6 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-const toTokenEntry = <T extends IAsset>(x: T) => ({
-  name: x.name,
-  symbol: x.symbol,
-  displaySymbol: x.displaySymbol,
-  decimals: x.decimals,
-  network: x.network,
-  imageUrl: x.imageUrl ?? "",
-  balance: "",
-  hasDarkIcon: Boolean(x.hasDarkIcon),
-});
-
 function useEnhancedToken(symbolOrDenom: string) {
   const sanitized = symbolOrDenom.toLowerCase();
   const registryQuery = useTokenRegistryQuery();
@@ -217,32 +206,12 @@ function useEnhancedToken(symbolOrDenom: string) {
   };
 }
 
-function useTokenPair(
-  fromTokenSymbolOrDenom: string,
-  toTokenSymbolOrDenom: string,
-) {
-  const [isFlipped, setFlipped] = useState(false);
-
-  const flip = () => setFlipped(!isFlipped);
-
-  const fromTokenQuery = useEnhancedToken(fromTokenSymbolOrDenom);
-  const toTokenQuery = useEnhancedToken(toTokenSymbolOrDenom);
-
-  return {
-    fromTokenQuery,
-    toTokenQuery,
-    isFlipped,
-    flip,
-  };
-}
-
 const SwapPage = () => {
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalancesQuery();
   const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
     useSifStargateClient();
   const { signer, status: signerStatus } = useSifSigner();
-  const { data: registry } = useTokenRegistryQuery();
 
   const isReady = useMemo(
     () =>
@@ -252,12 +221,18 @@ const SwapPage = () => {
     [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const {
-    fromTokenQuery: { data: fromToken },
-    toTokenQuery: { data: toToken },
-    isFlipped,
-    flip,
-  } = useTokenPair("rowan", "atom");
+  const [fromDenom, setFromDenom] = useState("rowan");
+  const [toDenom, setToDenom] = useState("cusdt");
+
+  const { data: fromToken } = useEnhancedToken(fromDenom);
+  const { data: toToken } = useEnhancedToken(toDenom);
+
+  const [isFlipped, setFlipped] = useState(false);
+  const flip = useCallback(() => {
+    setFromDenom(toDenom);
+    setToDenom(fromDenom);
+    setFlipped(!isFlipped);
+  }, [fromDenom, isFlipped, toDenom]);
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -280,8 +255,6 @@ const SwapPage = () => {
     [{}],
     commonOptions,
   );
-
-  const tokenOptions: TokenEntry[] = registry.map(toTokenEntry);
 
   const fromAmountDecimal = runCatching(() =>
     Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
@@ -408,11 +381,10 @@ const SwapPage = () => {
                   <TokenSelector
                     label=""
                     modalTitle="From"
-                    tokens={tokenOptions}
-                    value={fromToken ? toTokenEntry(fromToken) : undefined}
-                    onChange={() => {
-                      //
-                    }}
+                    value={fromToken?.ibcDenom}
+                    onChange={(token) =>
+                      setFromDenom((x) => token?.ibcDenom ?? x)
+                    }
                   />
                   <Input
                     className="text-right md:flex-1"
@@ -459,11 +431,10 @@ const SwapPage = () => {
                   <TokenSelector
                     label="Token"
                     modalTitle="From"
-                    tokens={tokenOptions}
-                    value={toToken ? toTokenEntry(toToken) : undefined}
-                    onChange={() => {
-                      //
-                    }}
+                    value={toToken?.ibcDenom}
+                    onChange={(token) =>
+                      setToDenom((x) => token?.ibcDenom ?? x)
+                    }
                   />
                   <Input
                     className="text-right md:flex-1"
