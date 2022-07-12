@@ -7,6 +7,7 @@ import {
   PoolsIcon,
   RowanIcon,
   SwapIcon,
+  PlusIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -25,6 +26,11 @@ export const MENU_ITEMS = [
     title: "Balance",
     href: "/balances",
     icon: <BalanceIcon />,
+  },
+  {
+    title: "Margin",
+    href: "/margin",
+    icon: <PlusIcon />,
   },
   {
     title: "Pools",
