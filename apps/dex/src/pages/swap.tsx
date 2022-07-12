@@ -152,27 +152,24 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-function useEnhancedToken(symbolOrDenom: string) {
-  const sanitized = symbolOrDenom.toLowerCase();
+function useEnhancedToken(denom: string) {
   const registryQuery = useTokenRegistryQuery();
   const allBalancesQuery = useAllBalancesQuery();
 
-  const registryEntry = registryQuery.findBySymbolOrDenom(sanitized);
-  const balanceEntry = allBalancesQuery.findBySymbolOrDenom(
-    registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
-  );
+  const registryEntry = registryQuery.indexedByIBCDenom[denom];
+  const balanceEntry = allBalancesQuery.indexedByDenom[denom];
 
   const poolQuery = useSifnodeQuery("clp.getPool", [
     {
-      symbol: registryEntry?.ibcDenom ?? registryEntry?.symbol ?? sanitized,
+      symbol: denom,
     },
   ]);
 
   const derivedQuery = useQuery(
-    ["enhanced-token", symbolOrDenom],
+    ["enhanced-token", denom],
     () => {
       if (!registryEntry) {
-        console.log(`Token registry entry not found for ${symbolOrDenom}`);
+        console.log(`Token registry entry not found for ${denom}`);
         return;
       }
 
@@ -184,10 +181,10 @@ function useEnhancedToken(symbolOrDenom: string) {
     },
     {
       enabled:
-        Boolean(symbolOrDenom) &&
+        Boolean(denom) &&
         registryQuery.isSuccess &&
         allBalancesQuery.isSuccess &&
-        (sanitized === "rowan" || poolQuery.isSuccess),
+        (denom === "rowan" || poolQuery.isSuccess),
     },
   );
 
@@ -275,12 +272,8 @@ const SwapPage = () => {
       ),
     )[1];
   }, [
-    fromToken?.pool,
-    fromToken?.ibcDenom,
-    fromToken?.symbol,
-    toToken?.pool,
-    toToken?.ibcDenom,
-    toToken?.symbol,
+    fromToken,
+    toToken,
     stargateClient,
     fromAmountDecimal?.atomics,
     pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
