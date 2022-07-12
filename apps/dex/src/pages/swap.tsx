@@ -13,6 +13,7 @@ import {
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import {
   PropsWithChildren,
   startTransition,
@@ -209,7 +210,16 @@ function useEnhancedToken(
   };
 }
 
+const getFirstQueryValue = (query: string | string[] | undefined) =>
+  query === undefined
+    ? undefined
+    : typeof query === "string"
+    ? query
+    : query[0];
+
 const SwapPage = () => {
+  const router = useRouter();
+
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalancesQuery();
   const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
@@ -224,8 +234,22 @@ const SwapPage = () => {
     [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const [fromDenom, setFromDenom] = useState("rowan");
-  const [toDenom, setToDenom] = useState("cusdt");
+  const fromDenom = decodeURIComponent(
+    getFirstQueryValue(router.query["fromDenom"]) ?? "rowan",
+  );
+  const toDenom = decodeURIComponent(
+    getFirstQueryValue(router.query["toDenom"]) ?? "cusdt",
+  );
+
+  const setDenomsPair = useCallback(
+    (leftDenom: string | undefined, rightDenom: string | undefined) =>
+      router.replace(
+        `swap?fromDenom=${encodeURIComponent(
+          leftDenom ?? fromDenom,
+        )}&toDenom=${encodeURIComponent(rightDenom ?? toDenom)}`,
+      ),
+    [fromDenom, router, toDenom],
+  );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -330,15 +354,20 @@ const SwapPage = () => {
 
   const [isFlipped, setFlipped] = useState(false);
   const flip = useCallback(() => {
-    setFromDenom(toDenom);
-    setToDenom(fromDenom);
+    setDenomsPair(toDenom, fromDenom);
     setFromAmount((x) =>
       parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
         ? x
         : parsedSwapResult.minimumReceiving.toString(),
     );
     setFlipped(!isFlipped);
-  }, [fromDenom, isFlipped, parsedSwapResult.minimumReceiving, toDenom]);
+  }, [
+    fromDenom,
+    isFlipped,
+    parsedSwapResult.minimumReceiving,
+    setDenomsPair,
+    toDenom,
+  ]);
 
   const swapButtonMsg = (() => {
     if (signerStatus === "resolved" && signer === undefined) {
@@ -385,7 +414,7 @@ const SwapPage = () => {
                     modalTitle="From"
                     value={fromDenom}
                     onChange={(token) =>
-                      setFromDenom((x) => token?.ibcDenom ?? x)
+                      token && setDenomsPair(token.ibcDenom, undefined)
                     }
                   />
                   <Input
@@ -435,7 +464,7 @@ const SwapPage = () => {
                     modalTitle="From"
                     value={toDenom}
                     onChange={(token) =>
-                      setToDenom((x) => token?.ibcDenom ?? x)
+                      token && setDenomsPair(undefined, token.ibcDenom)
                     }
                   />
                   <Input
