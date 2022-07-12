@@ -14,7 +14,7 @@ const HISTORY_HEADER_ITEMS = [
 const Trade: NextPage = () => {
   return (
     <div className="overflow-x">
-      <table className="table-auto overflow-scroll w-full text-left text-sm">
+      <table className="table-auto overflow-scroll w-full text-left text-xs">
         <thead>
           <tr className="text-gray-400">
             {HISTORY_HEADER_ITEMS.map((title) => {

@@ -29,7 +29,7 @@ const Portifolio: NextPage = () => {
 
   return (
     <section className="mt-4 rounded bg-gray-800">
-      <ul className="flex flex-row">
+      <ul className="flex flex-row text-sm">
         {OPTIONS_ITEMS.map(({ title, slug }) => {
           const isTabActive = currentTab?.slug === slug;
           return (
