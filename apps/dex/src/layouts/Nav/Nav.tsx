@@ -46,7 +46,7 @@ export const MENU_ITEMS = [
 
 const Header = () => {
   const router = useRouter();
-  const currentPath = router.asPath;
+  const currentPath = router.pathname;
 
   const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
   const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
@@ -90,9 +90,7 @@ const Header = () => {
                     role="navigation"
                     className={clsx(
                       "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
-                      {
-                        "bg-gray-600": currentPath === href,
-                      },
+                      { "bg-gray-600": currentPath === href },
                     )}
                   >
                     <span className="h-6 w-6 grid place-items-center text-gray-50 md:hidden">
