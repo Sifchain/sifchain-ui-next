@@ -227,13 +227,6 @@ const SwapPage = () => {
   const { data: fromToken } = useEnhancedToken(fromDenom);
   const { data: toToken } = useEnhancedToken(toDenom);
 
-  const [isFlipped, setFlipped] = useState(false);
-  const flip = useCallback(() => {
-    setFromDenom(toDenom);
-    setToDenom(fromDenom);
-    setFlipped(!isFlipped);
-  }, [fromDenom, isFlipped, toDenom]);
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const slippageOptions = [
@@ -336,6 +329,18 @@ const SwapPage = () => {
     [isConfirmationModalOpen],
   );
 
+  const [isFlipped, setFlipped] = useState(false);
+  const flip = useCallback(() => {
+    setFromDenom(toDenom);
+    setToDenom(fromDenom);
+    setFromAmount((x) =>
+      parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
+        ? x
+        : parsedSwapResult.minimumReceiving.toString(),
+    );
+    setFlipped(!isFlipped);
+  }, [fromDenom, isFlipped, parsedSwapResult.minimumReceiving, toDenom]);
+
   const swapButtonMsg = (() => {
     if (signerStatus === "resolved" && signer === undefined) {
       return "Please Connect Sif Wallet";
@@ -379,7 +384,7 @@ const SwapPage = () => {
                   <TokenSelector
                     label=""
                     modalTitle="From"
-                    value={fromToken?.ibcDenom}
+                    value={fromDenom}
                     onChange={(token) =>
                       setFromDenom((x) => token?.ibcDenom ?? x)
                     }
@@ -429,7 +434,7 @@ const SwapPage = () => {
                   <TokenSelector
                     label="Token"
                     modalTitle="From"
-                    value={toToken?.ibcDenom}
+                    value={toDenom}
                     onChange={(token) =>
                       setToDenom((x) => token?.ibcDenom ?? x)
                     }

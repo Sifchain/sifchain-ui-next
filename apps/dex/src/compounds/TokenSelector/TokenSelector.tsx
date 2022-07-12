@@ -14,6 +14,7 @@ export type TokenSelectorProps = Omit<
 > & { value?: string; onChange: (token?: EnhancedRegitryAsset) => unknown };
 
 const toTokenEntry = <T extends IAsset>(x: T) => ({
+  id: x.ibcDenom,
   name: x.name,
   symbol: x.symbol,
   displaySymbol: x.displaySymbol,
@@ -25,24 +26,20 @@ const toTokenEntry = <T extends IAsset>(x: T) => ({
 });
 
 const TokenSelector = (props: TokenSelectorProps) => {
-  const {
-    data: registry,
-    indexedByIBCDenom,
-    indexedBySymbol,
-  } = useTokenRegistryQuery();
+  const { data: registry, indexedByIBCDenom } = useTokenRegistryQuery();
+
+  const token =
+    props.value === undefined ? undefined : indexedByIBCDenom[props.value];
 
   return (
     <BaseTokenSelector
       {...props}
-      value={
-        props.value === undefined
-          ? undefined
-          : indexedByIBCDenom[props.value] ?? indexedBySymbol[props.value]
-      }
+      value={token === undefined ? undefined : toTokenEntry(token)}
       tokens={useMemo(() => registry.map(toTokenEntry), [registry])}
       onChange={useCallback(
-        (token: TokenEntry) => props.onChange(indexedBySymbol[token.symbol]),
-        [indexedBySymbol, props],
+        (token: TokenEntry) =>
+          props.onChange(indexedByIBCDenom[token.id ?? ""]),
+        [indexedByIBCDenom, props],
       )}
     />
   );
