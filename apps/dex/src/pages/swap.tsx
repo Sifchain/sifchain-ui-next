@@ -152,18 +152,25 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-function useEnhancedToken(denom: string) {
+function useEnhancedToken(
+  denom: string,
+  options?: { refetchInterval: number; enabled: boolean },
+) {
   const registryQuery = useTokenRegistryQuery();
   const allBalancesQuery = useAllBalancesQuery();
 
   const registryEntry = registryQuery.indexedByIBCDenom[denom];
   const balanceEntry = allBalancesQuery.indexedByDenom[denom];
 
-  const poolQuery = useSifnodeQuery("clp.getPool", [
-    {
-      symbol: denom,
-    },
-  ]);
+  const poolQuery = useSifnodeQuery(
+    "clp.getPool",
+    [
+      {
+        symbol: denom,
+      },
+    ],
+    options,
+  );
 
   const derivedQuery = useQuery(
     ["enhanced-token", denom],
@@ -221,9 +228,6 @@ const SwapPage = () => {
   const [fromDenom, setFromDenom] = useState("rowan");
   const [toDenom, setToDenom] = useState("cusdt");
 
-  const { data: fromToken } = useEnhancedToken(fromDenom);
-  const { data: toToken } = useEnhancedToken(toDenom);
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const slippageOptions = [
@@ -239,6 +243,9 @@ const SwapPage = () => {
     refetchInterval: 6000,
     enabled: !isConfirmationModalOpen,
   };
+
+  const { data: fromToken } = useEnhancedToken(fromDenom, commonOptions);
+  const { data: toToken } = useEnhancedToken(toDenom, commonOptions);
 
   const pmtpParamsQuery = useSifnodeQuery(
     "clp.getPmtpParams",
