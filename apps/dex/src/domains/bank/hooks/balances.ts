@@ -9,17 +9,13 @@ import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-
 import { useLiquidityProviders } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import {
-  useSifSigningStargateClient,
-  useSifStargateClient,
-} from "~/hooks/useSifStargateClient";
+import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 
 type Balance = {
-  amount: Decimal;
+  amount?: Decimal;
   denom: string;
 };
 
@@ -79,13 +75,16 @@ export function useAllBalancesQuery() {
       );
 
       return (
-        balances?.map((x) => ({
-          ...x,
-          amount: Decimal.fromAtomics(
-            x.amount,
-            indexedByIBCDenom[x.denom.toLowerCase()]?.decimals ?? 0,
-          ),
-        })) ?? []
+        balances?.map((x) => {
+          const token = indexedByIBCDenom[x.denom.toLowerCase()];
+          return {
+            ...x,
+            amount:
+              token === undefined
+                ? undefined
+                : Decimal.fromAtomics(x.amount, token.decimals),
+          };
+        }) ?? []
       );
     },
     {
@@ -162,10 +161,13 @@ export function useBalancesWithPool() {
   const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 
-  const totalRowan = liquidityProviders?.pools.reduce(
-    (prev, curr) => prev.plus(curr.nativeAssetBalance),
-    Decimal.zero(18),
-  );
+  const totalRowan =
+    env === undefined || liquidityProviders === undefined
+      ? undefined
+      : liquidityProviders?.pools.reduce(
+          (prev, curr) => prev.plus(curr.nativeAssetBalance),
+          Decimal.zero(env.nativeAsset.decimals),
+        );
 
   const denomSet = useMemo(
     () =>

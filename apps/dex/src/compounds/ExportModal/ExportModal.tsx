@@ -156,7 +156,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
           <Input
             label="Amount"
             secondaryLabel={`Balance: ${(
-              balance?.amount.toFloatApproximation() ?? 0
+              balance?.amount?.toFloatApproximation() ?? 0
             ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -191,7 +191,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             <dt>New Sifchain Balance</dt>
             <dd>
               {(amountDecimal !== undefined &&
-              balance?.amount.isGreaterThanOrEqual(amountDecimal)
+              balance?.amount?.isGreaterThanOrEqual(amountDecimal)
                 ? balance.amount
                     .minus(
                       amountDecimal ??
