@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { useSigner } from "@sifchain/cosmos-connect";
-import { type StringIndexed, invariant } from "@sifchain/ui";
+import { invariant, type StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
@@ -175,27 +175,37 @@ export function useBalancesStats() {
   const { data: stargateClient } = useSifStargateClient();
   const balances = useBalancesWithPool();
 
+  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const usdcToken = indexedByIBCDenom["cusdc"];
+
   return useQuery(
     ["balances-stats", balances],
     async () => {
       invariant(stargateClient !== undefined, "stargateClient is undefined");
       invariant(balances !== undefined, "balances is undefined");
+      invariant(usdcToken !== undefined, "usdcToken is undefined");
+
+      const zeroUsdc = Decimal.zero(usdcToken.decimals);
 
       const promises = balances.map(async (x) => ({
         available:
           x.denom === "cusdc"
-            ? { rawReceiving: x.amount ?? Decimal.zero(6) }
-            : await stargateClient.simulateSwap(
-                { denom: x.denom, amount: x.amount?.atomics ?? "0" },
-                { denom: "cusdc" },
-              ),
+            ? { rawReceiving: x.amount ?? zeroUsdc }
+            : await stargateClient
+                .simulateSwap(
+                  { denom: x.denom, amount: x.amount?.atomics ?? "0" },
+                  { denom: "cusdc" },
+                )
+                .catch(() => ({ rawReceiving: zeroUsdc })),
         pooled:
           x.denom === "cusdc"
-            ? { rawReceiving: x.amount ?? Decimal.zero(6) }
-            : await stargateClient.simulateSwap(
-                { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
-                { denom: "cusdc" },
-              ),
+            ? { rawReceiving: x.amount ?? zeroUsdc }
+            : await stargateClient
+                .simulateSwap(
+                  { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
+                  { denom: "cusdc" },
+                )
+                .catch(() => ({ rawReceiving: zeroUsdc })),
       }));
 
       const results = await Promise.all(promises);
@@ -211,12 +221,17 @@ export function useBalancesStats() {
           pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
         }),
         {
-          totalInUsdc: Decimal.zero(6),
-          availableInUsdc: Decimal.zero(6),
-          pooledInUsdc: Decimal.zero(6),
+          totalInUsdc: zeroUsdc,
+          availableInUsdc: zeroUsdc,
+          pooledInUsdc: zeroUsdc,
         },
       );
     },
-    { enabled: stargateClient !== undefined && balances !== undefined },
+    {
+      enabled:
+        stargateClient !== undefined &&
+        balances !== undefined &&
+        usdcToken !== undefined,
+    },
   );
 }
