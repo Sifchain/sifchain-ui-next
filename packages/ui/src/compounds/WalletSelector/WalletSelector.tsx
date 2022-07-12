@@ -49,7 +49,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
-  const [step, setStep] = useState<WalletSelectorStep>("choose-network");
+  const [step, setStep] = useState<WalletSelectorStep>("choose-wallet");
 
   const navigate = useCallback((nextStep: WalletSelectorStep) => {
     setStep(nextStep);
@@ -61,15 +61,11 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     setNetworkId("");
     setWalletId("");
     setSearch("");
-    setStep("choose-network");
+    setStep("choose-wallet");
   }, []);
 
   const goBack = useCallback(() => {
     switch (step) {
-      case "choose-network":
-        resetState();
-        props.onCancel?.();
-        return;
       case "choose-wallet":
         navigate("choose-network");
         return;
@@ -90,40 +86,6 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
 
   const [subHeading, content] = useMemo(() => {
     switch (step) {
-      case "choose-network":
-        return [
-          <label className="flex justify-between items-center w-full">
-            <span>Choose network</span>
-            <SearchInput
-              placeholder="Search network"
-              value={search}
-              onChange={(e) => setSearch(e.target.value.toLowerCase())}
-            />
-          </label>,
-          <>
-            <ListContainer>
-              {props.chains
-                .filter((x) => x.name.toLowerCase().includes(search))
-                .map((x) => (
-                  <ListItem
-                    key={x.id}
-                    role="button"
-                    onClick={() => {
-                      setNetworkId(x.id);
-                      navigate("choose-wallet");
-                    }}
-                  >
-                    <div className="flex gap-2 items-center">
-                      <figure className="h-5 w-5">{x.icon}</figure>
-                      {x.name}
-                    </div>
-
-                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
-                  </ListItem>
-                ))}
-            </ListContainer>
-          </>,
-        ];
       case "choose-wallet":
         return [
           <label className="flex justify-between items-center w-full">
@@ -136,32 +98,26 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           </label>,
           <>
             <ListContainer>
-              {props.wallets
-                .filter(
-                  (x) =>
-                    selectedNetwork?.type === x.type &&
-                    x.name.toLowerCase().includes(search),
-                )
-                .map((x) => (
-                  <ListItem
-                    key={x.id}
-                    role="button"
-                    onClick={() => {
-                      setWalletId(x.id);
-                      props.onConnect?.({
-                        chainId: networkId ?? "",
-                        walletId: x.id,
-                      });
-                      navigate("await-confirmation");
-                    }}
-                  >
-                    <div className="flex gap-2 items-center">
-                      <figure className="text-lg">{x.icon}</figure>
-                      {x.name}{" "}
-                    </div>
-                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
-                  </ListItem>
-                ))}
+              {props.wallets.map((x) => (
+                <ListItem
+                  key={x.id}
+                  role="button"
+                  onClick={() => {
+                    setWalletId(x.id);
+                    props.onConnect?.({
+                      chainId: networkId ?? "",
+                      walletId: x.id,
+                    });
+                    navigate("await-confirmation");
+                  }}
+                >
+                  <div className="flex gap-2 items-center">
+                    <figure className="text-lg">{x.icon}</figure>
+                    {x.name}{" "}
+                  </div>
+                  <ArrowLeftIcon className="rotate-180 text-gray-400" />
+                </ListItem>
+              ))}
             </ListContainer>
           </>,
           2,

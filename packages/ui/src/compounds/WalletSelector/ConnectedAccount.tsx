@@ -19,6 +19,7 @@ import { maskWalletAddress } from "../../utils";
 
 export type ConnectedAccountProps = {
   chainId: string;
+  chainType: string;
   chainName: string;
   account: string;
   nativeAssetDollarValue?: string;

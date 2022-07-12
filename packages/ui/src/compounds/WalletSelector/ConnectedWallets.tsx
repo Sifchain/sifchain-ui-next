@@ -52,9 +52,11 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 account: accounts[0] ?? "",
                 chainId: chainId,
                 chainName: chain?.name ?? chainId,
+                chainType: chain?.type ?? "",
                 nativeAssetSymbol: "ETH",
                 nativeAssetBalance: "0",
                 nativeAssetDollarValue: "$2,000",
+
                 onDisconnect: () => props.onDisconnect?.({ chainId }),
                 onConnectAnotherWallet: props.onConnectAnotherWallet,
               };

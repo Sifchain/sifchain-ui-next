@@ -16,7 +16,7 @@ export type KeplrWalletConnectConnectorOptions = {
 
 export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletConnectConnectorOptions> {
   readonly id = "keplrWalletConnect";
-  readonly name = "Wallet Connect";
+  readonly name = "WalletConnect";
 
   readonly #qrCodeModal = new KeplrQRCodeModalV1(this.options.modalUiOptions);
 
@@ -52,6 +52,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     super(options);
 
     // TODO: the clientMeta options in constructor is always ignored for some reason
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.#walletConnect._clientMeta = this.options.clientMeta;
 
@@ -71,7 +72,9 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     if (this.#walletConnect.connected) return;
 
     if (this.#walletConnect.pending) {
-      this.#qrCodeModal.open(this.#walletConnect.uri, () => {});
+      this.#qrCodeModal.open(this.#walletConnect.uri, () => {
+        // noop
+      });
     }
 
     await this.#walletConnect.connect();

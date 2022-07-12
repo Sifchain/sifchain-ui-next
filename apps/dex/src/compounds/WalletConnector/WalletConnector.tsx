@@ -21,7 +21,7 @@ import {
 } from "wagmi";
 
 import { useDexEnvironment } from "~/domains/core/envs";
-import { useNativeBalanceQuery } from "./hooks";
+import { useCosmosNativeBalance, useEthNativeBalance } from "./hooks";
 
 const WALLET_ICONS = {
   keplr: <KeplrIcon />,
@@ -63,6 +63,11 @@ const WalletConnector: FC = () => {
     );
   }, [data?.chainConfigsByNetwork]);
 
+  const chainsByChainId = useMemo(
+    () => indexBy(prop("chainId"), chains),
+    [chains],
+  );
+
   const {
     connectors: cosmosConnectors,
     connect: connectCosmos,
@@ -87,16 +92,18 @@ const WalletConnector: FC = () => {
   const syncCosmosAccounts = useCallback(async () => {
     if (cosmosActiveConnector) {
       const entries = await Promise.all(
-        chains.flatMap(async (chain) => {
-          try {
-            const signer = await cosmosActiveConnector.getSigner(chain.id);
-            const accounts = await signer.getAccounts();
+        chains
+          .filter((chain) => chain.type === "ibc")
+          .flatMap(async (chain) => {
+            try {
+              const signer = await cosmosActiveConnector.getSigner(chain.id);
+              const accounts = await signer.getAccounts();
 
-            return [chain.chainId, accounts.map((x) => x.address)];
-          } catch (error) {
-            return [chain.chainId, []];
-          }
-        }),
+              return [chain.chainId, accounts.map((x) => x.address)] as const;
+            } catch (error) {
+              return [chain.chainId, []] as const;
+            }
+          }),
       );
 
       const cosmosAccounts = Object.fromEntries(
@@ -168,9 +175,16 @@ const WalletConnector: FC = () => {
             {
               const connector = evmConnectors.find((x) => x.id === walletId);
               if (connector) {
-                console.log("connecting to", connector);
-                const account = await connectEvm(connector);
-                console.log({ account });
+                const isAuthorized = await connector.isAuthorized();
+
+                if (isAuthorized) {
+                  console.log("already authorized");
+                  const account = await connector.getAccount();
+                  setAccounts(assoc("ethereum", [account]));
+                } else {
+                  const account = await connectEvm(connector);
+                  setAccounts(assoc("ethereum", [account]));
+                }
               } else {
                 console.log("connector not found");
               }
@@ -238,12 +252,22 @@ const WalletConnector: FC = () => {
   );
 };
 
-const ConnectedAccountItem: RenderConnectedAccount = ({
+const ConnectedAccountItem: RenderConnectedAccount = (props) => {
+  const RenderComponent =
+    props.chainType === "ibc"
+      ? IbcConnectedAccountItem
+      : EthConnectedAccountItem;
+
+  return <RenderComponent {...props} />;
+};
+
+const IbcConnectedAccountItem: RenderConnectedAccount = ({
   chainId,
+  chainType,
   account,
   ...props
 }) => {
-  const { data } = useNativeBalanceQuery(
+  const { data } = useCosmosNativeBalance(
     chainId.match(/-\d+$/) !== null ? chainId.split("-")[0] ?? "" : chainId,
     account,
   );
@@ -252,6 +276,31 @@ const ConnectedAccountItem: RenderConnectedAccount = ({
     <ConnectedAccount
       {...props}
       chainId={chainId}
+      chainType={chainType}
+      account={account}
+      nativeAssetDollarValue={data?.dollarValue ?? ""}
+      nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
+      nativeAssetBalance={(data as Coin)?.amount ?? ""}
+    />
+  );
+};
+
+const EthConnectedAccountItem: RenderConnectedAccount = ({
+  chainId,
+  chainType,
+  account,
+  ...props
+}) => {
+  const { data } = useEthNativeBalance(
+    chainId.match(/-\d+$/) !== null ? chainId.split("-")[0] ?? "" : chainId,
+    account,
+  );
+
+  return (
+    <ConnectedAccount
+      {...props}
+      chainId={chainId}
+      chainType={chainType}
       account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
