@@ -346,7 +346,7 @@ const AssetsPage: NextPage = () => {
       <ImportModal
         denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "import"}
-        onClose={useCallback(() => router.back(), [router])}
+        onClose={useCallback(() => router.replace("/balances"), [router])}
         onRequestDenomChange={useCallback(
           (denom) =>
             router.replace(
@@ -358,7 +358,7 @@ const AssetsPage: NextPage = () => {
       <ExportModal
         denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "export"}
-        onClose={useCallback(() => router.back(), [router])}
+        onClose={useCallback(() => router.replace("/balances"), [router])}
       />
     </>
   );
