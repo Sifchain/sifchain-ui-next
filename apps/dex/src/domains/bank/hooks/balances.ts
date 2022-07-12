@@ -63,7 +63,7 @@ export function useAllBalancesQuery() {
   const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env?.sifChainId !== undefined,
   });
-  const { data: signingStargateClient } = useSifSigningStargateClient();
+  const { data: stargateClient } = useSifStargateClient();
   const {
     data: registry,
     indexedByIBCDenom,
@@ -74,7 +74,7 @@ export function useAllBalancesQuery() {
     "all-balances",
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
-      const balances = await signingStargateClient?.getAllBalances(
+      const balances = await stargateClient?.getAllBalances(
         accounts?.[0]?.address ?? "",
       );
 
@@ -92,7 +92,7 @@ export function useAllBalancesQuery() {
       staleTime: 60000, // 1 minute
       enabled:
         signer !== undefined &&
-        signingStargateClient !== undefined &&
+        stargateClient !== undefined &&
         isTokenRegistryQuerySuccess,
     },
   );

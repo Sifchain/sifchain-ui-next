@@ -190,7 +190,6 @@ function useEnhancedToken(
       enabled:
         Boolean(denom) &&
         registryQuery.isSuccess &&
-        allBalancesQuery.isSuccess &&
         (denom === "rowan" || poolQuery.isSuccess),
     },
   );
