@@ -22,14 +22,18 @@ const TAB_ITEMS = [
   },
 ];
 
-type TabsProps = {
+type TabsWithSuspenseProps = {
   activeTab: string;
-  items: { title: string; tab: string; Component: any }[];
+  items: {
+    title: string;
+    tab: string;
+    Component: any; // TODO: I could not find a better type here (e.g., JSX.Elements did not worked)
+  }[];
   loadingFallback: ReactNode;
   children: (SuspendedComponent: ReactNode) => ReactNode;
 };
 
-const Tabs: FC<TabsProps> = ({
+const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
   items,
   activeTab,
   children,
@@ -77,7 +81,7 @@ const Margin: NextPage = () => {
   const activeTab = (router.query["tab"] as string) || "portifolio";
   return (
     <PageLayout heading="Margin">
-      <Tabs
+      <TabsWithSuspense
         items={TAB_ITEMS}
         activeTab={activeTab}
         loadingFallback="Loading..."
@@ -85,7 +89,7 @@ const Margin: NextPage = () => {
         {(SuspendedComponent) => {
           return <div className="mt-4">{SuspendedComponent}</div>;
         }}
-      </Tabs>
+      </TabsWithSuspense>
     </PageLayout>
   );
 };
