@@ -1,10 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { isEvmBridgedCoin, runCatching } from "@sifchain/common";
-import {
-  useAccounts,
-  useAccounts as useCosmAccount,
-  useStargateClient,
-} from "@sifchain/cosmos-connect";
+import { useAccounts } from "@sifchain/cosmos-connect";
 import {
   ArrowDownIcon,
   Button,
@@ -22,7 +18,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useAccount, useBalance, useQuery } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import {
   useAllBalancesQuery,
@@ -55,7 +51,7 @@ const ImportModal = (
     token?.chainId ?? "",
     props.denom,
     {
-      enabled: token?.chainId !== undefined,
+      enabled: !isEvmBridgedCoin(props.denom) && token?.chainId !== undefined,
     },
   );
   const walletBalance = isEvmBridgedCoin(props.denom)
