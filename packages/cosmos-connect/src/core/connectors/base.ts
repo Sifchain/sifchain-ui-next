@@ -1,5 +1,5 @@
 import type { OfflineSigner } from "@cosmjs/proto-signing";
-import type { SigningStargateClient } from "@cosmjs/stargate";
+import type { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import EventEmitter from "eventemitter3";
 
 export type ConnectorEvents = {
@@ -27,6 +27,7 @@ export abstract class BaseCosmConnector<
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
   abstract getSigner(chainId: string): Promise<OfflineSigner>;
+  abstract getStargateClient(chainId: string): Promise<StargateClient>;
   abstract getSigningStargateClient(
     chainId: string,
   ): Promise<SigningStargateClient>;

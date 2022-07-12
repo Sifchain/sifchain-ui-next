@@ -1,5 +1,5 @@
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo } from "@keplr-wallet/types";
 import { BaseCosmConnector } from "./base";
@@ -38,6 +38,12 @@ export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOption
       prefix:
         this.#chainStore.getChain(chainId).bech32Config.bech32PrefixAccAddr,
     });
+  }
+
+  async getStargateClient(chainId: string): Promise<StargateClient> {
+    return SigningStargateClient.connect(
+      this.#chainStore.getChain(chainId).rpc,
+    );
   }
 
   async getSigningStargateClient(

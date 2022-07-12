@@ -1,5 +1,5 @@
 import type { OfflineSigner } from "@cosmjs/proto-signing";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo, Keplr } from "@keplr-wallet/types";
 import { BaseCosmConnector } from "./base";
@@ -43,6 +43,12 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
     );
     await this.#keplr!.enable(chainId);
     return this.#keplr!.getOfflineSignerAuto(chainId);
+  }
+
+  async getStargateClient(chainId: string): Promise<StargateClient> {
+    return SigningStargateClient.connect(
+      this.#chainStore.getChain(chainId).rpc,
+    );
   }
 
   async getSigningStargateClient(
