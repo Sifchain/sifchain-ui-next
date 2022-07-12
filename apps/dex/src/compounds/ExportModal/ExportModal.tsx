@@ -116,7 +116,6 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
 
       if (exportTokensMutation.isError || exportTokensMutation.isSuccess) {
         props.onClose(false);
-        exportTokensMutation.reset();
         return;
       }
 
@@ -139,7 +138,14 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   );
 
   return (
-    <Modal {...props} title={title}>
+    <Modal
+      {...props}
+      title={title}
+      onClose={(isOpen) => {
+        props.onClose(isOpen);
+        exportTokensMutation.reset();
+      }}
+    >
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
