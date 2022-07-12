@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { runCatching } from "@sifchain/common";
+import { isEvmBridgedCoin, runCatching } from "@sifchain/common";
 import { useAccounts } from "@sifchain/cosmos-connect";
 import {
   ArrowDownIcon,
@@ -10,10 +10,20 @@ import {
   RacetrackSpinnerIcon,
   Select,
 } from "@sifchain/ui";
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { isNil } from "rambda";
+import {
+  ChangeEventHandler,
+  FormEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
+import {
+  useAllBalancesQuery,
+  useBalanceQuery,
+} from "~/domains/bank/hooks/balances";
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -36,7 +46,20 @@ const ImportModal = (
     addressOrName: evmAccount?.address ?? "",
     token: token?.symbol === "CETH" ? (undefined as any) : token?.address,
   });
-  const walletBalance = Number(evmWalletBalance?.formatted ?? 0);
+
+  const importTokenWalletBalance = useBalanceQuery(
+    token?.chainId ?? "",
+    props.denom,
+    {
+      enabled: !isEvmBridgedCoin(props.denom) && token?.chainId !== undefined,
+    },
+  );
+  const walletBalance = isEvmBridgedCoin(props.denom)
+    ? Decimal.fromAtomics(
+        evmWalletBalance?.value.toString() ?? "0",
+        evmWalletBalance?.decimals ?? 0,
+      )
+    : importTokenWalletBalance.data?.amount;
 
   const { data: env } = useDexEnvironment();
   const { accounts: cosmAccounts } = useAccounts(env?.sifChainId ?? "", {
@@ -68,27 +91,104 @@ const ImportModal = (
     [amount, balance?.amount.fractionalDigits],
   );
 
+  const error = useMemo(() => {
+    if (isEvmBridgedCoin(props.denom) && isNil(evmAccount)) {
+      return new Error("Please connect Ethereum wallet");
+    }
+
+    if (!isEvmBridgedCoin(props.denom) && isNil(cosmAccounts)) {
+      return new Error("Please connect Sifchain wallet");
+    }
+
+    if (
+      walletBalance?.isLessThan(
+        amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0),
+      )
+    ) {
+      return new Error("Insufficient fund");
+    }
+
+    return;
+  }, [amountDecimal, cosmAccounts, evmAccount, props.denom, walletBalance]);
+
+  const disabled = importTokensMutation.isLoading || error !== undefined;
+
+  const title = useMemo(() => {
+    switch (importTokensMutation.status) {
+      case "loading":
+        return "Waiting for confirmation";
+      case "success":
+        return "Transaction submitted";
+      case "error":
+        return "Transaction failed";
+      case "idle":
+      default:
+        return `Import ${indexedByIBCDenom[
+          props.denom
+        ]?.displaySymbol.toUpperCase()} from Sifchain`;
+    }
+  }, [importTokensMutation.status, indexedByIBCDenom, props.denom]);
+
+  const buttonMessage = useMemo(() => {
+    if (error !== undefined) {
+      return error.message;
+    }
+
+    if (importTokensMutation.isError || importTokensMutation.isSuccess) {
+      return "Close";
+    }
+
+    return [
+      importTokensMutation.isLoading ? (
+        <RacetrackSpinnerIcon />
+      ) : (
+        <ArrowDownIcon />
+      ),
+      "Import",
+    ];
+  }, [
+    error,
+    importTokensMutation.isError,
+    importTokensMutation.isLoading,
+    importTokensMutation.isSuccess,
+  ]);
+
+  const onSubmit = useCallback(
+    (e: FormEvent<HTMLElement>) => {
+      e.preventDefault();
+
+      if (importTokensMutation.isError || importTokensMutation.isSuccess) {
+        props.onClose(false);
+        return;
+      }
+
+      importTokensMutation.mutate({
+        chainId: token?.chainId ?? "",
+        tokenAddress: token?.address ?? "",
+        recipientAddress: recipientAddress ?? "",
+        amount: {
+          denom: props.denom,
+          amount: amountDecimal?.atomics ?? "0",
+        },
+      });
+    },
+    [
+      amountDecimal?.atomics,
+      importTokensMutation,
+      props,
+      recipientAddress,
+      token?.address,
+      token?.chainId,
+    ],
+  );
+
   return (
     <Modal
       {...props}
-      title={`Import ${indexedByIBCDenom[
-        props.denom
-      ]?.displaySymbol.toUpperCase()} from Sifchain`}
+      onTransitionEnd={() => importTokensMutation.reset()}
+      title={title}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          importTokensMutation.mutate({
-            chainId: token?.chainId ?? "",
-            tokenAddress: token?.address ?? "",
-            recipientAddress: recipientAddress ?? "",
-            amount: {
-              denom: props.denom,
-              amount: amountDecimal?.atomics ?? "0",
-            },
-          });
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Select
             className="z-10"
@@ -150,16 +250,22 @@ const ImportModal = (
             </dd>
           </div>
         </dl>
-        <Button
-          className="w-full mt-6"
-          disabled={importTokensMutation.isLoading}
-        >
-          {importTokensMutation.isLoading ? (
-            <RacetrackSpinnerIcon />
-          ) : (
-            <ArrowDownIcon />
-          )}{" "}
-          Import
+        {isEvmBridgedCoin(props.denom) && (
+          <div className="flex items-center gap-4 p-4 bg-gray-750 rounded-lg">
+            <p className="text-lg">ℹ️</p>
+            <p className="text-gray-200 text-xs">
+              Your funds will be available for use on Sifchain after about 10
+              minutes. However in some cases, this action can take up to 60
+              minutes.
+              <br />
+              <br />
+              Up to 2 transactions might be needed, please do not close the
+              modal or leave the page while transactions are still inprogress
+            </p>
+          </div>
+        )}
+        <Button className="w-full mt-6 " disabled={disabled}>
+          {buttonMessage}
         </Button>
       </form>
     </Modal>

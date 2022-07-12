@@ -1,27 +1,31 @@
+import { Decimal } from "@cosmjs/math";
 import type { NetworkKind } from "@sifchain/common";
-import { useSigningStargateClient } from "@sifchain/cosmos-connect";
+import { useSigner, useSigningStargateClient } from "@sifchain/cosmos-connect";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 import { useQuery } from "react-query";
 import { useBalance } from "wagmi";
 import { usePoolStatsQuery } from "~/domains/clp";
-
 import { useDexEnvironment } from "~/domains/core/envs";
 
 type NativeBalanceResult = {
-  amount: string;
+  amount?: Decimal;
   denom: string;
   dollarValue: string;
 };
 
 const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
-  amount: "0",
   denom: "",
   dollarValue: "$0",
 };
 
-export function useCosmosNativeBalance(chainId: string, address: string) {
+export function useCosmosNativeBalance(
+  chainId: string,
+  address: string | undefined,
+  options: { enabled?: boolean } = { enabled: true },
+) {
+  const { signer } = useSigner(chainId);
   const { client } = useSigningStargateClient(chainId);
   const { data: dexEnv } = useDexEnvironment();
   const { data: tokenStats } = usePoolStatsQuery();
@@ -49,8 +53,15 @@ export function useCosmosNativeBalance(chainId: string, address: string) {
         `u${symbol.toLowerCase()}` === nativeSymbol,
     );
 
+    const autoAddress =
+      address ?? (await signer?.getAccounts().then((x) => x[0]?.address));
+
+    if (autoAddress === undefined) {
+      throw new Error("Could not get address from signer");
+    }
+
     const result = await client.getBalance(
-      address,
+      autoAddress,
       chain.nativeAssetSymbol.toLowerCase(),
     );
 
@@ -62,21 +73,31 @@ export function useCosmosNativeBalance(chainId: string, address: string) {
       asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0,
     );
 
-    const normalizedBalance = new BigNumber(result.amount).shiftedBy(
-      -asset.decimals,
+    const normalizedBalance = Decimal.fromAtomics(
+      result.amount,
+      asset.decimals,
     );
 
-    const dollarValue = normalizedBalance.multipliedBy(tokenPrice);
+    const dollarValue = normalizedBalance.toFloatApproximation() * tokenPrice;
 
     return {
-      amount: normalizedBalance.toFixed(4),
+      amount: normalizedBalance,
       denom: result.denom,
-      dollarValue: formatNumberAsCurrency(dollarValue.toNumber()),
+      dollarValue: formatNumberAsCurrency(dollarValue),
     };
-  }, [address, chainId, client, dexEnv, tokenStats]);
+  }, [
+    address,
+    chainId,
+    client,
+    dexEnv,
+    signer,
+    tokenStats?.pools,
+    tokenStats?.rowanUSD,
+  ]);
 
   return useQuery(["ibc-native-balance", chainId, address], query, {
-    enabled: Boolean(dexEnv && client && tokenStats),
+    enabled:
+      options.enabled && Boolean(dexEnv && client && tokenStats && signer),
     staleTime: 3600_000,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

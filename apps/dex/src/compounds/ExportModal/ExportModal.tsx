@@ -9,7 +9,14 @@ import {
   ModalProps,
   RacetrackSpinnerIcon,
 } from "@sifchain/ui";
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { isNil } from "rambda";
+import {
+  ChangeEventHandler,
+  FormEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useAccount } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -47,26 +54,102 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
     [amount, balance?.amount.fractionalDigits],
   );
 
+  const error = useMemo(() => {
+    if (isEthToken && isNil(ethAccount)) {
+      return new Error("Please connect Ethereum wallet");
+    }
+
+    if (!isEthToken && isNil(cosmAccounts)) {
+      return new Error("Please connect Sifchain wallet");
+    }
+
+    if (
+      amountDecimal?.isGreaterThan(
+        balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits),
+      )
+    ) {
+      return new Error("Insufficient fund");
+    }
+
+    return;
+  }, [amountDecimal, balance?.amount, cosmAccounts, ethAccount, isEthToken]);
+
+  const disabled = exportTokensMutation.isLoading || error !== undefined;
+
+  const title = useMemo(() => {
+    switch (exportTokensMutation.status) {
+      case "loading":
+        return "Waiting for confirmation";
+      case "success":
+        return "Transaction submitted";
+      case "error":
+        return "Transaction failed";
+      case "idle":
+      default:
+        return `Export ${indexedByIBCDenom[
+          props.denom
+        ]?.displaySymbol.toUpperCase()} from Sifchain`;
+    }
+  }, [exportTokensMutation.status, indexedByIBCDenom, props.denom]);
+
+  const buttonMessage = useMemo(() => {
+    if (error !== undefined) {
+      return error.message;
+    }
+
+    if (exportTokensMutation.isError || exportTokensMutation.isSuccess) {
+      return "Close";
+    }
+
+    return [
+      exportTokensMutation.isLoading ? (
+        <RacetrackSpinnerIcon />
+      ) : (
+        <ArrowDownIcon className="rotate-180" />
+      ),
+      "Export",
+    ];
+  }, [
+    error,
+    exportTokensMutation.isError,
+    exportTokensMutation.isLoading,
+    exportTokensMutation.isSuccess,
+  ]);
+
+  const onSubmit = useCallback(
+    (e: FormEvent<HTMLElement>) => {
+      e.preventDefault();
+
+      if (exportTokensMutation.isError || exportTokensMutation.isSuccess) {
+        props.onClose(false);
+        return;
+      }
+
+      exportTokensMutation.mutate({
+        senderAddress: sifAccounts?.[0]?.address ?? "",
+        recipientAddress: recipientAddress ?? "",
+        amount: {
+          amount: amountDecimal?.atomics ?? "0",
+          denom: props.denom,
+        },
+      });
+    },
+    [
+      amountDecimal?.atomics,
+      exportTokensMutation,
+      props,
+      recipientAddress,
+      sifAccounts,
+    ],
+  );
+
   return (
     <Modal
       {...props}
-      title={`Export ${indexedByIBCDenom[
-        props.denom
-      ]?.displaySymbol.toUpperCase()} from Sifchain`}
+      title={title}
+      onTransitionEnd={() => exportTokensMutation.reset()}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          exportTokensMutation.mutate({
-            senderAddress: sifAccounts?.[0]?.address ?? "",
-            recipientAddress: recipientAddress ?? "",
-            amount: {
-              amount: amountDecimal?.atomics ?? "0",
-              denom: props.denom,
-            },
-          });
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
             label="Amount"
@@ -103,12 +186,6 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
           <div>
-            <dt>Export fee</dt>
-            <dd>
-              0.99 <AssetIcon network="sifchain" symbol="rowan" size="sm" />
-            </dd>
-          </div>
-          <div>
             <dt>New Sifchain Balance</dt>
             <dd>
               {(amountDecimal !== undefined &&
@@ -125,16 +202,8 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
         </dl>
-        <Button
-          className="w-full mt-6"
-          disabled={exportTokensMutation.isLoading}
-        >
-          {exportTokensMutation.isLoading ? (
-            <RacetrackSpinnerIcon />
-          ) : (
-            <ArrowDownIcon className="rotate-180" />
-          )}{" "}
-          Export
+        <Button className="w-full mt-6" disabled={disabled}>
+          {buttonMessage}
         </Button>
       </form>
     </Modal>

@@ -1,6 +1,5 @@
 import type { ChainConfig } from "@sifchain/common";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
-import type { Coin } from "@sifchain/proto-types/cosmos/base/coin";
 import {
   ChainEntry,
   CoinbaseIcon,
@@ -309,8 +308,8 @@ const IbcConnectedAccountItem: RenderConnectedAccount = ({
       chainType={chainType}
       account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
-      nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={(data as Coin)?.amount ?? ""}
+      nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
+      nativeAssetBalance={data?.amount?.toString() ?? ""}
     />
   );
 };
@@ -333,8 +332,8 @@ const EthConnectedAccountItem: RenderConnectedAccount = ({
       chainType={chainType}
       account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
-      nativeAssetSymbol={(data as Coin)?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={(data as Coin)?.amount ?? ""}
+      nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
+      nativeAssetBalance={data?.amount?.toString() ?? ""}
     />
   );
 };

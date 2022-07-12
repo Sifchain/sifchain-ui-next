@@ -258,7 +258,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
             cosmosSender: senderAddress,
             amount: transferAmount.amount,
             symbol: transferAmount.denom,
-            ethereumChainId: Long.fromValue(ethChainId),
+            ethereumChainId: Long.fromNumber(Number(ethChainId)),
             ethereumReceiver: recipientAddress,
             cethAmount: ethFee,
           },

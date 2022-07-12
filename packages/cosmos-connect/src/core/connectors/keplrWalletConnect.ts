@@ -1,5 +1,5 @@
 import type { OfflineSigner } from "@cosmjs/proto-signing";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo } from "@keplr-wallet/types";
 import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
@@ -72,9 +72,8 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     if (this.#walletConnect.connected) return;
 
     if (this.#walletConnect.pending) {
-      this.#qrCodeModal.open(this.#walletConnect.uri, () => {
-        // noop
-      });
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.#qrCodeModal.open(this.#walletConnect.uri, () => {});
     }
 
     await this.#walletConnect.connect();
@@ -87,6 +86,12 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   async getSigner(chainId: string): Promise<OfflineSigner> {
     await this.#keplr.enable(chainId);
     return this.#keplr.getOfflineSignerOnlyAmino(chainId);
+  }
+
+  async getStargateClient(chainId: string): Promise<StargateClient> {
+    return SigningStargateClient.connect(
+      this.#chainStore.getChain(chainId).rpc,
+    );
   }
 
   async getSigningStargateClient(

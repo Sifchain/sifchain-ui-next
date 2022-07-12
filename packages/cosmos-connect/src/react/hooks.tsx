@@ -48,6 +48,30 @@ export const useSigner = (
   return { signer, status };
 };
 
+export const useStargateClient = (
+  chainId: string,
+  options: HookOptions = { enabled: true },
+) => {
+  const { activeConnector } = useConnect();
+
+  const {
+    data: client,
+    fetch,
+    status,
+  } = useAsyncFunc(
+    async () => activeConnector?.getStargateClient(chainId),
+    [activeConnector, chainId],
+  );
+
+  useEffect(() => {
+    if (options.enabled) {
+      fetch();
+    }
+  }, [activeConnector, fetch, options.enabled]);
+
+  return { client, status };
+};
+
 export const useSigningStargateClient = (
   chainId: string,
   options: HookOptions = { enabled: true },
