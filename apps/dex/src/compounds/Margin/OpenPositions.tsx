@@ -63,18 +63,24 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">Close</td>
           </tr>
-          <tr>
-            <td
-              colSpan={OPEN_POSITIONS_HEADER_ITEMS.length}
-              className="text-gray-400 text-center p-20"
-            >
-              You have no open positions.
-            </td>
-          </tr>
+          <NoResultsTr />
         </tbody>
       </table>
     </div>
   );
 };
+
+function NoResultsTr() {
+  return (
+    <tr>
+      <td
+        colSpan={OPEN_POSITIONS_HEADER_ITEMS.length}
+        className="text-gray-400 text-center p-20"
+      >
+        You have no open positions.
+      </td>
+    </tr>
+  );
+}
 
 export default Trade;

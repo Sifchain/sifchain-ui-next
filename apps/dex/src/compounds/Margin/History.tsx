@@ -51,18 +51,24 @@ const Trade: NextPage = () => {
               <Slug color="green" title="0.002 (0.0%)" />
             </td>
           </tr>
-          <tr>
-            <td
-              colSpan={HISTORY_HEADER_ITEMS.length}
-              className="text-gray-400 text-center p-20"
-            >
-              You have no open positions.
-            </td>
-          </tr>
+          <NoResultsTr />
         </tbody>
       </table>
     </div>
   );
 };
+
+function NoResultsTr() {
+  return (
+    <tr>
+      <td
+        colSpan={HISTORY_HEADER_ITEMS.length}
+        className="text-gray-400 text-center p-20"
+      >
+        History not available. Try again later.
+      </td>
+    </tr>
+  );
+}
 
 export default Trade;
