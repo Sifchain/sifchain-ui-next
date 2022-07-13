@@ -5,14 +5,17 @@ import { Slug } from "~/components/Slug";
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
+  "Asset",
   "Amount",
-  "Leverage",
-  "BP used",
+  "Base Leverage",
   "Unrealized P&L",
-  "Funding rate %",
+  "Interest Rate",
   "Unsettled Interest",
-  "Position health",
-  "Close all",
+  "Next Payment",
+  "Paid Interest",
+  "Health",
+  "Date Opened",
+  "Time Open",
 ];
 
 const Trade: NextPage = () => {
@@ -46,6 +49,9 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">Close</td>
+            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <tr>
             <td className="px-4 py-3">ETH / ROWAN</td>
@@ -62,6 +68,9 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">Close</td>
+            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <NoResultsTr />
         </tbody>
