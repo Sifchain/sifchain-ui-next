@@ -161,7 +161,14 @@ function useEnhancedToken(
   const allBalancesQuery = useAllBalancesQuery();
 
   const registryEntry = registryQuery.indexedByIBCDenom[denom];
-  const balanceEntry = allBalancesQuery.indexedByDenom[denom];
+  const balanceEntry = useMemo(
+    () =>
+      allBalancesQuery.data?.find(
+        (entry) =>
+          entry.denom === denom || entry.denom === registryEntry?.ibcDenom,
+      ),
+    [allBalancesQuery.data, registryEntry?.ibcDenom, denom],
+  );
 
   const poolQuery = useSifnodeQuery(
     "clp.getPool",

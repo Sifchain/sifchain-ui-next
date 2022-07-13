@@ -1,11 +1,6 @@
-import {
-  AsyncImage,
-  RacetrackSpinnerIcon,
-  Tooltip,
-  useIntersectionObserver,
-} from "@sifchain/ui";
+import { AsyncImage, RacetrackSpinnerIcon, Tooltip } from "@sifchain/ui";
 import clsx from "clsx";
-import { type FC, useMemo, memo, useRef, useEffect } from "react";
+import { type FC, useMemo, memo } from "react";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
