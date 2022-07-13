@@ -70,7 +70,7 @@ export default function useSifApiQuery<
         "enabled" in options
           ? options.enabled && Boolean(client)
           : Boolean(client),
-      ...(omit(["enabled"], options) as {}),
+      ...omit(["enabled"], options),
     },
   );
 }

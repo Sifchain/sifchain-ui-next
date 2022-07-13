@@ -20,3 +20,5 @@ export type ValidPaths<
     ? `${TKeys}.${IndexableKeys<T[TKeys]>}`
     : never
   : never;
+
+export type ArrayType<T> = T extends Array<infer U> ? U : never;
