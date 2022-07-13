@@ -51,6 +51,7 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
               const connectedAccountProps: ConnectedAccountProps = {
                 account: accounts[0] ?? "",
                 chainId: chainId,
+                networkId: chain?.id ?? "",
                 chainName: chain?.name ?? chainId,
                 chainType: chain?.type ?? "",
                 nativeAssetSymbol: "ETH",

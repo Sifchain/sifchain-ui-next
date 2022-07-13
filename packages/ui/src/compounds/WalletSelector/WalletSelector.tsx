@@ -31,13 +31,15 @@ const ListItem = tw.li`
 export type WalletSelectorProps = {
   chains: ChainEntry[];
   wallets: WalletEntry[];
-  isLoading?: boolean;
   selectedWalletId?: string;
   selectedChainId?: string;
   accounts: {
     [chainId: string]: string[];
   };
-  onConnect?: (selection: { chainId: string; walletId: string }) => void;
+  onConnect?: (selection: {
+    chainId: string;
+    walletId: string;
+  }) => Promise<void>;
   onDisconnect?: ConnectedWalletsProps["onDisconnect"];
   onError?: (error: Error) => void;
   onCancel?: () => void;
@@ -46,10 +48,11 @@ export type WalletSelectorProps = {
 
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
-  const [step, setStep] = useState<WalletSelectorStep>("choose-wallet");
+  const [step, setStep] = useState<WalletSelectorStep>("choose-network");
 
   const navigate = useCallback((nextStep: WalletSelectorStep) => {
     setStep(nextStep);
@@ -61,11 +64,15 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     setNetworkId("");
     setWalletId("");
     setSearch("");
-    setStep("choose-wallet");
+    setStep("choose-network");
   }, []);
 
   const goBack = useCallback(() => {
     switch (step) {
+      case "choose-network":
+        resetState();
+        props.onCancel?.();
+        return;
       case "choose-wallet":
         navigate("choose-network");
         return;
@@ -86,6 +93,44 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
 
   const [subHeading, content] = useMemo(() => {
     switch (step) {
+      case "choose-network":
+        return [
+          <label className="flex justify-between items-center w-full">
+            <span>Choose network</span>
+            <SearchInput
+              placeholder="Search network"
+              value={search}
+              onChange={(e) => setSearch(e.target.value.toLowerCase())}
+            />
+          </label>,
+          <>
+            <ListContainer>
+              {props.chains
+                .filter(
+                  (x) =>
+                    !(x.chainId in props.accounts) &&
+                    !(x.id in props.accounts) &&
+                    x.name.toLowerCase().includes(search),
+                )
+                .map((x) => (
+                  <ListItem
+                    key={x.id}
+                    role="button"
+                    onClick={() => {
+                      setNetworkId(x.id);
+                      navigate("choose-wallet");
+                    }}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <figure className="h-5 w-5">{x.icon}</figure>
+                      {x.name}
+                    </div>
+                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
+                  </ListItem>
+                ))}
+            </ListContainer>
+          </>,
+        ];
       case "choose-wallet":
         return [
           <label className="flex justify-between items-center w-full">
@@ -98,32 +143,49 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           </label>,
           <>
             <ListContainer>
-              {props.wallets.map((x) => (
-                <ListItem
-                  key={x.id}
-                  role="button"
-                  onClick={() => {
-                    setWalletId(x.id);
-                    props.onConnect?.({
-                      chainId: networkId ?? "",
-                      walletId: x.id,
-                    });
-                    navigate("await-confirmation");
-                  }}
-                >
-                  <div className="flex gap-2 items-center">
-                    <figure className="text-lg">{x.icon}</figure>
-                    {x.name}{" "}
-                  </div>
-                  <ArrowLeftIcon className="rotate-180 text-gray-400" />
-                </ListItem>
-              ))}
+              {props.wallets
+                .filter(
+                  (x) =>
+                    selectedNetwork?.type === x.type &&
+                    x.name.toLowerCase().includes(search),
+                )
+                .map((x) => (
+                  <ListItem
+                    key={x.id}
+                    role="button"
+                    onClick={async () => {
+                      setWalletId(x.id);
+                      try {
+                        setIsLoading(true);
+                        await props.onConnect?.({
+                          chainId: networkId ?? "",
+                          walletId: x.id,
+                        });
+                      } catch (error) {
+                        //
+                        setIsLoading(false);
+                      }
+                      navigate("await-confirmation");
+                    }}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <figure className="text-lg">{x.icon}</figure>
+                      {x.name}{" "}
+                    </div>
+                    <ArrowLeftIcon className="rotate-180 text-gray-400" />
+                  </ListItem>
+                ))}
             </ListContainer>
           </>,
           2,
         ];
       case "await-confirmation":
-        if (!props.isLoading) {
+        if (
+          selectedNetwork &&
+          (selectedNetwork.chainId in props.accounts ||
+            selectedNetwork.id in props.accounts)
+        ) {
+          resetState();
           return [<></>, <></>];
         }
         return [
