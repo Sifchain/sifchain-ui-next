@@ -295,9 +295,9 @@ const WalletConnector: FC = () => {
 
   return (
     <WalletSelector
-      chains={chains.map((x) => ({
-        ...x,
-        connected: Boolean(accounts[x.id]?.length ?? 0),
+      chains={chains.map((chain) => ({
+        ...chain,
+        connected: Boolean(accounts[chain.id]?.length ?? 0),
       }))}
       wallets={wallets}
       accounts={accounts}

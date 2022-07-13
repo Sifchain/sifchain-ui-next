@@ -7,7 +7,6 @@ import {
 import clsx from "clsx";
 import { type FC, useMemo, memo, useRef, useEffect } from "react";
 
-import { useAssetsQuery } from "~/domains/assets";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 type Props = {
@@ -56,20 +55,9 @@ const AssetIcon: FC<Props> = memo((props) => {
     [props.size],
   );
 
-  const figureRef = useRef<HTMLDivElement>(null);
-
-  const entry = useIntersectionObserver(figureRef, {});
-
-  useEffect(() => {
-    if (entry?.isIntersecting) {
-      console.log(`AssetIcon: ${props.symbol} is visible`);
-    }
-  }, [entry]);
-
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <figure
-        ref={figureRef}
         className={clsx(
           "relative rounded-full bg-contain overflow-hidden bg-black bg-center shadow-xs shadow-black",
           CLASS_MAP[props.size],
@@ -91,6 +79,8 @@ const AssetIcon: FC<Props> = memo((props) => {
     </Tooltip>
   );
 });
+
+AssetIcon.displayName = "AssetIcon";
 
 AssetIcon.defaultProps = {
   size: "md",

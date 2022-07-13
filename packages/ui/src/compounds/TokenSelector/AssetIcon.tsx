@@ -11,7 +11,7 @@ type AssetIconProps = {
 export const AssetIcon: FC<AssetIconProps> = (props) => (
   <figure
     className={clsx(
-      "h-7 w-7 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
+      "relative h-7 w-7 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
       },

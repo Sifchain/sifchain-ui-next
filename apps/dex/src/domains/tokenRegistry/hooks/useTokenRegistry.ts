@@ -20,7 +20,7 @@ export default function useTokenRegistryQuery() {
     staleTime: 60000 * 5, // 5 minutes
   });
 
-  const { indexedBySymbol, ...assetsQuery } = useAssetsQuery();
+  const { indexedBySymbol, ...assetsQuery } = useAssetsQuery("sifchain");
 
   const entries = useMemo<EnhancedRegitryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {

@@ -166,7 +166,12 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 const ItemComponent = props.renderTokenItem ?? TokenItem;
 
                 return (
-                  <Combobox.Option key={token.symbol} value={token}>
+                  <Combobox.Option
+                    key={`${token.symbol}-${
+                      token.homeNetwork ?? token.network
+                    }`}
+                    value={token}
+                  >
                     {({ selected, active }) => (
                       <ItemComponent
                         {...token}
