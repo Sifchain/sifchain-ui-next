@@ -69,7 +69,8 @@ export default function useSifnodeQuery<
         "enabled" in options
           ? options.enabled && Boolean(client)
           : Boolean(client),
-      ...omit(["enabled"], options),
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      ...(omit(["enabled"], options) as {}),
     },
   );
 }
