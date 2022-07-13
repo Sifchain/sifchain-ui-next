@@ -3,11 +3,12 @@ import type { NextPage } from "next";
 import { Slug } from "~/components/Slug";
 
 const HISTORY_HEADER_ITEMS = [
-  "Date",
+  "Date closed",
+  "Time open",
   "Pool",
   "Side",
+  "Asset",
   "Amount",
-  "Leverage",
   "Realized P&L",
 ];
 
@@ -38,6 +39,7 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">
               <Slug color="green" title="0.002 (0.0%)" />
             </td>
+            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <tr>
             <td className="px-4 py-3">07-05 11:23:51 AM</td>
@@ -50,6 +52,7 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">
               <Slug color="red" title="-0.002 (0.0%)" />
             </td>
+            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <NoResultsTr />
         </tbody>
