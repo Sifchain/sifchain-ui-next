@@ -13,9 +13,9 @@ const HISTORY_HEADER_ITEMS = [
 
 const Trade: NextPage = () => {
   return (
-    <div className="overflow-x">
+    <div className="overflow-x-auto">
       <table className="table-auto overflow-scroll w-full text-left text-xs">
-        <thead>
+        <thead className="bg-gray-800">
           <tr className="text-gray-400">
             {HISTORY_HEADER_ITEMS.map((title) => {
               return (
@@ -48,7 +48,7 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">5.00000000</td>
             <td>2x</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="0.002 (0.0%)" />
+              <Slug color="red" title="-0.002 (0.0%)" />
             </td>
           </tr>
           <NoResultsTr />
