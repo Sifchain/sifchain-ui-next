@@ -28,8 +28,8 @@ const Portifolio: NextPage = () => {
   const TabContent = currentTab?.content || null;
 
   return (
-    <section className="mt-4 rounded bg-gray-800">
-      <ul className="flex flex-row text-sm">
+    <section className="mt-4">
+      <ul className="flex flex-row text-sm bg-gray-800 rounded-tl rounded-tr">
         {OPTIONS_ITEMS.map(({ title, slug }) => {
           const isTabActive = currentTab?.slug === slug;
           return (
