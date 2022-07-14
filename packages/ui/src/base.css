@@ -43,4 +43,23 @@
   .input-label {
     @apply text-gray-200 text-sm font-normal;
   }
+
+  #inputSideLong + span,
+  #inputSideShort + span {
+    @apply bg-gray-800 text-gray-700;
+  }
+  #inputSideLong + span:hover,
+  #inputSideShort + span:hover {
+    @apply bg-gray-750 text-gray-500 ring-1 ring-cyan-500 z-20;
+  }
+  #inputSideLong:checked + span {
+    @apply bg-gray-700 text-gray-200 rounded-tr rounded-br z-10;
+  }
+  #inputSideShort:checked + span {
+    @apply bg-gray-700 text-gray-200 rounded-tl rounded-bl z-10;
+  }
+  #inputSideLong:checked + span:hover,
+  #inputSideShort:checked + span:hover {
+    @apply bg-gray-600 text-gray-100;
+  }
 }

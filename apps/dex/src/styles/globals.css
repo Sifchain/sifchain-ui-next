@@ -1,1 +1,13 @@
 @import url("@sifchain/ui/src/base.css");
+
+.box-golden-border {
+  border-color: #322f23;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.box-golden-border-bottom {
+  border-bottom-color: #322f23;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
