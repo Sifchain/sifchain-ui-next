@@ -1,22 +1,8 @@
 import type { NextPage } from "next";
 
-import clsx from "clsx";
-
-import { Button, ButtonGroup } from "@sifchain/ui";
+import { Button } from "@sifchain/ui";
 import { Slug } from "~/components/Slug";
-import { useState } from "react";
-
-const OPEN_POSITIONS_HEADER_ITEMS = [
-  "Pool",
-  "Side",
-  "Amount",
-  "Leverage",
-  "BP used",
-  "Unrealized P&L",
-  "Funding rate %",
-  "Unsettled Interest",
-  "Position health",
-];
+import OpenPositionsTable from "~/compounds/Margin/OpenPositions";
 
 const Trade: NextPage = () => {
   return (
@@ -252,52 +238,10 @@ const Trade: NextPage = () => {
             </li>
           </ul>
         </aside>
-        <section className="col-span-5 overflow-x-auto rounded-tl rounded-tr">
-          <table className="table-auto overflow-scroll w-full text-left text-xs">
-            <thead className="bg-gray-800">
-              <tr className="text-gray-400">
-                {OPEN_POSITIONS_HEADER_ITEMS.map((title) => {
-                  return (
-                    <th key={title} className="font-normal px-4 py-3">
-                      {title}
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody className="bg-gray-850">
-              <tr>
-                <td className="px-4 py-3">ETH / ROWAN</td>
-                <td className="px-4 py-3">
-                  <Slug color="green" title="Long" />
-                </td>
-                <td className="px-4 py-3">5.00000000</td>
-                <td className="px-4 py-3">2x</td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">
-                  <Slug color="green" title="0.002 (0.0%)" />
-                </td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">&ndash;</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-3">ETH / ROWAN</td>
-                <td className="px-4 py-3">
-                  <Slug color="red" title="Short" />
-                </td>
-                <td className="px-4 py-3">5.00000000</td>
-                <td className="px-4 py-3">2x</td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">
-                  <Slug color="green" title="0.002 (0.0%)" />
-                </td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">&ndash;</td>
-                <td className="px-4 py-3">&ndash;</td>
-              </tr>
-            </tbody>
-          </table>
+        <section className="col-span-5 rounded-tl rounded-tr">
+          <OpenPositionsTable
+            hideCols={["unsettled-interest", "next-payment", "paid-interest"]}
+          />
         </section>
       </section>
     </>
