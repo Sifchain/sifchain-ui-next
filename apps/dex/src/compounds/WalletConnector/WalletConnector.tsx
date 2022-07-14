@@ -1,4 +1,4 @@
-import type { ChainConfig } from "@sifchain/common";
+import type { ChainConfig, NetworkKind } from "@sifchain/common";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
@@ -317,21 +317,19 @@ const ConnectedAccountItem: RenderConnectedAccount = (props) => {
   return <RenderComponent {...props} />;
 };
 
-const IbcConnectedAccountItem: RenderConnectedAccount = ({
-  chainId,
-  account,
-  ...props
-}) => {
-  const { data } = useCosmosNativeBalance(chainId, account);
+const IbcConnectedAccountItem: RenderConnectedAccount = (props) => {
+  const { data } = useCosmosNativeBalance({
+    chainId: props.chainId,
+    networkId: props.networkId as NetworkKind,
+    address: props.account,
+  });
 
   return (
     <ConnectedAccount
       {...props}
-      chainId={chainId}
-      account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={data?.amount?.toString() ?? ""}
+      nativeAssetBalance={data?.amount?.toFloatApproximation().toFixed(4) ?? ""}
     />
   );
 };

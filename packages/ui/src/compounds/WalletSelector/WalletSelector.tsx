@@ -156,14 +156,12 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                     onClick={async () => {
                       setWalletId(x.id);
                       try {
-                        setIsLoading(true);
                         await props.onConnect?.({
                           chainId: networkId ?? "",
                           walletId: x.id,
                         });
                       } catch (error) {
-                        //
-                        setIsLoading(false);
+                        console.log("failed to connect", error);
                       }
                       navigate("await-confirmation");
                     }}

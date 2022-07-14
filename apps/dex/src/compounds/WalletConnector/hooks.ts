@@ -21,11 +21,17 @@ const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
 };
 
 export function useCosmosNativeBalance(
-  chainId: string,
-  address: string | undefined,
+  config: {
+    chainId: string;
+    networkId: NetworkKind;
+    address: string | undefined;
+  },
   options: { enabled?: boolean } = { enabled: true },
 ) {
+  const { chainId, networkId, address } = config;
+
   const { signer } = useSigner(chainId);
+
   const { client } = useSigningStargateClient(chainId);
   const { data: dexEnv } = useDexEnvironment();
   const { data: tokenStats } = usePoolStatsQuery();
@@ -35,9 +41,13 @@ export function useCosmosNativeBalance(
       return DEFAULT_NATIVE_BALANCE;
     }
 
-    const chain = dexEnv.chainConfigsByNetwork[chainId as NetworkKind];
+    const chain = dexEnv.chainConfigsByNetwork[networkId];
 
     if (!chain || !tokenStats?.pools) {
+      console.log("no chain or pools found", {
+        chainId,
+        networkId,
+      });
       return DEFAULT_NATIVE_BALANCE;
     }
 
@@ -85,15 +95,7 @@ export function useCosmosNativeBalance(
       denom: result.denom,
       dollarValue: formatNumberAsCurrency(dollarValue),
     };
-  }, [
-    address,
-    chainId,
-    client,
-    dexEnv,
-    signer,
-    tokenStats?.pools,
-    tokenStats?.rowanUSD,
-  ]);
+  }, [address, networkId, chainId, client, dexEnv, signer, tokenStats]);
 
   return useQuery(["ibc-native-balance", chainId, address], query, {
     enabled:

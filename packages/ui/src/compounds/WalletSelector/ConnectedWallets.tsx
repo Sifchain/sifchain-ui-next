@@ -46,7 +46,9 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
         >
           <ul className="grid gap-1">
             {props.accounts.map(([chainId, accounts]) => {
-              const chain = props.chains.find((x) => x.id === chainId);
+              const chain = props.chains.find(
+                (x) => x.id === chainId || x.chainId === chainId,
+              );
 
               const connectedAccountProps: ConnectedAccountProps = {
                 account: accounts[0] ?? "",
