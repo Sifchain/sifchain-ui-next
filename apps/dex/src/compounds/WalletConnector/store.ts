@@ -3,18 +3,18 @@ import { createStore } from "zustand-immer-store";
 
 export const useEnabledChainsStore = createStore(
   {
-    chainIds: new Array<string>(),
+    networks: new Array<string>(),
   },
   {
     createActions: (set) => ({
-      enableChain(chainId: string) {
+      enableNetwork(networkId: string) {
         set(({ state }) => {
-          state.chainIds = uniq([...state.chainIds, chainId]);
+          state.networks = uniq([...state.networks, networkId]);
         });
       },
-      disableChain(chainId: string) {
+      disableChain(networkId: string) {
         set(({ state }) => {
-          state.chainIds = without([chainId], state.chainIds);
+          state.networks = without([networkId], state.networks);
         });
       },
     }),

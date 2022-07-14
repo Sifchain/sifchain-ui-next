@@ -96,7 +96,7 @@ const WalletConnector: FC = () => {
 
   const syncCosmosAccounts = useCallback(async () => {
     const enabledChains = chains.filter((x) =>
-      enabledChainsState.chainIds.includes(x.id),
+      enabledChainsState.networks.includes(x.id),
     );
 
     if (cosmosActiveConnector) {
@@ -166,7 +166,7 @@ const WalletConnector: FC = () => {
   }, [
     chains,
     cosmosActiveConnector,
-    enabledChainsState.chainIds,
+    enabledChainsState.networks,
     evmConnectors,
   ]);
 
@@ -252,7 +252,7 @@ const WalletConnector: FC = () => {
             break;
         }
 
-        actions.enableChain(chainId);
+        actions.enableNetwork(chainId);
       } catch (error) {
         console.log("failed to connect", error);
       }
@@ -278,17 +278,16 @@ const WalletConnector: FC = () => {
 
       switch (selected.type) {
         case "ibc":
-          {
-            setAccounts(omit([chainId]));
-          }
+          // nothing to do here
           break;
         case "eth": {
           disconnectEVM();
-          setAccounts(omit([chainId]));
         }
       }
 
-      actions.disableChain(chainId);
+      setAccounts(omit([chainId]));
+
+      actions.disableChain(selected.id);
     },
     [actions, chains, disconnectEVM],
   );
