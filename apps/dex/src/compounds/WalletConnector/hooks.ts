@@ -21,14 +21,14 @@ const DEFAULT_NATIVE_BALANCE: NativeBalanceResult = {
 };
 
 export function useCosmosNativeBalance(
-  config: {
+  context: {
     chainId: string;
     networkId: NetworkKind;
     address: string | undefined;
   },
   options: { enabled?: boolean } = { enabled: true },
 ) {
-  const { chainId, networkId, address } = config;
+  const { chainId, networkId, address } = context;
 
   const { signer } = useSigner(chainId);
 
@@ -106,12 +106,18 @@ export function useCosmosNativeBalance(
   });
 }
 
-export function useEthNativeBalance(chainId: string | number, address: string) {
+export function useEthNativeBalance(
+  context: { chainId: string | number },
+  address: string,
+) {
   const { data: dexEnv } = useDexEnvironment();
   const { data: tokenStats } = usePoolStatsQuery();
 
   const balanceQuery = useBalance({
-    chainId: typeof chainId === "string" ? parseInt(chainId, 16) : chainId,
+    chainId:
+      typeof context.chainId === "string"
+        ? parseInt(context.chainId, 16)
+        : context.chainId,
     addressOrName: address,
     staleTime: 3600_000,
   });
@@ -121,7 +127,7 @@ export function useEthNativeBalance(chainId: string | number, address: string) {
       return DEFAULT_NATIVE_BALANCE;
     }
 
-    const chain = dexEnv.chainConfigsByNetwork[chainId as NetworkKind];
+    const chain = dexEnv.chainConfigsByNetwork[context.chainId as NetworkKind];
 
     if (!chain || !tokenStats?.pools) {
       return DEFAULT_NATIVE_BALANCE;
@@ -162,13 +168,13 @@ export function useEthNativeBalance(chainId: string | number, address: string) {
     };
   }, [
     balanceQuery.data,
-    chainId,
+    context.chainId,
     dexEnv,
     tokenStats?.pools,
     tokenStats?.rowanUSD,
   ]);
 
-  return useQuery(["eth-native-balance", chainId, address], query, {
+  return useQuery(["eth-native-balance", context.chainId, address], query, {
     enabled: Boolean(balanceQuery.isSuccess),
     staleTime: 3600_000,
     refetchOnMount: false,

@@ -339,7 +339,7 @@ const EthConnectedAccountItem: RenderConnectedAccount = ({
   account,
   ...props
 }) => {
-  const { data } = useEthNativeBalance(networkId, account);
+  const { data } = useEthNativeBalance({ chainId: networkId }, account);
 
   return (
     <ConnectedAccount
