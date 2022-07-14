@@ -27,30 +27,30 @@ const HistoryTable = () => {
         </thead>
         <tbody className="bg-gray-850">
           <tr>
-            <td className="px-4 py-3">07-05 11:23:51 AM</td>
+            <td className="px-4 py-3">2022-07-12</td>
+            <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
               <Slug color="green" title="Long" />
             </td>
-            <td className="px-4 py-3">5.00000000</td>
-            <td>2x</td>
+            <td>ETH</td>
+            <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="0.002 (0.0%)" />
+              <Slug color="green" title="$2,000.15" />
             </td>
-            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <tr>
-            <td className="px-4 py-3">07-05 11:23:51 AM</td>
+            <td className="px-4 py-3">2022-07-12</td>
+            <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
               <Slug color="red" title="Short" />
             </td>
-            <td className="px-4 py-3">5.00000000</td>
-            <td>2x</td>
+            <td>ETH</td>
+            <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="-0.002 (0.0%)" />
+              <Slug color="red" title="-$2,000.15" />
             </td>
-            <td className="px-4 py-3">&ndash;</td>
           </tr>
           <NoResultsTr />
         </tbody>
