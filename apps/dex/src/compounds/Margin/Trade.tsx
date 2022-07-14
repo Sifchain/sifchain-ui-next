@@ -165,24 +165,6 @@ const Trade: NextPage = () => {
                 </label>
               </div>
             </li>
-            <li className="grid grid-cols-4 gap-2">
-              <Button
-                variant="primary"
-                as="button"
-                size="md"
-                className="col-span-3 rounded"
-              >
-                Place buy order
-              </Button>
-              <Button
-                variant="outline"
-                as="button"
-                size="sm"
-                className="ring-1 rounded self-center"
-              >
-                Clear
-              </Button>
-            </li>
           </ul>
           <ul className="pt-4 flex flex-col gap-4">
             <li>
@@ -235,6 +217,24 @@ const Trade: NextPage = () => {
                 <span>$1,900</span>
               </div>
               <p className="text-gray-400 text-xs w-full text-right">1.9 ETH</p>
+            </li>
+            <li className="grid grid-cols-4 gap-2">
+              <Button
+                variant="primary"
+                as="button"
+                size="md"
+                className="col-span-3 rounded"
+              >
+                Place buy order
+              </Button>
+              <Button
+                variant="outline"
+                as="button"
+                size="sm"
+                className="ring-1 rounded self-center"
+              >
+                Clear
+              </Button>
             </li>
           </ul>
         </aside>
