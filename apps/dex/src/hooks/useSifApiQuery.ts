@@ -70,6 +70,7 @@ export default function useSifApiQuery<
         "enabled" in options
           ? options.enabled && Boolean(client)
           : Boolean(client),
+      // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
     },
   );

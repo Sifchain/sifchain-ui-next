@@ -31,14 +31,14 @@ export async function getConfig(
   sifchainAssetTag: ChainNetwork = "sifchain.localnet",
   ethereumAssetTag: ChainNetwork = "ethereum.localnet",
 ): Promise<AppConfig> {
-  const [_, env] = sifchainAssetTag.split(".") as [NetworkKind, NetworkEnv];
+  const [, env] = sifchainAssetTag.split(".") as [NetworkKind, NetworkEnv];
 
   const [sifchainAssets, ethereumAssets] = await Promise.all([
     fetchConfig("sifchain", env),
     fetchConfig("ethereum", env),
   ]);
 
-  if (process.env["NODE_ENV"] === "development") {
+  if (process.env["NODE_ENV"] !== "production") {
     console.log(
       "Using development config",
       applicationNetworkEnv,

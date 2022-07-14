@@ -1,12 +1,18 @@
 import clsx from "clsx";
 import type { FC } from "react";
 
+import { AsyncImage } from "../../components";
 import { AssetIcon } from "./AssetIcon";
 import type { TokenEntry } from "./types";
 
 export type TokenItemProps = Pick<
   TokenEntry,
-  "name" | "symbol" | "displaySymbol" | "imageUrl" | "hasDarkIcon"
+  | "name"
+  | "symbol"
+  | "displaySymbol"
+  | "imageUrl"
+  | "hasDarkIcon"
+  | "homeNetworkUrl"
 > & {
   balance: string;
   selected: boolean;
@@ -21,10 +27,20 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
         "bg-gray-600": props.active || props.selected,
       })}
     >
-      <AssetIcon
-        imageUrl={props.imageUrl ?? ""}
-        hasDarkIcon={Boolean(props.hasDarkIcon)}
-      />
+      <div className="relative">
+        <AssetIcon
+          imageUrl={props.imageUrl ?? ""}
+          hasDarkIcon={Boolean(props.hasDarkIcon)}
+        />
+        {props.homeNetworkUrl && (
+          <figure className="h-5 w-5 absolute top-4 ring-2 ring-gray-800 -right-2 rounded-full overflow-hidden bg-gray-800">
+            <AsyncImage
+              src={props.homeNetworkUrl}
+              className="object-cover origin-center scale-[1.35] grayscale invert"
+            />
+          </figure>
+        )}
+      </div>
       <div className="grid flex-1">
         <span className="text-white text-base font-semibold uppercase">
           {props.displaySymbol}

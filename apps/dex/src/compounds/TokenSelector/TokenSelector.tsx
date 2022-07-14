@@ -20,6 +20,9 @@ const toTokenEntry = <T extends IAsset>(x: T) => ({
   displaySymbol: x.displaySymbol,
   decimals: x.decimals,
   network: x.network,
+  homeNetwork: x.homeNetwork,
+  homeNetworkUrl:
+    x.network !== x.homeNetwork ? `/chains/${x.homeNetwork}.png` : undefined,
   imageUrl: x.imageUrl ?? "",
   balance: "",
   hasDarkIcon: Boolean(x.hasDarkIcon),

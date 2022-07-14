@@ -1,4 +1,4 @@
-import type { ChainConfig } from "@sifchain/common";
+import type { ChainConfig, NetworkKind } from "@sifchain/common";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
@@ -21,6 +21,7 @@ import {
 
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useCosmosNativeBalance, useEthNativeBalance } from "./hooks";
+import { useEnabledChainsStore } from "./store";
 
 const WALLET_ICONS = {
   keplr: <KeplrIcon />,
@@ -44,6 +45,8 @@ const WALLET_LABELS: Record<WalletKind, string> = {
 
 const WalletConnector: FC = () => {
   const { data } = useDexEnvironment();
+
+  const { state: enabledChainsState, actions } = useEnabledChainsStore();
 
   const chains = useMemo<ChainEntry[]>(() => {
     if (!data?.chainConfigsByNetwork) {
@@ -77,16 +80,13 @@ const WalletConnector: FC = () => {
     connectors: cosmosConnectors,
     connect: connectCosmos,
     isConnected: isCosmosConnected,
-    connectingStatus: cosmosConnectingStatus,
     activeConnector: cosmosActiveConnector,
-    disconnect: disconnectCosmos,
   } = useCosmConnect();
 
   const {
     connectors: evmConnectors,
     connectAsync: connectEvm,
     isConnected: isEthConnected,
-    pendingConnector: pendingEvmConnector,
     data: evmData,
   } = useEtherConnect();
 
@@ -95,19 +95,32 @@ const WalletConnector: FC = () => {
   const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
   const syncCosmosAccounts = useCallback(async () => {
-    const ethActiveConnector = evmConnectors.find((x) => x.ready);
+    const enabledChains = chains.filter((x) =>
+      enabledChainsState.networks.includes(x.id),
+    );
 
     if (cosmosActiveConnector) {
       const entries = await Promise.all(
-        chains
+        enabledChains
           .filter((chain) => chain.type === "ibc")
           .flatMap(async (chain) => {
             try {
-              const signer = await cosmosActiveConnector.getSigner(chain.id);
+              const signer = await cosmosActiveConnector.getSigner(
+                chain.chainId,
+              );
               const accounts = await signer.getAccounts();
 
               return [chain.chainId, accounts.map((x) => x.address)] as const;
             } catch (error) {
+              if (
+                error instanceof Error &&
+                error.message.includes("Unknown chain info")
+              ) {
+                //
+
+                console.log("failed to read chain", chain.chainId);
+              }
+              console.log({ failed: (error as Error)?.message });
               return [chain.chainId, []] as const;
             }
           }),
@@ -123,9 +136,11 @@ const WalletConnector: FC = () => {
       }));
     }
 
+    const ethActiveConnector = evmConnectors.find((x) => x.ready);
+
     if (ethActiveConnector) {
       const entries = await Promise.all(
-        chains
+        enabledChains
           .filter((chain) => chain.type === "eth")
           .flatMap(async (chain) => {
             try {
@@ -148,7 +163,12 @@ const WalletConnector: FC = () => {
         ...ethAccounts,
       }));
     }
-  }, [chains, cosmosActiveConnector, evmConnectors]);
+  }, [
+    chains,
+    cosmosActiveConnector,
+    enabledChainsState.networks,
+    evmConnectors,
+  ]);
 
   useEffect(() => {
     syncCosmosAccounts();
@@ -194,43 +214,55 @@ const WalletConnector: FC = () => {
           case "ibc":
             {
               const connector = cosmosConnectors.find((x) => x.id === walletId);
-              if (connector) {
-                console.log("connecting to", connector);
+
+              if (!connector) {
+                console.error(`No connector found for wallet: ${walletId}`);
+                return;
+              }
+
+              try {
                 await connectCosmos(connector);
-              } else {
-                console.log("connector not found: ", chainId);
+              } catch (error) {
+                console.log(
+                  `Error connecting to ${chainId} via ${walletId}`,
+                  error,
+                );
               }
             }
             break;
           case "eth":
             {
               const connector = evmConnectors.find((x) => x.id === walletId);
-              if (connector) {
-                const isAuthorized = await connector.isAuthorized();
 
-                if (isAuthorized) {
-                  console.log("already authorized");
-                  const account = await connector.getAccount();
-                  setAccounts(assoc("ethereum", [account]));
-                } else {
-                  const account = await connectEvm(connector);
-                  setAccounts(assoc("ethereum", [account]));
-                }
+              if (!connector) {
+                console.error(`No connector found for wallet: ${walletId}`);
+                return;
+              }
+
+              const isAuthorized = await connector.isAuthorized();
+
+              if (isAuthorized) {
+                const account = await connector.getAccount();
+                setAccounts(assoc("ethereum", [account]));
               } else {
-                console.log("connector not found");
+                const account = await connectEvm(connector);
+                setAccounts(assoc("ethereum", [account]));
               }
             }
             break;
         }
+
+        actions.enableNetwork(chainId);
       } catch (error) {
         console.log("failed to connect", error);
       }
     },
     [
       connectorsById,
+      actions,
       cosmosConnectors,
-      evmConnectors,
       connectCosmos,
+      evmConnectors,
       connectEvm,
     ],
   );
@@ -246,36 +278,27 @@ const WalletConnector: FC = () => {
 
       switch (selected.type) {
         case "ibc":
-          {
-            if (cosmosActiveConnector) {
-              console.log("disconnecting from", cosmosActiveConnector); //
-              disconnectCosmos(cosmosActiveConnector);
-              const { chainInfos } = cosmosActiveConnector.options;
-              const chainIds = chainInfos.map(
-                (chain: ChainConfig) => chain.chainId,
-              );
-              setAccounts(omit(chainIds));
-            }
-          }
+          // nothing to do here
           break;
-        case "eth":
+        case "eth": {
           disconnectEVM();
+        }
       }
+
+      setAccounts(omit([chainId]));
+      actions.disableChain(selected.id);
     },
-    [chains, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
+    [actions, chains, disconnectEVM],
   );
 
   return (
     <WalletSelector
-      chains={chains.map((x) => ({
-        ...x,
-        connected: Boolean(accounts[x.id]?.length ?? 0),
+      chains={chains.map((chain) => ({
+        ...chain,
+        connected: Boolean(accounts[chain.id]?.length ?? 0),
       }))}
       wallets={wallets}
       accounts={accounts}
-      isLoading={
-        Boolean(pendingEvmConnector) || cosmosConnectingStatus === "pending"
-      }
       onDisconnect={handleDisconnectionRequest}
       onConnect={handleConnectionRequest}
       renderConnectedAccount={ConnectedAccountItem}
@@ -292,47 +315,35 @@ const ConnectedAccountItem: RenderConnectedAccount = (props) => {
   return <RenderComponent {...props} />;
 };
 
-const IbcConnectedAccountItem: RenderConnectedAccount = ({
-  chainId,
-  chainType,
-  account,
-  ...props
-}) => {
-  const { data } = useCosmosNativeBalance(
-    chainId.match(/-\d+$/) !== null ? chainId.split("-")[0] ?? "" : chainId,
-    account,
-  );
+const IbcConnectedAccountItem: RenderConnectedAccount = (props) => {
+  const { data } = useCosmosNativeBalance({
+    chainId: props.chainId,
+    networkId: props.networkId as NetworkKind,
+    address: props.account,
+  });
 
   return (
     <ConnectedAccount
       {...props}
-      chainId={chainId}
-      chainType={chainType}
-      account={account}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={data?.amount?.toString() ?? ""}
+      nativeAssetBalance={data?.amount?.toFloatApproximation().toFixed(4) ?? ""}
     />
   );
 };
 
 const EthConnectedAccountItem: RenderConnectedAccount = ({
-  chainId,
-  chainType,
+  networkId,
   account,
   ...props
 }) => {
-  const { data } = useEthNativeBalance(
-    chainId.match(/-\d+$/) !== null ? chainId.split("-")[0] ?? "" : chainId,
-    account,
-  );
+  const { data } = useEthNativeBalance({ chainId: networkId }, account);
 
   return (
     <ConnectedAccount
       {...props}
-      chainId={chainId}
-      chainType={chainType}
       account={account}
+      networkId={networkId}
       nativeAssetDollarValue={data?.dollarValue ?? ""}
       nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
       nativeAssetBalance={data?.amount?.toString() ?? ""}

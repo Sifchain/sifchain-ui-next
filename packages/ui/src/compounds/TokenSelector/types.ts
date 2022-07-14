@@ -8,6 +8,7 @@ export type TokenEntry = {
   homeNetwork?: string;
   label?: string;
   imageUrl?: string;
+  homeNetworkUrl?: string;
   hasDarkIcon?: boolean;
   balance?: string;
 };
