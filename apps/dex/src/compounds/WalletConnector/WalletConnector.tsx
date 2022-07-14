@@ -286,7 +286,6 @@ const WalletConnector: FC = () => {
       }
 
       setAccounts(omit([chainId]));
-
       actions.disableChain(selected.id);
     },
     [actions, chains, disconnectEVM],
