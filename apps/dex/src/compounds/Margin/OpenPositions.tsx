@@ -72,24 +72,24 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <td className="px-4 py-3">
               <Slug color="green" title="Long" />
             </td>
-            <td className="px-4 py-3">5.00000000</td>
-            <td className="px-4 py-3">2x</td>
-            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">ETH</td>
+            <td className="px-4 py-3">2.5</td>
+            <td className="px-4 py-3">1.9x</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="0.002 (0.0%)" />
+              <Slug color="green" title="$2,000.15" />
             </td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">Close</td>
+            <td className="px-4 py-3">18.52%</td>
+            <td className="px-4 py-3">$10.25</td>
+            <td className="px-4 py-3">2 hrs, 5 mins</td>
+            <td className="px-4 py-3">$80.15</td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
               &ndash;
             </td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              &ndash;
+              2022-07-12
             </td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              &ndash;
+              5 hrs
             </td>
           </tr>
           <tr>
@@ -97,24 +97,24 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <td className="px-4 py-3">
               <Slug color="red" title="Short" />
             </td>
-            <td className="px-4 py-3">5.00000000</td>
-            <td className="px-4 py-3">2x</td>
-            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3">ETH</td>
+            <td className="px-4 py-3">2.5</td>
+            <td className="px-4 py-3">1.9x</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="-0.002 (0.0%)" />
+              <Slug color="red" title="-$2,000.15" />
             </td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">Close</td>
+            <td className="px-4 py-3">18.52%</td>
+            <td className="px-4 py-3">$10.25</td>
+            <td className="px-4 py-3">2 hrs, 5 mins</td>
+            <td className="px-4 py-3">$80.15</td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
               &ndash;
             </td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              &ndash;
+              2022-07-12
             </td>
             <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              &ndash;
+              5 hrs
             </td>
           </tr>
           <NoResultsTr colSpan={cols.length} />
