@@ -1,5 +1,3 @@
-import type { NextPage } from "next";
-
 import { Slug } from "~/components/Slug";
 
 const OPEN_POSITIONS_HEADER_ITEMS = [
@@ -16,17 +14,52 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   "Health",
   "Date Opened",
   "Time Open",
-];
+] as const;
 
-const Trade: NextPage = () => {
+type HideColsUnion =
+  | "pool"
+  | "side"
+  | "asset"
+  | "amount"
+  | "base-leverage"
+  | "unrealized-p-l"
+  | "interest-rate"
+  | "unsettled-interest"
+  | "next-payment"
+  | "paid-interest"
+  | "health"
+  | "date-opened"
+  | "time-open";
+type OpenPositionsTableProps = {
+  hideCols?: HideColsUnion[];
+};
+const OpenPositionsTable = (props: OpenPositionsTableProps) => {
+  const { hideCols } = props;
+  let cols = [...OPEN_POSITIONS_HEADER_ITEMS];
+
+  if (typeof hideCols !== "undefined") {
+    cols = cols.filter((col) => {
+      const itemKey = fromColNameToItemKey(col);
+      if (hideCols.includes(itemKey)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto overflow-scroll w-full text-left text-xs">
         <thead className="bg-gray-800">
           <tr className="text-gray-400">
-            {OPEN_POSITIONS_HEADER_ITEMS.map((title) => {
+            {cols.map((title) => {
+              const itemKey = fromColNameToItemKey(title);
               return (
-                <th key={title} className="font-normal px-4 py-3">
+                <th
+                  key={itemKey}
+                  data-item-key={itemKey}
+                  className="font-normal px-4 py-3"
+                >
                   {title}
                 </th>
               );
@@ -49,9 +82,15 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">Close</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
           </tr>
           <tr>
             <td className="px-4 py-3">ETH / ROWAN</td>
@@ -68,28 +107,38 @@ const Trade: NextPage = () => {
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">&ndash;</td>
             <td className="px-4 py-3">Close</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
-            <td className="px-4 py-3">&ndash;</td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
+            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+              &ndash;
+            </td>
           </tr>
-          <NoResultsTr />
+          <NoResultsTr colSpan={cols.length} />
         </tbody>
       </table>
     </div>
   );
 };
 
-function NoResultsTr() {
+type NoResultsTrProps = {
+  colSpan: number;
+};
+function NoResultsTr(props: NoResultsTrProps) {
   return (
     <tr>
-      <td
-        colSpan={OPEN_POSITIONS_HEADER_ITEMS.length}
-        className="text-gray-400 text-center p-20"
-      >
+      <td colSpan={props.colSpan} className="text-gray-400 text-center p-20">
         You have no open positions.
       </td>
     </tr>
   );
 }
 
-export default Trade;
+function fromColNameToItemKey(name: string) {
+  return name.toLocaleLowerCase().replace(/[^a-z]+/g, "-") as HideColsUnion;
+}
+
+export default OpenPositionsTable;
