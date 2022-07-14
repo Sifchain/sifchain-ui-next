@@ -1,5 +1,3 @@
-import type { NextPage } from "next";
-
 import { Slug } from "~/components/Slug";
 
 const HISTORY_HEADER_ITEMS = [
@@ -12,7 +10,7 @@ const HISTORY_HEADER_ITEMS = [
   "Realized P&L",
 ];
 
-const Trade: NextPage = () => {
+const HistoryTable = () => {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto overflow-scroll w-full text-left text-xs">
@@ -74,4 +72,4 @@ function NoResultsTr() {
   );
 }
 
-export default Trade;
+export default HistoryTable;
