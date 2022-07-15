@@ -12,6 +12,7 @@ import {
   RacetrackSpinnerIcon,
   SearchInput,
   SortIcon,
+  LockIcon,
 } from "../../components";
 import { useSortedArray } from "../../hooks";
 import { TokenItem, TokenItemProps } from "./TokenItem";
@@ -21,10 +22,15 @@ const ListContainer = tw.ul`
   grid gap-2 max-h-64 overflow-y-scroll -mx-3 no-scrollbar
 `;
 
-const AssetIcon: FC<{ imageUrl: string; hasDarkIcon?: boolean }> = (props) => (
+const AssetIcon: FC<{
+  imageUrl: string;
+  hasDarkIcon?: boolean;
+  size: TokenSelectorProps["size"];
+}> = (props) => (
   <figure
     className={clsx(
-      "h-6 w-6 rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
+      props.size === "xs" ? "h4- w-4" : "h-6 w-6",
+      "rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
       },
@@ -33,18 +39,23 @@ const AssetIcon: FC<{ imageUrl: string; hasDarkIcon?: boolean }> = (props) => (
     {props.imageUrl ? (
       <AsyncImage src={props.imageUrl} />
     ) : (
-      <RacetrackSpinnerIcon className="h-6 w-6" />
+      <RacetrackSpinnerIcon
+        className={clsx(props.size === "xs" ? "h4- w-4" : "h-6 w-6")}
+      />
     )}
   </figure>
 );
 
 export type TokenSelectorProps = {
-  label: string;
+  label?: string;
   modalTitle: string;
   tokens: TokenEntry[];
   renderTokenItem?: FC<TokenItemProps>;
   value?: TokenEntry | undefined;
   onChange?: (token: TokenEntry) => void;
+  size?: "xs";
+  buttonClassName?: string;
+  readonly?: boolean;
 };
 
 type SortKeys = keyof TokenEntry;
@@ -90,20 +101,25 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
   return (
     <>
-      <div>
-        <span className="input-label">{props.label}</span>
+      <div className={clsx("flex flex-col", props.size === "xs" && "text-xs")}>
+        {props.label && <span className="input-label">{props.label}</span>}
         <button
-          className="input flex flex-1 items-center gap-4"
+          className={clsx(
+            "input flex flex-1 items-center gap-4",
+            props.buttonClassName,
+          )}
           onClick={(e) => {
             e.preventDefault();
             setIsOpen(true);
           }}
+          disabled={props.readonly}
         >
           {selectedToken ? (
             <>
               <AssetIcon
                 imageUrl={selectedToken.imageUrl ?? ""}
                 hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
+                size={props.size}
               />
               <span className="uppercase text-white">
                 {selectedToken.displaySymbol}
@@ -111,11 +127,25 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
             </>
           ) : (
             <>
-              <AssetIcon imageUrl="" />
+              <AssetIcon imageUrl="" size={props.size} />
               <span className="uppercase text-white">...</span>
             </>
           )}
-          <ChevronDownIcon className="h-4 w-4 text-gray-400" />
+          {props.readonly ? (
+            <LockIcon
+              className={clsx(
+                "ml-auto",
+                props.size === "xs" ? "h-3 w-3" : "h-4 w-4",
+              )}
+            />
+          ) : (
+            <ChevronDownIcon
+              className={clsx(
+                "ml-auto text-gray-400",
+                props.size === "xs" ? "h-3 w-3" : "h-4 w-4",
+              )}
+            />
+          )}
         </button>
       </div>
       <Modal
