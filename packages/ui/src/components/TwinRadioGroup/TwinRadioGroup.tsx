@@ -5,13 +5,11 @@ import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
 
 export type TwinRadioGroup = {
-  options: {
-    title: string;
-    value: string;
-  }[];
-  value?: string;
-  onChange?: undefined | null | ((value: string) => void);
+  className?: string;
   name: string;
+  onChange?: undefined | null | ((value: string) => void);
+  options: { title: string; value: string }[];
+  value?: string;
 };
 
 export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
@@ -32,7 +30,10 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
 
   return (
     <RadioGroup
-      className="grid grid-cols-2 w-full font-semibold"
+      className={clsx(
+        "grid grid-cols-2 w-full font-semibold text-xs",
+        props.className,
+      )}
       value={value}
       onChange={(option: string) => {
         if (props.onChange) {
@@ -52,7 +53,7 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
             value={item.value}
             className={({ checked, active }) =>
               clsx(
-                "p-2 text-center text-sm cursor-pointer",
+                "p-2 text-center cursor-pointer",
                 rounded,
                 checked
                   ? "bg-gray-700 text-gray-200 z-10"
