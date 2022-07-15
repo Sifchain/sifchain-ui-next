@@ -1,3 +1,5 @@
+import { NoResultsRow } from "./NoResultsRow";
+
 const HISTORY_HEADER_ITEMS = [
   "Date closed",
   "Time open",
@@ -50,24 +52,14 @@ const HistoryTable = () => {
               <span className="text-red-400">-$2,000.15</span>
             </td>
           </tr>
-          <NoResultsTr />
+          <NoResultsRow
+            colSpan={HISTORY_HEADER_ITEMS.length}
+            message="History not available. Try again later."
+          />
         </tbody>
       </table>
     </div>
   );
 };
-
-function NoResultsTr() {
-  return (
-    <tr>
-      <td
-        colSpan={HISTORY_HEADER_ITEMS.length}
-        className="text-gray-400 text-center p-20"
-      >
-        History not available. Try again later.
-      </td>
-    </tr>
-  );
-}
 
 export default HistoryTable;

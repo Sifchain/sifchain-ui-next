@@ -1,3 +1,5 @@
+import { NoResultsRow } from "./NoResultsRow";
+
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
@@ -115,25 +117,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               5 hrs
             </td>
           </tr>
-          <NoResultsTr colSpan={cols.length} />
+          <NoResultsRow
+            colSpan={cols.length}
+            message="You have no open positions."
+          />
         </tbody>
       </table>
     </div>
   );
 };
-
-type NoResultsTrProps = {
-  colSpan: number;
-};
-function NoResultsTr(props: NoResultsTrProps) {
-  return (
-    <tr>
-      <td colSpan={props.colSpan} className="text-gray-400 text-center p-20">
-        You have no open positions.
-      </td>
-    </tr>
-  );
-}
 
 function fromColNameToItemKey(name: string) {
   return name.toLocaleLowerCase().replace(/[^a-z]+/g, "-") as HideColsUnion;
