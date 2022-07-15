@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 
 import { Button, TwinRadioGroup } from "@sifchain/ui";
-import { Slug } from "~/components/Slug";
+
+import TokenSelector from "~/compounds/TokenSelector";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositions";
 
 const Trade: NextPage = () => {
@@ -83,13 +84,17 @@ const Trade: NextPage = () => {
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
-                <select className="text-xs bg-gray-700 rounded border-0">
-                  <option>ROWAN</option>
-                </select>
+                <TokenSelector
+                  modalTitle="Collateral"
+                  value={"rowan"}
+                  onChange={(token) => console.log(token)}
+                  size="xs"
+                  buttonClassName="border-none rounded"
+                />
                 <input
                   type="text"
                   defaultValue="100,000"
-                  className="text-xs bg-gray-700 rounded border-0"
+                  className="text-right text-xs bg-gray-700 rounded border-0"
                 />
               </div>
               <span className="text-gray-200 text-right mt-1">
@@ -99,13 +104,18 @@ const Trade: NextPage = () => {
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
-                <select className="text-xs bg-gray-700 rounded border-0">
-                  <option>ETH</option>
-                </select>
+                <TokenSelector
+                  modalTitle="Position"
+                  value={"ceth"}
+                  onChange={(token) => console.log(token)}
+                  size="xs"
+                  buttonClassName="border-none rounded"
+                  readonly
+                />
                 <input
                   type="text"
                   defaultValue="1"
-                  className="text-xs bg-gray-700 rounded border-0"
+                  className="text-right text-xs bg-gray-700 rounded border-0"
                 />
               </div>
               <span className="text-gray-200 text-right mt-1">
