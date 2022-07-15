@@ -27,15 +27,34 @@ export default function useTokenRegistryQuery() {
       return [] as Array<IAsset & { chainId: string; ibcDenom: string }>;
     }
 
-    const filteredEntries = data?.registry?.entries
-      .map((entry) => ({
-        entry,
-        asset:
+    const { filteredEntries } = data.registry.entries.reduce(
+      (acc, entry) => {
+        const asset =
           indexedBySymbol[entry.denom.toLowerCase()] ||
           indexedBySymbol[entry.baseDenom.toLowerCase()] ||
-          indexedBySymbol[entry.denom.slice(1).toLowerCase()],
-      }))
-      .filter((x) => Boolean(x.asset));
+          indexedBySymbol[entry.denom.slice(1).toLowerCase()];
+
+        if (asset && acc.symbols.indexOf(asset.symbol) === -1) {
+          acc.symbols.push(asset.symbol);
+          acc.filteredEntries.push({
+            entry,
+            asset,
+          });
+        }
+
+        return acc;
+      },
+      {
+        symbols: [],
+        filteredEntries: [],
+      } as {
+        symbols: string[];
+        filteredEntries: {
+          entry: typeof data.registry.entries[0];
+          asset: IAsset;
+        }[];
+      },
+    );
 
     return filteredEntries.map(({ asset, entry }) => ({
       ...(asset as IAsset),
