@@ -121,7 +121,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
                 size={props.size}
               />
-              <span className="uppercase text-white">
+              <span className="uppercase text-white overflow-hidden text-ellipsis whitespace-nowrap">
                 {selectedToken.displaySymbol}
               </span>
             </>
