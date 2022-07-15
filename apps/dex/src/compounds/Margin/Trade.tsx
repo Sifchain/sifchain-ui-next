@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { Button } from "@sifchain/ui";
+import { Button, TwinRadioGroup } from "@sifchain/ui";
 import { Slug } from "~/components/Slug";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositions";
 
@@ -133,37 +133,20 @@ const Trade: NextPage = () => {
                   2x
                 </Button>
               </div>
-              <div className="grid grid-cols-2 font-semibold mt-2">
-                <label
-                  htmlFor="inputSideLong"
-                  className="flex flex-row cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    id="inputSideLong"
-                    name="marginSide"
-                    className="sr-only"
-                    defaultChecked={true}
-                  />
-                  <span className="flex-1 text-center p-2 rounded-tl rounded-bl">
-                    Long
-                  </span>
-                </label>
-                <label
-                  htmlFor="inputSideShort"
-                  className="flex flex-row cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    id="inputSideShort"
-                    name="marginSide"
-                    className="sr-only"
-                  />
-                  <span className="flex-1 text-center p-2 rounded-tr rounded-br">
-                    Short
-                  </span>
-                </label>
-              </div>
+              <TwinRadioGroup
+                className="mt-2"
+                name="margin-side"
+                options={[
+                  {
+                    title: "Long",
+                    value: "long",
+                  },
+                  {
+                    title: "Short",
+                    value: "short",
+                  },
+                ]}
+              />
             </li>
           </ul>
           <ul className="pt-4 flex flex-col gap-4">
