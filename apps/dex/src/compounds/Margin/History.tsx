@@ -1,5 +1,3 @@
-import { Slug } from "~/components/Slug";
-
 const HISTORY_HEADER_ITEMS = [
   "Date closed",
   "Time open",
@@ -31,12 +29,12 @@ const HistoryTable = () => {
             <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="Long" />
+              <span className="text-green-400">Long</span>
             </td>
             <td>ETH</td>
             <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="$2,000.15" />
+              <span className="text-green-400">$2,000.15</span>
             </td>
           </tr>
           <tr>
@@ -44,12 +42,12 @@ const HistoryTable = () => {
             <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="Short" />
+              <span className="text-red-400">Short</span>
             </td>
             <td>ETH</td>
             <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="-$2,000.15" />
+              <span className="text-red-400">-$2,000.15</span>
             </td>
           </tr>
           <NoResultsTr />

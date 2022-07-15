@@ -1,5 +1,3 @@
-import { Slug } from "~/components/Slug";
-
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
@@ -70,13 +68,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <tr>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="Long" />
+              <span className="text-green-400">Long</span>
             </td>
             <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">1.9x</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="$2,000.15" />
+              <span className="text-green-400">$2,000.15</span>
             </td>
             <td className="px-4 py-3">18.52%</td>
             <td className="px-4 py-3">$10.25</td>
@@ -95,13 +93,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <tr>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="Short" />
+              <span className="text-red-400">Short</span>
             </td>
             <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">1.9x</td>
             <td className="px-4 py-3">
-              <Slug color="red" title="-$2,000.15" />
+              <span className="text-red-400">-$2,000.15</span>
             </td>
             <td className="px-4 py-3">18.52%</td>
             <td className="px-4 py-3">$10.25</td>

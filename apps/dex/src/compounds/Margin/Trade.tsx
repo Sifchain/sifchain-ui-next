@@ -30,14 +30,14 @@ const Trade: NextPage = () => {
           <li className="text-gray-300 pb-2">ETH Price</li>
           <li className="flex-1 flex items-center font-semibold">
             <span className="mr-2">$1,000</span>
-            <Slug color="red" title={`(-1.3%)`} />
+            <span className="text-red-400">(-1.3%)</span>
           </li>
         </ul>
         <ul className="flex flex-col">
           <li className="text-gray-300 pb-2">ROWAN Price</li>
           <li className="flex-1 flex items-center font-semibold">
             <span className="mr-2">$.006</span>
-            <Slug color="green" title={`(+2.3%)`} />
+            <span className="text-green-400">(+2.3%)</span>
           </li>
         </ul>
         <ul className="flex flex-col">
