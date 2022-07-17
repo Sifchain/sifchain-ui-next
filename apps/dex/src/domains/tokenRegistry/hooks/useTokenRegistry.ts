@@ -1,5 +1,6 @@
 import type { IAsset } from "@sifchain/common";
 import type { StringIndexed } from "@sifchain/ui";
+
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
@@ -24,31 +25,48 @@ export default function useTokenRegistryQuery() {
 
   const entries = useMemo<EnhancedRegitryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [] as Array<IAsset & { chainId: string; ibcDenom: string }>;
+      return [] as Array<EnhancedRegitryAsset>;
     }
 
-    const filteredEntries = data?.registry?.entries
-      .map((entry) => ({
-        entry,
-        asset:
-          indexedBySymbol[entry.denom.toLowerCase()] ||
+    const { enhancedAssets } = data.registry.entries.reduce(
+      (acc, entry) => {
+        const asset = (indexedBySymbol[entry.denom.toLowerCase()] ||
           indexedBySymbol[entry.baseDenom.toLowerCase()] ||
-          indexedBySymbol[entry.denom.slice(1).toLowerCase()],
-      }))
-      .filter((x) => Boolean(x.asset));
+          indexedBySymbol[
+            entry.denom.slice(1).toLowerCase()
+          ]) as EnhancedRegitryAsset;
 
-    return filteredEntries.map(({ asset, entry }) => ({
-      ...(asset as IAsset),
-      chainId:
-        env !== undefined &&
-        entry.denom === env.nativeAsset.symbol.toLowerCase()
-          ? env?.sifChainId
-          : entry.ibcCounterpartyChainId,
-      ibcDenom: entry.denom,
-      address: assetsQuery.data?.assets
-        ?.filter((x) => x.address !== undefined)
-        .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address,
-    }));
+        if (asset && acc.symbols.indexOf(asset.symbol) === -1) {
+          acc.symbols.push(asset.symbol);
+
+          const chainId =
+            env !== undefined &&
+            entry.denom === env.nativeAsset.symbol.toLowerCase()
+              ? env?.sifChainId
+              : entry.ibcCounterpartyChainId;
+
+          const address = assetsQuery.data?.assets
+            ?.filter((x) => x.address !== undefined)
+            .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address;
+
+          asset.chainId = chainId;
+          asset.ibcDenom = entry.denom;
+          asset.address = address;
+          acc.enhancedAssets.push(asset);
+        }
+
+        return acc;
+      },
+      {
+        symbols: [],
+        enhancedAssets: [],
+      } as {
+        symbols: string[];
+        enhancedAssets: EnhancedRegitryAsset[];
+      },
+    );
+
+    return enhancedAssets;
   }, [assetsQuery.data?.assets, data?.registry?.entries, env, indexedBySymbol]);
 
   const indices = useMemo(() => {
