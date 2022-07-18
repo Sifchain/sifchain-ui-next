@@ -66,7 +66,11 @@ const Margin: NextPage = () => {
     );
   }
 
-  return <PageLayout heading="Margin">{content}</PageLayout>;
+  return (
+    <PageLayout heading="Margin" className="max-w-margin">
+      {content}
+    </PageLayout>
+  );
 };
 
 export default Margin;
