@@ -1,8 +1,8 @@
 import { NoResultsRow } from "./NoResultsRow";
 
 const HISTORY_HEADER_ITEMS = [
-  "Date closed",
-  "Time open",
+  "Date Closed",
+  "Time Open",
   "Pool",
   "Side",
   "Asset",

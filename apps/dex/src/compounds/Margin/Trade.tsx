@@ -81,7 +81,7 @@ const Trade: NextPage = () => {
           </li>
           <li className="py-4">
             <div className="flex flex-col">
-              <span className="text-gray-300">ROWAN price</span>
+              <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">$.006</span>
                 <span className="text-red-400">(-1.3%)</span>
