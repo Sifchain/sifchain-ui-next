@@ -10,6 +10,7 @@ const HISTORY_HEADER_ITEMS = [
   "Realized P&L",
 ];
 
+const items = Array.from({ length: 200 }, (_, index) => index + 1);
 const HistoryTable = () => {
   return (
     <div className="overflow-x-auto">
@@ -26,19 +27,23 @@ const HistoryTable = () => {
           </tr>
         </thead>
         <tbody className="bg-gray-850">
-          <tr>
-            <td className="px-4 py-3">2022-07-12</td>
-            <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
-            <td className="px-4 py-3">ETH / ROWAN</td>
-            <td className="px-4 py-3">
-              <span className="text-green-400">Long</span>
-            </td>
-            <td>ETH</td>
-            <td className="px-4 py-3">2.5</td>
-            <td className="px-4 py-3">
-              <span className="text-green-400">$2,000.15</span>
-            </td>
-          </tr>
+          {items.map((item) => {
+            return (
+              <tr key={item}>
+                <td className="px-4 py-3">2022-07-12</td>
+                <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
+                <td className="px-4 py-3">ETH / ROWAN</td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">Long</span>
+                </td>
+                <td>ETH</td>
+                <td className="px-4 py-3">2.5</td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">$2,000.15</span>
+                </td>
+              </tr>
+            );
+          })}
           <tr>
             <td className="px-4 py-3">2022-07-12</td>
             <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>

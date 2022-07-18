@@ -33,6 +33,8 @@ type HideColsUnion =
 type OpenPositionsTableProps = {
   hideCols?: HideColsUnion[];
 };
+
+const items = Array.from({ length: 200 }, (_, index) => index + 1);
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const { hideCols } = props;
   let cols = [...OPEN_POSITIONS_HEADER_ITEMS];
@@ -67,33 +69,37 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           </tr>
         </thead>
         <tbody className="bg-gray-850">
-          <tr>
-            <td className="px-4 py-3">ETH / ROWAN</td>
-            <td className="px-4 py-3">
-              <span className="text-green-400">Long</span>
-            </td>
-            <td className="px-4 py-3">ETH</td>
-            <td className="px-4 py-3">2.5</td>
-            <td className="px-4 py-3">
-              <span className="px-2 py-2 bg-gray-800 rounded">1.9x</span>
-            </td>
-            <td className="px-4 py-3">
-              <span className="text-green-400">$2,000.15</span>
-            </td>
-            <td className="px-4 py-3">18.52%</td>
-            <td className="px-4 py-3">$10.25</td>
-            <td className="px-4 py-3">2 hrs, 5 mins</td>
-            <td className="px-4 py-3">$80.15</td>
-            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              &ndash;
-            </td>
-            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              2022-07-12
-            </td>
-            <td className="px-4 py-3" hidden={Boolean(hideCols)}>
-              5 hrs
-            </td>
-          </tr>
+          {items.map((item) => {
+            return (
+              <tr key={item}>
+                <td className="px-4 py-3">ETH / ROWAN</td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">Long</span>
+                </td>
+                <td className="px-4 py-3">ETH</td>
+                <td className="px-4 py-3">2.5</td>
+                <td className="px-4 py-3">
+                  <span className="px-2 py-2 bg-gray-800 rounded">1.9x</span>
+                </td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">$2,000.15</span>
+                </td>
+                <td className="px-4 py-3">18.52%</td>
+                <td className="px-4 py-3">$10.25</td>
+                <td className="px-4 py-3">2 hrs, 5 mins</td>
+                <td className="px-4 py-3">$80.15</td>
+                <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+                  &ndash;
+                </td>
+                <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+                  2022-07-12
+                </td>
+                <td className="px-4 py-3" hidden={Boolean(hideCols)}>
+                  5 hrs
+                </td>
+              </tr>
+            );
+          })}
           <tr>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
