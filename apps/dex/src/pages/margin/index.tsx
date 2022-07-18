@@ -52,24 +52,10 @@ const Margin: NextPage = () => {
     setQuerystring(router.query);
   }, [router.isReady, router.query]);
 
-  let content = <div className="bg-gray-850 p-10 text-center">Loading...</div>;
+  let activeTab = DEFAULT_TAB_ITEM;
 
-  if (querystring !== null) {
-    const activeTab = (querystring["tab"] as string) || DEFAULT_TAB_ITEM;
-    content = (
-      <TabsWithSuspense
-        activeTab={activeTab}
-        items={TAB_ITEMS}
-        loadingFallback={
-          <div className="bg-gray-850 p-10 text-center">Loading...</div>
-        }
-        renderItem={(title, slug) => (
-          <Link href={{ query: { tab: slug } }}>
-            <a className="flex py-2">{title}</a>
-          </Link>
-        )}
-      />
-    );
+  if (querystring && querystring["tab"]) {
+    activeTab = querystring["tab"] as string;
   }
 
   return (
@@ -77,7 +63,15 @@ const Margin: NextPage = () => {
       <header className="mb-6">
         <h2 className="text-2xl font-bold text-white">Margin</h2>
       </header>
-      {content}
+      <TabsWithSuspense
+        activeTab={activeTab}
+        items={TAB_ITEMS}
+        renderItem={(title, slug) => (
+          <Link href={{ query: { tab: slug } }}>
+            <a className="flex py-2">{title}</a>
+          </Link>
+        )}
+      />
     </section>
   );
 };
