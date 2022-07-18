@@ -5,6 +5,7 @@ import {
   CoinbaseIcon,
   ConnectedAccount,
   CosmostationIcon,
+  IbcChainEntry,
   KeplrIcon,
   MetamaskIcon,
   RenderConnectedAccount,
@@ -56,9 +57,9 @@ const WalletConnector: FC = () => {
     return Object.entries(data.chainConfigsByNetwork).map(
       ([id, config]): ChainEntry => ({
         id,
-        chainId: config.chainId,
-        name: config.displayName,
         type: config.chainType,
+        chainId: config.chainId as any,
+        name: config.displayName,
         nativeAssetSymbol: config.nativeAssetSymbol,
         connected: false,
         icon: (
@@ -102,7 +103,7 @@ const WalletConnector: FC = () => {
     if (cosmosActiveConnector) {
       const entries = await Promise.all(
         enabledChains
-          .filter((chain) => chain.type === "ibc")
+          .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
           .flatMap(async (chain) => {
             try {
               const signer = await cosmosActiveConnector.getSigner(

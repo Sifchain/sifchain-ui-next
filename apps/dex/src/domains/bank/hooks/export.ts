@@ -1,5 +1,5 @@
 import { Coin, isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
-import { isEvmBridgedCoin } from "@sifchain/common";
+import { EthChainConfig, isEvmBridgedCoin } from "@sifchain/common";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { toast } from "@sifchain/ui";
 import { addMinutes, getUnixTime } from "date-fns";
@@ -26,7 +26,7 @@ export const useExportTokensMutation = () => {
             variables.senderAddress,
             variables.recipientAddress,
             variables.amount,
-            env?.chainConfigsByNetwork.ethereum.chainId,
+            (env?.chainConfigsByNetwork.ethereum as EthChainConfig).chainId,
             undefined,
             DEFAULT_FEE,
             variables.memo,

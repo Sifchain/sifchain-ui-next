@@ -6,7 +6,6 @@ import { NetworkKind } from "./Network";
 export type BaseChainConfig = {
   network: NetworkKind;
   hidden?: boolean;
-  chainId: string;
   displayName: string;
   blockExplorerUrl: string;
   nativeAssetSymbol: string;
@@ -14,10 +13,12 @@ export type BaseChainConfig = {
 };
 export type EthChainConfig = BaseChainConfig & {
   chainType: "eth";
+  chainId: number;
   blockExplorerApiUrl: string;
 };
 export type IBCChainConfig = BaseChainConfig & {
   chainType: "ibc";
+  chainId: string;
   rpcUrl: string;
   restUrl: string;
   keplrChainInfo: ChainInfo;
