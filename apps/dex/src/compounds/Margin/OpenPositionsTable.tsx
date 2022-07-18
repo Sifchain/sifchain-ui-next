@@ -16,7 +16,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   "Time Open",
 ] as const;
 
-type HideColsUnion =
+export type HideColsUnion =
   | "pool"
   | "side"
   | "asset"

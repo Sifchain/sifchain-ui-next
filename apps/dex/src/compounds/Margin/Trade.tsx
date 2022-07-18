@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { Button, TwinRadioGroup } from "@sifchain/ui";
 
 import TokenSelector from "~/compounds/TokenSelector";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositions";
+import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery } from "~/domains/clp";
 
 function PoolSelector() {
@@ -277,8 +277,10 @@ const Trade: NextPage = () => {
           </div>
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
-          <OpenPositionsTable
-            hideCols={["unsettled-interest", "next-payment", "paid-interest"]}
+          <PortfolioTable
+            openPositions={{
+              hideCols: ["unsettled-interest", "next-payment", "paid-interest"],
+            }}
           />
         </section>
       </section>
