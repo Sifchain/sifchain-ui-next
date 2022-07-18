@@ -132,7 +132,7 @@ const RowanStats = () => {
           {isLoadingRowanPrice || isNaN(rowanPrice)
             ? "..."
             : formatNumberAsCurrency(rowanPrice)}
-          <span className="ml-2">/</span>
+          <span className="ml-3">/</span>
         </>
       ),
     },
