@@ -134,7 +134,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
           {props.readonly ? (
             <LockIcon
               className={clsx(
-                "ml-auto",
+                "ml-auto text-white",
                 props.size === "xs" ? "h-3 w-3" : "h-4 w-4",
               )}
             />
