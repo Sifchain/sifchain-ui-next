@@ -417,7 +417,6 @@ const SwapPage = () => {
                 </legend>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
-                    label=""
                     modalTitle="From"
                     value={fromDenom}
                     onChange={(token) =>
