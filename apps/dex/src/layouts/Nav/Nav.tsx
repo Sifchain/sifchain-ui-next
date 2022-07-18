@@ -55,20 +55,20 @@ const Header = () => {
 
   const rowanStats = [
     {
-      id: "tvl",
-      icon: <LockIcon />,
-      label: <>{isLoadingTVL ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
-    },
-    {
       id: "price",
       icon: <RowanIcon />,
       label: (
         <>
           {" "}
-          {isLoadingRowanPrice ? "..." : formatNumberAsCurrency(rowanPrice)} /
-          ROWAN
+          {isLoadingRowanPrice ? "..." : formatNumberAsCurrency(rowanPrice)}
+          <span className="ml-2">/</span>
         </>
       ),
+    },
+    {
+      id: "tvl",
+      icon: <LockIcon />,
+      label: <>{isLoadingTVL ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
     },
   ];
 
@@ -101,13 +101,13 @@ const Header = () => {
               </section>
               <AppearTransition show={open}>
                 <Disclosure.Panel
-                  className="md:flex p-4 md:p-0"
+                  className="grid md:flex p-4 md:p-0 gap-4"
                   static={windowSize.width >= 768}
                 >
                   <nav className="w-full md:flex md:justify-center">
-                    <ul className="grid gap-2 md:flex md:gap-4 xl:gap-5 4xl:gap-8">
-                      {MENU_ITEMS.slice(0, 3).map(({ title, href, icon }) => (
-                        <li key={title} className="grid gap-2">
+                    <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
+                      {MENU_ITEMS.slice(0, 3).map(({ title, href }) => (
+                        <li key={title}>
                           <Link href={href}>
                             <a
                               role="navigation"
@@ -118,9 +118,6 @@ const Header = () => {
                                 },
                               )}
                             >
-                              <span className="h-6 w-6 grid place-items-center text-gray-50 md:hidden">
-                                {icon}
-                              </span>
                               <span className="text-gray-200 font-semibold text-sm">
                                 {title}
                               </span>
@@ -131,23 +128,20 @@ const Header = () => {
                       <li>...</li>
                     </ul>
                   </nav>
-                  <section className="grid md:flex md:items-center gap-2 md:gap-4">
-                    <ul className="grid md:flex md:items-center gap-2">
-                      {rowanStats.map(({ id, icon, label }) => (
-                        <li key={id} className="flex items-center gap-3 p-2">
-                          <span className="h-6 w-6 grid place-items-center text-gray-50">
-                            {icon}
-                          </span>
-                          <span className="text-gray-200 font-semibold text-xs tracking-widest">
-                            {label}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                  <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
+                    {rowanStats.map(({ id, icon, label }) => (
+                      <div
+                        key={id}
+                        className="flex items-center gap-1 text-gray-300 whitespace-nowrap"
+                      >
+                        <span className="h-6 w-6 grid place-items-center">
+                          {icon}
+                        </span>
+                        <span className="font-semibold text-xs">{label}</span>
+                      </div>
+                    ))}
                   </section>
-                  <section className="">
-                    <WalletConnector />
-                  </section>
+                  <WalletConnector />
                 </Disclosure.Panel>
               </AppearTransition>
             </>
