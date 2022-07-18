@@ -101,10 +101,10 @@ const Header = () => {
               </section>
               <AppearTransition show={open}>
                 <Disclosure.Panel
-                  className="grid md:flex p-4 md:p-0 gap-4"
+                  className="grid md:flex p-4 md:p-0 gap-4 xl:gap-6 4xl:gap-8 md:w-full"
                   static={windowSize.width >= 768}
                 >
-                  <nav className="w-full md:flex md:justify-center">
+                  <nav className="w-full md:flex md:flex-1 md:justify-center">
                     <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
                       {MENU_ITEMS.slice(0, 3).map(({ title, href }) => (
                         <li key={title}>
@@ -125,7 +125,6 @@ const Header = () => {
                           </Link>
                         </li>
                       ))}
-                      <li>...</li>
                     </ul>
                   </nav>
                   <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
