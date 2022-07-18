@@ -7,19 +7,25 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-import PageLayout from "~/layouts/PageLayout";
-
 const DEFAULT_TAB_ITEM = "trade";
 const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
   {
     title: "Trade",
     slug: "trade",
-    content: dynamic(() => import("~/compounds/Margin/Trade")),
+    content: dynamic(() => import("~/compounds/Margin/Trade"), {
+      loading: () => (
+        <div className="bg-gray-850 p-10 text-center">Loading...</div>
+      ),
+    }),
   },
   {
     title: "Portifolio",
     slug: "portifolio",
-    content: dynamic(() => import("~/compounds/Margin/Portifolio")),
+    content: dynamic(() => import("~/compounds/Margin/Portifolio"), {
+      loading: () => (
+        <div className="bg-gray-850 p-10 text-center">Loading...</div>
+      ),
+    }),
   },
 ];
 
