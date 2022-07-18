@@ -74,84 +74,86 @@ const Header = () => {
 
   return (
     <header className="bg-black md:p-4 grid ">
-      <Disclosure
-        as="div"
-        className="block md:flex md:items-center md:gap-8 justify-between"
-        defaultOpen={windowSize.width >= 768}
-      >
-        {({ open }) => (
-          <>
-            <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border">
-              <Link href="/">
-                <a className="md:p-0">
-                  <LogoFull className="hidden md:inline-block h-24 md:h-12" />
-                  <Logo className="h-8 md:hidden" />
-                </a>
-              </Link>
-              <div className="md:hidden">
-                <Disclosure.Button className="p-4">
-                  {open ? (
-                    <XIcon className="h-6 w-6" />
-                  ) : (
-                    <ChevronDownIcon className="h-6 w-6" />
-                  )}
-                </Disclosure.Button>
-              </div>
-            </section>
-            <AppearTransition show={open}>
-              <Disclosure.Panel
-                className="md:flex p-4 md:p-0"
-                static={windowSize.width >= 768}
-              >
-                <nav className="w-full md:flex md:justify-center">
-                  <ul className="grid gap-2 md:flex md:gap-4 xl:gap-5 4xl:gap-8">
-                    {MENU_ITEMS.slice(0, 3).map(({ title, href, icon }) => (
-                      <li key={title} className="grid gap-2">
-                        <Link href={href}>
-                          <a
-                            role="navigation"
-                            className={clsx(
-                              "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
-                              {
-                                "bg-gray-600": currentPath === href,
-                              },
-                            )}
-                          >
-                            <span className="h-6 w-6 grid place-items-center text-gray-50 md:hidden">
-                              {icon}
-                            </span>
-                            <span className="text-gray-200 font-semibold text-sm">
-                              {title}
-                            </span>
-                          </a>
-                        </Link>
-                      </li>
-                    ))}
-                    <li>...</li>
-                  </ul>
-                </nav>
-                <section className="grid md:flex md:items-center gap-2 md:gap-4">
-                  <ul className="grid md:flex md:items-center gap-2">
-                    {rowanStats.map(({ id, icon, label }) => (
-                      <li key={id} className="flex items-center gap-3 p-2">
-                        <span className="h-6 w-6 grid place-items-center text-gray-50">
-                          {icon}
-                        </span>
-                        <span className="text-gray-200 font-semibold text-xs tracking-widest">
-                          {label}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-                <section className="whitespace-nowrap">
-                  <WalletConnector />
-                </section>
-              </Disclosure.Panel>
-            </AppearTransition>
-          </>
-        )}
-      </Disclosure>
+      {windowSize.width && (
+        <Disclosure
+          as="div"
+          className="block md:flex md:items-center md:gap-8 justify-between"
+          defaultOpen={windowSize.width >= 768}
+        >
+          {({ open }) => (
+            <>
+              <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border">
+                <Link href="/">
+                  <a className="md:p-0">
+                    <LogoFull className="hidden md:inline-block h-24 md:h-12" />
+                    <Logo className="h-8 md:hidden" />
+                  </a>
+                </Link>
+                <div className="md:hidden">
+                  <Disclosure.Button className="p-4">
+                    {open ? (
+                      <XIcon className="h-6 w-6" />
+                    ) : (
+                      <ChevronDownIcon className="h-6 w-6" />
+                    )}
+                  </Disclosure.Button>
+                </div>
+              </section>
+              <AppearTransition show={open}>
+                <Disclosure.Panel
+                  className="md:flex p-4 md:p-0"
+                  static={windowSize.width >= 768}
+                >
+                  <nav className="w-full md:flex md:justify-center">
+                    <ul className="grid gap-2 md:flex md:gap-4 xl:gap-5 4xl:gap-8">
+                      {MENU_ITEMS.slice(0, 3).map(({ title, href, icon }) => (
+                        <li key={title} className="grid gap-2">
+                          <Link href={href}>
+                            <a
+                              role="navigation"
+                              className={clsx(
+                                "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
+                                {
+                                  "bg-gray-600": currentPath === href,
+                                },
+                              )}
+                            >
+                              <span className="h-6 w-6 grid place-items-center text-gray-50 md:hidden">
+                                {icon}
+                              </span>
+                              <span className="text-gray-200 font-semibold text-sm">
+                                {title}
+                              </span>
+                            </a>
+                          </Link>
+                        </li>
+                      ))}
+                      <li>...</li>
+                    </ul>
+                  </nav>
+                  <section className="grid md:flex md:items-center gap-2 md:gap-4">
+                    <ul className="grid md:flex md:items-center gap-2">
+                      {rowanStats.map(({ id, icon, label }) => (
+                        <li key={id} className="flex items-center gap-3 p-2">
+                          <span className="h-6 w-6 grid place-items-center text-gray-50">
+                            {icon}
+                          </span>
+                          <span className="text-gray-200 font-semibold text-xs tracking-widest">
+                            {label}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                  <section className="">
+                    <WalletConnector />
+                  </section>
+                </Disclosure.Panel>
+              </AppearTransition>
+            </>
+          )}
+        </Disclosure>
+      )}
     </header>
   );
 };

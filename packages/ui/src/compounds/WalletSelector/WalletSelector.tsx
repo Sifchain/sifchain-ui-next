@@ -48,7 +48,6 @@ export type WalletSelectorProps = {
 
 export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [networkId, setNetworkId] = useState<string>();
   const [walletId, setWalletId] = useState<string>();
   const [search, setSearch] = useState("");
@@ -239,7 +238,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
         <Button
           disabled={isModalOpen}
           onClick={setIsModalOpen.bind(null, true)}
-          className="w-full max-w-xs"
+          className="w-full whitespace-nowrap md:w-auto"
         >
           <WalletIcon className="-translate-y-0.5" /> Connect wallets
         </Button>
