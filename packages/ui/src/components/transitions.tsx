@@ -1,12 +1,15 @@
 import { Transition } from "@headlessui/react";
 import { FC, Fragment, PropsWithChildren } from "react";
 
-export const AppearTransition: FC<
-  PropsWithChildren<{
-    appear?: boolean;
-    show?: boolean;
-  }>
-> = ({ children, ...props }) => (
+export type TransitionProps = PropsWithChildren<{
+  appear?: boolean;
+  show?: boolean;
+}>;
+
+export const AppearTransition: FC<TransitionProps> = ({
+  children,
+  ...props
+}) => (
   <Transition
     as={Fragment}
     enter="transition ease-out duration-200"
