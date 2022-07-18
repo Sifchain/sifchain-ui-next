@@ -1,14 +1,14 @@
 import { createStore } from "zustand-immer-store";
 
 const INITAL_STATE = {
-  isSidebarOpen: true,
+  isNavbarOpen: false,
 };
 
 export const useUIStore = createStore(INITAL_STATE, {
   createActions: (set) => ({
-    toggleSidebar: () =>
+    toggleNavbar: () =>
       set(({ state }) => {
-        state.isSidebarOpen = !state.isSidebarOpen;
+        state.isNavbarOpen = !state.isNavbarOpen;
       }),
   }),
 });

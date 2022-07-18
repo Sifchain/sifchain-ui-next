@@ -28,7 +28,7 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       <Popover.Button
         disabled={props.isModalOpen}
         as={Button}
-        className="flex justify-between flex-1 items-center"
+        className="flex justify-between flex-1 items-center whitespace-nowrap w-full md:w-auto"
         variant="outline"
       >
         <span className="text-white">Connected wallets</span>
