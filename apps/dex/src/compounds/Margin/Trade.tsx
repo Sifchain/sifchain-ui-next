@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 
 import { Button, TwinRadioGroup } from "@sifchain/ui";
+import Head from "next/head";
 
 import TokenSelector from "~/compounds/TokenSelector";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
@@ -47,6 +48,9 @@ function ValueFromTo({
 const Trade: NextPage = () => {
   return (
     <>
+      <Head>
+        <title>Sichain Dex - Margin - Trade</title>
+      </Head>
       <section className="bg-gray-800 border border-gold-800 rounded mt-4 text-xs">
         <ul className="grid grid-cols-7 gap-5">
           <li className="col-span-2 pl-4 py-4">

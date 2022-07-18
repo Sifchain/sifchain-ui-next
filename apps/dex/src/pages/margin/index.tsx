@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import type { ParsedUrlQuery } from "querystring";
 
+import Head from "next/head";
 import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -59,20 +60,26 @@ const Margin: NextPage = () => {
   }
 
   return (
-    <section className="w-full bg-black py-12 px-24">
-      <header className="mb-6">
-        <h2 className="text-2xl font-bold text-white">Margin</h2>
-      </header>
-      <TabsWithSuspense
-        activeTab={activeTab}
-        items={TAB_ITEMS}
-        renderItem={(title, slug) => (
-          <Link href={{ query: { tab: slug } }}>
-            <a className="flex py-2">{title}</a>
-          </Link>
-        )}
-      />
-    </section>
+    <>
+      <Head>
+        <title>Sichain Dex - Margin</title>
+      </Head>
+
+      <section className="w-full bg-black py-12 px-24">
+        <header className="mb-6">
+          <h2 className="text-2xl font-bold text-white">Margin</h2>
+        </header>
+        <TabsWithSuspense
+          activeTab={activeTab}
+          items={TAB_ITEMS}
+          renderItem={(title, slug) => (
+            <Link href={{ query: { tab: slug } }}>
+              <a className="flex py-2">{title}</a>
+            </Link>
+          )}
+        />
+      </section>
+    </>
   );
 };
 
