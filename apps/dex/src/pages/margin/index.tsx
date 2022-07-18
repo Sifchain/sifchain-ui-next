@@ -9,17 +9,17 @@ import Link from "next/link";
 
 import PageLayout from "~/layouts/PageLayout";
 
-const DEFAULT_TAB_ITEM = "portifolio";
+const DEFAULT_TAB_ITEM = "trade";
 const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
-  {
-    title: "Portifolio",
-    slug: "portifolio",
-    content: dynamic(() => import("~/compounds/Margin/Portifolio")),
-  },
   {
     title: "Trade",
     slug: "trade",
     content: dynamic(() => import("~/compounds/Margin/Trade")),
+  },
+  {
+    title: "Portifolio",
+    slug: "portifolio",
+    content: dynamic(() => import("~/compounds/Margin/Portifolio")),
   },
 ];
 
@@ -67,9 +67,12 @@ const Margin: NextPage = () => {
   }
 
   return (
-    <PageLayout heading="Margin" className="max-w-margin">
+    <section className="w-full bg-black py-12 px-24">
+      <header className="mb-6">
+        <h2 className="text-2xl font-bold text-white">Margin</h2>
+      </header>
       {content}
-    </PageLayout>
+    </section>
   );
 };
 

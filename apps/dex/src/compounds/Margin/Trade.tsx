@@ -16,6 +16,34 @@ function PoolSelector() {
   );
 }
 
+function HtmlUnicode({ name }: { name: string }) {
+  const unicodes: Record<string, string | string> = {
+    AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
+    RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
+  };
+  const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
+  return <span dangerouslySetInnerHTML={{ __html: entity }} />;
+}
+
+function ValueFromTo({
+  from,
+  to,
+  almostEqual,
+}: {
+  from: string;
+  to: string;
+  almostEqual?: boolean;
+}) {
+  return (
+    <>
+      {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
+      <span className="ml-1 mr-1">{from}</span>
+      <HtmlUnicode name="RightwardsArrow" />
+      <span className="ml-1">{to}</span>
+    </>
+  );
+}
+
 const Trade: NextPage = () => {
   return (
     <>
@@ -26,19 +54,25 @@ const Trade: NextPage = () => {
           </li>
           <li className="py-4">
             <div className="flex flex-col">
-              <span className="text-gray-300">Pool TVL (% change)</span>
-              <span className="font-semibold text-sm">$100,000,000</span>
+              <span className="text-gray-300">Pool TVL</span>
+              <span className="font-semibold text-sm">
+                <span className="mr-1">$2,000,000</span>
+                <span className="text-green-400">(+2.8%)</span>
+              </span>
             </div>
           </li>
           <li className="py-4">
             <div className="flex flex-col">
-              <span className="text-gray-300">Pool Volume (% change)</span>
-              <span className="font-semibold text-sm">$2,000,000</span>
+              <span className="text-gray-300">Pool Volume</span>
+              <span className="font-semibold text-sm">
+                <span className="mr-1">$2,000,000</span>
+                <span className="text-green-400">(+2.8%)</span>
+              </span>
             </div>
           </li>
           <li className="py-4">
             <div className="flex flex-col">
-              <span className="text-gray-300">ETH Price (% change)</span>
+              <span className="text-gray-300">ETH Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">$1,000</span>
                 <span className="text-red-400">(-2.8%)</span>
@@ -47,7 +81,7 @@ const Trade: NextPage = () => {
           </li>
           <li className="py-4">
             <div className="flex flex-col">
-              <span className="text-gray-300">ROWAN price (% change)</span>
+              <span className="text-gray-300">ROWAN price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">$.006</span>
                 <span className="text-red-400">(-1.3%)</span>
@@ -67,32 +101,32 @@ const Trade: NextPage = () => {
           <ul className="border-b border-gold-800 flex flex-col gap-4 p-4">
             <li>
               <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
+                <span className="mr-auto min-w-fit text-gray-300">
                   Account Balance
                 </span>
-                <span>$50,000 &rarr; $49,000</span>
+                <ValueFromTo from="$50,000" to="$49,000" almostEqual={true} />
               </div>
             </li>
             <li>
               <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
+                <span className="mr-auto min-w-fit text-gray-300">
                   Collateral Balance
                 </span>
-                <span>$5,000 &rarr; $4,000</span>
+                <ValueFromTo from="$5,000" to="$4,000" almostEqual={true} />
               </div>
               <p className="text-gray-400 text-xs w-full text-right">
-                40,000 ROWAN &rarr; 40,000 ROWAN
+                <ValueFromTo from="40,000 ROWAN" to="40,000 ROWAN" />
               </p>
             </li>
             <li>
               <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
+                <span className="mr-auto min-w-fit text-gray-300">
                   Total Borrowed
                 </span>
-                <span>$10,000 &rarr; $11,000</span>
+                <ValueFromTo from="$10,000" to="$11,000" almostEqual={true} />
               </div>
               <p className="text-gray-400 text-xs w-full text-right">
-                100,000 ROWAN &rarr; 100,000 ROWAN
+                <ValueFromTo from="100,000 ROWAN" to="100,000 ROWAN" />
               </p>
             </li>
           </ul>
@@ -170,7 +204,7 @@ const Trade: NextPage = () => {
             <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
               <li>
                 <div className="flex flex-row">
-                  <span className="font-semibold mr-auto min-w-fit">
+                  <span className="mr-auto min-w-fit text-gray-300">
                     Collateral Balance
                   </span>
                   <span>$1,000 </span>
@@ -181,7 +215,7 @@ const Trade: NextPage = () => {
               </li>
               <li>
                 <div className="flex flex-row">
-                  <span className="font-semibold mr-auto min-w-fit">
+                  <span className="mr-auto min-w-fit text-gray-300">
                     Borrow Amount
                   </span>
                   <span>$1,000</span>
@@ -192,7 +226,7 @@ const Trade: NextPage = () => {
               </li>
               <li>
                 <div className="flex flex-row">
-                  <span className="font-semibold mr-auto min-w-fit">
+                  <span className="mr-auto min-w-fit text-gray-300">
                     Overall Position
                   </span>
                   <span>$2,000</span>
@@ -201,7 +235,7 @@ const Trade: NextPage = () => {
               </li>
               <li>
                 <div className="flex flex-row">
-                  <span className="font-semibold mr-auto min-w-fit">
+                  <span className="mr-auto min-w-fit text-gray-300">
                     Trade Fees
                   </span>
                   <span>&minus;$50</span>
@@ -212,7 +246,7 @@ const Trade: NextPage = () => {
               </li>
               <li>
                 <div className="flex flex-row">
-                  <span className="font-semibold mr-auto min-w-fit">
+                  <span className="mr-auto min-w-fit text-gray-300">
                     Resulting Position
                   </span>
                   <span>$1,900</span>
