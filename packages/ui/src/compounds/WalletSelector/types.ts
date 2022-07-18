@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 
-export type ChainEntry = {
+export type BaseChainEntry = {
   id: string;
-  chainId: string;
   name: string;
   type: string;
   icon: ReactNode;
@@ -11,6 +10,18 @@ export type ChainEntry = {
   nativeAssetDecimals?: number;
   nativeAssetPrice?: string;
 };
+
+export type IbcChainEntry = BaseChainEntry & {
+  type: "ibc";
+  chainId: string;
+};
+
+export type EvmChainEntry = BaseChainEntry & {
+  type: "eth";
+  chainId: number;
+};
+
+export type ChainEntry = IbcChainEntry | EvmChainEntry;
 
 export type WalletEntry = {
   id: string;

@@ -240,9 +240,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     senderAddress: string,
     recipientAddress: string,
     transferAmount: Coin,
-    // default values from old sdk
-    // 0x1 is mainnet 0x3 is ropsten
-    ethChainId: number | string = 0x1,
+    ethChainId = 1,
     ethFee = "35370000000000000",
     fee: StdFee | "auto" | number,
     memo?: string,
@@ -258,7 +256,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
             cosmosSender: senderAddress,
             amount: transferAmount.amount,
             symbol: transferAmount.denom,
-            ethereumChainId: Long.fromNumber(Number(ethChainId)),
+            ethereumChainId: Long.fromNumber(ethChainId),
             ethereumReceiver: recipientAddress,
             cethAmount: ethFee,
           },
