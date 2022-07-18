@@ -84,6 +84,9 @@ module.exports = {
           900: "rgba(10, 14, 23, 0.8)",
         },
       },
+      boxShadow: {
+        "inset-border": "inset 0px -1px 0px #21242F",
+      },
       animation: {
         "fade-in": "fadeIn 150ms ease-out 1",
         "fade-in-up": "fadeInUp 200ms ease-out 1",
