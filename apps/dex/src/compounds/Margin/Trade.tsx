@@ -8,7 +8,7 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositions";
 const Trade: NextPage = () => {
   return (
     <>
-      <section className="box-golden-border rounded p-4 mt-4 grid grid-cols-7 gap-x-5 justify-items-end text-xs">
+      <section className="bg-gray-800 border border-gold-800 rounded p-4 mt-4 grid grid-cols-7 gap-x-5 justify-items-end text-xs">
         <ul className="col-span-2 w-full flex flex-col">
           <li className="text-gray-300 pb-2">Pool Overview</li>
           <li className="flex-1 flex items-center">
@@ -47,8 +47,8 @@ const Trade: NextPage = () => {
         </ul>
       </section>
       <section className="mt-4 text-xs grid grid-cols-7 gap-x-2">
-        <aside className="box-golden-border rounded p-4 col-span-2 flex flex-col">
-          <ul className="box-golden-border-bottom pb-4 flex flex-col gap-4">
+        <aside className="bg-gray-800 border border-gold-800 rounded col-span-2 flex flex-col">
+          <ul className="border-b border-gold-800 flex flex-col gap-4 p-4">
             <li>
               <div className="flex flex-row">
                 <span className="font-semibold mr-auto min-w-fit">
@@ -80,7 +80,7 @@ const Trade: NextPage = () => {
               </p>
             </li>
           </ul>
-          <ul className="box-golden-border-bottom py-4 flex flex-col gap-4">
+          <ul className="border-b border-gold-800 flex flex-col gap-0 p-4">
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
@@ -122,29 +122,9 @@ const Trade: NextPage = () => {
                 &#61; $2,000
               </span>
             </li>
-            <li className="flex flex-col">
-              <span className="text-xs text-gray-300 mb-1">
-                <span className="mr-1">Leverage</span>
-                <span className="text-gray-400">Up to 2x</span>
-              </span>
-              <div className="grid grid-cols-6 gap-2">
-                <input
-                  type="text"
-                  defaultValue="2x"
-                  className="text-xs bg-gray-700 rounded border-0 col-span-3"
-                />
-                <Button variant="secondary" as="button" size="xs">
-                  1x
-                </Button>
-                <Button variant="secondary" as="button" size="xs">
-                  1.5x
-                </Button>
-                <Button variant="secondary" as="button" size="xs">
-                  2x
-                </Button>
-              </div>
+            <li className="mt-2 grid grid-cols-6 gap-2">
               <TwinRadioGroup
-                className="mt-2"
+                className="col-span-3 self-end"
                 name="margin-side"
                 options={[
                   {
@@ -157,81 +137,96 @@ const Trade: NextPage = () => {
                   },
                 ]}
               />
+              <div className="col-span-3 flex flex-col">
+                <span className="text-xs text-gray-300 mb-1">
+                  <span className="mr-1">Leverage</span>
+                  <span className="text-gray-400">Up to 2x</span>
+                </span>
+                <input
+                  type="text"
+                  defaultValue="2x"
+                  className="text-xs bg-gray-700 rounded border-0"
+                />
+              </div>
             </li>
           </ul>
-          <ul className="pt-4 flex flex-col gap-4">
-            <li>
-              <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
-                  Collateral Balance
-                </span>
-                <span>$1,000 </span>
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                50,000 ROWAN
-              </p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
-                  Borrow Amount
-                </span>
-                <span>$1,000</span>
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                100,000 ROWAN
-              </p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
-                  Overall Position
-                </span>
-                <span>$2,000</span>
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">2ETH</p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
-                  Trade Fees
-                </span>
-                <span>&minus;$50</span>
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                .0005 ETH
-              </p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="font-semibold mr-auto min-w-fit">
-                  Resulting Position
-                </span>
-                <span>$1,900</span>
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">1.9 ETH</p>
-            </li>
-            <li className="grid grid-cols-4 gap-2">
-              <Button
-                variant="primary"
-                as="button"
-                size="md"
-                className="col-span-3 rounded"
-              >
-                Place buy order
-              </Button>
-              <Button
-                variant="outline"
-                as="button"
-                size="sm"
-                className="ring-1 rounded self-center"
-              >
-                Clear
-              </Button>
-            </li>
-          </ul>
+          <div className="p-4">
+            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
+              <li>
+                <div className="flex flex-row">
+                  <span className="font-semibold mr-auto min-w-fit">
+                    Collateral Balance
+                  </span>
+                  <span>$1,000 </span>
+                </div>
+                <p className="text-gray-400 text-xs w-full text-right">
+                  50,000 ROWAN
+                </p>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="font-semibold mr-auto min-w-fit">
+                    Borrow Amount
+                  </span>
+                  <span>$1,000</span>
+                </div>
+                <p className="text-gray-400 text-xs w-full text-right">
+                  100,000 ROWAN
+                </p>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="font-semibold mr-auto min-w-fit">
+                    Overall Position
+                  </span>
+                  <span>$2,000</span>
+                </div>
+                <p className="text-gray-400 text-xs w-full text-right">2ETH</p>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="font-semibold mr-auto min-w-fit">
+                    Trade Fees
+                  </span>
+                  <span>&minus;$50</span>
+                </div>
+                <p className="text-gray-400 text-xs w-full text-right">
+                  .0005 ETH
+                </p>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="font-semibold mr-auto min-w-fit">
+                    Resulting Position
+                  </span>
+                  <span>$1,900</span>
+                </div>
+                <p className="text-gray-400 text-xs w-full text-right">
+                  1.9 ETH
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div className="grid grid-cols-4 gap-2 px-4 pb-4">
+            <Button
+              variant="tertiary"
+              as="button"
+              size="sm"
+              className="text-gray-300 font-normal self-center"
+            >
+              Reset
+            </Button>
+            <Button
+              variant="primary"
+              as="button"
+              size="md"
+              className="col-span-3 rounded"
+            >
+              Place buy order
+            </Button>
+          </div>
         </aside>
-        <section className="col-span-5 rounded-tl rounded-tr">
+        <section className="col-span-5 rounded border border-gold-800">
           <OpenPositionsTable
             hideCols={["unsettled-interest", "next-payment", "paid-interest"]}
           />

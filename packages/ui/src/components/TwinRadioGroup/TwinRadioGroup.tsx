@@ -56,8 +56,8 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
                 "p-2 text-center cursor-pointer",
                 rounded,
                 checked
-                  ? "bg-gray-700 text-gray-200 z-10"
-                  : "bg-gray-800 text-gray-700",
+                  ? "bg-gray-500 text-gray-200 z-10"
+                  : "bg-gray-850 text-gray-700",
                 active ? "ring-1 ring-indigo-500" : "",
                 "hover:ring-1 hover:ring-indigo-300 hover:z-20",
               )

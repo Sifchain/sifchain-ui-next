@@ -74,7 +74,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </td>
             <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">2.5</td>
-            <td className="px-4 py-3">1.9x</td>
+            <td className="px-4 py-3">
+              <span className="px-2 py-2 bg-gray-800 rounded">1.9x</span>
+            </td>
             <td className="px-4 py-3">
               <span className="text-green-400">$2,000.15</span>
             </td>
@@ -99,7 +101,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </td>
             <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">2.5</td>
-            <td className="px-4 py-3">1.9x</td>
+            <td className="px-4 py-3">
+              <span className="px-2 py-2 bg-gray-800 rounded">1.9x</span>
+            </td>
             <td className="px-4 py-3">
               <span className="text-red-400">-$2,000.15</span>
             </td>
