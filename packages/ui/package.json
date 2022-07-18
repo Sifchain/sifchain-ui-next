@@ -21,7 +21,7 @@
     "@floating-ui/react-dom-interactions": "^0.6.6",
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
-    "clsx": "^1.1.1",
+    "clsx": "^1.2.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "rambda": "^7.1.4",
