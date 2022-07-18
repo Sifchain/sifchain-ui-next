@@ -28,7 +28,7 @@ const OPTIONS_ITEMS = [
   },
 ];
 
-const Portifolio: NextPage = () => {
+const Portfolio: NextPage = () => {
   const router = useRouter();
   const activeOption =
     (router.query["option"] as string) || DEFAULT_OPTION_ITEM;
@@ -69,4 +69,4 @@ const Portifolio: NextPage = () => {
   );
 };
 
-export default Portifolio;
+export default Portfolio;

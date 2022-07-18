@@ -19,9 +19,9 @@ const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
     }),
   },
   {
-    title: "Portifolio",
-    slug: "portifolio",
-    content: dynamic(() => import("~/compounds/Margin/Portifolio"), {
+    title: "Portfolio",
+    slug: "portfolio",
+    content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
       loading: () => (
         <div className="bg-gray-850 p-10 text-center">Loading...</div>
       ),
@@ -39,7 +39,7 @@ const Margin: NextPage = () => {
    * https://nextjs.org/docs/api-reference/next/router#router-object
    *
    * Because of that, the nested tab flickers. For example:
-   *    /margin?tab=portifolio&option=history
+   *    /margin?tab=portfolio&option=history
    *
    * The above URL will NOT render the correct "History" option at first load
    * It will render "Open positions" (hardcoded default) and then flicks to "History"
