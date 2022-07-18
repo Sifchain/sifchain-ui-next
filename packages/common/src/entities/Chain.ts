@@ -1,7 +1,11 @@
 import { ChainInfo } from "@keplr-wallet/types";
-
 import { IAsset } from "./Asset";
 import { NetworkKind } from "./Network";
+
+export enum EthChainId {
+  MAINNET = 1,
+  ROPSTEN = 3,
+}
 
 export type BaseChainConfig = {
   network: NetworkKind;
@@ -11,11 +15,13 @@ export type BaseChainConfig = {
   nativeAssetSymbol: string;
   underMaintenance?: boolean;
 };
+
 export type EthChainConfig = BaseChainConfig & {
   chainType: "eth";
-  chainId: number;
+  chainId: EthChainId;
   blockExplorerApiUrl: string;
 };
+
 export type IBCChainConfig = BaseChainConfig & {
   chainType: "ibc";
   chainId: string;
