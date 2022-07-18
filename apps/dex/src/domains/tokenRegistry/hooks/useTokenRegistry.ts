@@ -14,14 +14,16 @@ export type EnhancedRegitryAsset = IAsset & {
   ibcDenom: string;
 };
 
-export default function useTokenRegistryQuery() {
+export default function useTokenRegistryQuery(
+  networkKind: "sifchain" | "ethereum" = "sifchain",
+) {
   const { data: env } = useDexEnvironment();
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
     refetchOnWindowFocus: false,
     staleTime: 60000 * 5, // 5 minutes
   });
 
-  const { indexedBySymbol, ...assetsQuery } = useAssetsQuery("sifchain");
+  const { indexedBySymbol, ...assetsQuery } = useAssetsQuery(networkKind);
 
   const entries = useMemo<EnhancedRegitryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
