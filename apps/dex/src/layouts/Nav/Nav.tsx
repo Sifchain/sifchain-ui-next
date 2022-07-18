@@ -47,30 +47,7 @@ const Header = () => {
   const router = useRouter();
   const currentPath = router.asPath;
 
-  const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
-  const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
-    useRowanPriceQuery();
-
   const windowSize = useWindowSize();
-
-  const rowanStats = [
-    {
-      id: "price",
-      icon: <RowanIcon />,
-      label: (
-        <>
-          {" "}
-          {isLoadingRowanPrice ? "..." : formatNumberAsCurrency(rowanPrice)}
-          <span className="ml-2">/</span>
-        </>
-      ),
-    },
-    {
-      id: "tvl",
-      icon: <LockIcon />,
-      label: <>{isLoadingTVL ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
-    },
-  ];
 
   return (
     <header className="bg-black md:p-4 grid ">
@@ -128,17 +105,7 @@ const Header = () => {
                     </ul>
                   </nav>
                   <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
-                    {rowanStats.map(({ id, icon, label }) => (
-                      <div
-                        key={id}
-                        className="flex items-center gap-1 text-gray-300 whitespace-nowrap"
-                      >
-                        <span className="h-6 w-6 grid place-items-center">
-                          {icon}
-                        </span>
-                        <span className="font-semibold text-xs">{label}</span>
-                      </div>
-                    ))}
+                    <RowanStats />
                   </section>
                   <WalletConnector />
                 </Disclosure.Panel>
@@ -148,6 +115,50 @@ const Header = () => {
         </Disclosure>
       )}
     </header>
+  );
+};
+
+const RowanStats = () => {
+  const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
+  const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
+    useRowanPriceQuery();
+
+  const rowanStats = [
+    {
+      id: "price",
+      icon: <RowanIcon />,
+      label: (
+        <>
+          {isLoadingRowanPrice || isNaN(rowanPrice)
+            ? "..."
+            : formatNumberAsCurrency(rowanPrice)}
+          <span className="ml-2">/</span>
+        </>
+      ),
+    },
+    {
+      id: "tvl",
+      icon: <LockIcon />,
+      label: (
+        <>
+          {isLoadingTVL || isNaN(TVL) ? "..." : formatNumberAsCurrency(TVL)} TVL
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      {rowanStats.map(({ id, icon, label }) => (
+        <div
+          key={id}
+          className="flex items-center gap-1 text-gray-300 whitespace-nowrap"
+        >
+          <span className="h-6 w-6 grid place-items-center">{icon}</span>
+          <span className="font-semibold text-xs">{label}</span>
+        </div>
+      ))}
+    </>
   );
 };
 
