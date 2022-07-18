@@ -2,10 +2,12 @@ import { ChainInfo } from "@keplr-wallet/types";
 import { IAsset } from "./Asset";
 import { NetworkKind } from "./Network";
 
-export enum EthChainId {
-  MAINNET = 1,
-  ROPSTEN = 3,
-}
+export const EthChainId = {
+  MAINNET: 1,
+  ROPSTEN: 3,
+} as const;
+
+export type EthChainIdKind = typeof EthChainId[keyof typeof EthChainId];
 
 export type BaseChainConfig = {
   network: NetworkKind;
@@ -18,7 +20,7 @@ export type BaseChainConfig = {
 
 export type EthChainConfig = BaseChainConfig & {
   chainType: "eth";
-  chainId: EthChainId;
+  chainId: EthChainIdKind;
   blockExplorerApiUrl: string;
 };
 
