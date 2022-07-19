@@ -5,6 +5,7 @@ import {
   ArrowDownIcon,
   Button,
   Input,
+  Label,
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
@@ -161,6 +162,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
+            className="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(
               balance?.amount?.toFloatApproximation() ?? 0
@@ -171,7 +173,33 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
               [],
             )}
             fullWidth
-          />
+          >
+            <div className="absolute flex gap-1.5 pl-1.5">
+              <Label
+                type="button"
+                onClick={useCallback(() => {
+                  if (balance?.amount !== undefined) {
+                    setAmount(
+                      (balance.amount.toFloatApproximation() / 2).toPrecision(
+                        balance.amount.fractionalDigits,
+                      ),
+                    );
+                  }
+                }, [balance?.amount])}
+              >
+                Half
+              </Label>
+              <Label
+                type="button"
+                onClick={useCallback(
+                  () => setAmount((x) => balance?.amount?.toString() ?? x),
+                  [balance?.amount],
+                )}
+              >
+                Max
+              </Label>
+            </div>
+          </Input>
         </fieldset>
         <Input
           className="!bg-gray-750 text-ellipsis"
