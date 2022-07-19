@@ -192,27 +192,31 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
             </div>
 
             <Combobox.Options as={ListContainer} static>
-              {filtered.map((token) => {
-                const ItemComponent = props.renderTokenItem ?? TokenItem;
+              {filtered.length === 0 ? (
+                <p className="text-center p-4">No matching results.</p>
+              ) : (
+                filtered.map((token) => {
+                  const ItemComponent = props.renderTokenItem ?? TokenItem;
 
-                return (
-                  <Combobox.Option
-                    key={`${token.symbol}-${
-                      token.homeNetwork ?? token.network
-                    }`}
-                    value={token}
-                  >
-                    {({ selected, active }) => (
-                      <ItemComponent
-                        {...token}
-                        balance="0.00"
-                        selected={selected}
-                        active={active}
-                      />
-                    )}
-                  </Combobox.Option>
-                );
-              })}
+                  return (
+                    <Combobox.Option
+                      key={`${token.symbol}-${
+                        token.homeNetwork ?? token.network
+                      }`}
+                      value={token}
+                    >
+                      {({ selected, active }) => (
+                        <ItemComponent
+                          {...token}
+                          balance="0.00"
+                          selected={selected}
+                          active={active}
+                        />
+                      )}
+                    </Combobox.Option>
+                  );
+                })
+              )}
             </Combobox.Options>
           </div>
         </Combobox>
