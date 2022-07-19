@@ -1,4 +1,4 @@
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Menu } from "@headlessui/react";
 import { ChevronDownIcon, XIcon } from "@heroicons/react/outline";
 import {
   AppearTransition,
@@ -13,6 +13,8 @@ import {
   SwapIcon,
   PlusIcon,
   useWindowSize,
+  SurfaceB,
+  DotsVerticalIcon,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -85,7 +87,7 @@ const Header = () => {
                   static={windowSize.width >= 768}
                 >
                   <div className="grid md:flex p-4 md:p-0 gap-4 xl:gap-6 4xl:gap-8 md:w-full">
-                    <NavMenu />
+                    <Nav />
                     <RowanStats />
                     <WalletConnector />
                   </div>
@@ -99,14 +101,14 @@ const Header = () => {
   );
 };
 
-const NavMenu = () => {
+const Nav = ({ visibleItems = 3 }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
   return (
     <nav className="w-full md:flex md:flex-1 md:justify-center">
       <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
-        {MENU_ITEMS.slice(0, 3).map(({ title, href }) => (
+        {MENU_ITEMS.slice(0, visibleItems).map(({ title, href }) => (
           <li key={title}>
             <Link href={href}>
               <a
@@ -125,6 +127,46 @@ const NavMenu = () => {
             </Link>
           </li>
         ))}
+        <li>
+          <Menu>
+            {({ open }) => (
+              <>
+                <Menu.Button
+                  className={clsx("rotate-90", {
+                    "ring-1 ring-gray-50 ring-offset-gray-800 rounded-full ring-offset-4":
+                      open,
+                  })}
+                >
+                  <DotsVerticalIcon className="h-4 w-4" />
+                </Menu.Button>
+                <Menu.Items
+                  as={SurfaceB}
+                  className="absolute z-10 p-2 grid gap-2"
+                >
+                  {MENU_ITEMS.slice(visibleItems).map(({ title, href }) => (
+                    <Menu.Item key={title}>
+                      <Link href={href}>
+                        <a
+                          role="navigation"
+                          className={clsx(
+                            "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
+                            {
+                              "bg-gray-600": currentPath === href,
+                            },
+                          )}
+                        >
+                          <span className="text-gray-200 font-semibold text-sm">
+                            {title}
+                          </span>
+                        </a>
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                </Menu.Items>
+              </>
+            )}
+          </Menu>
+        </li>
       </ul>
     </nav>
   );
