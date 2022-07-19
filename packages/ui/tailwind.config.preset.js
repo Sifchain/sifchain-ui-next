@@ -3,9 +3,6 @@ module.exports = {
   darkMode: "media",
   theme: {
     extend: {
-      maxWidth: {
-        margin: "1328px",
-      },
       fontFamily: {
         DEFAULT: "sans",
         sans: [
