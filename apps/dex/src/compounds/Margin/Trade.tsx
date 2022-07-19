@@ -113,7 +113,7 @@ const Trade: NextPage = () => {
               <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(useRowanPrice.data || 0)}
+                  {formatNumberAsCurrency(useRowanPrice.data || 0, 4)}
                 </span>
                 <span className="text-red-400">(-2.8%)</span>
               </span>
