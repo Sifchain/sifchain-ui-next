@@ -8,7 +8,7 @@ import {
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
-  Select,
+  TokenEntry,
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import {
@@ -29,6 +29,7 @@ import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { isNilOrWhiteSpace } from "~/utils/string";
+import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
   props: ModalProps & {
@@ -76,21 +77,6 @@ const ImportModal = (
     enabled: env !== undefined,
   });
   const recipientAddress = cosmAccounts?.[0]?.address;
-
-  const tokenOptions = useMemo(
-    () =>
-      tokenRegistry.map((x) => ({
-        id: x.denom ?? "",
-        label: x.displaySymbol,
-        body: x.displaySymbol,
-      })),
-    [tokenRegistry],
-  );
-
-  const selectedTokenOptions = useMemo(
-    () => tokenOptions.find((x) => x.id === props.denom),
-    [props.denom, tokenOptions],
-  );
 
   const [amount, setAmount] = useState("");
   const amountDecimal = useMemo(
@@ -202,12 +188,11 @@ const ImportModal = (
     >
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
-          <Select
-            className="z-10"
-            options={tokenOptions}
-            value={selectedTokenOptions}
+          <TokenSelector
+            modalTitle="Import"
+            value={props.denom}
             onChange={useCallback(
-              (value) => props.onRequestDenomChange(value.id),
+              (value) => props.onRequestDenomChange(value?.denom ?? ""),
               [props],
             )}
           />
