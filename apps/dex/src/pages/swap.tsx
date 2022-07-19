@@ -7,6 +7,7 @@ import {
   ButtonGroup,
   ButtonProps,
   Input,
+  Label,
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
@@ -426,6 +427,41 @@ const SwapPage = () => {
                     placeholder="Swap amount"
                     value={fromAmount}
                     onChange={(event) => setFromAmount(event.target.value)}
+                    leadingIcon={
+                      <div className="flex gap-1.5">
+                        <Label
+                          type="button"
+                          onClick={useCallback(() => {
+                            if (fromToken?.balance !== undefined) {
+                              setFromAmount(
+                                (
+                                  fromToken.balance.toFloatApproximation() / 2
+                                ).toLocaleString(undefined, {
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits:
+                                    fromToken.balance.fractionalDigits,
+                                  useGrouping: false,
+                                }),
+                              );
+                            }
+                          }, [fromToken?.balance])}
+                        >
+                          Half
+                        </Label>
+                        <Label
+                          type="button"
+                          onClick={useCallback(
+                            () =>
+                              setFromAmount(
+                                (x) => fromToken?.balance?.toString() ?? x,
+                              ),
+                            [fromToken?.balance],
+                          )}
+                        >
+                          Max
+                        </Label>
+                      </div>
+                    }
                     fullWidth
                   />
                 </div>
