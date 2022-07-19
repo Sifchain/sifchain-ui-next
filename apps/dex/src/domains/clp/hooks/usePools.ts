@@ -5,7 +5,7 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export function usePoolsQuery() {
-  const { data: tokenRegistryRes, indexedByIBCDenom } = useTokenRegistryQuery();
+  const { data: tokenRegistryRes, indexedByDenom } = useTokenRegistryQuery();
   const { data: poolsRes } = useSifnodeQuery("clp.getPools", [{}]);
   const { data: env } = useDexEnvironment();
 
@@ -20,7 +20,7 @@ export function usePoolsQuery() {
               ...x,
               externalAssetBalance: Decimal.fromAtomics(
                 x.externalAssetBalance,
-                indexedByIBCDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0,
+                indexedByDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0,
               ),
               nativeAssetBalance: Decimal.fromAtomics(
                 x.nativeAssetBalance,

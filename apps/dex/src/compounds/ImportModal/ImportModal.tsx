@@ -36,8 +36,8 @@ const ImportModal = (
 ) => {
   const importTokensMutation = useImportTokensMutation();
 
-  const { data: tokenRegistry, indexedByIBCDenom } = useTokenRegistryQuery();
-  const token = indexedByIBCDenom[props.denom];
+  const { data: tokenRegistry, indexedByDenom } = useTokenRegistryQuery();
+  const token = indexedByDenom[props.denom];
   const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
@@ -72,7 +72,7 @@ const ImportModal = (
   const tokenOptions = useMemo(
     () =>
       tokenRegistry.map((x) => ({
-        id: x.ibcDenom ?? "",
+        id: x.denom ?? "",
         label: x.displaySymbol,
         body: x.displaySymbol,
       })),
@@ -127,11 +127,11 @@ const ImportModal = (
         return "Transaction failed";
       case "idle":
       default:
-        return `Import ${indexedByIBCDenom[
+        return `Import ${indexedByDenom[
           props.denom
         ]?.displaySymbol.toUpperCase()} from Sifchain`;
     }
-  }, [importTokensMutation.status, indexedByIBCDenom, props.denom]);
+  }, [importTokensMutation.status, indexedByDenom, props.denom]);
 
   const buttonMessage = useMemo(() => {
     if (error !== undefined) {

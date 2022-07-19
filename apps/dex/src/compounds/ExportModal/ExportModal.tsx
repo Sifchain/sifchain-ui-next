@@ -27,12 +27,12 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 const ExportModal = (props: ModalProps & { denom: string }) => {
   const exportTokensMutation = useExportTokensMutation();
 
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
   const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
-  const token = indexedByIBCDenom[props.denom];
-  const isEthToken = token?.ibcDenom?.startsWith("c");
+  const token = indexedByDenom[props.denom];
+  const isEthToken = token?.denom?.startsWith("c");
   const { data: env } = useDexEnvironment();
   const { accounts: sifAccounts } = useAccounts(env?.sifChainId ?? "", {
     enabled: env !== undefined,
@@ -88,11 +88,11 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
         return "Transaction failed";
       case "idle":
       default:
-        return `Export ${indexedByIBCDenom[
+        return `Export ${indexedByDenom[
           props.denom
         ]?.displaySymbol.toUpperCase()} from Sifchain`;
     }
-  }, [exportTokensMutation.status, indexedByIBCDenom, props.denom]);
+  }, [exportTokensMutation.status, indexedByDenom, props.denom]);
 
   const buttonMessage = useMemo(() => {
     if (error !== undefined) {

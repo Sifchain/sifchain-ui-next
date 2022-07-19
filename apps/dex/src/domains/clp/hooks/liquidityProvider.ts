@@ -10,7 +10,7 @@ export const useLiquidityProviders = () => {
   const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
-  const { isSuccess: isTokenRegistrySuccess, indexedByIBCDenom } =
+  const { isSuccess: isTokenRegistrySuccess, indexedByDenom } =
     useTokenRegistryQuery();
   const { data: sifQueryClient } = useQueryClient();
 
@@ -30,7 +30,7 @@ export const useLiquidityProviders = () => {
               ...x,
               externalAssetBalance: Decimal.fromAtomics(
                 x.externalAssetBalance,
-                indexedByIBCDenom[x.liquidityProvider?.asset?.symbol ?? ""]
+                indexedByDenom[x.liquidityProvider?.asset?.symbol ?? ""]
                   ?.decimals ?? 0,
               ),
               nativeAssetBalance: Decimal.fromAtomics(

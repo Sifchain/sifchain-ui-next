@@ -11,7 +11,7 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export type EnhancedRegitryAsset = IAsset & {
   chainId: string;
-  ibcDenom: string;
+  denom: string;
 };
 
 export default function useTokenRegistryQuery(
@@ -52,7 +52,7 @@ export default function useTokenRegistryQuery(
             .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address;
 
           asset.chainId = chainId;
-          asset.ibcDenom = entry.denom;
+          asset.denom = entry.denom;
           asset.address = address;
           acc.enhancedAssets.push(asset);
         }
@@ -76,7 +76,7 @@ export default function useTokenRegistryQuery(
       return {
         indexedBySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
         indexedByDisplaySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
-        indexedByIBCDenom: {} as StringIndexed<EnhancedRegitryAsset>,
+        indexedByDenom: {} as StringIndexed<EnhancedRegitryAsset>,
       };
     }
 
@@ -85,12 +85,12 @@ export default function useTokenRegistryQuery(
       compose(toLower, prop("displaySymbol")),
       entries,
     );
-    const indexedByIBCDenom = indexBy(prop("ibcDenom"), entries);
+    const indexedByDenom = indexBy(prop("denom"), entries);
 
     return {
       indexedBySymbol,
       indexedByDisplaySymbol,
-      indexedByIBCDenom,
+      indexedByDenom,
     };
   }, [entries, query.isSuccess]);
 
@@ -103,7 +103,7 @@ export default function useTokenRegistryQuery(
     findBySymbolOrDenom: memoizeWith(identity, (symbolOrDenom: string) => {
       const sanitized = symbolOrDenom.toLowerCase();
       return (
-        indices.indexedByIBCDenom[sanitized] ??
+        indices.indexedByDenom[sanitized] ??
         indices.indexedBySymbol[sanitized] ??
         indices.indexedByDisplaySymbol[sanitized]
       );

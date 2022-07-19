@@ -10,7 +10,7 @@ import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 export const useSwapMutation = () => {
   const { signer } = useSifSigner();
   const { data: signingStargateClient } = useSifSigningStargateClient();
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
 
   return useMutation(
     async (variables: {
@@ -45,8 +45,8 @@ export const useSwapMutation = () => {
         if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
           toast.error(data?.rawLog ?? "Failed to swap");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
-          const fromCoin = indexedByIBCDenom[variables.fromDenom];
-          const toCoin = indexedByIBCDenom[variables.toDenom];
+          const fromCoin = indexedByDenom[variables.fromDenom];
+          const toCoin = indexedByDenom[variables.toDenom];
           const fromSymbol = fromCoin?.displaySymbol;
           const toSymbol = toCoin?.displaySymbol;
 

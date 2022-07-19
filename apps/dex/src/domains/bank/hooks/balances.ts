@@ -26,8 +26,8 @@ export const useBalanceQuery = (
 ) => {
   const { client } = useStargateClient(chainId, options);
   const { accounts } = useAccounts(chainId, options);
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
-  const token = indexedByIBCDenom[denom];
+  const { indexedByDenom } = useTokenRegistryQuery();
+  const token = indexedByDenom[denom];
 
   return useQuery(
     ["cosm-balance", chainId, denom],
@@ -62,7 +62,7 @@ export function useAllBalancesQuery() {
   const { data: stargateClient } = useSifStargateClient();
   const {
     data: registry,
-    indexedByIBCDenom,
+    indexedByDenom,
     isSuccess: isTokenRegistryQuerySuccess,
   } = useTokenRegistryQuery();
 
@@ -76,7 +76,7 @@ export function useAllBalancesQuery() {
 
       return (
         balances?.map((x) => {
-          const token = indexedByIBCDenom[x.denom];
+          const token = indexedByDenom[x.denom];
           return {
             ...x,
             amount:
@@ -106,11 +106,11 @@ export function useAllBalancesQuery() {
       baseQuery.data === undefined || registry === undefined
         ? {}
         : registry
-            .filter((x) => x.ibcDenom in indexedByDenom)
+            .filter((x) => x.denom in indexedByDenom)
             .reduce(
               (acc, x) => ({
                 ...acc,
-                [x.symbol.toLowerCase()]: indexedByDenom[x.ibcDenom] as Balance,
+                [x.symbol.toLowerCase()]: indexedByDenom[x.denom] as Balance,
               }),
               {} as StringIndexed<Balance>,
             );
@@ -119,12 +119,12 @@ export function useAllBalancesQuery() {
       baseQuery.data === undefined || registry === undefined
         ? {}
         : registry
-            .filter((x) => x.ibcDenom in indexedByDenom && x.displaySymbol)
+            .filter((x) => x.denom in indexedByDenom && x.displaySymbol)
             .reduce(
               (acc, x) => ({
                 ...acc,
                 [x.displaySymbol.toLowerCase()]: indexedByDenom[
-                  x.ibcDenom
+                  x.denom
                 ] as Balance,
               }),
               {} as StringIndexed<Balance>,
@@ -156,7 +156,7 @@ export function useAllBalancesQuery() {
 }
 
 export function useBalancesWithPool() {
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProviders();
   const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
@@ -183,7 +183,7 @@ export function useBalancesWithPool() {
   return useMemo(
     () =>
       Array.from(denomSet).map((x) => {
-        const token = indexedByIBCDenom[x];
+        const token = indexedByDenom[x];
         const balance = balances?.find((y) => y.denom === x);
         const pool = liquidityProviders?.pools.find(
           (y) => y.liquidityProvider?.asset?.symbol === x,
@@ -205,7 +205,7 @@ export function useBalancesWithPool() {
       balances,
       denomSet,
       env?.nativeAsset.symbol,
-      indexedByIBCDenom,
+      indexedByDenom,
       liquidityProviders?.pools,
       totalRowan,
     ],
@@ -216,8 +216,8 @@ export function useBalancesStats() {
   const { data: stargateClient } = useSifStargateClient();
   const balances = useBalancesWithPool();
 
-  const { indexedByIBCDenom } = useTokenRegistryQuery();
-  const usdcToken = indexedByIBCDenom["cusdc"];
+  const { indexedByDenom } = useTokenRegistryQuery();
+  const usdcToken = indexedByDenom["cusdc"];
 
   return useQuery(
     ["balances-stats", balances],

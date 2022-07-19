@@ -25,16 +25,16 @@ const AssetIcon: FC<Props> = memo((props) => {
     isLoading: isLoadingAsset,
     indexedBySymbol,
     indexedByDisplaySymbol,
-    indexedByIBCDenom,
+    indexedByDenom,
   } = useTokenRegistryQuery();
 
   const asset = useMemo(
     () =>
-      indexedByIBCDenom[props.symbol] ||
+      indexedByDenom[props.symbol] ||
       indexedBySymbol[props.symbol.toLowerCase()] ||
       indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
       indexedByDisplaySymbol[props.symbol.toLowerCase()],
-    [indexedByDisplaySymbol, indexedByIBCDenom, indexedBySymbol, props.symbol],
+    [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol],
   );
 
   if (!asset) {
