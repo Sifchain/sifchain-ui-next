@@ -1,20 +1,37 @@
 import { Button, ChevronDownIcon, PoolsIcon, SearchInput } from "@sifchain/ui";
 import type { NextPage } from "next";
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
 const Pools: NextPage = () => {
   const { data } = useSifApiQuery("assets.getTokenStats", []);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredPools = useMemo(
+    () =>
+      data?.pools?.filter((x) =>
+        x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+      ),
+    [data?.pools, searchQuery],
+  );
 
   return (
     <section className="flex-1 w-full bg-black p-6 md:py-12 md:px-24">
       <header className="mb-10 md:mb-12">
         <div className="flex items-center justify-between pb-6 md:pb-8">
           <h2 className="text-2xl font-bold text-white">Pools</h2>
-          <SearchInput placeholder="Search token" />
+          <SearchInput
+            placeholder="Search token"
+            value={searchQuery}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
+              (event) => setSearchQuery(event.target.value),
+              [],
+            )}
+          />
         </div>
         <div className="flex flex-col gap-4">
-          {data?.pools?.map((x, index) => (
+          {filteredPools?.map((x, index) => (
             <details
               key={index}
               className="border-2 border-stone-800 rounded-md overflow-hidden [&[open]_.marker]:rotate-180"
