@@ -2,6 +2,8 @@ import { Button, ChevronDownIcon, PoolsIcon, SearchInput } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { sort } from "rambda";
+import { descend } from "ramda";
 import { ChangeEventHandler, useCallback, useMemo } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
@@ -90,6 +92,15 @@ const Pools: NextPage = () => {
     [data, searchQuery],
   );
 
+  const filteredAndSortedPools = useMemo(
+    () =>
+      sort(
+        descend((x) => x.liquidityProviderPoolValue),
+        filteredPools ?? [],
+      ),
+    [filteredPools],
+  );
+
   return (
     <section className="flex-1 w-full bg-black p-6 md:py-12 md:px-24">
       <header className="mb-10 md:mb-12">
@@ -121,7 +132,7 @@ const Pools: NextPage = () => {
           />
         </div>
         <div className="flex flex-col gap-4">
-          {filteredPools?.map((x, index) => (
+          {filteredAndSortedPools?.map((x, index) => (
             <details
               key={index}
               className="border-2 border-stone-800 rounded-md overflow-hidden [&[open]_.marker]:rotate-180"
