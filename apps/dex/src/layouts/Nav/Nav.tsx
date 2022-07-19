@@ -44,9 +44,6 @@ export const MENU_ITEMS = [
 ];
 
 const Header = () => {
-  const router = useRouter();
-  const currentPath = router.asPath;
-
   const windowSize = useWindowSize();
 
   return (
@@ -78,36 +75,14 @@ const Header = () => {
               </section>
               <AppearTransition show={open}>
                 <Disclosure.Panel
-                  className="grid md:flex p-4 md:p-0 gap-4 xl:gap-6 4xl:gap-8 md:w-full"
+                  className="absolute z-10 bg-black top-14 left-0 right-0 md:top-0 md:flex md:w-full md:relative"
                   static={windowSize.width >= 768}
                 >
-                  <nav className="w-full md:flex md:flex-1 md:justify-center">
-                    <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
-                      {MENU_ITEMS.slice(0, 3).map(({ title, href }) => (
-                        <li key={title}>
-                          <Link href={href}>
-                            <a
-                              role="navigation"
-                              className={clsx(
-                                "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
-                                {
-                                  "bg-gray-600": currentPath === href,
-                                },
-                              )}
-                            >
-                              <span className="text-gray-200 font-semibold text-sm">
-                                {title}
-                              </span>
-                            </a>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                  <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
+                  <div className="grid md:flex p-4 md:p-0 gap-4 xl:gap-6 4xl:gap-8 md:w-full">
+                    <NavMenu />
                     <RowanStats />
-                  </section>
-                  <WalletConnector />
+                    <WalletConnector />
+                  </div>
                 </Disclosure.Panel>
               </AppearTransition>
             </>
@@ -115,6 +90,37 @@ const Header = () => {
         </Disclosure>
       )}
     </header>
+  );
+};
+
+const NavMenu = () => {
+  const router = useRouter();
+  const currentPath = router.asPath;
+
+  return (
+    <nav className="w-full md:flex md:flex-1 md:justify-center">
+      <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
+        {MENU_ITEMS.slice(0, 3).map(({ title, href }) => (
+          <li key={title}>
+            <Link href={href}>
+              <a
+                role="navigation"
+                className={clsx(
+                  "flex items-center gap-4 p-2 hover:bg-gray-800 hover:opacity-80 rounded-md transition-all",
+                  {
+                    "bg-gray-600": currentPath === href,
+                  },
+                )}
+              >
+                <span className="text-gray-200 font-semibold text-sm">
+                  {title}
+                </span>
+              </a>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 };
 
@@ -148,7 +154,7 @@ const RowanStats = () => {
   ];
 
   return (
-    <>
+    <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
       {rowanStats.map(({ id, icon, label }) => (
         <div
           key={id}
@@ -158,7 +164,7 @@ const RowanStats = () => {
           <span className="font-semibold text-xs">{label}</span>
         </div>
       ))}
-    </>
+    </section>
   );
 };
 
