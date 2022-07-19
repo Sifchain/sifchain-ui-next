@@ -64,7 +64,7 @@ const Header = () => {
         >
           {({ open }) => (
             <>
-              <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border">
+              <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
                 <Link href="/">
                   <a className="md:p-0">
                     <LogoFull className="hidden md:inline-block h-24 md:h-12" />
@@ -127,7 +127,7 @@ const Nav = ({ visibleItems = 3 }) => {
             </Link>
           </li>
         ))}
-        <li>
+        <li className="flex items-center relative">
           <Menu>
             {({ open }) => (
               <>
@@ -141,7 +141,7 @@ const Nav = ({ visibleItems = 3 }) => {
                 </Menu.Button>
                 <Menu.Items
                   as={SurfaceB}
-                  className="absolute z-10 p-2 grid gap-2"
+                  className="absolute top-7 right-0 z-10 p-2 grid gap-2"
                 >
                   {MENU_ITEMS.slice(visibleItems).map(({ title, href }) => (
                     <Menu.Item key={title}>
