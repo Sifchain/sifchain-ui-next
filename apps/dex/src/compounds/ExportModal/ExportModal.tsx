@@ -172,38 +172,40 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
               (event) => setAmount(event.target.value),
               [],
             )}
+            leadingIcon={
+              <div className="flex gap-1.5 pl-1.5">
+                <Label
+                  type="button"
+                  onClick={useCallback(() => {
+                    if (balance?.amount !== undefined) {
+                      setAmount(
+                        (
+                          balance.amount.toFloatApproximation() / 2
+                        ).toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits:
+                            balance.amount.fractionalDigits,
+                          useGrouping: false,
+                        }),
+                      );
+                    }
+                  }, [balance?.amount])}
+                >
+                  Half
+                </Label>
+                <Label
+                  type="button"
+                  onClick={useCallback(
+                    () => setAmount((x) => balance?.amount?.toString() ?? x),
+                    [balance?.amount],
+                  )}
+                >
+                  Max
+                </Label>
+              </div>
+            }
             fullWidth
-          >
-            <div className="absolute flex gap-1.5 pl-1.5">
-              <Label
-                type="button"
-                onClick={useCallback(() => {
-                  if (balance?.amount !== undefined) {
-                    setAmount(
-                      (
-                        balance.amount.toFloatApproximation() / 2
-                      ).toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: balance.amount.fractionalDigits,
-                        useGrouping: false,
-                      }),
-                    );
-                  }
-                }, [balance?.amount])}
-              >
-                Half
-              </Label>
-              <Label
-                type="button"
-                onClick={useCallback(
-                  () => setAmount((x) => balance?.amount?.toString() ?? x),
-                  [balance?.amount],
-                )}
-              >
-                Max
-              </Label>
-            </div>
-          </Input>
+          />
         </fieldset>
         <Input
           className="!bg-gray-750 text-ellipsis"
