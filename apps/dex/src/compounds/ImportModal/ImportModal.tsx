@@ -9,7 +9,6 @@ import {
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
-  TokenEntry,
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import {
@@ -40,7 +39,7 @@ const ImportModal = (
 ) => {
   const importTokensMutation = useImportTokensMutation();
 
-  const { data: tokenRegistry, indexedByDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
   const { indexedBySymbol: ethAssetsIndexedBySymbol } =
     useAssetsQuery("ethereum");
   const token = indexedByDenom[props.denom];
