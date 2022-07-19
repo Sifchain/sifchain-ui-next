@@ -33,6 +33,7 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
+import { isNilOrWhiteSpace } from "~/utils/string";
 
 type SwapConfirmationModalProps = {
   title: string;
@@ -371,13 +372,13 @@ const SwapPage = () => {
     toDenom,
   ]);
 
-  const swapButtonMsg = (() => {
+  const validationError = useMemo(() => {
     if (signerStatus === "resolved" && signer === undefined) {
-      return "Please Connect Sif Wallet";
+      return new Error("Please Connect Sif Wallet");
     }
 
-    if (!isReady) {
-      return "Loading";
+    if (fromAmountDecimal?.toFloatApproximation() === 0) {
+      return new Error();
     }
 
     if (
@@ -385,11 +386,22 @@ const SwapPage = () => {
         fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
       )
     ) {
-      return "Insufficient balance";
+      return new Error("Insufficient balance");
     }
 
+    return;
+  }, [fromAmountDecimal, fromToken?.balance, signer, signerStatus]);
+
+  const swapButtonText = useMemo(() => {
+    if (!isReady) {
+      return "Loading";
+    }
+
+    if (!isNilOrWhiteSpace(validationError?.message))
+      return validationError?.message;
+
     return "Swap";
-  })();
+  }, [isReady, validationError?.message]);
 
   return (
     <>
@@ -537,8 +549,11 @@ const SwapPage = () => {
                 </div>
               </div>
             </div>
-            <Button className="mt-8" disabled={swapButtonMsg !== "Swap"}>
-              {swapButtonMsg}
+            <Button
+              className="mt-8"
+              disabled={!isReady || validationError !== undefined}
+            >
+              {swapButtonText}
             </Button>
           </form>
         </section>
