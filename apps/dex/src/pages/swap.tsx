@@ -161,14 +161,14 @@ function useEnhancedToken(
   const registryQuery = useTokenRegistryQuery();
   const allBalancesQuery = useAllBalancesQuery();
 
-  const registryEntry = registryQuery.indexedByIBCDenom[denom];
+  const registryEntry = registryQuery.indexedByDenom[denom];
   const balanceEntry = useMemo(
     () =>
       allBalancesQuery.data?.find(
         (entry) =>
-          entry.denom === denom || entry.denom === registryEntry?.ibcDenom,
+          entry.denom === denom || entry.denom === registryEntry?.denom,
       ),
-    [allBalancesQuery.data, registryEntry?.ibcDenom, denom],
+    [allBalancesQuery.data, registryEntry?.denom, denom],
   );
 
   const poolQuery = useSifnodeQuery(
@@ -288,13 +288,13 @@ const SwapPage = () => {
     return runCatching(() =>
       stargateClient?.simulateSwapSync(
         {
-          denom: fromToken?.ibcDenom ?? fromToken?.symbol ?? "",
+          denom: fromToken?.denom ?? fromToken?.symbol ?? "",
           amount: fromAmountDecimal?.atomics ?? "0",
           poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
           poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
         },
         {
-          denom: toToken?.ibcDenom ?? toToken?.symbol ?? "",
+          denom: toToken?.denom ?? toToken?.symbol ?? "",
           poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
           poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
         },
@@ -414,7 +414,7 @@ const SwapPage = () => {
                     modalTitle="From"
                     value={fromDenom}
                     onChange={(token) =>
-                      token && setDenomsPair(token.ibcDenom, undefined)
+                      token && setDenomsPair(token.denom, undefined)
                     }
                   />
                   <Input
@@ -464,7 +464,7 @@ const SwapPage = () => {
                     modalTitle="From"
                     value={toDenom}
                     onChange={(token) =>
-                      token && setDenomsPair(undefined, token.ibcDenom)
+                      token && setDenomsPair(undefined, token.denom)
                     }
                   />
                   <Input
@@ -541,8 +541,8 @@ const SwapPage = () => {
             switch (swapMutation.status) {
               case "idle":
                 swapMutation.mutate({
-                  fromDenom: fromToken?.ibcDenom ?? "",
-                  toDenom: toToken?.ibcDenom ?? "",
+                  fromDenom: fromToken?.denom ?? "",
+                  toDenom: toToken?.denom ?? "",
                   fromAmount: fromAmountDecimal?.atomics ?? "0",
                   minimumReceiving:
                     swapSimulationResult?.minimumReceiving ?? "0",
