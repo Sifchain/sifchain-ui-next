@@ -31,6 +31,7 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import { getFirstQueryValue } from "~/utils/query";
 
 type SwapConfirmationModalProps = {
   title: string;
@@ -216,13 +217,6 @@ function useEnhancedToken(
       poolQuery.error,
   };
 }
-
-const getFirstQueryValue = (query: string | string[] | undefined) =>
-  query === undefined
-    ? undefined
-    : typeof query === "string"
-    ? query
-    : query[0];
 
 const SwapPage = () => {
   const router = useRouter();

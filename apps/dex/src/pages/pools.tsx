@@ -1,18 +1,26 @@
 import { Button, ChevronDownIcon, PoolsIcon, SearchInput } from "@sifchain/ui";
 import type { NextPage } from "next";
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEventHandler, useCallback, useMemo } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
+import { getFirstQueryValue } from "~/utils/query";
+import { isNilOrWhiteSpace } from "~/utils/string";
 
 const Pools: NextPage = () => {
+  const router = useRouter();
   const { data } = useSifApiQuery("assets.getTokenStats", []);
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchQuery = decodeURIComponent(
+    getFirstQueryValue(router.query["q"]) ?? "",
+  );
 
   const filteredPools = useMemo(
     () =>
-      data?.pools?.filter((x) =>
-        x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase()),
-      ),
+      !searchQuery
+        ? data?.pools
+        : data?.pools?.filter((x) =>
+            x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+          ),
     [data?.pools, searchQuery],
   );
 
@@ -25,8 +33,24 @@ const Pools: NextPage = () => {
             placeholder="Search token"
             value={searchQuery}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
-              (event) => setSearchQuery(event.target.value),
-              [],
+              (event) => {
+                const { q: _, ...queryWithoutQ } = router.query;
+                router.replace(
+                  {
+                    query: isNilOrWhiteSpace(event.target.value)
+                      ? queryWithoutQ
+                      : {
+                          ...queryWithoutQ,
+                          q: isNilOrWhiteSpace(event.target.value)
+                            ? undefined
+                            : encodeURIComponent(event.target.value),
+                        },
+                  },
+                  undefined,
+                  { shallow: true },
+                );
+              },
+              [router],
             )}
           />
         </div>
