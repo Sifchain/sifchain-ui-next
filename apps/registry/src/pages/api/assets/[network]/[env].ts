@@ -1,16 +1,16 @@
-import type { NextApiHandler } from "next";
+import { NextMiddleware, NextResponse } from "next/server";
+
 import { readAssetList } from "~/lib/utils";
-// import withCorsMiddleware from "~/lib/withCorsMiddleware";
 
 const VALID_NETWORKS = ["ethereum", "sifchain"];
 const VALID_ENVS = ["localnet", "devnet", "testnet", "mainnet"];
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextMiddleware = async (req) => {
   let statusCode: number | undefined;
 
   try {
-    const { network, env } = req.query;
-    const protocol = req.headers.host?.includes("localhost") ? "http" : "https";
+    const { pathname, origin } = req.nextUrl;
+    const [, , , network, env] = pathname.split("/");
 
     if (typeof network !== "string" || !VALID_NETWORKS.includes(network)) {
       statusCode = 400;
@@ -22,23 +22,24 @@ const handler: NextApiHandler = async (req, res) => {
       throw new Error(`Invalid env: ${env}`);
     }
 
-    const { assets } = await readAssetList(
-      `${protocol}://${req.headers.host}`,
-      network,
-      env,
-    );
+    const { assets } = await readAssetList(origin, network, env);
 
-    res
-      .setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate")
-      .json(assets);
+    return new NextResponse(JSON.stringify(assets), {
+      status: 200,
+      headers: {
+        "Cache-Control": "s-maxage=3600, stale-while-revalidate",
+        "content-type": "application/json",
+      },
+    });
   } catch (error) {
-    console.error("failed to serve assets", { error });
     if (error instanceof Error) {
-      res.status(statusCode ?? 400).json({ error: error.message });
+      return new NextResponse(JSON.stringify({ message: error.message }), {
+        status: statusCode ?? 400,
+      });
     } else {
-      res
-        .status(statusCode ?? 500)
-        .json({ error: "unknow error proceccing: /api/assets" });
+      return new NextResponse(JSON.stringify({ message: "unknown error" }), {
+        status: statusCode ?? 500,
+      });
     }
   }
 };
