@@ -65,7 +65,7 @@ const Trade: NextPage = () => {
   const onChangePoolSelector = (token: TokenEntry) => {
     const asset = token as EnhancedRegitryAsset;
     const pool = pools.find(
-      (pool) => pool.externalAsset?.symbol === asset.ibcDenom,
+      (pool) => pool.externalAsset?.symbol === asset.denom,
     );
     setSelectedPool(pool);
   };
