@@ -5,7 +5,7 @@ import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useQueryClient from "~/hooks/useQueryClient";
 
-export const useLiquidityProviders = () => {
+export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
   const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
@@ -26,7 +26,7 @@ export const useLiquidityProviders = () => {
         ? undefined
         : {
             ...lpRes,
-            pools: lpRes?.liquidityProviderData.map((x) => ({
+            liquidityProviderData: lpRes?.liquidityProviderData.map((x) => ({
               ...x,
               externalAssetBalance: Decimal.fromAtomics(
                 x.externalAssetBalance,

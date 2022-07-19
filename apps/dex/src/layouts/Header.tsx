@@ -4,17 +4,17 @@ import {
   AppearTransition,
   BalanceIcon,
   ChangelogIcon,
+  DotsVerticalIcon,
   formatNumberAsCurrency,
   LockIcon,
   Logo,
   LogoFull,
+  PlusIcon,
   PoolsIcon,
   RowanIcon,
-  SwapIcon,
-  PlusIcon,
-  useWindowSize,
   SurfaceB,
-  DotsVerticalIcon,
+  SwapIcon,
+  useWindowSize,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -38,15 +38,15 @@ export function useMenuItems() {
       icon: <BalanceIcon />,
     },
     {
+      title: "Pools",
+      href: "/pools",
+      icon: <PoolsIcon />,
+    },
+    {
       title: "Margin",
       href: "/margin",
       icon: <PlusIcon />,
       hidden: !isMarginEnabled,
-    },
-    {
-      title: "Pools",
-      href: "/pools",
-      icon: <PoolsIcon />,
     },
     {
       title: "Changelog",
@@ -106,7 +106,7 @@ const Header = () => {
   );
 };
 
-const Nav = ({ visibleItems = 3 }) => {
+const Nav = ({ visibleItems = 4 }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 

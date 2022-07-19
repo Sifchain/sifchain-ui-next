@@ -9,7 +9,7 @@ import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useLiquidityProviders } from "~/domains/clp";
+import { useLiquidityProvidersQuery } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
@@ -157,14 +157,14 @@ export function useAllBalancesQuery() {
 
 export function useBalancesWithPool() {
   const { indexedByDenom } = useTokenRegistryQuery();
-  const { data: liquidityProviders } = useLiquidityProviders();
+  const { data: liquidityProviders } = useLiquidityProvidersQuery();
   const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 
   const totalRowan =
     env === undefined || liquidityProviders === undefined
       ? undefined
-      : liquidityProviders?.pools.reduce(
+      : liquidityProviders?.liquidityProviderData.reduce(
           (prev, curr) => prev.plus(curr.nativeAssetBalance),
           Decimal.zero(env.nativeAsset.decimals),
         );
@@ -173,11 +173,11 @@ export function useBalancesWithPool() {
     () =>
       new Set([
         ...(balances?.map((x) => x.denom) ?? []),
-        ...(liquidityProviders?.pools
+        ...(liquidityProviders?.liquidityProviderData
           .map((x) => x.liquidityProvider?.asset?.symbol as string)
           .filter((x) => x !== undefined) ?? []),
       ]),
-    [balances, liquidityProviders?.pools],
+    [balances, liquidityProviders?.liquidityProviderData],
   );
 
   return useMemo(
@@ -185,7 +185,7 @@ export function useBalancesWithPool() {
       Array.from(denomSet).map((x) => {
         const token = indexedByDenom[x];
         const balance = balances?.find((y) => y.denom === x);
-        const pool = liquidityProviders?.pools.find(
+        const pool = liquidityProviders?.liquidityProviderData.find(
           (y) => y.liquidityProvider?.asset?.symbol === x,
         );
 
@@ -206,7 +206,7 @@ export function useBalancesWithPool() {
       denomSet,
       env?.nativeAsset.symbol,
       indexedByDenom,
-      liquidityProviders?.pools,
+      liquidityProviders?.liquidityProviderData,
       totalRowan,
     ],
   );
