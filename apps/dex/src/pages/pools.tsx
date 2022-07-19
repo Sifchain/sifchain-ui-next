@@ -1,15 +1,81 @@
 import { Button, ChevronDownIcon, PoolsIcon, SearchInput } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, useCallback, useMemo } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhiteSpace } from "~/utils/string";
 
+const usePoolsPageData = () => {
+  const tokenRegistryQuery = useTokenRegistryQuery();
+  const tokenStatsQuery = useSifApiQuery("assets.getTokenStats", []);
+  const liquidityProviderQuery = useLiquidityProvidersQuery();
+  const poolsQuery = usePoolsQuery();
+
+  return useMemo(
+    () => ({
+      isLoading: tokenStatsQuery.isLoading || liquidityProviderQuery.isLoading,
+      data: tokenStatsQuery.data?.pools?.map((x) => {
+        const token = tokenRegistryQuery.indexedByDisplaySymbol[x.symbol ?? ""];
+
+        const liquidityProvider =
+          liquidityProviderQuery.data?.liquidityProviderData.find(
+            (y) => y.liquidityProvider?.asset?.symbol === token?.denom,
+          );
+        const pool = poolsQuery.data?.pools.find(
+          (y) => y.externalAsset?.symbol === token?.denom,
+        );
+
+        if (
+          liquidityProvider?.liquidityProvider === undefined ||
+          pool === undefined
+        )
+          return {
+            ...x,
+            liquidityProviderPoolShare: 0,
+            liquidityProviderPoolValue: 0,
+          };
+
+        const rowanPoolValue = new BigNumber(
+          tokenStatsQuery.data.rowanUSD ?? 0,
+        ).times(liquidityProvider.nativeAssetBalance.toString());
+
+        const externalAssetPoolValue = new BigNumber(x.priceToken ?? 0).times(
+          liquidityProvider.externalAssetBalance.toString(),
+        );
+
+        return {
+          ...x,
+          liquidityProviderPoolShare: new BigNumber(
+            liquidityProvider.liquidityProvider.liquidityProviderUnits,
+          )
+            .div(pool.poolUnits)
+            .toNumber(),
+          liquidityProviderPoolValue: rowanPoolValue
+            .plus(externalAssetPoolValue)
+            .toNumber(),
+        };
+      }),
+    }),
+    [
+      liquidityProviderQuery.data?.liquidityProviderData,
+      liquidityProviderQuery.isLoading,
+      poolsQuery.data?.pools,
+      tokenRegistryQuery.indexedByDisplaySymbol,
+      tokenStatsQuery.data?.pools,
+      tokenStatsQuery.data?.rowanUSD,
+      tokenStatsQuery.isLoading,
+    ],
+  );
+};
+
 const Pools: NextPage = () => {
   const router = useRouter();
-  const { data } = useSifApiQuery("assets.getTokenStats", []);
+  const { data } = usePoolsPageData();
   const searchQuery = decodeURIComponent(
     getFirstQueryValue(router.query["q"]) ?? "",
   );
@@ -17,11 +83,11 @@ const Pools: NextPage = () => {
   const filteredPools = useMemo(
     () =>
       !searchQuery
-        ? data?.pools
-        : data?.pools?.filter((x) =>
+        ? data
+        : data?.filter((x) =>
             x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase()),
           ),
-    [data?.pools, searchQuery],
+    [data, searchQuery],
   );
 
   return (
@@ -80,7 +146,7 @@ const Pools: NextPage = () => {
                 <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right">
                   <dt>My pool value</dt>
                   <dd>
-                    {x.poolBalance?.toLocaleString(undefined, {
+                    {x.liquidityProviderPoolValue?.toLocaleString(undefined, {
                       style: "currency",
                       currency: "USD",
                       maximumFractionDigits: 2,
@@ -88,12 +154,10 @@ const Pools: NextPage = () => {
                   </dd>
                   <dt>My pool share</dt>
                   <dd>
-                    {x.poolBalance &&
-                      x.poolTVL &&
-                      (x.poolBalance / x.poolTVL).toLocaleString(undefined, {
-                        style: "percent",
-                        maximumFractionDigits: 2,
-                      })}
+                    {x.liquidityProviderPoolShare?.toLocaleString(undefined, {
+                      style: "percent",
+                      maximumFractionDigits: 2,
+                    })}
                   </dd>
                 </dl>
               </summary>
