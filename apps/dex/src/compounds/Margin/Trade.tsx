@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 
-import { Decimal } from "@cosmjs/math";
 import {
   Button,
   TwinRadioGroup,
