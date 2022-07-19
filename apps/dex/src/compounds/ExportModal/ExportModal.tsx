@@ -180,9 +180,13 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                 onClick={useCallback(() => {
                   if (balance?.amount !== undefined) {
                     setAmount(
-                      (balance.amount.toFloatApproximation() / 2).toPrecision(
-                        balance.amount.fractionalDigits,
-                      ),
+                      (
+                        balance.amount.toFloatApproximation() / 2
+                      ).toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: balance.amount.fractionalDigits,
+                        useGrouping: false,
+                      }),
                     );
                   }
                 }, [balance?.amount])}

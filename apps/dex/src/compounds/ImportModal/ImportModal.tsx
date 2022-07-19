@@ -223,8 +223,13 @@ const ImportModal = (
                 onClick={useCallback(() => {
                   if (walletBalance !== undefined) {
                     setAmount(
-                      (walletBalance.toFloatApproximation() / 2).toPrecision(
-                        walletBalance.fractionalDigits,
+                      (walletBalance.toFloatApproximation() / 2).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: walletBalance.fractionalDigits,
+                          useGrouping: false,
+                        },
                       ),
                     );
                   }
