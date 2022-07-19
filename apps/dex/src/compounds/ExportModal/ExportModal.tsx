@@ -14,6 +14,7 @@ import {
   ChangeEventHandler,
   FormEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -144,6 +145,12 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       sifAccounts,
     ],
   );
+
+  useEffect(() => {
+    if (!props.isOpen) {
+      setAmount("");
+    }
+  }, [props.isOpen]);
 
   return (
     <Modal

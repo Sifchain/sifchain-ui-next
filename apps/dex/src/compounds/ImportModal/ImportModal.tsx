@@ -15,6 +15,7 @@ import {
   ChangeEventHandler,
   FormEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -179,6 +180,12 @@ const ImportModal = (
       token?.chainId,
     ],
   );
+
+  useEffect(() => {
+    if (!props.isOpen) {
+      setAmount("");
+    }
+  }, [props.isOpen]);
 
   return (
     <Modal
