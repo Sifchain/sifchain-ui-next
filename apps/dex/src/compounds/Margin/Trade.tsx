@@ -18,6 +18,7 @@ function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
     AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
     RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
+    EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
   };
   const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
   return <span dangerouslySetInnerHTML={{ __html: entity }} />;
@@ -27,18 +28,20 @@ function ValueFromTo({
   from,
   to,
   almostEqual,
+  className,
 }: {
   from: string;
   to: string;
   almostEqual?: boolean;
+  className?: string;
 }) {
   return (
-    <>
+    <span className={className}>
       {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
       <span className="ml-1 mr-1">{from}</span>
       <HtmlUnicode name="RightwardsArrow" />
       <span className="ml-1">{to}</span>
-    </>
+    </span>
   );
 }
 
@@ -83,6 +86,7 @@ const Trade: NextPage = () => {
               value={selectedPool?.asset}
               onChange={onChangePoolSelector}
               tokens={pools.map((pool) => pool.asset)}
+              buttonClassName="!h-auto !rounded border-none text-base font-semibold"
             />
           </li>
           <li className="py-4">
@@ -151,7 +155,12 @@ const Trade: NextPage = () => {
                 <span className="mr-auto min-w-fit text-gray-300">
                   Account Balance
                 </span>
-                <ValueFromTo from="$50,000" to="$49,000" almostEqual={true} />
+                <ValueFromTo
+                  from="$50,000"
+                  to="$49,000"
+                  almostEqual={true}
+                  className="font-semibold"
+                />
               </div>
             </li>
             <li>
@@ -159,7 +168,12 @@ const Trade: NextPage = () => {
                 <span className="mr-auto min-w-fit text-gray-300">
                   Collateral Balance
                 </span>
-                <ValueFromTo from="$5,000" to="$4,000" almostEqual={true} />
+                <ValueFromTo
+                  from="$5,000"
+                  to="$4,000"
+                  almostEqual={true}
+                  className="font-semibold"
+                />
               </div>
               <p className="text-gray-400 text-xs w-full text-right">
                 <ValueFromTo from="40,000 ROWAN" to="40,000 ROWAN" />
@@ -170,7 +184,12 @@ const Trade: NextPage = () => {
                 <span className="mr-auto min-w-fit text-gray-300">
                   Total Borrowed
                 </span>
-                <ValueFromTo from="$10,000" to="$11,000" almostEqual={true} />
+                <ValueFromTo
+                  from="$10,000"
+                  to="$11,000"
+                  almostEqual={true}
+                  className="font-semibold"
+                />
               </div>
               <p className="text-gray-400 text-xs w-full text-right">
                 <ValueFromTo from="100,000 ROWAN" to="100,000 ROWAN" />
@@ -185,18 +204,18 @@ const Trade: NextPage = () => {
                   modalTitle="Collateral"
                   value={selectedPool?.asset}
                   onChange={(token) => console.log(token)}
-                  size="xs"
-                  buttonClassName="border-none rounded"
+                  buttonClassName="!h-auto !rounded border-none text-sm"
                   tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
                   type="text"
                   defaultValue="100,000"
-                  className="text-right text-xs bg-gray-700 rounded border-0"
+                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
                 />
               </div>
-              <span className="text-gray-200 text-right mt-1">
-                &#61; $1,000
+              <span className="text-gray-300 text-right mt-1">
+                <HtmlUnicode name="EqualsSign" />
+                <span className="ml-1">$1,000</span>
               </span>
             </li>
             <li className="flex flex-col">
@@ -206,24 +225,24 @@ const Trade: NextPage = () => {
                   modalTitle="Position"
                   value={selectedPool?.asset}
                   onChange={(token) => console.log(token)}
-                  size="xs"
-                  buttonClassName="border-none rounded"
+                  buttonClassName="!h-auto !rounded border-none text-sm"
                   readonly
                   tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
                   type="text"
                   defaultValue="1"
-                  className="text-right text-xs bg-gray-700 rounded border-0"
+                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
                 />
               </div>
-              <span className="text-gray-200 text-right mt-1">
-                &#61; $2,000
+              <span className="text-gray-300 text-right mt-1">
+                <HtmlUnicode name="EqualsSign" />
+                <span className="ml-1">$2,000</span>
               </span>
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
               <TwinRadioGroup
-                className="col-span-3 self-end"
+                className="col-span-3 self-end text-sm"
                 name="margin-side"
                 options={[
                   {
@@ -244,7 +263,7 @@ const Trade: NextPage = () => {
                 <input
                   type="text"
                   defaultValue="2x"
-                  className="text-xs bg-gray-700 rounded border-0"
+                  className="text-sm bg-gray-700 rounded border-0"
                 />
               </div>
             </li>
@@ -310,7 +329,7 @@ const Trade: NextPage = () => {
             <Button
               variant="tertiary"
               as="button"
-              size="sm"
+              size="xs"
               className="text-gray-300 font-normal self-center"
             >
               Reset

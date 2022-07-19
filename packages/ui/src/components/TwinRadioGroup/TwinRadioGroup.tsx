@@ -30,10 +30,7 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
 
   return (
     <RadioGroup
-      className={clsx(
-        "grid grid-cols-2 w-full font-semibold text-xs",
-        props.className,
-      )}
+      className={clsx("grid grid-cols-2 w-full font-semibold", props.className)}
       value={value}
       onChange={(option: string) => {
         if (props.onChange) {

@@ -72,7 +72,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           {items.map((item) => {
             return (
               <tr key={item}>
-                <td className="px-4 py-3">ETH / ROWAN</td>
+                <td className="px-4 py-3">ETH</td>
                 <td className="px-4 py-3">
                   <span className="text-green-400">Long</span>
                 </td>

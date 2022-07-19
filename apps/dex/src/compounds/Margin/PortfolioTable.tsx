@@ -50,7 +50,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
                 <a
                   className={clsx(
                     "flex mx-4 py-3",
-                    isTabActive ? "text-white border-current" : "text-gray-400",
+                    isTabActive ? "text-white font-semibold" : "text-gray-400",
                   )}
                 >
                   {title}
