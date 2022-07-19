@@ -101,11 +101,15 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
   return (
     <>
-      <div className={clsx("flex flex-col", props.size === "xs" && "text-xs")}>
-        {props.label && <span className="input-label">{props.label}</span>}
+      <div className="relative grid">
+        {props.label && (
+          <span className="input-label absolute -top-[22px]">
+            {props.label}
+          </span>
+        )}
         <button
           className={clsx(
-            "input flex flex-1 items-center gap-4",
+            "input flex flex-1 items-center gap-4 rounded-md h-11",
             props.buttonClassName,
           )}
           onClick={(e) => {
@@ -171,7 +175,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                   token.displaySymbol || token.symbol
                 }
               />
-              <Button variant="secondary" className="h-11 w-11 !p-0">
+              <Button variant="secondary" className="h-11 w-11 !p-0 hidden">
                 <PencilIcon className="text-lg" />
               </Button>
             </div>
