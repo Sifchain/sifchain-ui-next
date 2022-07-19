@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { forwardRef, useEffect, ReactNode } from "react";
+import { forwardRef, useEffect, ReactNode, useId } from "react";
 import tw from "tailwind-styled-components";
 
 import { useSyncedRef } from "../../hooks";
@@ -44,6 +44,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
+    const id = useId();
     const inputRef = useSyncedRef<HTMLInputElement>(ref);
 
     useEffect(() => {
@@ -65,14 +66,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [hotkey, inputRef.current]);
 
     return (
-      <label
+      <div
         className={clsx("relative grid items-center", {
           "max-w-min": !fullWidth,
           "w-full flex-1": fullWidth,
         })}
       >
         {(label || secondaryLabel) && (
-          <div className="flex justify-between items-center px-1">
+          <label
+            htmlFor={id}
+            className="flex justify-between items-center px-1"
+          >
             {label && (
               <span
                 className={clsx("text-xs md:text-sm text-gray-200", {
@@ -91,7 +95,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 {secondaryLabel}
               </span>
             )}
-          </div>
+          </label>
         )}
         <div className="relative flex items-center">
           <StyledInputContainer
@@ -106,6 +110,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <StyledInput
               aria-label={typeof label === "string" ? label : ""}
               {...props}
+              id={id}
               ref={inputRef}
             />
             {hotkey && (
@@ -115,7 +120,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </StyledInputContainer>
         </div>
-      </label>
+      </div>
     );
   },
 );
