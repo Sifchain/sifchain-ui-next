@@ -26,7 +26,7 @@ export const useLiquidityProvidersQuery = () => {
         ? undefined
         : {
             ...lpRes,
-            pools: lpRes?.liquidityProviderData.map((x) => ({
+            liquidityProviderData: lpRes?.liquidityProviderData.map((x) => ({
               ...x,
               externalAssetBalance: Decimal.fromAtomics(
                 x.externalAssetBalance,
