@@ -5,6 +5,7 @@ import {
   ArrowDownIcon,
   Button,
   Input,
+  Label,
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
@@ -197,6 +198,7 @@ const ImportModal = (
             )}
           />
           <Input
+            className="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
               undefined,
@@ -208,7 +210,33 @@ const ImportModal = (
               [],
             )}
             fullWidth
-          />
+          >
+            <div className="absolute flex gap-1.5 pl-1.5">
+              <Label
+                type="button"
+                onClick={useCallback(() => {
+                  if (walletBalance !== undefined) {
+                    setAmount(
+                      (walletBalance.toFloatApproximation() / 2).toPrecision(
+                        walletBalance.fractionalDigits,
+                      ),
+                    );
+                  }
+                }, [walletBalance])}
+              >
+                Half
+              </Label>
+              <Label
+                type="button"
+                onClick={useCallback(
+                  () => setAmount((x) => walletBalance?.toString() ?? x),
+                  [walletBalance],
+                )}
+              >
+                Max
+              </Label>
+            </div>
+          </Input>
         </fieldset>
         <Input
           className="!bg-gray-750 text-ellipsis"
