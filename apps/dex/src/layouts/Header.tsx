@@ -22,34 +22,39 @@ import { useRouter } from "next/router";
 
 import WalletConnector from "~/compounds/WalletConnector";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
+import { useFlag } from "~/lib/flags";
 
-export const MENU_ITEMS = [
-  {
-    title: "Swap",
-    href: "/swap",
-    icon: <SwapIcon />,
-  },
-  {
-    title: "Balance",
-    href: "/balances",
-    icon: <BalanceIcon />,
-  },
-  {
-    title: "Margin",
-    href: "/margin",
-    icon: <PlusIcon />,
-  },
-  {
-    title: "Pools",
-    href: "/pools",
-    icon: <PoolsIcon />,
-  },
-  {
-    title: "Changelog",
-    href: "/changelog",
-    icon: <ChangelogIcon />,
-  },
-];
+export function useMenuItems() {
+  const isMarginEnabled = useFlag("margin");
+  return [
+    {
+      title: "Swap",
+      href: "/swap",
+      icon: <SwapIcon />,
+    },
+    {
+      title: "Balance",
+      href: "/balances",
+      icon: <BalanceIcon />,
+    },
+    {
+      title: "Margin",
+      href: "/margin",
+      icon: <PlusIcon />,
+      hidden: !isMarginEnabled,
+    },
+    {
+      title: "Pools",
+      href: "/pools",
+      icon: <PoolsIcon />,
+    },
+    {
+      title: "Changelog",
+      href: "/changelog",
+      icon: <ChangelogIcon />,
+    },
+  ].filter((x) => !x.hidden);
+}
 
 const Header = () => {
   const windowSize = useWindowSize();
@@ -105,10 +110,12 @@ const Nav = ({ visibleItems = 3 }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
+  const menuItems = useMenuItems();
+
   return (
     <nav className="w-full md:flex md:flex-1 md:justify-center">
       <ul className="grid gap-2 md:flex items-center md:gap-4 xl:gap-5 4xl:gap-8">
-        {MENU_ITEMS.slice(0, visibleItems).map(({ title, href }) => (
+        {menuItems.slice(0, visibleItems).map(({ title, href }) => (
           <li key={title}>
             <Link href={href}>
               <a
@@ -143,7 +150,7 @@ const Nav = ({ visibleItems = 3 }) => {
                   as={SurfaceB}
                   className="absolute top-7 right-0 z-10 p-2 grid gap-2"
                 >
-                  {MENU_ITEMS.slice(visibleItems).map(({ title, href }) => (
+                  {menuItems.slice(visibleItems).map(({ title, href }) => (
                     <Menu.Item key={title}>
                       <Link href={href}>
                         <a
