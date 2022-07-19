@@ -1,4 +1,4 @@
-import type { IAsset } from "@sifchain/common";
+import type { IAsset, NetworkKind } from "@sifchain/common";
 import type { StringIndexed } from "@sifchain/ui";
 
 import { compose, identity, indexBy, prop, toLower } from "rambda";
@@ -15,7 +15,7 @@ export type EnhancedRegitryAsset = IAsset & {
 };
 
 export default function useTokenRegistryQuery(
-  networkKind: "sifchain" | "ethereum" = "sifchain",
+  networkKind: NetworkKind | NetworkKind[] = "sifchain",
 ) {
   const { data: env } = useDexEnvironment();
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {

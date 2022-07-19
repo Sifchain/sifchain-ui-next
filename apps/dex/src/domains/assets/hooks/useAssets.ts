@@ -5,7 +5,9 @@ import { useMemo } from "react";
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
-export function useAssetsQuery(networkKind: NetworkKind = "sifchain") {
+export function useAssetsQuery(
+  networkKinds: NetworkKind | NetworkKind[] = "sifchain",
+) {
   const { data: dexEnv, ...query } = useDexEnvironment();
 
   const networkAssets = useMemo(() => {
@@ -19,8 +21,12 @@ export function useAssetsQuery(networkKind: NetworkKind = "sifchain") {
       return [];
     }
 
-    return assets.filter(propEq("network", networkKind));
-  }, [dexEnv, networkKind]);
+    return assets.filter((x) =>
+      typeof networkKinds === "string"
+        ? x.network === networkKinds
+        : networkKinds.includes(x.network),
+    );
+  }, [dexEnv, networkKinds]);
 
   const indices = useMemo(() => {
     if (!networkAssets) {
