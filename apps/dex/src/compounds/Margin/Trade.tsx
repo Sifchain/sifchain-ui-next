@@ -1,21 +1,19 @@
 import type { NextPage } from "next";
 
-import { Button, TwinRadioGroup } from "@sifchain/ui";
+import { Decimal } from "@cosmjs/math";
+import {
+  Button,
+  TwinRadioGroup,
+  formatNumberAsCurrency,
+  TokenEntry,
+} from "@sifchain/ui";
 import Head from "next/head";
 
-import TokenSelector from "~/compounds/TokenSelector";
+import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
-import { useEnhancedPoolsQuery } from "~/domains/clp";
-
-function PoolSelector() {
-  const pools = useEnhancedPoolsQuery();
-  console.log(pools);
-  return (
-    <select className="text-xs bg-gray-700 rounded border-0 w-full">
-      <option>ETH / ROWAN</option>
-    </select>
-  );
-}
+import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
+import { useEffect, useMemo, useState } from "react";
+import type { EnhancedRegitryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
@@ -46,6 +44,38 @@ function ValueFromTo({
 }
 
 const Trade: NextPage = () => {
+  const enhancedPools = useEnhancedPoolsQuery();
+  const useRowanPrice = useRowanPriceQuery();
+
+  const pools: ReturnType<typeof useEnhancedPoolsQuery>["data"] = useMemo(
+    () => enhancedPools.data || [],
+    [enhancedPools.data],
+  );
+
+  const [selectedPool, setSelectedPool] = useState<
+    typeof pools[0] | undefined
+  >();
+
+  useEffect(() => {
+    if (pools && pools.length > 0) {
+      const eth = pools.find((pool) => pool.externalAsset?.symbol === "ceth");
+      setSelectedPool(eth);
+    }
+  }, [pools]);
+
+  const onChangePoolSelector = (token: TokenEntry) => {
+    const asset = token as EnhancedRegitryAsset;
+    const pool = pools.find(
+      (pool) => pool.externalAsset?.symbol === asset.ibcDenom,
+    );
+    setSelectedPool(pool);
+  };
+
+  console.log(selectedPool);
+  if (selectedPool?.nativeAssetBalance) {
+    console.log(Decimal.fromUserInput(selectedPool.swapPriceExternal, 2));
+  }
+
   return (
     <>
       <Head>
@@ -54,13 +84,20 @@ const Trade: NextPage = () => {
       <section className="bg-gray-800 border border-gold-800 rounded mt-4 text-xs">
         <ul className="grid grid-cols-7 gap-5">
           <li className="col-span-2 pl-4 py-4">
-            <PoolSelector />
+            <BaseTokenSelector
+              modalTitle="Pool"
+              value={selectedPool?.asset}
+              onChange={onChangePoolSelector}
+              tokens={pools.map((pool) => pool.asset)}
+            />
           </li>
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">Pool TVL</span>
               <span className="font-semibold text-sm">
-                <span className="mr-1">$2,000,000</span>
+                <span className="mr-1">
+                  {formatNumberAsCurrency(selectedPool?.stats.poolTVL || 0)}
+                </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
             </div>
@@ -69,17 +106,10 @@ const Trade: NextPage = () => {
             <div className="flex flex-col">
               <span className="text-gray-300">Pool Volume</span>
               <span className="font-semibold text-sm">
-                <span className="mr-1">$2,000,000</span>
+                <span className="mr-1">
+                  {formatNumberAsCurrency(selectedPool?.stats.volume || 0)}
+                </span>
                 <span className="text-green-400">(+2.8%)</span>
-              </span>
-            </div>
-          </li>
-          <li className="py-4">
-            <div className="flex flex-col">
-              <span className="text-gray-300">ETH Price</span>
-              <span className="font-semibold text-sm">
-                <span className="mr-1">$1,000</span>
-                <span className="text-red-400">(-2.8%)</span>
               </span>
             </div>
           </li>
@@ -87,7 +117,26 @@ const Trade: NextPage = () => {
             <div className="flex flex-col">
               <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
-                <span className="mr-1">$.006</span>
+                <span className="mr-1">
+                  {formatNumberAsCurrency(useRowanPrice.data || 0)}
+                </span>
+                <span className="text-red-400">(-2.8%)</span>
+              </span>
+            </div>
+          </li>
+          <li className="py-4">
+            <div className="flex flex-col">
+              <span className="text-gray-300">
+                {selectedPool?.stats.symbol?.toUpperCase()} Price
+              </span>
+              <span className="font-semibold text-sm">
+                <span className="mr-1">
+                  <span className="mr-1">
+                    {formatNumberAsCurrency(
+                      Number(selectedPool?.stats.priceToken) || 0,
+                    )}
+                  </span>
+                </span>
                 <span className="text-red-400">(-1.3%)</span>
               </span>
             </div>
@@ -138,12 +187,13 @@ const Trade: NextPage = () => {
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
-                <TokenSelector
+                <BaseTokenSelector
                   modalTitle="Collateral"
-                  value={"rowan"}
+                  value={selectedPool?.asset}
                   onChange={(token) => console.log(token)}
                   size="xs"
                   buttonClassName="border-none rounded"
+                  tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
                   type="text"
@@ -158,13 +208,14 @@ const Trade: NextPage = () => {
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
-                <TokenSelector
+                <BaseTokenSelector
                   modalTitle="Position"
-                  value={"ceth"}
+                  value={selectedPool?.asset}
                   onChange={(token) => console.log(token)}
                   size="xs"
                   buttonClassName="border-none rounded"
                   readonly
+                  tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
                   type="text"
