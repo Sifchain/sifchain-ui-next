@@ -27,6 +27,7 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { isNilOrWhiteSpace } from "~/utils/string";
 
 const ImportModal = (
   props: ModalProps & {
@@ -44,7 +45,10 @@ const ImportModal = (
   const { data: evmAccount } = useAccount();
   const { data: evmWalletBalance } = useBalance({
     addressOrName: evmAccount?.address ?? "",
-    token: token?.symbol === "CETH" ? (undefined as any) : token?.address,
+    token: token?.symbol.match(/^ceth$/i) ? undefined : token?.address,
+    enabled: token?.symbol.match(/^ceth$/i)
+      ? true
+      : !isNilOrWhiteSpace(token?.address),
   });
 
   const importTokenWalletBalance = useBalanceQuery(
