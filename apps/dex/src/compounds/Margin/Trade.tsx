@@ -71,11 +71,6 @@ const Trade: NextPage = () => {
     setSelectedPool(pool);
   };
 
-  console.log(selectedPool);
-  if (selectedPool?.nativeAssetBalance) {
-    console.log(Decimal.fromUserInput(selectedPool.swapPriceExternal, 2));
-  }
-
   return (
     <>
       <Head>
