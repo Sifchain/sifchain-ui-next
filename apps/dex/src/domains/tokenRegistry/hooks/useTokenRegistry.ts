@@ -47,13 +47,8 @@ export default function useTokenRegistryQuery(
               ? env?.sifChainId
               : entry.ibcCounterpartyChainId;
 
-          const address = assetsQuery.data?.assets
-            ?.filter((x) => x.address !== undefined)
-            .find((x) => x.symbol === entry.denom.replace(/^c/, ""))?.address;
-
           asset.chainId = chainId;
           asset.denom = entry.denom;
-          asset.address = address;
           acc.enhancedAssets.push(asset);
         }
 
@@ -69,7 +64,7 @@ export default function useTokenRegistryQuery(
     );
 
     return enhancedAssets;
-  }, [assetsQuery.data?.assets, data?.registry?.entries, env, indexedBySymbol]);
+  }, [data?.registry?.entries, env, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {

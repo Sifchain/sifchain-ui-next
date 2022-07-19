@@ -20,6 +20,7 @@ import {
 } from "react";
 import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useAssetsQuery } from "~/domains/assets";
 import {
   useAllBalancesQuery,
   useBalanceQuery,
@@ -27,6 +28,7 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { isNilOrWhiteSpace } from "~/utils/string";
 
 const ImportModal = (
   props: ModalProps & {
@@ -37,14 +39,20 @@ const ImportModal = (
   const importTokensMutation = useImportTokensMutation();
 
   const { data: tokenRegistry, indexedByDenom } = useTokenRegistryQuery();
+  const { indexedBySymbol: ethAssetsIndexedBySymbol } =
+    useAssetsQuery("ethereum");
   const token = indexedByDenom[props.denom];
+  const evmToken = ethAssetsIndexedBySymbol[props.denom.replace(/^c/, "")];
   const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
   const { data: evmAccount } = useAccount();
   const { data: evmWalletBalance } = useBalance({
     addressOrName: evmAccount?.address ?? "",
-    token: token?.symbol === "CETH" ? (undefined as any) : token?.address,
+    token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,
+    enabled: token?.symbol.match(/^ceth$/i)
+      ? true
+      : !isNilOrWhiteSpace(evmToken?.address),
   });
 
   const importTokenWalletBalance = useBalanceQuery(
