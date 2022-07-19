@@ -9,7 +9,7 @@ import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useLiquidityProviders } from "~/domains/clp";
+import { useLiquidityProvidersQuery } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
@@ -157,7 +157,7 @@ export function useAllBalancesQuery() {
 
 export function useBalancesWithPool() {
   const { indexedByDenom } = useTokenRegistryQuery();
-  const { data: liquidityProviders } = useLiquidityProviders();
+  const { data: liquidityProviders } = useLiquidityProvidersQuery();
   const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 

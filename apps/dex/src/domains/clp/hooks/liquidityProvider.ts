@@ -5,7 +5,7 @@ import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useQueryClient from "~/hooks/useQueryClient";
 
-export const useLiquidityProviders = () => {
+export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
   const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
