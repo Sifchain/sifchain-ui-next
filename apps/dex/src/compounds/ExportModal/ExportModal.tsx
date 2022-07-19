@@ -5,6 +5,7 @@ import {
   ArrowDownIcon,
   Button,
   Input,
+  Label,
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
@@ -14,6 +15,7 @@ import {
   ChangeEventHandler,
   FormEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -145,6 +147,12 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
     ],
   );
 
+  useEffect(() => {
+    if (!props.isOpen) {
+      setAmount("");
+    }
+  }, [props.isOpen]);
+
   return (
     <Modal
       {...props}
@@ -154,6 +162,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
+            className="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(
               balance?.amount?.toFloatApproximation() ?? 0
@@ -164,7 +173,37 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
               [],
             )}
             fullWidth
-          />
+          >
+            <div className="absolute flex gap-1.5 pl-1.5">
+              <Label
+                type="button"
+                onClick={useCallback(() => {
+                  if (balance?.amount !== undefined) {
+                    setAmount(
+                      (
+                        balance.amount.toFloatApproximation() / 2
+                      ).toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: balance.amount.fractionalDigits,
+                        useGrouping: false,
+                      }),
+                    );
+                  }
+                }, [balance?.amount])}
+              >
+                Half
+              </Label>
+              <Label
+                type="button"
+                onClick={useCallback(
+                  () => setAmount((x) => balance?.amount?.toString() ?? x),
+                  [balance?.amount],
+                )}
+              >
+                Max
+              </Label>
+            </div>
+          </Input>
         </fieldset>
         <Input
           className="!bg-gray-750 text-ellipsis"

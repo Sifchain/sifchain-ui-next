@@ -5,16 +5,17 @@ import {
   ArrowDownIcon,
   Button,
   Input,
+  Label,
   Modal,
   ModalProps,
   RacetrackSpinnerIcon,
-  Select,
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import {
   ChangeEventHandler,
   FormEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -29,6 +30,7 @@ import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { isNilOrWhiteSpace } from "~/utils/string";
+import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
   props: ModalProps & {
@@ -38,7 +40,7 @@ const ImportModal = (
 ) => {
   const importTokensMutation = useImportTokensMutation();
 
-  const { data: tokenRegistry, indexedByDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
   const { indexedBySymbol: ethAssetsIndexedBySymbol } =
     useAssetsQuery("ethereum");
   const token = indexedByDenom[props.denom];
@@ -76,21 +78,6 @@ const ImportModal = (
     enabled: env !== undefined,
   });
   const recipientAddress = cosmAccounts?.[0]?.address;
-
-  const tokenOptions = useMemo(
-    () =>
-      tokenRegistry.map((x) => ({
-        id: x.denom ?? "",
-        label: x.displaySymbol,
-        body: x.displaySymbol,
-      })),
-    [tokenRegistry],
-  );
-
-  const selectedTokenOptions = useMemo(
-    () => tokenOptions.find((x) => x.id === props.denom),
-    [props.denom, tokenOptions],
-  );
 
   const [amount, setAmount] = useState("");
   const amountDecimal = useMemo(
@@ -194,6 +181,12 @@ const ImportModal = (
     ],
   );
 
+  useEffect(() => {
+    if (!props.isOpen) {
+      setAmount("");
+    }
+  }, [props.isOpen]);
+
   return (
     <Modal
       {...props}
@@ -202,16 +195,16 @@ const ImportModal = (
     >
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
-          <Select
-            className="z-10"
-            options={tokenOptions}
-            value={selectedTokenOptions}
+          <TokenSelector
+            modalTitle="Import"
+            value={props.denom}
             onChange={useCallback(
-              (value) => props.onRequestDenomChange(value.id),
+              (value) => props.onRequestDenomChange(value?.denom ?? ""),
               [props],
             )}
           />
           <Input
+            className="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
               undefined,
@@ -223,7 +216,38 @@ const ImportModal = (
               [],
             )}
             fullWidth
-          />
+          >
+            <div className="absolute flex gap-1.5 pl-1.5">
+              <Label
+                type="button"
+                onClick={useCallback(() => {
+                  if (walletBalance !== undefined) {
+                    setAmount(
+                      (walletBalance.toFloatApproximation() / 2).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: walletBalance.fractionalDigits,
+                          useGrouping: false,
+                        },
+                      ),
+                    );
+                  }
+                }, [walletBalance])}
+              >
+                Half
+              </Label>
+              <Label
+                type="button"
+                onClick={useCallback(
+                  () => setAmount((x) => walletBalance?.toString() ?? x),
+                  [walletBalance],
+                )}
+              >
+                Max
+              </Label>
+            </div>
+          </Input>
         </fieldset>
         <Input
           className="!bg-gray-750 text-ellipsis"
