@@ -9,7 +9,7 @@ import { ToastContainer } from "@sifchain/ui";
 import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
 
-import Nav from "./Nav";
+import Header from "./Header";
 
 const Shell = tw.div`
   flex flex-col
@@ -19,13 +19,13 @@ const Shell = tw.div`
   bg-forest bg-cover bg-center bg-no-repeat bg-fixed
 `;
 
-export type Props = PropsWithChildren<{}>;
+export type Props = PropsWithChildren;
 
 const MainLayout: FC<Props> = (props) => {
   return (
     <>
       <Shell>
-        <Nav />
+        <Header />
         <main className="flex-1 flex flex-col max-h-[calc(100vh-80px)] z-[1]">
           {props.children}
         </main>
