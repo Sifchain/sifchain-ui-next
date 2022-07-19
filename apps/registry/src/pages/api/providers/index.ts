@@ -1,26 +1,24 @@
-import { NextMiddleware, NextResponse } from "next/server";
+import type { NextApiHandler } from "next";
 import { readProviderList } from "~/lib/utils";
 
-const handler: NextMiddleware = async (req) => {
+const handler: NextApiHandler = async (req, res) => {
   try {
-    const { providers } = await readProviderList(req.nextUrl.origin);
+    const protocol = req.headers.host?.includes("localhost") ? "http" : "https";
+    const { providers } = await readProviderList(
+      `${protocol}://${req.headers.host}`,
+    );
 
-    return new NextResponse(JSON.stringify(providers), {
-      status: 200,
-      headers: {
-        "Cache-Control": "s-maxage=3600, stale-while-revalidate",
-        "content-type": "application/json",
-      },
-    });
+    res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+
+    res.status(200).json(providers);
   } catch (error) {
+    console.error("failed to serve providers", { error });
     if (error instanceof Error) {
-      return new NextResponse(JSON.stringify({ message: error.message }), {
-        status: 400,
-      });
+      res.status(400).json({ error: error.message });
     } else {
-      return new NextResponse(JSON.stringify({ message: "unknown error" }), {
-        status: 500,
-      });
+      res
+        .status(500)
+        .json({ error: "unknow error proceccing: /api/providers" });
     }
   }
 };

@@ -65,10 +65,15 @@ const AssetsSection: FC<
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((asset) => (
             <li key={asset.symbol}>
-              <SurfaceA className="min-h-[140px] grid">
+              <SurfaceA className="min-h-[120px] grid">
                 <div className="flex items-center gap-2">
                   {asset.imageUrl && (
-                    <figure className="h-8 w-8 ring-2 ring-gray-750 rounded-full overflow-hidden">
+                    <figure
+                      className={clsx(
+                        "h-8 w-8 ring-2 ring-gray-750 rounded-full overflow-hidden",
+                        asset.hasDarkIcon ? "bg-gray-500" : "bg-gray-200",
+                      )}
+                    >
                       <AsyncImage
                         alt={`${asset.name} logo`}
                         className={clsx(
