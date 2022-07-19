@@ -60,7 +60,7 @@ const Header = () => {
   const windowSize = useWindowSize();
 
   return (
-    <header className="bg-black md:p-4 grid ">
+    <header className="bg-black md:p-4 grid">
       {windowSize.width && (
         <Disclosure
           as="div"
