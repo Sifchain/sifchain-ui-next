@@ -154,6 +154,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                     role="button"
                     onClick={async () => {
                       setWalletId(x.id);
+                      navigate("await-confirmation");
                       try {
                         await props.onConnect?.({
                           chainId: networkId ?? "",
@@ -162,7 +163,6 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                       } catch (error) {
                         console.log("failed to connect", error);
                       }
-                      navigate("await-confirmation");
                     }}
                   >
                     <div className="flex gap-2 items-center">
