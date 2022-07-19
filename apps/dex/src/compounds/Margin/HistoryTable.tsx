@@ -1,8 +1,8 @@
-import { Slug } from "~/components/Slug";
+import { NoResultsRow } from "./NoResultsRow";
 
 const HISTORY_HEADER_ITEMS = [
-  "Date closed",
-  "Time open",
+  "Date Closed",
+  "Time Open",
   "Pool",
   "Side",
   "Asset",
@@ -10,6 +10,7 @@ const HISTORY_HEADER_ITEMS = [
   "Realized P&L",
 ];
 
+const items = Array.from({ length: 200 }, (_, index) => index + 1);
 const HistoryTable = () => {
   return (
     <div className="overflow-x-auto">
@@ -26,50 +27,44 @@ const HistoryTable = () => {
           </tr>
         </thead>
         <tbody className="bg-gray-850">
+          {items.map((item) => {
+            return (
+              <tr key={item}>
+                <td className="px-4 py-3">2022-07-12</td>
+                <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
+                <td className="px-4 py-3">ETH / ROWAN</td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">Long</span>
+                </td>
+                <td>ETH</td>
+                <td className="px-4 py-3">2.5</td>
+                <td className="px-4 py-3">
+                  <span className="text-green-400">$2,000.15</span>
+                </td>
+              </tr>
+            );
+          })}
           <tr>
             <td className="px-4 py-3">2022-07-12</td>
             <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
             <td className="px-4 py-3">ETH / ROWAN</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="Long" />
+              <span className="text-red-400">Short</span>
             </td>
             <td>ETH</td>
             <td className="px-4 py-3">2.5</td>
             <td className="px-4 py-3">
-              <Slug color="green" title="$2,000.15" />
+              <span className="text-red-400">-$2,000.15</span>
             </td>
           </tr>
-          <tr>
-            <td className="px-4 py-3">2022-07-12</td>
-            <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
-            <td className="px-4 py-3">ETH / ROWAN</td>
-            <td className="px-4 py-3">
-              <Slug color="red" title="Short" />
-            </td>
-            <td>ETH</td>
-            <td className="px-4 py-3">2.5</td>
-            <td className="px-4 py-3">
-              <Slug color="red" title="-$2,000.15" />
-            </td>
-          </tr>
-          <NoResultsTr />
+          <NoResultsRow
+            colSpan={HISTORY_HEADER_ITEMS.length}
+            message="History not available. Try again later."
+          />
         </tbody>
       </table>
     </div>
   );
 };
-
-function NoResultsTr() {
-  return (
-    <tr>
-      <td
-        colSpan={HISTORY_HEADER_ITEMS.length}
-        className="text-gray-400 text-center p-20"
-      >
-        History not available. Try again later.
-      </td>
-    </tr>
-  );
-}
 
 export default HistoryTable;

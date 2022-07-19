@@ -1,26 +1,38 @@
-import type { NextPage } from "next";
-
 import { Suspense } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
+import type { HideColsUnion } from "./OpenPositionsTable";
+
 const DEFAULT_OPTION_ITEM = "open-positions";
 const OPTIONS_ITEMS = [
   {
     title: "Open Positions",
     slug: "open-positions",
-    content: dynamic(() => import("~/compounds/Margin/OpenPositions")),
+    content: dynamic(() => import("~/compounds/Margin/OpenPositionsTable"), {
+      loading: () => (
+        <div className="bg-gray-850 p-10 text-center">Loading...</div>
+      ),
+    }),
   },
   {
     title: "History",
     slug: "history",
-    content: dynamic(() => import("~/compounds/Margin/History")),
+    content: dynamic(() => import("~/compounds/Margin/HistoryTable"), {
+      loading: () => (
+        <div className="bg-gray-850 p-10 text-center">Loading...</div>
+      ),
+    }),
   },
 ];
-
-const Portifolio: NextPage = () => {
+type PortfolioTableProps = {
+  openPositions?: {
+    hideCols?: HideColsUnion[];
+  };
+};
+export const PortfolioTable = (props: PortfolioTableProps) => {
   const router = useRouter();
   const activeOption =
     (router.query["option"] as string) || DEFAULT_OPTION_ITEM;
@@ -28,7 +40,7 @@ const Portifolio: NextPage = () => {
   const TabContent = currentTab?.content || null;
 
   return (
-    <section className="mt-4">
+    <>
       <ul className="flex flex-row text-sm bg-gray-800 rounded-tl rounded-tr">
         {OPTIONS_ITEMS.map(({ title, slug }) => {
           const isTabActive = currentTab?.slug === slug;
@@ -49,16 +61,10 @@ const Portifolio: NextPage = () => {
         })}
       </ul>
       {TabContent && (
-        <Suspense
-          fallback={
-            <div className="bg-gray-850 p-10 text-center">Loading...</div>
-          }
-        >
-          <TabContent />
+        <Suspense>
+          <TabContent {...props.openPositions} />
         </Suspense>
       )}
-    </section>
+    </>
   );
 };
-
-export default Portifolio;
