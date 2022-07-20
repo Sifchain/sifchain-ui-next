@@ -162,7 +162,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       <form onSubmit={onSubmit}>
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
-            className="text-right"
+            inputClassName="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(
               balance?.amount?.toFloatApproximation() ?? 0
@@ -208,7 +208,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
           />
         </fieldset>
         <Input
-          className="!bg-gray-750 text-ellipsis"
+          inputClassName="!bg-gray-750 text-ellipsis"
           label="Recipient address"
           value={recipientAddress}
           fullWidth

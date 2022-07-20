@@ -431,7 +431,7 @@ const SwapPage = () => {
                     }
                   />
                   <Input
-                    className="text-right md:flex-1"
+                    inputClassName="text-right md:flex-1"
                     label="Amount"
                     secondaryLabel={`Balance: ${
                       fromToken?.balance ? formatBalance(fromToken.balance) : 0
@@ -516,7 +516,7 @@ const SwapPage = () => {
                     }
                   />
                   <Input
-                    className="text-right md:flex-1"
+                    inputClassName="text-right md:flex-1"
                     secondaryLabel={`Balance: ${
                       toToken?.balance ? formatBalance(toToken.balance) : 0
                     }`}

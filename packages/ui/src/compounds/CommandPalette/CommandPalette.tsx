@@ -155,7 +155,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
       <SearchInput
         readOnly
         fullWidth
-        className={clsx({ "opacity-60": isOpen })}
+        containerClassName={clsx({ "opacity-60": isOpen })}
         disabled={isOpen}
         placeholder={props.placeholder}
         onClick={setIsOpen.bind(null, true)}

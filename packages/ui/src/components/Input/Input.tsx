@@ -12,8 +12,8 @@ export const StyledInputContainer = tw.div`
 `;
 
 export const StyledInput = tw.input`
-  flex-1
-  bg-transparent outline-none
+  flex-1 p-0
+  bg-transparent outline-none border-none
   text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   disabled:placeholder:text-gray-600
@@ -21,7 +21,7 @@ export const StyledInput = tw.input`
 
 export type InputProps = Omit<
   JSX.IntrinsicElements["input"],
-  "ref" | "children"
+  "ref" | "children" | "className"
 > & {
   label?: ReactNode | string;
   secondaryLabel?: ReactNode | string;
@@ -29,6 +29,8 @@ export type InputProps = Omit<
   fullWidth?: boolean;
   leadingIcon?: ReactNode | string;
   hotkey?: string;
+  containerClassName?: string;
+  inputClassName?: string;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -40,6 +42,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       hotkey,
       hideLabel,
       fullWidth,
+      containerClassName,
+      inputClassName,
       ...props
     },
     ref,
@@ -103,13 +107,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               {
                 "bg-gray-800 border-gray-750": props.disabled,
               },
-              props.className,
+              containerClassName,
             ])}
           >
             {leadingIcon && <div className="-ml-2">{leadingIcon}</div>}
             <StyledInput
               aria-label={typeof label === "string" ? label : ""}
               {...props}
+              className={inputClassName}
               id={id}
               ref={inputRef}
             />

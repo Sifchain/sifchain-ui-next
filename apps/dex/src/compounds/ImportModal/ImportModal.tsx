@@ -204,7 +204,7 @@ const ImportModal = (
             )}
           />
           <Input
-            className="text-right"
+            inputClassName="text-right"
             label="Amount"
             secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
               undefined,
@@ -250,7 +250,7 @@ const ImportModal = (
           />
         </fieldset>
         <Input
-          className="!bg-gray-750 text-ellipsis"
+          inputClassName="!bg-gray-750 text-ellipsis"
           label="Recipient address"
           value={recipientAddress}
           fullWidth
