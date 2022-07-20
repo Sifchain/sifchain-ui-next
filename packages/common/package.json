@@ -24,6 +24,7 @@
     "js-cookie": "^3.0.1",
     "jsbi": "^4.3.0",
     "numbro": "^2.3.6",
+    "query-string": "^7.1.1",
     "tiny-invariant": "^1.2.0",
     "url-join-ts": "^1.0.5"
   },
