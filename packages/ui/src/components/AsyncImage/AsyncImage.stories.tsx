@@ -16,12 +16,19 @@ export const Default = Template.bind({});
 
 Default.args = {
   src: "https://picsum.photos/300/300",
-  placeholder: (
-    <figure className="grid place-items-center">
-      <RacetrackSpinnerIcon />
-    </figure>
-  ),
+  placeholder: <RacetrackSpinnerIcon className="h-36 w-36 place-self-center" />,
   height: 300,
   width: 300,
-  className: "ring ring-gray-400 rounded shadow-lg shadow-black/70",
+  containerClassName: "ring ring-gray-400 rounded shadow-lg shadow-black/70",
+};
+
+export const Round = Template.bind({});
+
+Round.args = {
+  src: "https://picsum.photos/300/300",
+  placeholder: <RacetrackSpinnerIcon className="h-36 w-36 place-self-center" />,
+  height: 300,
+  width: 300,
+  containerClassName:
+    "ring ring-gray-400 rounded-full shadow-lg shadow-black/70",
 };

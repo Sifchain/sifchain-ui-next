@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useState, memo } from "react";
 
 export type ImageDecoding = "auto" | "sync" | "async";
@@ -7,27 +8,48 @@ export type AsyncImageProps = Omit<
   "placeholder"
 > & {
   placeholder?: JSX.Element;
+  containerClassName?: string;
 };
 
 export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
   loading = "lazy",
   decoding = "async",
+  height = "100%",
+  width = "100%",
   placeholder,
+  className,
+  containerClassName,
   ...props
 }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
-  if (isLoading && placeholder) {
-    return placeholder;
-  }
+  const shouldRenderPlaceholder = Boolean(!loaded && placeholder);
 
   return (
-    <img
-      loading={loading}
-      decoding={decoding}
-      onLoadStart={setIsLoading.bind(null, true)}
-      onLoad={setIsLoading.bind(null, false)}
-      {...props}
-    />
+    <figure
+      style={{
+        height: height,
+        width: width,
+      }}
+      className={clsx(
+        containerClassName,
+        "relative grid place-items-center overflow-hidden",
+      )}
+    >
+      {shouldRenderPlaceholder && <>{placeholder}</>}
+      <img
+        loading={loading}
+        decoding={decoding}
+        onLoad={setLoaded.bind(null, true)}
+        className={clsx(
+          "absolute object-cover transition-opacity duration-200",
+          {
+            "opacity-0": !loaded,
+          },
+          className,
+        )}
+        {...props}
+      />
+    </figure>
   );
 });
