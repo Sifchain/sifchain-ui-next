@@ -6,12 +6,12 @@ import {
 } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import type { EnhancedRegitryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 export type TokenSelectorProps = Omit<
   BaseTokenSelectorProps,
   "tokens" | "value" | "onChange"
-> & { value?: string; onChange: (token?: EnhancedRegitryAsset) => unknown };
+> & { value?: string; onChange: (token?: EnhancedRegistryAsset) => unknown };
 
 const toTokenEntry = <T extends IAsset>(x: T) => ({
   id: x.denom,
