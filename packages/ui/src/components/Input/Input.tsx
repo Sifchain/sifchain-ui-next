@@ -13,9 +13,9 @@ export const StyledInputContainer = tw.div`
 
 export const StyledInput = tw.input`
   flex-1 p-0
-  bg-transparent appearance-none outline-none border-none focus:ring-transparent
-  [&[type="number"]::-webkit-inner-spin-button]:appearance-none
-  [&[type="number"]::-webkit-outer-spin-button]:appearance-none
+  bg-transparent outline-none border-none focus:ring-transparent
+  [&::-webkit-inner-spin-button]:appearance-none
+  [&::-webkit-outer-spin-button]:appearance-none
   text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   disabled:placeholder:text-gray-600
@@ -117,6 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               aria-label={typeof label === "string" ? label : ""}
               {...props}
               className={inputClassName}
+              style={{ appearance: "textfield", ...props.style }}
               id={id}
               ref={inputRef}
             />
