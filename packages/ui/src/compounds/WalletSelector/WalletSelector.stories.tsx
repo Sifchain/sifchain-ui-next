@@ -1,5 +1,4 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
-import { useState } from "react";
 import {
   AsyncImage,
   CoinbaseIcon,
@@ -17,19 +16,11 @@ export default {
 } as ComponentMeta<typeof WalletSelector>;
 
 const Template: ComponentStory<typeof WalletSelector> = (args) => {
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
     <WalletSelector
       {...args}
       onConnect={() => {
         console.log("connecting");
-
-        setIsLoading(true);
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 3000);
       }}
     />
   );
@@ -128,9 +119,6 @@ Default.args = {
       type: "ibc",
     },
   ],
-  accounts: {
-    // sifchain: ["sifs15hazsfjrl0k6lhv00anz45zwzp06un2qz2s4mp"],
-  },
 };
 
 export const Connected = Template.bind({});
