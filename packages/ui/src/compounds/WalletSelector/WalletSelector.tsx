@@ -36,10 +36,7 @@ export type WalletSelectorProps = {
   accounts: {
     [chainId: string]: string[];
   };
-  onConnect?: (selection: {
-    chainId: string;
-    walletId: string;
-  }) => Promise<void>;
+  onConnect?: (selection: { chainId: string; walletId: string }) => unknown;
   onDisconnect?: ConnectedWalletsProps["onDisconnect"];
   onError?: (error: Error) => void;
   onCancel?: () => void;

@@ -31,7 +31,6 @@ const Template: ComponentStory<typeof WalletSelector> = (args) => {
           setIsLoading(false);
         }, 3000);
       }}
-      isLoading={isLoading}
     />
   );
 };
@@ -42,48 +41,56 @@ Default.args = {
   chains: [
     {
       id: "sifchain",
+      chainId: "",
       name: "Sifchain",
       icon: <AsyncImage src="/chains/sifchain.png" />,
       type: "ibc",
     },
     {
       id: "ethereum",
+      chainId: 1,
       name: "Ethereum",
       icon: <AsyncImage src="/chains/ethereum.png" />,
       type: "eth",
     },
     {
       id: "akash",
+      chainId: "",
       name: "Akash",
       icon: <AsyncImage src="/chains/akash.png" />,
       type: "ibc",
     },
     {
       id: "cerberus",
+      chainId: "",
       name: "Cerberus",
       icon: <AsyncImage src="/chains/cerberus.png" />,
       type: "ibc",
     },
     {
       id: "comdex",
+      chainId: "",
       name: "comdex",
       icon: <AsyncImage src="/chains/comdex.png" />,
       type: "ibc",
     },
     {
       id: "bitsong",
+      chainId: "",
       name: "Bitsong",
       icon: <AsyncImage src="/chains/bitsong.png" />,
       type: "ibc",
     },
     {
       id: "crypto-org",
+      chainId: "",
       name: "Crypto.org",
       icon: <AsyncImage src="/chains/crypto-org.png" />,
       type: "ibc",
     },
     {
       id: "cosmos",
+      chainId: "",
       name: "Cosmos",
       icon: <AsyncImage src="/chains/cosmos.png" />,
       type: "ibc",

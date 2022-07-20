@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
+    "compile": "pnpm tsc --noEmit",
     "test": "jest"
   },
   "license": "Apache-2.0",
