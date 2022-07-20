@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import type { ParsedUrlQuery } from "querystring";
 
 import Head from "next/head";
 import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
@@ -28,7 +27,7 @@ const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
 
 const Margin: NextPage = () => {
   const router = useRouter();
-  const [querystring, setQuerystring] = useState<ParsedUrlQuery | null>(null);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
   /**
    * If a page does not have data fetching methods, router.query will be an empty object
@@ -46,14 +45,13 @@ const Margin: NextPage = () => {
     if (!router.isReady) {
       return;
     }
-    setQuerystring(router.query);
+
+    if (router.query["tab"]) {
+      setActiveTab(router.query["tab"] as string);
+    } else {
+      setActiveTab(DEFAULT_TAB_ITEM);
+    }
   }, [router.isReady, router.query]);
-
-  let activeTab = DEFAULT_TAB_ITEM;
-
-  if (querystring && querystring["tab"]) {
-    activeTab = querystring["tab"] as string;
-  }
 
   return (
     <>
@@ -65,15 +63,21 @@ const Margin: NextPage = () => {
         <header className="mb-6">
           <h2 className="text-2xl font-bold text-white">Margin</h2>
         </header>
-        <TabsWithSuspense
-          activeTab={activeTab}
-          items={TAB_ITEMS}
-          renderItem={(title, slug) => (
-            <Link href={{ query: { tab: slug } }}>
-              <a className="flex py-2">{title}</a>
-            </Link>
-          )}
-        />
+        {router.isReady && activeTab !== null ? (
+          <TabsWithSuspense
+            activeTab={activeTab}
+            items={TAB_ITEMS}
+            renderItem={(title, slug) => (
+              <Link href={{ query: { tab: slug } }}>
+                <a className="flex py-2">{title}</a>
+              </Link>
+            )}
+          />
+        ) : (
+          <div className="bg-gray-850 p-10 text-center text-gray-100">
+            Loading...
+          </div>
+        )}
       </section>
     </>
   );
