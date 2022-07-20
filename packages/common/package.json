@@ -11,6 +11,7 @@
   "module": "dist/index.mjs",
   "scripts": {
     "build": "tsup src/index.ts",
+    "compile": "tsc --noEmit",
     "test": "vitest"
   },
   "keywords": [],

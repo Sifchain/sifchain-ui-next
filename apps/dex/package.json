@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "tsc --noEmit"
   },
   "dependencies": {
     "@cosmjs/math": "^0.28.9",

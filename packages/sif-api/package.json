@@ -9,7 +9,8 @@
   },
   "scripts": {
     "codegen": "swagger-codegen generate -i api.yaml -l typescript-fetch -o src/generated/typescriptFetch",
-    "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module"
+    "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",
+    "compile": "tsc --noEmit"
   },
   "keywords": [],
   "license": "Apache-2.0",
