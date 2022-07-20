@@ -61,7 +61,7 @@ const Header = () => {
 
   return (
     <header className="bg-black md:p-4 grid">
-      {windowSize.width && (
+      {Boolean(windowSize.width) && (
         <Disclosure
           as="div"
           className="block md:flex md:items-center md:gap-8 justify-between"
@@ -106,7 +106,7 @@ const Header = () => {
   );
 };
 
-const Nav = ({ visibleItems = 4 }) => {
+const Nav = ({ visibleItems = 3 }) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
