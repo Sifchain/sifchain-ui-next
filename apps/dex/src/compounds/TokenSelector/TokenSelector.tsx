@@ -1,4 +1,3 @@
-import type { IAsset } from "@sifchain/common";
 import {
   TokenEntry,
   TokenSelector as BaseTokenSelector,
