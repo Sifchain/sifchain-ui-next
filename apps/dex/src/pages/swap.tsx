@@ -419,11 +419,14 @@ const SwapPage = () => {
           >
             <div className="flex flex-col gap-3">
               <fieldset className="bg-black rounded-md p-6 pb-10">
-                <legend className="contents font-bold opacity-90 mb-3">
-                  From
-                </legend>
+                <div className="mb-3">
+                  <legend className="contents font-bold opacity-90">
+                    From
+                  </legend>
+                </div>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
+                    label="Token"
                     modalTitle="From"
                     value={fromDenom}
                     onChange={(token) =>
@@ -503,9 +506,9 @@ const SwapPage = () => {
                 </button>
               </div>
               <fieldset className="bg-black rounded-md p-6">
-                <legend className="contents font-bold opacity-90 mb-3">
-                  To
-                </legend>
+                <div className="mb-3">
+                  <legend className="contents font-bold opacity-90">To</legend>
+                </div>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
                     label="Token"
