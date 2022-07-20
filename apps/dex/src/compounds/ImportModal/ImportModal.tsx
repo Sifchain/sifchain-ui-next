@@ -251,7 +251,7 @@ const ImportModal = (
           />
         </fieldset>
         <Input
-          inputClassName="!bg-gray-750 text-ellipsis"
+          containerClassName="!bg-gray-750 text-ellipsis"
           label="Recipient address"
           value={recipientAddress}
           fullWidth
