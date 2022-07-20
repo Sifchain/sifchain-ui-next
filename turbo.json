@@ -6,9 +6,7 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**", ".next/**"]
     },
-    "compile": {
-      "cache": false
-    },
+    "compile": {},
     "test": {
       "outputs": []
     },
