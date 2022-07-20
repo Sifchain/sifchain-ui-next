@@ -101,7 +101,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             );
           })}
           <tr>
-            <td className="px-4 py-3">ETH / ROWAN</td>
+            <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">
               <span className="text-red-400">Short</span>
             </td>

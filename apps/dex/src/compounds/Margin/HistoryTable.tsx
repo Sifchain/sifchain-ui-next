@@ -32,7 +32,7 @@ const HistoryTable = () => {
               <tr key={item}>
                 <td className="px-4 py-3">2022-07-12</td>
                 <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
-                <td className="px-4 py-3">ETH / ROWAN</td>
+                <td className="px-4 py-3">ETH</td>
                 <td className="px-4 py-3">
                   <span className="text-green-400">Long</span>
                 </td>
@@ -47,7 +47,7 @@ const HistoryTable = () => {
           <tr>
             <td className="px-4 py-3">2022-07-12</td>
             <td className="px-4 py-3">2 days, 5 hrs, 2 mins</td>
-            <td className="px-4 py-3">ETH / ROWAN</td>
+            <td className="px-4 py-3">ETH</td>
             <td className="px-4 py-3">
               <span className="text-red-400">Short</span>
             </td>
