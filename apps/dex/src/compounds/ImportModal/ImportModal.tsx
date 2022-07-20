@@ -205,6 +205,7 @@ const ImportModal = (
           />
           <Input
             inputClassName="text-right"
+            type="number"
             label="Amount"
             secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
               undefined,

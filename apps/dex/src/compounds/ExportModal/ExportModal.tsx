@@ -163,6 +163,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
         <fieldset className="p-4 mb-4 bg-black rounded-lg">
           <Input
             inputClassName="text-right"
+            type="number"
             label="Amount"
             secondaryLabel={`Balance: ${(
               balance?.amount?.toFloatApproximation() ?? 0
