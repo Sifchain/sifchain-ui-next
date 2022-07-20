@@ -12,12 +12,16 @@ export type TabsWithSuspenseProps = {
     content: any; // TODO: I could not find a better type here (e.g., JSX.Elements did not worked)
   }[];
   renderItem: (title: string, slug: string) => ReactNode;
+  fallbackSuspense?: ReactNode;
 };
 
 export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
   activeTab,
   items,
   renderItem,
+  fallbackSuspense = (
+    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
+  ),
 }) => {
   const currentTab = items.find((item) => item.slug === activeTab);
   const TabContent = currentTab?.content || null;
@@ -43,7 +47,7 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
         })}
       </ul>
       {TabContent && (
-        <Suspense>
+        <Suspense fallback={fallbackSuspense}>
           <TabContent />
         </Suspense>
       )}

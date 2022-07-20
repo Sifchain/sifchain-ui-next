@@ -12,18 +12,14 @@ const OPTIONS_ITEMS = [
     title: "Open Positions",
     slug: "open-positions",
     content: dynamic(() => import("~/compounds/Margin/OpenPositionsTable"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
   {
     title: "History",
     slug: "history",
     content: dynamic(() => import("~/compounds/Margin/HistoryTable"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
 ];

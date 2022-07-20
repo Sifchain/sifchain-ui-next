@@ -14,18 +14,14 @@ const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
     title: "Trade",
     slug: "trade",
     content: dynamic(() => import("~/compounds/Margin/Trade"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
   {
     title: "Portfolio",
     slug: "portfolio",
     content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
 ];
