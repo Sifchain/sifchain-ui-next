@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "compile": "tsc --noEmit",
+    "compile": "pnpm tsc --noEmit",
     "test": "vitest --run"
   },
   "dependencies": {

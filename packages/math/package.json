@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "rimraf build && pnpm tsc -p tsconfig.build.json -m commonjs --outDir build/commonjs && pnpm tsc -p tsconfig.build.json -m esnext --outDir build/module",
-    "compile": "tsc --noEmit",
+    "compile": "pnpm tsc --noEmit",
     "test": "jest"
   },
   "keywords": [],
