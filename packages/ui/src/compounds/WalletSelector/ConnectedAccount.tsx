@@ -157,7 +157,7 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
                     {props.nativeAssetDollarValue}
                   </span>
                 )}
-                <span className="text-xs text-gray-300">
+                <span className="text-xs text-gray-300 whitespace-nowrap">
                   {props.nativeAssetBalance} {props.nativeAssetSymbol}
                 </span>
               </div>
