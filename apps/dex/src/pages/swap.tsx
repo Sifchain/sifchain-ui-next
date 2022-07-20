@@ -7,6 +7,7 @@ import {
   ButtonGroup,
   ButtonProps,
   Input,
+  Label,
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
@@ -32,6 +33,7 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
+import { isNilOrWhiteSpace } from "~/utils/string";
 
 type SwapConfirmationModalProps = {
   title: string;
@@ -370,13 +372,13 @@ const SwapPage = () => {
     toDenom,
   ]);
 
-  const swapButtonMsg = (() => {
+  const validationError = useMemo(() => {
     if (signerStatus === "resolved" && signer === undefined) {
-      return "Please Connect Sif Wallet";
+      return new Error("Please Connect Sif Wallet");
     }
 
-    if (!isReady) {
-      return "Loading";
+    if (fromAmountDecimal?.toFloatApproximation() === 0) {
+      return new Error();
     }
 
     if (
@@ -384,11 +386,22 @@ const SwapPage = () => {
         fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
       )
     ) {
-      return "Insufficient balance";
+      return new Error("Insufficient balance");
     }
 
+    return;
+  }, [fromAmountDecimal, fromToken?.balance, signer, signerStatus]);
+
+  const swapButtonText = useMemo(() => {
+    if (!isReady) {
+      return "Loading";
+    }
+
+    if (!isNilOrWhiteSpace(validationError?.message))
+      return validationError?.message;
+
     return "Swap";
-  })();
+  }, [isReady, validationError?.message]);
 
   return (
     <>
@@ -406,11 +419,14 @@ const SwapPage = () => {
           >
             <div className="flex flex-col gap-3">
               <fieldset className="bg-black rounded-md p-6 pb-10">
-                <legend className="contents font-bold opacity-90 mb-3">
-                  From
-                </legend>
+                <div className="mb-3">
+                  <legend className="contents font-bold opacity-90">
+                    From
+                  </legend>
+                </div>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
+                    label="Token"
                     modalTitle="From"
                     value={fromDenom}
                     onChange={(token) =>
@@ -418,14 +434,50 @@ const SwapPage = () => {
                     }
                   />
                   <Input
-                    className="text-right md:flex-1"
-                    label=" "
+                    inputClassName="text-right md:flex-1"
+                    type="number"
+                    label="Amount"
                     secondaryLabel={`Balance: ${
                       fromToken?.balance ? formatBalance(fromToken.balance) : 0
                     }`}
                     placeholder="Swap amount"
                     value={fromAmount}
                     onChange={(event) => setFromAmount(event.target.value)}
+                    leadingIcon={
+                      <div className="flex gap-1.5">
+                        <Label
+                          type="button"
+                          onClick={useCallback(() => {
+                            if (fromToken?.balance !== undefined) {
+                              setFromAmount(
+                                (
+                                  fromToken.balance.toFloatApproximation() / 2
+                                ).toLocaleString(undefined, {
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits:
+                                    fromToken.balance.fractionalDigits,
+                                  useGrouping: false,
+                                }),
+                              );
+                            }
+                          }, [fromToken?.balance])}
+                        >
+                          Half
+                        </Label>
+                        <Label
+                          type="button"
+                          onClick={useCallback(
+                            () =>
+                              setFromAmount(
+                                (x) => fromToken?.balance?.toString() ?? x,
+                              ),
+                            [fromToken?.balance],
+                          )}
+                        >
+                          Max
+                        </Label>
+                      </div>
+                    }
                     fullWidth
                   />
                 </div>
@@ -455,9 +507,9 @@ const SwapPage = () => {
                 </button>
               </div>
               <fieldset className="bg-black rounded-md p-6">
-                <legend className="contents font-bold opacity-90 mb-3">
-                  To
-                </legend>
+                <div className="mb-3">
+                  <legend className="contents font-bold opacity-90">To</legend>
+                </div>
                 <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
                   <TokenSelector
                     label="Token"
@@ -468,7 +520,8 @@ const SwapPage = () => {
                     }
                   />
                   <Input
-                    className="text-right md:flex-1"
+                    inputClassName="text-right md:flex-1"
+                    type="number"
                     secondaryLabel={`Balance: ${
                       toToken?.balance ? formatBalance(toToken.balance) : 0
                     }`}
@@ -501,8 +554,11 @@ const SwapPage = () => {
                 </div>
               </div>
             </div>
-            <Button className="mt-8" disabled={swapButtonMsg !== "Swap"}>
-              {swapButtonMsg}
+            <Button
+              className="mt-8"
+              disabled={!isReady || validationError !== undefined}
+            >
+              {swapButtonText}
             </Button>
           </form>
         </section>

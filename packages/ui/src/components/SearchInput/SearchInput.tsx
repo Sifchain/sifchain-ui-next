@@ -8,7 +8,7 @@ export type SearchInputProps = Omit<InputProps, "type"> & {
 };
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ className, id, label, ...props }, ref) => {
+  ({ containerClassName, id, label, ...props }, ref) => {
     const uid = useId();
     const inputId = `${uid}-${id ?? "search-input"}`;
 
@@ -18,11 +18,13 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         type="search"
         ref={ref}
         id={inputId}
-        className={clsx("pl-8 bg-gray-750 border-gray-700", className)}
+        containerClassName={clsx(
+          "bg-gray-750 border-gray-700",
+          containerClassName,
+        )}
+        leadingIcon={<SearchIcon className="h-4 w-4 text-gray-300" />}
         {...props}
-      >
-        <SearchIcon className="absolute left-3 h-4 w-4 text-gray-300" />
-      </Input>
+      />
     );
   },
 );

@@ -101,11 +101,13 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
   return (
     <>
-      <div className="relative grid">
+      <div
+        className={clsx("relative grid", {
+          "pt-[22px]": props.label !== undefined,
+        })}
+      >
         {props.label && (
-          <span className="input-label absolute -top-[22px]">
-            {props.label}
-          </span>
+          <span className="input-label absolute top-0">{props.label}</span>
         )}
         <button
           className={clsx(

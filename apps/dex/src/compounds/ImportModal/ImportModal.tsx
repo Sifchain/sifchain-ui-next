@@ -204,7 +204,8 @@ const ImportModal = (
             )}
           />
           <Input
-            className="text-right"
+            inputClassName="text-right"
+            type="number"
             label="Amount"
             secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
               undefined,
@@ -215,42 +216,42 @@ const ImportModal = (
               (event) => setAmount(event.target.value),
               [],
             )}
-            fullWidth
-          >
-            <div className="absolute flex gap-1.5 pl-1.5">
-              <Label
-                type="button"
-                onClick={useCallback(() => {
-                  if (walletBalance !== undefined) {
-                    setAmount(
-                      (walletBalance.toFloatApproximation() / 2).toLocaleString(
-                        undefined,
-                        {
+            leadingIcon={
+              <div className="flex gap-1.5 pl-1.5">
+                <Label
+                  type="button"
+                  onClick={useCallback(() => {
+                    if (walletBalance !== undefined) {
+                      setAmount(
+                        (
+                          walletBalance.toFloatApproximation() / 2
+                        ).toLocaleString(undefined, {
                           minimumFractionDigits: 0,
                           maximumFractionDigits: walletBalance.fractionalDigits,
                           useGrouping: false,
-                        },
-                      ),
-                    );
-                  }
-                }, [walletBalance])}
-              >
-                Half
-              </Label>
-              <Label
-                type="button"
-                onClick={useCallback(
-                  () => setAmount((x) => walletBalance?.toString() ?? x),
-                  [walletBalance],
-                )}
-              >
-                Max
-              </Label>
-            </div>
-          </Input>
+                        }),
+                      );
+                    }
+                  }, [walletBalance])}
+                >
+                  Half
+                </Label>
+                <Label
+                  type="button"
+                  onClick={useCallback(
+                    () => setAmount((x) => walletBalance?.toString() ?? x),
+                    [walletBalance],
+                  )}
+                >
+                  Max
+                </Label>
+              </div>
+            }
+            fullWidth
+          />
         </fieldset>
         <Input
-          className="!bg-gray-750 text-ellipsis"
+          inputClassName="!bg-gray-750 text-ellipsis"
           label="Recipient address"
           value={recipientAddress}
           fullWidth
