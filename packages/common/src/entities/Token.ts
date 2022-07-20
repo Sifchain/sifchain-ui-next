@@ -1,11 +1,11 @@
-import { Network } from "./Network";
+import { NetworkKind } from "./Network";
 
 export function Token(p: {
   address: string;
   decimals: number;
   imageUrl?: string;
   name: string;
-  network: Network;
+  network: NetworkKind;
   symbol: string;
 }) {
   return p;
