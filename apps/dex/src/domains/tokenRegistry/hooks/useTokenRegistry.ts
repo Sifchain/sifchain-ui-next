@@ -27,43 +27,35 @@ export default function useTokenRegistryQuery(
 
   const entries = useMemo<EnhancedRegitryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [] as Array<EnhancedRegitryAsset>;
+      return [] as EnhancedRegitryAsset[];
     }
 
-    const { enhancedAssets } = data.registry.entries.reduce(
-      (acc, entry) => {
-        const asset = (indexedBySymbol[entry.denom.toLowerCase()] ||
-          indexedBySymbol[entry.baseDenom.toLowerCase()] ||
-          indexedBySymbol[
-            entry.denom.slice(1).toLowerCase()
-          ]) as EnhancedRegitryAsset;
+    return (
+      data.registry.entries
+        // base token have no unitDenom
+        .filter((x) => x.unitDenom === "")
+        .reduce((acc, entry) => {
+          const asset = (indexedBySymbol[entry.denom.toLowerCase()] ||
+            indexedBySymbol[entry.baseDenom.toLowerCase()] ||
+            indexedBySymbol[entry.denom.slice(1).toLowerCase()]) as
+            | EnhancedRegitryAsset
+            | undefined;
 
-        if (asset && acc.symbols.indexOf(asset.symbol) === -1) {
-          acc.symbols.push(asset.symbol);
-
-          const chainId =
-            env !== undefined &&
-            entry.denom === env.nativeAsset.symbol.toLowerCase()
-              ? env?.sifChainId
-              : entry.ibcCounterpartyChainId;
-
-          asset.chainId = chainId;
-          asset.denom = entry.denom;
-          acc.enhancedAssets.push(asset);
-        }
-
-        return acc;
-      },
-      {
-        symbols: [],
-        enhancedAssets: [],
-      } as {
-        symbols: string[];
-        enhancedAssets: EnhancedRegitryAsset[];
-      },
+          return asset === undefined
+            ? acc
+            : [
+                ...acc,
+                {
+                  ...asset,
+                  denom: entry.denom,
+                  chainId:
+                    entry.denom === env?.nativeAsset.symbol.toLowerCase()
+                      ? env.sifChainId
+                      : entry.ibcCounterpartyChainId,
+                },
+              ];
+        }, [] as EnhancedRegitryAsset[])
     );
-
-    return enhancedAssets;
   }, [data?.registry?.entries, env, indexedBySymbol]);
 
   const indices = useMemo(() => {
