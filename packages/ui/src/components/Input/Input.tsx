@@ -6,14 +6,16 @@ import { useSyncedRef } from "../../hooks";
 
 export const StyledInputContainer = tw.div`
   border-gray-600 bg-gray-700 rounded-md opacity-90 outline-none p-2 px-4
-  focus:ring focus:ring-blue-400/40
+  focus-within:ring focus-within:ring-blue-400/40
   hover:opacity-100 flex-1
   flex items-center gap-1
 `;
 
 export const StyledInput = tw.input`
   flex-1 p-0
-  bg-transparent outline-none border-none
+  bg-transparent appearance-none outline-none border-none focus:ring-transparent
+  [&[type="number"]::-webkit-inner-spin-button]:appearance-none
+  [&[type="number"]::-webkit-outer-spin-button]:appearance-none
   text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
   disabled:placeholder:text-gray-600
