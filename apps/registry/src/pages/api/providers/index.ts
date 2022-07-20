@@ -1,4 +1,5 @@
 import { NextMiddleware, NextResponse } from "next/server";
+import { EDGE_RUNTIME } from "~/lib/configs";
 import { readProviderList } from "~/lib/utils";
 
 const handler: NextMiddleware = async (req) => {
@@ -25,8 +26,6 @@ const handler: NextMiddleware = async (req) => {
   }
 };
 
-export const config = {
-  runtime: "experimental-edge",
-};
+export const config = EDGE_RUNTIME;
 
 export default handler;

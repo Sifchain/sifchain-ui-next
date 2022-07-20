@@ -180,6 +180,7 @@ importers:
 
   apps/registry:
     specifiers:
+      '@heroicons/react': ^1.0.6
       '@sifchain/ui': workspace:*
       '@types/cors': ^2.8.12
       '@types/node': 18.0.0
@@ -208,6 +209,7 @@ importers:
       vitest: ^0.15.2
       web3: ^1.7.4
     dependencies:
+      '@heroicons/react': 1.0.6_react@18.2.0
       '@sifchain/ui': link:../../packages/ui
       clsx: 1.2.1
       ky: 0.30.0
@@ -3339,6 +3341,14 @@ packages:
       react: '>= 16'
     dependencies:
       react: 18.1.0
+    dev: false
+
+  /@heroicons/react/1.0.6_react@18.2.0:
+    resolution: {integrity: sha512-JJCXydOFWMDpCP4q13iEplA503MQO3xLoZiKum+955ZCtHINWnx26CUxVxxFQu/uLb4LW3ge15ZpzIkXKkJ8oQ==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.9.5:

@@ -1,14 +1,19 @@
 import { AsyncImage, SurfaceA } from "@sifchain/ui";
 import clsx from "clsx";
-import ky from "ky";
 import type { FC } from "react";
 import { useQuery } from "react-query";
+
+import { CardsGrid, GridCard } from "~/components/core";
 import type { ProviderConfig } from "~/types";
 
 function useProvidersQuery() {
-  const query = useQuery(["providers"], () =>
-    ky.get(`/api/providers`).json<ProviderConfig[]>(),
-  );
+  const query = useQuery(["providers"], async () => {
+    const { default: file } = await import(
+      "~/../public/config/providers/providers.json"
+    );
+
+    return file.providers as ProviderConfig[];
+  });
 
   return query;
 }
@@ -29,13 +34,13 @@ const ProvidersSection: FC<{ title: string }> = (props) => {
       <header className="flex items-center justify-between">
         <h2 className="text-xl">{props.title}</h2>
       </header>
-      <ul className="grid gap-2 md:grid-cols-2 xl:grid-cols-3 6xl:grid-cols-4">
+      <CardsGrid>
         {providers
           ?.filter((provider) => provider.featured)
           ?.sort((a, b) => a.displayName.localeCompare(b.displayName))
           .map((provider) => (
             <li key={provider.id}>
-              <SurfaceA className="min-h-[120px] grid gap-2">
+              <GridCard>
                 <div className="flex items-center gap-2">
                   <figure className="h-8 w-8 ring-2 ring-gray-750 rounded-full overflow-hidden">
                     <AsyncImage
@@ -60,10 +65,10 @@ const ProvidersSection: FC<{ title: string }> = (props) => {
                     {provider.url}
                   </a>
                 </div>
-              </SurfaceA>
+              </GridCard>
             </li>
           ))}
-      </ul>
+      </CardsGrid>
     </section>
   );
 };

@@ -1,9 +1,11 @@
-import { AsyncImage, SearchInput, SurfaceA } from "@sifchain/ui";
+import { AsyncImage, SearchInput, useCopyToClipboard } from "@sifchain/ui";
 import clsx from "clsx";
-import ky from "ky";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { CheckIcon, DuplicateIcon } from "@heroicons/react/outline";
+
 import type { AssetConfig } from "~/types";
+import { CardsGrid, GridCard } from "~/components/core";
 
 type AssetsQueryOptions = {
   network: "ethereum" | "sifchain" | "cosmoshub";
@@ -11,9 +13,13 @@ type AssetsQueryOptions = {
 };
 
 function useAssetsQuery({ network, env }: AssetsQueryOptions) {
-  const query = useQuery(["assets", network, env], () =>
-    ky.get(`/api/assets/${network}/${env}`).json<AssetConfig[]>(),
-  );
+  const query = useQuery(["assets", network, env], async () => {
+    const { default: assetsFile } = await import(
+      `~/../public/config/networks/${network}/assets.${network}.${env}.json`
+    );
+
+    return assetsFile.assets as AssetConfig[];
+  });
 
   return query;
 }
@@ -52,12 +58,28 @@ const AssetsSection: FC<
     network: props.network,
     env: props.env,
   });
+
+  const [copied, _copy] = useCopyToClipboard();
+  const [copiedConfirmed, setCopiedConfirmed] = useState(false);
+
+  const copy = (address: string) => {
+    _copy(address);
+    setCopiedConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (copiedConfirmed) {
+      setTimeout(() => setCopiedConfirmed(false), 2000);
+    }
+  }, [copiedConfirmed]);
+
   return (
     <section className="grid gap-4">
       <header className="flex items-center justify-between">
-        <h2 className="text-xl">{props.title}</h2>
+        <h2 className="text-xl">{props.title}</h2>{" "}
+        {assets && <div>{assets.length} assets</div>}
       </header>
-      <ul className="grid gap-2 md:grid-cols-2 xl:grid-cols-3 6xl:grid-cols-4">
+      <CardsGrid>
         {assets
           ?.filter((asset) =>
             asset.name.toLowerCase().includes(props.search.toLowerCase()),
@@ -65,7 +87,7 @@ const AssetsSection: FC<
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((asset) => (
             <li key={asset.symbol}>
-              <SurfaceA className="min-h-[120px] grid">
+              <GridCard>
                 <div className="flex items-center gap-2">
                   {asset.imageUrl && (
                     <figure
@@ -89,14 +111,29 @@ const AssetsSection: FC<
                   {asset.name} ({asset.symbol.toUpperCase()})
                 </div>
                 {asset.address && (
-                  <div className="text-xs text-gray-300">
-                    {asset.address.toUpperCase()}
-                  </div>
+                  <button
+                    className="text-xs text-gray-300 flex gap-1 items-center"
+                    onClick={copy.bind(null, asset.address)}
+                  >
+                    {copied === asset.address && copiedConfirmed ? (
+                      <>
+                        token address copied <CheckIcon className="h-4 w-4" />
+                      </>
+                    ) : (
+                      <>
+                        {asset.address} <DuplicateIcon className="h-4 w-4" />
+                      </>
+                    )}
+                  </button>
                 )}
-              </SurfaceA>
+                <div>
+                  <div>network: {asset.network}</div>
+                  <div>home network: {asset.homeNetwork}</div>
+                </div>
+              </GridCard>
             </li>
           ))}
-      </ul>
+      </CardsGrid>
     </section>
   );
 };
