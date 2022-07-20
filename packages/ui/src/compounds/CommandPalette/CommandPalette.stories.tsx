@@ -20,10 +20,10 @@ const entries: CommandPaletteEntry[] = [
 ];
 
 const quickActions: QuickActionEntry[] = [
-  { label: "Add new file...", icon: DocumentAddIcon, shortcut: "N", url: "#" },
-  { label: "Add new folder...", icon: FolderAddIcon, shortcut: "F", url: "#" },
-  { label: "Add hashtag...", icon: HashtagIcon, shortcut: "H", url: "#" },
-  { label: "Add label...", icon: TagIcon, shortcut: "L", url: "#" },
+  { label: "Add new file...", icon: DocumentAddIcon, url: "#" },
+  { label: "Add new folder...", icon: FolderAddIcon, url: "#" },
+  { label: "Add hashtag...", icon: HashtagIcon, url: "#" },
+  { label: "Add label...", icon: TagIcon, url: "#" },
 ];
 
 const Template: ComponentStory<typeof CommandPalette> = (args) => (

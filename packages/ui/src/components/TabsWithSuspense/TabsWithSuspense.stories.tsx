@@ -37,6 +37,8 @@ Default.args = {
         () =>
           // we can return `import()` + using timeout to test loading
           new Promise((res) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             setTimeout(() => res(import("./fixture/Acme")), 2000);
           }),
       ),
@@ -48,10 +50,11 @@ Default.args = {
         () =>
           // we can return `import()` + using timeout to test loading
           new Promise((res) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             setTimeout(() => res(import("./fixture/Tales")), 2000);
           }),
       ),
     },
   ],
-  loadingFallback: "Loading...",
 };

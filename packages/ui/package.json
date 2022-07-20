@@ -15,7 +15,7 @@
     "build-storybook": "build-storybook",
     "codegen:component": "node ./scripts/codegen.mjs component --",
     "svgr": "svgr ./assets/icons",
-    "compile": "tsc --noEmit"
+    "compile": "pnpm tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^0.7.2",
