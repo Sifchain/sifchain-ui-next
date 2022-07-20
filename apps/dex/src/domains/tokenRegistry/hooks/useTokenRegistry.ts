@@ -9,7 +9,7 @@ import { useAssetsQuery } from "~/domains/assets";
 import { useDexEnvironment } from "~/domains/core/envs";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
-export type EnhancedRegitryAsset = IAsset & {
+export type EnhancedRegistryAsset = IAsset & {
   chainId: string;
   denom: string;
 };
@@ -25,9 +25,9 @@ export default function useTokenRegistryQuery(
 
   const { indexedBySymbol, ...assetsQuery } = useAssetsQuery(networkKind);
 
-  const entries = useMemo<EnhancedRegitryAsset[]>(() => {
+  const entries = useMemo<EnhancedRegistryAsset[]>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [] as EnhancedRegitryAsset[];
+      return [] as EnhancedRegistryAsset[];
     }
 
     return (
@@ -38,7 +38,7 @@ export default function useTokenRegistryQuery(
           const asset = (indexedBySymbol[entry.denom.toLowerCase()] ||
             indexedBySymbol[entry.baseDenom.toLowerCase()] ||
             indexedBySymbol[entry.denom.slice(1).toLowerCase()]) as
-            | EnhancedRegitryAsset
+            | EnhancedRegistryAsset
             | undefined;
 
           return asset === undefined
@@ -54,16 +54,16 @@ export default function useTokenRegistryQuery(
                       : entry.ibcCounterpartyChainId,
                 },
               ];
-        }, [] as EnhancedRegitryAsset[])
+        }, [] as EnhancedRegistryAsset[])
     );
   }, [data?.registry?.entries, env, indexedBySymbol]);
 
   const indices = useMemo(() => {
     if (!entries || !query.isSuccess) {
       return {
-        indexedBySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
-        indexedByDisplaySymbol: {} as StringIndexed<EnhancedRegitryAsset>,
-        indexedByDenom: {} as StringIndexed<EnhancedRegitryAsset>,
+        indexedBySymbol: {} as StringIndexed<EnhancedRegistryAsset>,
+        indexedByDisplaySymbol: {} as StringIndexed<EnhancedRegistryAsset>,
+        indexedByDenom: {} as StringIndexed<EnhancedRegistryAsset>,
       };
     }
 

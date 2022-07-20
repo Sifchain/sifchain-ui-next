@@ -12,7 +12,7 @@ import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
 import { useEffect, useMemo, useState } from "react";
-import type { EnhancedRegitryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
@@ -63,7 +63,7 @@ const Trade: NextPage = () => {
   }, [pools]);
 
   const onChangePoolSelector = (token: TokenEntry) => {
-    const asset = token as EnhancedRegitryAsset;
+    const asset = token as EnhancedRegistryAsset;
     const pool = pools.find(
       (pool) => pool.externalAsset?.symbol === asset.denom,
     );
