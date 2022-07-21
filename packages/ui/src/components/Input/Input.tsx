@@ -81,7 +81,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {(label || secondaryLabel) && (
           <label
             htmlFor={id}
-            className="flex justify-between items-center px-1"
+            className="flex justify-between items-center absolute -top-5 left-0 right-0"
           >
             {label && (
               <span
@@ -112,7 +112,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               containerClassName,
             ])}
           >
-            {leadingIcon && <div className="-ml-2 absolute">{leadingIcon}</div>}
+            {leadingIcon && (
+              <div className="-translate-x-2 absolute">{leadingIcon}</div>
+            )}
             <StyledInput
               aria-label={typeof label === "string" ? label : ""}
               {...props}

@@ -18,6 +18,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         type="search"
         ref={ref}
         id={inputId}
+        inputClassName="ml-4"
         containerClassName={clsx(
           "bg-gray-750 border-gray-700",
           containerClassName,
