@@ -1,22 +1,14 @@
 import { Decimal } from "@cosmjs/math";
-import { Transition } from "@headlessui/react";
 import { runCatching } from "@sifchain/common";
 import {
-  ArrowDownIcon,
   Button,
   ButtonGroup,
-  ButtonProps,
-  Input,
-  Label,
-  Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
-import clsx from "clsx";
 import { useRouter } from "next/router";
 import {
-  PropsWithChildren,
   startTransition,
   useCallback,
   useEffect,
@@ -24,8 +16,9 @@ import {
   useState,
 } from "react";
 import { useQuery } from "react-query";
-import AssetIcon from "~/compounds/AssetIcon";
-import TokenSelector from "~/compounds/TokenSelector";
+import tw from "tailwind-styled-components";
+
+import { SwapConfirmationModal, SwapFieldset } from "~/compounds/Swap";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -35,128 +28,7 @@ import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhiteSpace } from "~/utils/string";
 
-type SwapConfirmationModalProps = {
-  title: string;
-  show: boolean;
-  onClose: () => unknown;
-  confirmationButtonProps: ButtonProps;
-  showDetail: boolean;
-  fromCoin: {
-    amount: string;
-    denom: string;
-  };
-  toCoin: {
-    amount: string;
-    amountPreSlippage: string;
-    minimumAmount: string;
-    denom: string;
-  };
-  liquidityProviderFee: string;
-  priceImpact: string;
-  slippage: string;
-};
-
-const ConfirmationLineItem = (
-  props: PropsWithChildren<{ className?: string }>,
-) => (
-  <li
-    className={clsx(
-      "flex justify-between align-middle px-4 py-3 rounded-lg",
-      props.className,
-    )}
-  >
-    {props.children}
-  </li>
-);
-
-const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
-  return (
-    <Modal title={props.title} isOpen={props.show} onClose={props.onClose}>
-      <ul>
-        <ConfirmationLineItem className="bg-black font-bold uppercase">
-          <div className="flex align-middle gap-1">
-            <AssetIcon
-              network="sifchain"
-              symbol={props.fromCoin.denom}
-              size="md"
-            />
-            {props.fromCoin.denom}
-          </div>
-          <span>{props.fromCoin.amount}</span>
-        </ConfirmationLineItem>
-        <div className="flex justify-center my-[-1.25em]">
-          <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800">
-            <ArrowDownIcon width="1em" height="1em" />
-          </div>
-        </div>
-        <div className="overflow-y-hidden">
-          <Transition
-            show={props.showDetail}
-            leave="transition-all duration-[2.5s]"
-            leaveFrom="mt-0"
-            leaveTo="mt-[-100%]"
-          >
-            <ConfirmationLineItem>
-              <span>Swap result</span>
-              <div className="flex align-middle gap-1 font-bold">
-                {props.toCoin.amount}
-                <AssetIcon
-                  network="sifchain"
-                  symbol={props.toCoin.denom}
-                  size="md"
-                />
-              </div>
-            </ConfirmationLineItem>
-            <ConfirmationLineItem>
-              <span>Liquidity provider fee</span>
-              <span>{props.liquidityProviderFee}</span>
-            </ConfirmationLineItem>
-            <ConfirmationLineItem>
-              <span>Price impact</span>
-              <span>{props.priceImpact}</span>
-            </ConfirmationLineItem>
-          </Transition>
-        </div>
-        <ConfirmationLineItem className="bg-black font-bold uppercase">
-          <div className="flex align-middle gap-1">
-            <AssetIcon
-              network="sifchain"
-              symbol={props.toCoin.denom}
-              size="md"
-            />
-            {props.toCoin.denom}
-          </div>
-          <span>{props.toCoin.amountPreSlippage}</span>
-        </ConfirmationLineItem>
-        <ConfirmationLineItem>
-          <span>Slippage</span>
-          <span>{props.slippage}</span>
-        </ConfirmationLineItem>
-        <ConfirmationLineItem>
-          <span>Minimum received</span>
-          <div className="flex align-middle gap-1 font-bold">
-            {props.toCoin.minimumAmount}
-            <AssetIcon
-              network="sifchain"
-              symbol={props.toCoin.denom}
-              size="md"
-            />
-          </div>
-        </ConfirmationLineItem>
-      </ul>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
-      <Button className="w-full mt-8" {...props.confirmationButtonProps} />
-    </Modal>
-  );
-};
-
-const formatBalance = (amount: Decimal) =>
-  amount.toFloatApproximation().toLocaleString(undefined, {
-    maximumFractionDigits: 6,
-  }) ?? 0;
-
-function useEnhancedToken(
+export function useEnhancedToken(
   denom: string,
   options?: { refetchInterval: number; enabled: boolean },
 ) {
@@ -218,6 +90,32 @@ function useEnhancedToken(
       allBalancesQuery.error ??
       poolQuery.error,
   };
+}
+
+const FlipButton = tw.button<{
+  $flipped: boolean;
+}>`
+  bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform,
+  ${(props) => (props.$flipped ? "rotate-180" : "")}
+`;
+
+function formatDecimal(value: Decimal | number, maximumFractionDigits = 6) {
+  const asNumber =
+    typeof value === "number" ? value : value.toFloatApproximation();
+
+  return asNumber.toLocaleString(undefined, {
+    maximumFractionDigits,
+  });
+}
+
+function formatPercent(value: Decimal | number, maximumFractionDigits = 6) {
+  const asNumber =
+    typeof value === "number" ? value : value.toFloatApproximation();
+
+  return asNumber.toLocaleString(undefined, {
+    style: "percent",
+    maximumFractionDigits,
+  });
 }
 
 const SwapPage = () => {
@@ -403,11 +301,27 @@ const SwapPage = () => {
     return "Swap";
   }, [isReady, validationError?.message]);
 
+  const [confirmationModalTitle, confirmationModalButtonLabel] = useMemo(() => {
+    switch (swapMutation.status) {
+      case "idle":
+        return ["Review swap", "Confirm"];
+      case "loading":
+        return [
+          "Waiting for confirmation",
+          <RacetrackSpinnerIcon key="spinner-icon" />,
+        ];
+      case "success":
+        return ["Transaction submitted", "Close"];
+      case "error":
+        return ["Transaction failed", "Close"];
+    }
+  }, [swapMutation.status]);
+
   return (
     <>
       <div className="flex-1 flex flex-col justify-center items-center">
-        <section className="flex-1 flex flex-col w-full bg-gray-800 p-6 md:w-auto md:min-w-[32rem] md:rounded-xl md:flex-initial">
-          <header className="flex items-center justify-between pb-6">
+        <section className="flex-1 flex flex-col w-full bg-gray-800 p-2 md:p-6 md:w-auto md:min-w-[32rem] md:rounded-xl md:flex-initial">
+          <header className="flex items-center justify-between pb-2 md:pb-6">
             <h2 className="text-2xl font-bold text-white">Swap</h2>
           </header>
           <form
@@ -418,81 +332,20 @@ const SwapPage = () => {
             }}
           >
             <div className="flex flex-col gap-3">
-              <fieldset className="bg-black rounded-md p-6 pb-10">
-                <div className="mb-3">
-                  <legend className="contents font-bold opacity-90">
-                    From
-                  </legend>
-                </div>
-                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-                  <TokenSelector
-                    label="Token"
-                    modalTitle="From"
-                    value={fromDenom}
-                    onChange={(token) =>
-                      token && setDenomsPair(token.denom, undefined)
-                    }
-                  />
-                  <Input
-                    inputClassName="text-right md:flex-1"
-                    type="number"
-                    label="Amount"
-                    secondaryLabel={`Balance: ${
-                      fromToken?.balance ? formatBalance(fromToken.balance) : 0
-                    }`}
-                    placeholder="Swap amount"
-                    value={fromAmount}
-                    onChange={(event) => setFromAmount(event.target.value)}
-                    leadingIcon={
-                      <div className="flex gap-1.5">
-                        <Label
-                          type="button"
-                          onClick={useCallback(() => {
-                            if (fromToken?.balance !== undefined) {
-                              setFromAmount(
-                                (
-                                  fromToken.balance.toFloatApproximation() / 2
-                                ).toLocaleString(undefined, {
-                                  minimumFractionDigits: 0,
-                                  maximumFractionDigits:
-                                    fromToken.balance.fractionalDigits,
-                                  useGrouping: false,
-                                }),
-                              );
-                            }
-                          }, [fromToken?.balance])}
-                        >
-                          Half
-                        </Label>
-                        <Label
-                          type="button"
-                          onClick={useCallback(
-                            () =>
-                              setFromAmount(
-                                (x) => fromToken?.balance?.toString() ?? x,
-                              ),
-                            [fromToken?.balance],
-                          )}
-                        >
-                          Max
-                        </Label>
-                      </div>
-                    }
-                    fullWidth
-                  />
-                </div>
-              </fieldset>
+              <SwapFieldset
+                label="From"
+                denom={fromDenom}
+                balance={fromToken?.balance}
+                amount={fromAmount}
+                onDenomChange={(denom) => setDenomsPair(denom, undefined)}
+                onAmountChange={(amount) => setFromAmount(amount)}
+              />
               <div className="flex justify-center align-middle my-[-2em] z-10">
-                <button
-                  className={clsx(
-                    "bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform	",
-                    { "rotate-180": isFlipped },
-                  )}
-                  type="button"
-                  onClick={() => {
+                <FlipButton
+                  $flipped={isFlipped}
+                  onClick={(e) => {
+                    e.preventDefault();
                     startTransition(() => {
-                      // setFromSelectedOption(toSelectedOption);
-                      // setToSelectedOption(fromSelectedOption);
                       setFromAmount((x) =>
                         parsedSwapResult.minimumReceiving.toFloatApproximation() ===
                         0
@@ -504,41 +357,22 @@ const SwapPage = () => {
                   }}
                 >
                   <SwapIcon width="1.25em" height="1.25em" />
-                </button>
+                </FlipButton>
               </div>
-              <fieldset className="bg-black rounded-md p-6">
-                <div className="mb-3">
-                  <legend className="contents font-bold opacity-90">To</legend>
-                </div>
-                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-                  <TokenSelector
-                    label="Token"
-                    modalTitle="From"
-                    value={toDenom}
-                    onChange={(token) =>
-                      token && setDenomsPair(undefined, token.denom)
-                    }
-                  />
-                  <Input
-                    inputClassName="text-right md:flex-1"
-                    type="number"
-                    secondaryLabel={`Balance: ${
-                      toToken?.balance ? formatBalance(toToken.balance) : 0
-                    }`}
-                    label="Amount"
-                    value={
-                      parsedSwapResult.minimumReceiving.toFloatApproximation() ===
-                      0
-                        ? 0
-                        : parsedSwapResult.minimumReceiving
-                            .toFloatApproximation()
-                            .toFixed(10)
-                    }
-                    fullWidth
-                    disabled
-                  />
-                </div>
-              </fieldset>
+              <SwapFieldset
+                label="To"
+                denom={toDenom}
+                balance={toToken?.balance}
+                amount={
+                  parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
+                    ? "0"
+                    : parsedSwapResult.minimumReceiving
+                        .toFloatApproximation()
+                        .toFixed(10)
+                }
+                onDenomChange={(denom) => setDenomsPair(undefined, denom)}
+                onAmountChange={(amount) => setFromAmount(amount)}
+              />
               <div className="flex justify-between items-center">
                 <label className="pr-6">Slippage</label>
                 <div>
@@ -564,34 +398,12 @@ const SwapPage = () => {
         </section>
       </div>
       <SwapConfirmationModal
-        title={(() => {
-          switch (swapMutation.status) {
-            case "idle":
-              return "Review swap";
-            case "loading":
-              return "Waiting for confirmation";
-            case "success":
-              return "Transaction submitted";
-            case "error":
-              return "Transaction failed";
-          }
-        })()}
+        title={confirmationModalTitle}
         show={isConfirmationModalOpen}
         onClose={() => startTransition(() => setIsConfirmationModalOpen(false))}
         showDetail={swapMutation.isIdle}
         confirmationButtonProps={{
-          children: (() => {
-            switch (swapMutation.status) {
-              case "idle":
-                return "Confirm";
-              case "loading":
-                return <RacetrackSpinnerIcon />;
-              case "success":
-                return "Close";
-              case "error":
-                return "Close";
-            }
-          })(),
+          children: confirmationModalButtonLabel,
           disabled: swapMutation.isLoading,
           onClick: () => {
             switch (swapMutation.status) {
@@ -613,36 +425,22 @@ const SwapPage = () => {
         }}
         fromCoin={{
           denom: fromToken?.displaySymbol ?? "",
-          amount: (
-            fromAmountDecimal?.toFloatApproximation() ?? 0
-          ).toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amount: formatDecimal(fromAmountDecimal ?? 0, 6),
         }}
         toCoin={{
           denom: toToken?.displaySymbol ?? "",
-          amount: parsedSwapResult.rawReceiving
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
-          amountPreSlippage: parsedSwapResult.receivingPreSlippage
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
-          minimumAmount: parsedSwapResult.minimumReceiving
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amount: formatDecimal(parsedSwapResult.rawReceiving, 6),
+          amountPreSlippage: formatDecimal(
+            parsedSwapResult.receivingPreSlippage,
+            6,
+          ),
+          minimumAmount: formatDecimal(parsedSwapResult.minimumReceiving),
         }}
-        liquidityProviderFee={parsedSwapResult.liquidityProviderFee
-          .toFloatApproximation()
-          .toLocaleString(undefined, { maximumFractionDigits: 6 })}
-        priceImpact={(parsedSwapResult.priceImpact ?? 0).toLocaleString(
-          undefined,
-          {
-            style: "percent",
-            maximumFractionDigits: 2,
-          },
+        liquidityProviderFee={formatDecimal(
+          parsedSwapResult.liquidityProviderFee,
         )}
-        slippage={(slippage ?? 0).toLocaleString(undefined, {
-          style: "percent",
-          maximumFractionDigits: 2,
-        })}
+        priceImpact={formatPercent(parsedSwapResult.priceImpact ?? 0, 2)}
+        slippage={formatPercent(slippage ?? 0, 2)}
       />
     </>
   );
