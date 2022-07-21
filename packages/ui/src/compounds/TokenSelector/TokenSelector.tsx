@@ -29,7 +29,7 @@ const AssetIcon: FC<{
 }> = (props) => (
   <figure
     className={clsx(
-      props.size === "xs" ? "h4- w-4" : "h-6 w-6",
+      props.size === "xs" ? "h-4 w-4" : "h-6 w-6",
       "rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
@@ -40,7 +40,7 @@ const AssetIcon: FC<{
       <AsyncImage src={props.imageUrl} />
     ) : (
       <RacetrackSpinnerIcon
-        className={clsx(props.size === "xs" ? "h4- w-4" : "h-6 w-6")}
+        className={clsx(props.size === "xs" ? "h-4 w-4" : "h-6 w-6")}
       />
     )}
   </figure>
