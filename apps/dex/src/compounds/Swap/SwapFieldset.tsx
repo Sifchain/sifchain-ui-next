@@ -52,8 +52,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
           />
         </div>
         <Input
-          containerClassName="max-w-xs md:max-w-full flex"
-          inputClassName="text-right md:flex-1"
+          inputClassName="text-right w-0 md:w-auto"
           type="number"
           label="Amount"
           secondaryLabel={`Balance: ${
