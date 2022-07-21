@@ -112,7 +112,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               containerClassName,
             ])}
           >
-            {leadingIcon && <div className="-ml-2">{leadingIcon}</div>}
+            {leadingIcon && <div className="-ml-2 absolute">{leadingIcon}</div>}
             <StyledInput
               aria-label={typeof label === "string" ? label : ""}
               {...props}

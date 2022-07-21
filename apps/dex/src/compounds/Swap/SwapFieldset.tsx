@@ -43,13 +43,16 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
         <legend className="contents font-bold opacity-90">{props.label}</legend>
       </div>
       <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-        <TokenSelector
-          label="Token"
-          modalTitle={props.label}
-          value={props.denom}
-          onChange={(token) => token && props.onDenomChange(token.denom)}
-        />
+        <div className="md:min-w-[200px]">
+          <TokenSelector
+            label="Token"
+            modalTitle={props.label}
+            value={props.denom}
+            onChange={(token) => token && props.onDenomChange(token.denom)}
+          />
+        </div>
         <Input
+          containerClassName="max-w-xs md:max-w-full flex"
           inputClassName="text-right md:flex-1"
           type="number"
           label="Amount"
