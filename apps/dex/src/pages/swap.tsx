@@ -28,7 +28,7 @@ import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhiteSpace } from "~/utils/string";
 
-function useEnhancedToken(
+export function useEnhancedToken(
   denom: string,
   options?: { refetchInterval: number; enabled: boolean },
 ) {
@@ -98,6 +98,25 @@ const FlipButton = tw.button<{
   bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform,
   ${(props) => (props.$flipped ? "rotate-180" : "")}
 `;
+
+function formatDecimal(value: Decimal | number, maximumFractionDigits = 6) {
+  const asNumber =
+    typeof value === "number" ? value : value.toFloatApproximation();
+
+  return asNumber.toLocaleString(undefined, {
+    maximumFractionDigits,
+  });
+}
+
+function formatPercent(value: Decimal | number, maximumFractionDigits = 6) {
+  const asNumber =
+    typeof value === "number" ? value : value.toFloatApproximation();
+
+  return asNumber.toLocaleString(undefined, {
+    style: "percent",
+    maximumFractionDigits,
+  });
+}
 
 const SwapPage = () => {
   const router = useRouter();
@@ -282,6 +301,22 @@ const SwapPage = () => {
     return "Swap";
   }, [isReady, validationError?.message]);
 
+  const [confirmationModalTitle, confirmationModalButtonLabel] = useMemo(() => {
+    switch (swapMutation.status) {
+      case "idle":
+        return ["Review swap", "Confirm"];
+      case "loading":
+        return [
+          "Waiting for confirmation",
+          <RacetrackSpinnerIcon key="spinner-icon" />,
+        ];
+      case "success":
+        return ["Transaction submitted", "Close"];
+      case "error":
+        return ["Transaction failed", "Close"];
+    }
+  }, [swapMutation.status]);
+
   return (
     <>
       <div className="flex-1 flex flex-col justify-center items-center">
@@ -363,34 +398,12 @@ const SwapPage = () => {
         </section>
       </div>
       <SwapConfirmationModal
-        title={(() => {
-          switch (swapMutation.status) {
-            case "idle":
-              return "Review swap";
-            case "loading":
-              return "Waiting for confirmation";
-            case "success":
-              return "Transaction submitted";
-            case "error":
-              return "Transaction failed";
-          }
-        })()}
+        title={confirmationModalTitle}
         show={isConfirmationModalOpen}
         onClose={() => startTransition(() => setIsConfirmationModalOpen(false))}
         showDetail={swapMutation.isIdle}
         confirmationButtonProps={{
-          children: (() => {
-            switch (swapMutation.status) {
-              case "idle":
-                return "Confirm";
-              case "loading":
-                return <RacetrackSpinnerIcon />;
-              case "success":
-                return "Close";
-              case "error":
-                return "Close";
-            }
-          })(),
+          children: confirmationModalButtonLabel,
           disabled: swapMutation.isLoading,
           onClick: () => {
             switch (swapMutation.status) {
@@ -412,36 +425,22 @@ const SwapPage = () => {
         }}
         fromCoin={{
           denom: fromToken?.displaySymbol ?? "",
-          amount: (
-            fromAmountDecimal?.toFloatApproximation() ?? 0
-          ).toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amount: formatDecimal(fromAmountDecimal ?? 0, 6),
         }}
         toCoin={{
           denom: toToken?.displaySymbol ?? "",
-          amount: parsedSwapResult.rawReceiving
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
-          amountPreSlippage: parsedSwapResult.receivingPreSlippage
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
-          minimumAmount: parsedSwapResult.minimumReceiving
-            .toFloatApproximation()
-            .toLocaleString(undefined, { maximumFractionDigits: 6 }),
+          amount: formatDecimal(parsedSwapResult.rawReceiving, 6),
+          amountPreSlippage: formatDecimal(
+            parsedSwapResult.receivingPreSlippage,
+            6,
+          ),
+          minimumAmount: formatDecimal(parsedSwapResult.minimumReceiving),
         }}
-        liquidityProviderFee={parsedSwapResult.liquidityProviderFee
-          .toFloatApproximation()
-          .toLocaleString(undefined, { maximumFractionDigits: 6 })}
-        priceImpact={(parsedSwapResult.priceImpact ?? 0).toLocaleString(
-          undefined,
-          {
-            style: "percent",
-            maximumFractionDigits: 2,
-          },
+        liquidityProviderFee={formatDecimal(
+          parsedSwapResult.liquidityProviderFee,
         )}
-        slippage={(slippage ?? 0).toLocaleString(undefined, {
-          style: "percent",
-          maximumFractionDigits: 2,
-        })}
+        priceImpact={formatPercent(parsedSwapResult.priceImpact ?? 0, 2)}
+        slippage={formatPercent(slippage ?? 0, 2)}
       />
     </>
   );
