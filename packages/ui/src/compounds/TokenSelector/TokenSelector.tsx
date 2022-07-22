@@ -104,6 +104,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       <div
         className={clsx("relative grid", {
           "pt-[22px]": props.label !== undefined,
+          "text-xs": props.size === "xs",
         })}
       >
         {props.label && (

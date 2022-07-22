@@ -12,18 +12,14 @@ const OPTIONS_ITEMS = [
     title: "Open Positions",
     slug: "open-positions",
     content: dynamic(() => import("~/compounds/Margin/OpenPositionsTable"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
   {
     title: "History",
     slug: "history",
     content: dynamic(() => import("~/compounds/Margin/HistoryTable"), {
-      loading: () => (
-        <div className="bg-gray-850 p-10 text-center">Loading...</div>
-      ),
+      suspense: true,
     }),
   },
 ];
@@ -50,7 +46,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
                 <a
                   className={clsx(
                     "flex mx-4 py-3",
-                    isTabActive ? "text-white border-current" : "text-gray-400",
+                    isTabActive ? "text-white font-semibold" : "text-gray-400",
                   )}
                 >
                   {title}

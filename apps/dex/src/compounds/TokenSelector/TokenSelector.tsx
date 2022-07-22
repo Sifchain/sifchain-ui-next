@@ -1,4 +1,3 @@
-import type { IAsset } from "@sifchain/common";
 import {
   TokenEntry,
   TokenSelector as BaseTokenSelector,
@@ -13,7 +12,7 @@ export type TokenSelectorProps = Omit<
   "tokens" | "value" | "onChange"
 > & { value?: string; onChange: (token?: EnhancedRegistryAsset) => unknown };
 
-const toTokenEntry = <T extends IAsset>(x: T) => ({
+const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   id: x.denom,
   name: x.name,
   symbol: x.symbol,
