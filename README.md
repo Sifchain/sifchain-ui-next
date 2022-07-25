@@ -46,7 +46,7 @@ Attaching a query string var `_env` will set cookies to point your build to any 
 
 | url                                  | env      |
 | ------------------------------------ | -------- |
-| http://localhost:3000?\_env=mainnet  | MAINNET  |
-| http://localhost:3000?\_env=testnet  | TESTNET  |
-| http://localhost:3000?\_env=devnet   | DEVNET   |
-| http://localhost:3000?\_env=localnet | LOCALNET |
+| http://localhost:3001?\_env=mainnet  | MAINNET  |
+| http://localhost:3001?\_env=testnet  | TESTNET  |
+| http://localhost:3001?\_env=devnet   | DEVNET   |
+| http://localhost:3001?\_env=localnet | LOCALNET |
