@@ -44,7 +44,9 @@ const AssetIcon: FC<Props> = memo((props) => {
   const placeholder = useMemo(
     () => (
       <RacetrackSpinnerIcon
-        className={(clsx(CLASS_MAP[props.size]), "absolute inset-0")}
+        className={
+          (clsx(CLASS_MAP[props.size]), "place-self-center h-full w-full")
+        }
       />
     ),
     [props.size],
@@ -54,7 +56,7 @@ const AssetIcon: FC<Props> = memo((props) => {
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <figure
         className={clsx(
-          "relative rounded-full bg-contain overflow-hidden bg-black bg-center shadow-xs shadow-black",
+          "relative grid place-items-center rounded-full bg-contain overflow-hidden bg-black ring ring-gray-900 bg-center shadow-xs shadow-black",
           CLASS_MAP[props.size],
           {
             "!bg-white": asset?.hasDarkIcon,
@@ -67,7 +69,7 @@ const AssetIcon: FC<Props> = memo((props) => {
           <AsyncImage
             src={asset?.imageUrl ?? ""}
             placeholder={placeholder}
-            className="z-10 absolute inset-0"
+            className="z-10 absolute inset-0 h-full w-full"
           />
         )}
       </figure>
