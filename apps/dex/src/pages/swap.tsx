@@ -95,8 +95,8 @@ export function useEnhancedToken(
 const FlipButton = tw.button<{
   $flipped: boolean;
 }>`
-  bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform,
-  ${(props) => (props.$flipped ? "rotate-180" : "")}
+  bg-gray-900 rounded-full p-3 border-4 border-gray-800 transition-transform
+  ${(props) => (props.$flipped ? "rotate-180" : "rotate-0")}
 `;
 
 function formatDecimal(value: Decimal | number, maximumFractionDigits = 6) {
