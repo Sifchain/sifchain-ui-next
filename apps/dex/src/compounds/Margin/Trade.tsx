@@ -522,7 +522,7 @@ const Trade = (props: TradeProps) => {
                 />
               </div>
               {inputCollateral.error ? (
-                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded mt-2">
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded my-2">
                   {inputCollateral.error}
                 </span>
               ) : (
