@@ -84,7 +84,7 @@ const Trade: NextPage = () => {
               value={selectedPool?.asset}
               onChange={onChangePoolSelector}
               tokens={pools.map((pool) => pool.asset)}
-              buttonClassName="!h-auto !rounded border-none text-base font-semibold"
+              buttonClassName="text-base h-10 font-semibold"
             />
           </li>
           <li className="py-4">
@@ -202,7 +202,7 @@ const Trade: NextPage = () => {
                   modalTitle="Collateral"
                   value={selectedPool?.asset}
                   onChange={onChangeCollateral}
-                  buttonClassName="!h-auto !rounded border-none text-sm"
+                  buttonClassName="h-9 !text-sm"
                   tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
@@ -223,7 +223,7 @@ const Trade: NextPage = () => {
                   modalTitle="Position"
                   value={selectedPool?.asset}
                   onChange={onChangePosition}
-                  buttonClassName="!h-auto !rounded border-none text-sm"
+                  buttonClassName="h-9 !text-sm"
                   readonly
                   tokens={pools.map((pool) => pool.asset)}
                 />

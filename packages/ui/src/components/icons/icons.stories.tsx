@@ -9,12 +9,12 @@ export default {
   component: icons.ArrowLeftIcon,
 } as ComponentMeta<typeof icons.ArrowLeftIcon>;
 
-const Template: ComponentStory<IconType> = (args) => {
+const Template: ComponentStory<IconType> = () => {
   const iconComponents = Object.keys(icons).map(
     (key) => icons[key as keyof typeof icons],
   );
   return (
-    <ul className="flex gap-2">
+    <ul className="flex gap-2 flex-wrap">
       {iconComponents.map((Icon) => (
         <>
           <li key={Icon.name}>

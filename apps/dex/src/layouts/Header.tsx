@@ -7,8 +7,7 @@ import {
   DotsVerticalIcon,
   formatNumberAsCurrency,
   LockIcon,
-  Logo,
-  LogoFull,
+  SifchainLogoRound,
   PlusIcon,
   PoolsIcon,
   RowanIcon,
@@ -64,16 +63,15 @@ const Header = () => {
       {Boolean(windowSize.width) && (
         <Disclosure
           as="div"
-          className="block md:flex md:items-center md:gap-8 justify-between"
+          className="block md:flex md:items-center md:gap-8 justify-between md:shadow-inset-border md:pb-2 shadow-none"
           defaultOpen={windowSize.width >= 768}
         >
           {({ open }) => (
             <>
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
                 <Link href="/">
-                  <a className="md:p-0">
-                    <LogoFull className="hidden md:inline-block h-24 md:h-12" />
-                    <Logo className="h-8 md:hidden" />
+                  <a className="md:p-1 p-2">
+                    <SifchainLogoRound className="inline-block text-[44px]" />
                   </a>
                 </Link>
                 <div className="md:hidden">
@@ -209,11 +207,11 @@ const RowanStats = () => {
   ];
 
   return (
-    <section className="md:items-center gap-2 bg-gray-800 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
+    <section className="md:items-center gap-2 rounded flex justify-center m-auto flex-nowrap max-w-min md:max-w-auto px-1.5 py-1">
       {rowanStats.map(({ id, icon, label }) => (
         <div
           key={id}
-          className="flex items-center gap-1 text-gray-300 whitespace-nowrap"
+          className="flex items-center font-normal gap-1 text-gray-300 whitespace-nowrap"
         >
           <span className="h-6 w-6 grid place-items-center">{icon}</span>
           <span className="font-semibold text-xs">{label}</span>

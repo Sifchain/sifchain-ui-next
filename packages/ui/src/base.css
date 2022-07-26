@@ -32,12 +32,22 @@
   input[type="search"]::-webkit-search-results-decoration {
     -webkit-appearance: none;
   }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 
 @layer components {
   .input {
-    @apply bg-gray-700 border border-gray-600 p-2 rounded-lg;
-    @apply px-2.5;
+    @apply bg-gray-700 rounded;
   }
 
   .input-label {

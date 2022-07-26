@@ -102,17 +102,15 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   return (
     <>
       <div
-        className={clsx("relative grid", {
+        className={clsx("relative grid gap-1", {
           "pt-[22px]": props.label !== undefined,
           "text-xs": props.size === "xs",
         })}
       >
-        {props.label && (
-          <span className="input-label absolute top-0">{props.label}</span>
-        )}
+        {props.label && <span className="input-label">{props.label}</span>}
         <button
           className={clsx(
-            "input flex flex-1 items-center gap-4 rounded-md h-11",
+            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5 text-ellipsis",
             props.buttonClassName,
           )}
           onClick={(e) => {

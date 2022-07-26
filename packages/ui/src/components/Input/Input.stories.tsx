@@ -9,7 +9,11 @@ export default {
 } as ComponentMeta<typeof Input>;
 
 const Template: ComponentStory<typeof Input> = (args) => {
-  return <Input {...args} />;
+  return (
+    <div className="bg-black p-8">
+      <Input {...args} />
+    </div>
+  );
 };
 
 export const Default = Template.bind({});
@@ -32,6 +36,15 @@ FullWidth.args = {
   placeholder: "Full width input",
 };
 
+export const WithLabels = Template.bind({});
+
+WithLabels.args = {
+  inputClassName: "text-right",
+  placeholder: "20,000",
+  label: "Amount",
+  secondaryLabel: "ETH",
+};
+
 export const WithButton = Template.bind({});
 
 WithButton.args = {
@@ -40,7 +53,7 @@ WithButton.args = {
   label: "Amount",
   secondaryLabel: "ETH",
   leadingIcon: (
-    <div className="flex gap-1.5 pl-1.5">
+    <div className="flex gap-1.5">
       <Label>Half</Label>
       <Label>Max</Label>
     </div>

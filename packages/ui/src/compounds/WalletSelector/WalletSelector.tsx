@@ -253,3 +253,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     </>
   );
 };
+
+WalletSelector.defaultProps = {
+  accounts: {},
+};
