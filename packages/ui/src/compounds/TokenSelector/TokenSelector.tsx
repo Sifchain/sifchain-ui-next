@@ -110,7 +110,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
         {props.label && <span className="input-label">{props.label}</span>}
         <button
           className={clsx(
-            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5",
+            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5 text-ellipsis",
             props.buttonClassName,
           )}
           onClick={(e) => {
