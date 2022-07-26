@@ -192,7 +192,6 @@ const Trade: NextPage = () => {
     }
     return selectedPool?.asset;
   }, [selectedCollateral, selectedPool, tokenRowan]);
-
   const availableTokenPools = useMemo(() => {
     if (selectedPool && selectedPool.asset && tokenRowan) {
       return [selectedPool.asset, tokenRowan];
@@ -213,8 +212,9 @@ const Trade: NextPage = () => {
     const asset = token as EnhancedRegistryAsset;
     const pool = pools.find(
       (pool) => pool.externalAsset?.symbol === asset.denom,
-    );
+    ) as typeof pools[0];
     setSelectedPool(pool);
+    setSelectedCollateral(pool.asset);
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
     setSelectedCollateral(token);
@@ -386,7 +386,6 @@ const Trade: NextPage = () => {
                   onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
                   tokens={availableTokenPools}
-                  key={selectedPool?.asset.displaySymbol}
                 />
                 <input
                   type="number"
@@ -398,7 +397,7 @@ const Trade: NextPage = () => {
                     "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
-                        inputPosition.error,
+                        inputCollateral.error,
                     },
                   )}
                 />
@@ -478,6 +477,7 @@ const Trade: NextPage = () => {
                 </span>
                 <input
                   type="number"
+                  placeholder="Leverage amount"
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
