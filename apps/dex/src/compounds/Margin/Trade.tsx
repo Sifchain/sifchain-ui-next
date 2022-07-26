@@ -15,6 +15,7 @@ import {
   useState,
 } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
+import immer from "immer";
 
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
@@ -214,9 +215,7 @@ const Trade = (props: TradeProps) => {
   });
 
   const selectedPosition = useMemo(() => {
-    if (
-      selectedCollateral?.displaySymbol === selectedPool?.asset.displaySymbol
-    ) {
+    if (selectedCollateral?.denom === selectedPool?.asset.denom) {
       return tokenRowan;
     }
     return selectedPool?.asset;
@@ -296,6 +295,21 @@ const Trade = (props: TradeProps) => {
     console.log(event.currentTarget);
   };
 
+  const modifiedSelectedPool = useMemo(() => {
+    return immer(selectedPool?.asset, (draftAsset) => {
+      if (draftAsset) {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }
+    });
+  }, [selectedPool?.asset]);
+  const modifiedPools = useMemo(() => {
+    return pools.map((pool) =>
+      immer(pool.asset, (draftAsset) => {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }),
+    );
+  }, [pools]);
+
   return (
     <>
       <Head>
@@ -306,9 +320,9 @@ const Trade = (props: TradeProps) => {
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
               modalTitle="Pool"
-              value={selectedPool?.asset}
+              value={modifiedSelectedPool}
               onChange={onChangePoolSelector}
-              tokens={pools.map((pool) => pool.asset)}
+              tokens={modifiedPools}
               buttonClassName="text-base h-10 font-semibold"
             />
           </li>
