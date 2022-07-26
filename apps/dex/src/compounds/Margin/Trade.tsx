@@ -7,7 +7,13 @@ import {
   TokenEntry,
 } from "@sifchain/ui";
 import Head from "next/head";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
@@ -154,19 +160,42 @@ function inputValidatorLeverage(
   return payload;
 }
 
-const Trade: NextPage = () => {
+const TradeLoader: NextPage = () => {
   const tokenRegistry = useTokenRegistryQuery();
   const enhancedPools = useEnhancedPoolsQuery();
-  const useRowanPrice = useRowanPriceQuery();
+  const rowanPrice = useRowanPriceQuery();
 
-  const pools: ReturnType<typeof useEnhancedPoolsQuery>["data"] = useMemo(
-    () => enhancedPools.data || [],
-    [enhancedPools.data],
+  if (
+    tokenRegistry.isSuccess &&
+    enhancedPools.isSuccess &&
+    rowanPrice.isSuccess
+  ) {
+    return (
+      <Trade
+        tokenRegistry={tokenRegistry}
+        enhancedPools={enhancedPools}
+        rowanPrice={rowanPrice}
+      />
+    );
+  }
+
+  return (
+    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
   );
+};
+
+type TradeProps = {
+  tokenRegistry: ReturnType<typeof useTokenRegistryQuery>;
+  enhancedPools: ReturnType<typeof useEnhancedPoolsQuery>;
+  rowanPrice: ReturnType<typeof useRowanPriceQuery>;
+};
+const Trade = (props: TradeProps) => {
+  const { tokenRegistry, enhancedPools, rowanPrice } = props;
+
+  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
   const tokenRowan = useMemo(() => {
     return tokenRegistry.data.find((token) => token.displaySymbol === "rowan");
-  }, [tokenRegistry.data]) as TokenEntry | undefined;
-
+  }, [tokenRegistry.data]);
   const [selectedPool, setSelectedPool] = useState(pools[0]);
   const [selectedCollateral, setSelectedCollateral] = useState(tokenRowan);
 
@@ -199,8 +228,12 @@ const Trade: NextPage = () => {
     return [];
   }, [selectedPool, tokenRowan]);
   const isDisabledPlaceBuyOrder = useMemo(() => {
-    return Boolean(inputLeverage.error);
-  }, [inputLeverage.error]);
+    return (
+      Boolean(inputCollateral.error) ||
+      Boolean(inputPosition.error) ||
+      Boolean(inputLeverage.error)
+    );
+  }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
 
   useEffect(() => {
     if (pools && pools.length > 0 && typeof selectedPool === "undefined") {
@@ -214,10 +247,10 @@ const Trade: NextPage = () => {
       (pool) => pool.externalAsset?.symbol === asset.denom,
     ) as typeof pools[0];
     setSelectedPool(pool);
-    setSelectedCollateral(pool.asset);
+    setSelectedCollateral(tokenRowan);
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
-    setSelectedCollateral(token);
+    setSelectedCollateral(token as EnhancedRegistryAsset);
   };
   const onChangePositionSide = (position: string) => {
     setRadioPositionSide(position);
@@ -251,6 +284,16 @@ const Trade: NextPage = () => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "blur");
     setInputCollateral(payload);
+  };
+  const onClickResetPlaceBuyOrder = (
+    event: SyntheticEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    setSelectedPool(pools[0]);
+    setSelectedCollateral(tokenRowan);
+  };
+  const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
+    console.log(event.currentTarget);
   };
 
   return (
@@ -296,7 +339,7 @@ const Trade: NextPage = () => {
               <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(useRowanPrice.data || 0, 4)}
+                  {formatNumberAsCurrency(rowanPrice.data || 0, 4)}
                 </span>
                 <span className="text-red-400">(-2.8%)</span>
               </span>
@@ -491,7 +534,7 @@ const Trade: NextPage = () => {
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
                   className={clsx(
-                    "text-sm bg-gray-700 rounded border-0 input-appearance-none",
+                    "text-right text-sm bg-gray-700 rounded border-0 input-appearance-none",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputLeverage.error,
@@ -569,6 +612,7 @@ const Trade: NextPage = () => {
               as="button"
               size="xs"
               className="text-gray-300 font-normal self-center"
+              onClick={onClickResetPlaceBuyOrder}
             >
               Reset
             </Button>
@@ -578,6 +622,7 @@ const Trade: NextPage = () => {
               size="md"
               className="col-span-3 rounded"
               disabled={isDisabledPlaceBuyOrder}
+              onClick={onClickPlaceBuyOrder}
             >
               Place buy order
             </Button>
@@ -595,4 +640,4 @@ const Trade: NextPage = () => {
   );
 };
 
-export default Trade;
+export default TradeLoader;
