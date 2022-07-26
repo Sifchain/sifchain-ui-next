@@ -9,7 +9,7 @@ export default {
   component: icons.ArrowLeftIcon,
 } as ComponentMeta<typeof icons.ArrowLeftIcon>;
 
-const Template: ComponentStory<IconType> = (args) => {
+const Template: ComponentStory<IconType> = () => {
   const iconComponents = Object.keys(icons).map(
     (key) => icons[key as keyof typeof icons],
   );

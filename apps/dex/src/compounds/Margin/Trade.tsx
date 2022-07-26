@@ -202,7 +202,7 @@ const Trade: NextPage = () => {
                   modalTitle="Collateral"
                   value={selectedPool?.asset}
                   onChange={onChangeCollateral}
-                  buttonClassName="h-9 text-sm"
+                  buttonClassName="h-9 !text-sm"
                   tokens={pools.map((pool) => pool.asset)}
                 />
                 <input
@@ -223,7 +223,7 @@ const Trade: NextPage = () => {
                   modalTitle="Position"
                   value={selectedPool?.asset}
                   onChange={onChangePosition}
-                  buttonClassName="h-9 text-sm"
+                  buttonClassName="h-9 !text-sm"
                   readonly
                   tokens={pools.map((pool) => pool.asset)}
                 />

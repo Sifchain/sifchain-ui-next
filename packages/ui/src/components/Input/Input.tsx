@@ -4,13 +4,22 @@ import tw from "tailwind-styled-components";
 
 import { useSyncedRef } from "../../hooks";
 
+const SIZE_CLASSES = {
+  md: "h-12",
+  sm: "h-10",
+  xs: "h-9",
+};
+
+type InputSize = keyof typeof SIZE_CLASSES;
+
 export const StyledInputContainer = tw.div`
   relative flex items-center h-12
 `;
 
 export const StyledInput = tw.input`
   appearance-none input absolute inset-0 border-none outline-none 
-  focus:outline-none focus:ring ring-gray-400/80  h-12 w-full
+  focus:outline-none focus:ring ring-gray-400/80  h-full w-full px-2 text-gray-100
+  placeholder:text-gray-300
 `;
 
 export type InputProps = Omit<
@@ -25,6 +34,7 @@ export type InputProps = Omit<
   containerClassName?: string;
   inputClassName?: string;
   fullWidth?: boolean;
+  size?: InputSize;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -37,6 +47,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       hideLabel,
       containerClassName,
       inputClassName,
+      size,
       ...props
     },
     ref,
@@ -90,7 +101,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </label>
         )}
-        <StyledInputContainer className={containerClassName}>
+        <StyledInputContainer
+          className={clsx(containerClassName, SIZE_CLASSES[size ?? "md"])}
+        >
           {leadingIcon && (
             <div className="translate-x-2 z-10">{leadingIcon}</div>
           )}
