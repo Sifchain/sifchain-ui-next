@@ -53,4 +53,14 @@
   .input-label {
     @apply text-gray-200 text-sm font-normal;
   }
+
+  .input-appearance-none::-webkit-outer-spin-button,
+  .input-appearance-none::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  .input-appearance-none {
+    -moz-appearance: textfield; /* Firefox */
+  }
 }

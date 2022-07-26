@@ -390,11 +390,14 @@ const Trade: NextPage = () => {
                 <input
                   type="number"
                   placeholder="Collateral amount"
+                  step="0.01"
+                  min={COLLATERAL_MIN_VALUE}
+                  max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
                   onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold input-appearance-none",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputCollateral.error,
@@ -428,11 +431,14 @@ const Trade: NextPage = () => {
                 <input
                   type="number"
                   placeholder="Position amount"
+                  step="0.01"
+                  min={POSITION_MIN_VALUE}
+                  max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
                   onBlur={onBlurPosition}
                   onChange={onChangePosition}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold input-appearance-none",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputPosition.error,
@@ -478,13 +484,19 @@ const Trade: NextPage = () => {
                 <input
                   type="number"
                   placeholder="Leverage amount"
+                  step="0.01"
+                  min={LEVERAGE_MIN_VALUE}
+                  max={LEVERAGE_MAX_VALUE}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
-                  className={clsx("text-sm bg-gray-700 rounded border-0", {
-                    "ring ring-red-600 focus:ring focus:ring-red-600":
-                      inputLeverage.error,
-                  })}
+                  className={clsx(
+                    "text-sm bg-gray-700 rounded border-0 input-appearance-none",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputLeverage.error,
+                    },
+                  )}
                 />
               </div>
               {Boolean(inputLeverage.error) && (
