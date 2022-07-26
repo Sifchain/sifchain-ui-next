@@ -7,13 +7,7 @@ import {
   TokenEntry,
 } from "@sifchain/ui";
 import Head from "next/head";
-import {
-  ChangeEvent,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 import immer from "immer";
 
@@ -193,13 +187,81 @@ type TradeProps = {
 const Trade = (props: TradeProps) => {
   const { tokenRegistry, enhancedPools, rowanPrice } = props;
 
-  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
+  /**
+   * ********************************************************************************************
+   *
+   * Find ROWAN as "Token" from Registry to use it in TokenSelector dropdown
+   * For Collateral / Position dropdown logic
+   *
+   * ********************************************************************************************
+   */
   const tokenRowan = useMemo(() => {
     return tokenRegistry.data.find((token) => token.displaySymbol === "rowan");
   }, [tokenRegistry.data]);
-  const [selectedPool, setSelectedPool] = useState(pools[0]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Derivate `activePool` to enable "reactivity". On first load "pools[0]" may be "undefined"
+   * "setSelectedPool" is used in "Inputs Event Handlers" section
+   *
+   * ********************************************************************************************
+   */
+  const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
+  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
+  const activePool = useMemo(() => {
+    if (selectedPool) {
+      return selectedPool;
+    }
+    return pools[0];
+  }, [pools, selectedPool]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Collateral default is to display "ROWAN" and it can be changed
+   *
+   * ********************************************************************************************
+   */
   const [selectedCollateral, setSelectedCollateral] = useState(tokenRowan);
 
+  /**
+   * ********************************************************************************************
+   *
+   * Position is derivate from Collateral + Active Pool
+   *   - If Collateral equals to Active Pool, return ROWAN (native)
+   *   - If Collateral is not equals to Active Pool, return Pool Asset (external)
+   *
+   * ********************************************************************************************
+   */
+  const selectedPosition = useMemo(() => {
+    if (selectedCollateral?.denom === activePool?.asset.denom) {
+      return tokenRowan;
+    }
+    return activePool?.asset;
+  }, [selectedCollateral, activePool, tokenRowan]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Collateral and Position dropdown must display only tokens from the pool + native (Rowan)
+   *
+   * ********************************************************************************************
+   */
+  const poolAvailableTokens = useMemo(() => {
+    if (activePool && activePool.asset && tokenRowan) {
+      return [activePool.asset, tokenRowan];
+    }
+    return [];
+  }, [activePool, tokenRowan]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Input validation and "Place Buy Order" disabling derivate
+   *
+   * ********************************************************************************************
+   */
   const [inputCollateral, setInputCollateral] = useState({
     value: `${COLLATERAL_MAX_VALUE}`,
     error: "",
@@ -214,18 +276,6 @@ const Trade = (props: TradeProps) => {
     error: "",
   });
 
-  const selectedPosition = useMemo(() => {
-    if (selectedCollateral?.denom === selectedPool?.asset.denom) {
-      return tokenRowan;
-    }
-    return selectedPool?.asset;
-  }, [selectedCollateral, selectedPool, tokenRowan]);
-  const availableTokenPools = useMemo(() => {
-    if (selectedPool && selectedPool.asset && tokenRowan) {
-      return [selectedPool.asset, tokenRowan];
-    }
-    return [];
-  }, [selectedPool, tokenRowan]);
   const isDisabledPlaceBuyOrder = useMemo(() => {
     return (
       Boolean(inputCollateral.error) ||
@@ -234,17 +284,41 @@ const Trade = (props: TradeProps) => {
     );
   }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
 
-  useEffect(() => {
-    if (pools && pools.length > 0 && typeof selectedPool === "undefined") {
-      setSelectedPool(pools[0]);
-    }
-  }, [pools, selectedPool]);
+  /**
+   * ********************************************************************************************
+   *
+   * Changing `displaySymbol` to match design requirements and`TokenSelector` API
+   * We don't need that in the real object / data
+   *
+   * ********************************************************************************************
+   */
+  const modifiedActivePool = useMemo(() => {
+    return immer(activePool?.asset, (draftAsset) => {
+      if (draftAsset) {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }
+    });
+  }, [activePool?.asset]);
+  const modifiedPools = useMemo(() => {
+    return pools.map((pool) =>
+      immer(pool.asset, (draftAsset) => {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }),
+    );
+  }, [pools]);
 
+  /**
+   * ********************************************************************************************
+   *
+   * Inputs Event Handlers
+   *
+   * ********************************************************************************************
+   */
   const onChangePoolSelector = (token: TokenEntry) => {
     const asset = token as EnhancedRegistryAsset;
     const pool = pools.find(
       (pool) => pool.externalAsset?.symbol === asset.denom,
-    ) as typeof pools[0];
+    );
     setSelectedPool(pool);
     setSelectedCollateral(tokenRowan);
   };
@@ -295,21 +369,6 @@ const Trade = (props: TradeProps) => {
     console.log(event.currentTarget);
   };
 
-  const modifiedSelectedPool = useMemo(() => {
-    return immer(selectedPool?.asset, (draftAsset) => {
-      if (draftAsset) {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
-      }
-    });
-  }, [selectedPool?.asset]);
-  const modifiedPools = useMemo(() => {
-    return pools.map((pool) =>
-      immer(pool.asset, (draftAsset) => {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
-      }),
-    );
-  }, [pools]);
-
   return (
     <>
       <Head>
@@ -320,7 +379,7 @@ const Trade = (props: TradeProps) => {
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
               modalTitle="Pool"
-              value={modifiedSelectedPool}
+              value={modifiedActivePool}
               onChange={onChangePoolSelector}
               tokens={modifiedPools}
               buttonClassName="text-base h-10 font-semibold"
@@ -331,7 +390,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-gray-300">Pool TVL</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(selectedPool?.stats.poolTVL || 0)}
+                  {formatNumberAsCurrency(activePool?.stats.poolTVL || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -342,7 +401,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-gray-300">Pool Volume</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(selectedPool?.stats.volume || 0)}
+                  {formatNumberAsCurrency(activePool?.stats.volume || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -362,13 +421,13 @@ const Trade = (props: TradeProps) => {
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">
-                {selectedPool?.stats.symbol?.toUpperCase()} Price
+                {activePool?.stats.symbol?.toUpperCase()} Price
               </span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
                   <span className="mr-1">
                     {formatNumberAsCurrency(
-                      Number(selectedPool?.stats.priceToken) || 0,
+                      Number(activePool?.stats.priceToken) || 0,
                     )}
                   </span>
                 </span>
@@ -442,7 +501,7 @@ const Trade = (props: TradeProps) => {
                   value={selectedCollateral}
                   onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
-                  tokens={availableTokenPools}
+                  tokens={poolAvailableTokens}
                 />
                 <input
                   type="number"
@@ -483,7 +542,7 @@ const Trade = (props: TradeProps) => {
                   value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
                   readonly
-                  tokens={availableTokenPools}
+                  tokens={poolAvailableTokens}
                 />
                 <input
                   type="number"
