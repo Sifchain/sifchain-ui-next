@@ -43,7 +43,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
         <legend className="contents font-bold opacity-90">{props.label}</legend>
       </div>
       <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-        <div className="md:min-w-[200px]">
+        <div className="md:min-w-[160px]">
           <TokenSelector
             label="Token"
             modalTitle={props.label}
@@ -52,7 +52,8 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
           />
         </div>
         <Input
-          inputClassName="text-right w-0 md:w-auto"
+          containerClassName="md:min-w-[280px]"
+          inputClassName="text-right"
           type="number"
           label="Amount"
           secondaryLabel={`Balance: ${
@@ -71,7 +72,6 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
               </Label>
             </div>
           }
-          fullWidth
         />
       </div>
     </fieldset>

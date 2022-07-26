@@ -205,14 +205,12 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                 </Label>
               </div>
             }
-            fullWidth
           />
         </fieldset>
         <Input
           containerClassName="!bg-gray-750 text-ellipsis"
           label="Recipient address"
           value={recipientAddress}
-          fullWidth
           disabled
         />
         <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">

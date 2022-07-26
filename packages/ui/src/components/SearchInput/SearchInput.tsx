@@ -18,11 +18,11 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         type="search"
         ref={ref}
         id={inputId}
-        inputClassName="ml-4"
         containerClassName={clsx(
-          "bg-gray-750 border-gray-700",
+          "min-w-[180px] md:min-w-[255px] !h-10",
           containerClassName,
         )}
+        inputClassName="rounded-md !h-10 pl-8"
         leadingIcon={<SearchIcon className="h-4 w-4 text-gray-300" />}
         {...props}
       />

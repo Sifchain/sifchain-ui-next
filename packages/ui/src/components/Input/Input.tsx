@@ -5,20 +5,12 @@ import tw from "tailwind-styled-components";
 import { useSyncedRef } from "../../hooks";
 
 export const StyledInputContainer = tw.div`
-  border-gray-600 bg-gray-700 rounded-md opacity-90 outline-none p-2 px-4
-  focus-within:ring focus-within:ring-blue-400/40
-  hover:opacity-100 flex-1
-  flex items-center gap-1
+  relative flex items-center h-12
 `;
 
 export const StyledInput = tw.input`
-  flex-1 p-0
-  bg-transparent outline-none border-none focus:ring-transparent
-  [&::-webkit-inner-spin-button]:appearance-none
-  [&::-webkit-outer-spin-button]:appearance-none
-  text-gray-50 text-base md:text-lg
-  placeholder:text-gray-300
-  disabled:placeholder:text-gray-600
+  appearance-none input absolute inset-0 border-none outline-none 
+  focus:outline-none focus:ring ring-gray-400/80  h-12 w-full
 `;
 
 export type InputProps = Omit<
@@ -28,11 +20,11 @@ export type InputProps = Omit<
   label?: ReactNode | string;
   secondaryLabel?: ReactNode | string;
   hideLabel?: boolean;
-  fullWidth?: boolean;
   leadingIcon?: ReactNode | string;
   hotkey?: string;
   containerClassName?: string;
   inputClassName?: string;
+  fullWidth?: boolean;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -43,7 +35,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       leadingIcon,
       hotkey,
       hideLabel,
-      fullWidth,
       containerClassName,
       inputClassName,
       ...props
@@ -73,16 +64,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div
-        className={clsx("relative grid items-center", {
-          "max-w-min": !fullWidth,
-          "w-full flex-1": fullWidth,
+        className={clsx("relative grid gap-1", {
+          "w-full": props.fullWidth,
         })}
       >
         {(label || secondaryLabel) && (
           <label htmlFor={id} className="flex justify-between items-center">
             {label && (
               <span
-                className={clsx("text-xs md:text-sm text-gray-200", {
+                className={clsx("input-label", {
                   "sr-only": hideLabel,
                 })}
               >
@@ -91,7 +81,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             {secondaryLabel && (
               <span
-                className={clsx("text-xs md:text-sm text-gray-300", {
+                className={clsx("input-label text-gray-300", {
                   "sr-only": hideLabel,
                 })}
               >
@@ -100,31 +90,24 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </label>
         )}
-        <div className="relative flex items-center">
-          <StyledInputContainer
-            className={clsx([
-              {
-                "bg-gray-800 border-gray-750": props.disabled,
-              },
-              containerClassName,
-            ])}
-          >
-            {leadingIcon && <div className="-ml-2">{leadingIcon}</div>}
-            <StyledInput
-              aria-label={typeof label === "string" ? label : ""}
-              {...props}
-              className={inputClassName}
-              style={{ appearance: "textfield", ...props.style }}
-              id={id}
-              ref={inputRef}
-            />
-            {hotkey && (
-              <span className="text-xs right-3 p-1 ring-1 rounded ring-gray-600 text-gray-300">
-                {hotkey}
-              </span>
-            )}
-          </StyledInputContainer>
-        </div>
+        <StyledInputContainer className={containerClassName}>
+          {leadingIcon && (
+            <div className="translate-x-2 z-10">{leadingIcon}</div>
+          )}
+          <StyledInput
+            aria-label={typeof label === "string" ? label : ""}
+            {...props}
+            className={clsx("disabled:bg-gray-800", inputClassName)}
+            style={{ appearance: "textfield", ...props.style }}
+            id={id}
+            ref={inputRef}
+          />
+          {hotkey && (
+            <span className="text-xs right-3 p-1 ring-1 rounded ring-gray-600 text-gray-300">
+              {hotkey}
+            </span>
+          )}
+        </StyledInputContainer>
       </div>
     );
   },

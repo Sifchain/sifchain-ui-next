@@ -48,7 +48,7 @@ export const Modal: FC<ModalProps> = (props) => {
             >
               <Dialog.Panel
                 className={clsx(
-                  "relative bg-white dark:bg-gray-800 dark:text-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full",
+                  "relative w-full md:max-w-md bg-white dark:bg-gray-800 dark:text-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full",
                   props.className,
                 )}
               >
