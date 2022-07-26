@@ -14,7 +14,7 @@ const Template: ComponentStory<IconType> = (args) => {
     (key) => icons[key as keyof typeof icons],
   );
   return (
-    <ul className="flex gap-2">
+    <ul className="flex gap-2 flex-wrap">
       {iconComponents.map((Icon) => (
         <>
           <li key={Icon.name}>
