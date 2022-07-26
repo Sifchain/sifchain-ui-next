@@ -7,12 +7,14 @@ import {
   TokenEntry,
 } from "@sifchain/ui";
 import Head from "next/head";
-
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
+
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
-import { useEffect, useMemo, useState } from "react";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import clsx from "clsx";
 
 function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
@@ -45,7 +47,115 @@ function ValueFromTo({
   );
 }
 
+const COLLATERAL_MIN_VALUE = 0;
+const COLLATERAL_MAX_VALUE = 1000000;
+const COLLATERAL_ERRORS = {
+  INVALID_NUMBER: `Collateral amount must be between ${formatNumberAsCurrency(
+    0,
+  )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
+  INVALID_RANGE: `Collateral amount must be between ${formatNumberAsCurrency(
+    0,
+  )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
+};
+function inputValidatorCollateral(
+  $input: HTMLInputElement,
+  event: "blur" | "change",
+) {
+  const value = Number($input.value);
+  const payload = {
+    value: $input.value,
+    error: "",
+  };
+  if ($input.value !== "" && Number.isNaN(value)) {
+    payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
+  }
+
+  if (
+    $input.value !== "" &&
+    (value > COLLATERAL_MAX_VALUE || value < COLLATERAL_MIN_VALUE)
+  ) {
+    payload.error = COLLATERAL_ERRORS.INVALID_RANGE;
+  }
+
+  if (event === "blur" && $input.value === "") {
+    payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
+  }
+
+  return payload;
+}
+
+const POSITION_MIN_VALUE = 0;
+const POSITION_MAX_VALUE = 1000000;
+const POSITION_ERRORS = {
+  INVALID_NUMBER: `Position amount must be between ${formatNumberAsCurrency(
+    0,
+  )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
+  INVALID_RANGE: `Position amount must be between ${formatNumberAsCurrency(
+    0,
+  )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
+};
+function inputValidatorPosition(
+  $input: HTMLInputElement,
+  event: "blur" | "change",
+) {
+  const value = Number($input.value);
+  const payload = {
+    value: $input.value,
+    error: "",
+  };
+  if ($input.value !== "" && Number.isNaN(value)) {
+    payload.error = POSITION_ERRORS.INVALID_NUMBER;
+  }
+
+  if (
+    $input.value !== "" &&
+    (value > POSITION_MAX_VALUE || value < POSITION_MIN_VALUE)
+  ) {
+    payload.error = POSITION_ERRORS.INVALID_RANGE;
+  }
+
+  if (event === "blur" && $input.value === "") {
+    payload.error = POSITION_ERRORS.INVALID_NUMBER;
+  }
+
+  return payload;
+}
+
+const LEVERAGE_MIN_VALUE = 0;
+const LEVERAGE_MAX_VALUE = 2;
+const LEVERAGE_ERRORS = {
+  INVALID_NUMBER: "Leverage amount must be between 0 and 2",
+  INVALID_RANGE: "Leverage amount must be between 0 and 2",
+};
+function inputValidatorLeverage(
+  $input: HTMLInputElement,
+  event: "blur" | "change",
+) {
+  const value = Number($input.value);
+  const payload = {
+    value: $input.value,
+    error: "",
+  };
+  if ($input.value !== "" && Number.isNaN(value)) {
+    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
+  }
+
+  if (
+    $input.value !== "" &&
+    (value > LEVERAGE_MAX_VALUE || value < LEVERAGE_MIN_VALUE)
+  ) {
+    payload.error = LEVERAGE_ERRORS.INVALID_RANGE;
+  }
+
+  if (event === "blur" && $input.value === "") {
+    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
+  }
+
+  return payload;
+}
+
 const Trade: NextPage = () => {
+  const tokenRegistry = useTokenRegistryQuery();
   const enhancedPools = useEnhancedPoolsQuery();
   const useRowanPrice = useRowanPriceQuery();
 
@@ -53,13 +163,51 @@ const Trade: NextPage = () => {
     () => enhancedPools.data || [],
     [enhancedPools.data],
   );
+  const tokenRowan = useMemo(() => {
+    return tokenRegistry.data.find((token) => token.displaySymbol === "rowan");
+  }, [tokenRegistry.data]) as TokenEntry | undefined;
+
   const [selectedPool, setSelectedPool] = useState(pools[0]);
+  const [selectedCollateral, setSelectedCollateral] = useState(tokenRowan);
+
+  const [inputCollateral, setInputCollateral] = useState({
+    value: `${COLLATERAL_MAX_VALUE}`,
+    error: "",
+  });
+  const [inputPosition, setInputPosition] = useState({
+    value: `${POSITION_MAX_VALUE}`,
+    error: "",
+  });
+  const [radioPositionSide, setRadioPositionSide] = useState("long");
+  const [inputLeverage, setInputLeverage] = useState({
+    value: `${LEVERAGE_MAX_VALUE}`,
+    error: "",
+  });
+
+  const selectedPosition = useMemo(() => {
+    if (
+      selectedCollateral?.displaySymbol === selectedPool?.asset.displaySymbol
+    ) {
+      return tokenRowan;
+    }
+    return selectedPool?.asset;
+  }, [selectedCollateral, selectedPool, tokenRowan]);
+
+  const availableTokenPools = useMemo(() => {
+    if (selectedPool && selectedPool.asset && tokenRowan) {
+      return [selectedPool.asset, tokenRowan];
+    }
+    return [];
+  }, [selectedPool, tokenRowan]);
+  const isDisabledPlaceBuyOrder = useMemo(() => {
+    return Boolean(inputLeverage.error);
+  }, [inputLeverage.error]);
 
   useEffect(() => {
-    if (pools && pools.length > 0) {
+    if (pools && pools.length > 0 && typeof selectedPool === "undefined") {
       setSelectedPool(pools[0]);
     }
-  }, [pools]);
+  }, [pools, selectedPool]);
 
   const onChangePoolSelector = (token: TokenEntry) => {
     const asset = token as EnhancedRegistryAsset;
@@ -68,8 +216,42 @@ const Trade: NextPage = () => {
     );
     setSelectedPool(pool);
   };
-  const onChangeCollateral = (token: TokenEntry) => console.log(token);
-  const onChangePosition = (token: TokenEntry) => console.log(token);
+  const onChangeCollateralSelector = (token: TokenEntry) => {
+    setSelectedCollateral(token);
+  };
+  const onChangePositionSide = (position: string) => {
+    setRadioPositionSide(position);
+  };
+  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "blur");
+    setInputLeverage(payload);
+  };
+  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "change");
+    setInputLeverage(payload);
+  };
+  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "change");
+    setInputPosition(payload);
+  };
+  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "blur");
+    setInputPosition(payload);
+  };
+  const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorCollateral($input, "change");
+    setInputCollateral(payload);
+  };
+  const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorCollateral($input, "blur");
+    setInputCollateral(payload);
+  };
 
   return (
     <>
@@ -200,48 +382,84 @@ const Trade: NextPage = () => {
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
                   modalTitle="Collateral"
-                  value={selectedPool?.asset}
-                  onChange={onChangeCollateral}
+                  value={selectedCollateral}
+                  onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
-                  tokens={pools.map((pool) => pool.asset)}
+                  tokens={availableTokenPools}
+                  key={selectedPool?.asset.displaySymbol}
                 />
                 <input
-                  type="text"
-                  defaultValue="100,000"
-                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
+                  type="number"
+                  placeholder="Collateral amount"
+                  value={inputCollateral.value}
+                  onBlur={onBlurCollateral}
+                  onChange={onChangeCollateral}
+                  className={clsx(
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputPosition.error,
+                    },
+                  )}
                 />
               </div>
-              <span className="text-gray-300 text-right mt-1">
-                <HtmlUnicode name="EqualsSign" />
-                <span className="ml-1">$1,000</span>
-              </span>
+              {inputCollateral.error ? (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded mt-2">
+                  {inputCollateral.error}
+                </span>
+              ) : (
+                <span className="text-gray-300 text-right mt-1">
+                  <HtmlUnicode name="EqualsSign" />
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(Number(inputCollateral.value))}
+                  </span>
+                </span>
+              )}
             </li>
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
                   modalTitle="Position"
-                  value={selectedPool?.asset}
-                  onChange={onChangePosition}
+                  value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
                   readonly
-                  tokens={pools.map((pool) => pool.asset)}
+                  tokens={availableTokenPools}
                 />
                 <input
-                  type="text"
-                  defaultValue="1"
-                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
+                  type="number"
+                  placeholder="Position amount"
+                  value={inputPosition.value}
+                  onBlur={onBlurPosition}
+                  onChange={onChangePosition}
+                  className={clsx(
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputPosition.error,
+                    },
+                  )}
                 />
               </div>
-              <span className="text-gray-300 text-right mt-1">
-                <HtmlUnicode name="EqualsSign" />
-                <span className="ml-1">$2,000</span>
-              </span>
+              {inputPosition.error ? (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded mt-2">
+                  {inputPosition.error}
+                </span>
+              ) : (
+                <span className="text-gray-300 text-right mt-1">
+                  <HtmlUnicode name="EqualsSign" />
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(Number(inputPosition.value))}
+                  </span>
+                </span>
+              )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
               <TwinRadioGroup
+                value={radioPositionSide}
                 className="col-span-3 self-end text-sm"
                 name="margin-side"
+                onChange={onChangePositionSide}
                 options={[
                   {
                     title: "Long",
@@ -259,11 +477,21 @@ const Trade: NextPage = () => {
                   <span className="text-gray-400">Up to 2x</span>
                 </span>
                 <input
-                  type="text"
-                  defaultValue="2x"
-                  className="text-sm bg-gray-700 rounded border-0"
+                  type="number"
+                  value={inputLeverage.value}
+                  onChange={onChangeLeverage}
+                  onBlur={onBlurLeverage}
+                  className={clsx("text-sm bg-gray-700 rounded border-0", {
+                    "ring ring-red-600 focus:ring focus:ring-red-600":
+                      inputLeverage.error,
+                  })}
                 />
               </div>
+              {Boolean(inputLeverage.error) && (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded">
+                  {inputLeverage.error}
+                </span>
+              )}
             </li>
           </ul>
           <div className="p-4">
@@ -337,6 +565,7 @@ const Trade: NextPage = () => {
               as="button"
               size="md"
               className="col-span-3 rounded"
+              disabled={isDisabledPlaceBuyOrder}
             >
               Place buy order
             </Button>
