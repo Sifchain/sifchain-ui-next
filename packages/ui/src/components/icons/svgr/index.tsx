@@ -25,6 +25,7 @@ export { default as RacetrackSpinnerIcon } from "./RacetrackSpinnerIcon";
 export { default as RowanIcon } from "./RowanIcon";
 export { default as SearchIcon } from "./SearchIcon";
 export { default as SettingsIcon } from "./SettingsIcon";
+export { default as SifchainLogoRound } from "./SifchainLogoRound";
 export { default as SifchainLogoSmall } from "./SifchainLogoSmall";
 export { default as SifchainLogo } from "./SifchainLogo";
 export { default as SortAscendingIcon } from "./SortAscendingIcon";

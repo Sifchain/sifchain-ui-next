@@ -7,8 +7,7 @@ import {
   DotsVerticalIcon,
   formatNumberAsCurrency,
   LockIcon,
-  Logo,
-  LogoFull,
+  SifchainLogoRound,
   PlusIcon,
   PoolsIcon,
   RowanIcon,
@@ -71,9 +70,8 @@ const Header = () => {
             <>
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
                 <Link href="/">
-                  <a className="md:p-0">
-                    <LogoFull className="hidden md:inline-block h-24 md:h-12" />
-                    <Logo className="h-8 md:hidden" />
+                  <a className="md:p-1 p-2">
+                    <SifchainLogoRound className="inline-block text-[44px]" />
                   </a>
                 </Link>
                 <div className="md:hidden">
