@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { formatDistance, formatRelative } from "date-fns";
+import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -7,84 +7,31 @@ import { Button, formatNumberAsCurrency, ChevronDownIcon } from "@sifchain/ui";
 
 import { NoResultsRow } from "./NoResultsRow";
 
-import { useQuery } from "react-query";
-import { createOpenPositionsRow } from "./mockdata";
-import { useRouter } from "next/router";
-function useQueryOpenPositions(queryParams: {
-  limit: string;
-  page: string;
-  orderBy: string;
-  sortBy: string;
-}) {
-  const query = () =>
-    new Promise((res) => {
-      setTimeout(() => {
-        const results = Array.from(
-          { length: Number(queryParams.limit) * 5 },
-          () => createOpenPositionsRow(),
-        );
-        res({
-          pagination: {
-            total: `${results.length}`,
-            limit: queryParams.limit,
-            page: queryParams.page,
-            orderBy: queryParams.orderBy,
-            sortBy: queryParams.sortBy,
-          },
-          results: results.slice(0, Number(queryParams.limit)),
-        });
-      }, 2000);
-    }) as Promise<{
-      pagination: {
-        total: string;
-        limit: string;
-        page: string;
-        orderBy: string;
-        sortBy: string;
-      };
-      results: ReturnType<typeof createOpenPositionsRow>[];
-    }>;
-  return useQuery(["OpenPositions", queryParams], query, {
-    keepPreviousData: true,
-  });
-}
+/**
+ * ********************************************************************************************
+ *
+ * - "mockdata" should be replaced by Data Services endpoint
+ * - "intl" could be moved to the domain folder or packages/
+ * - "constants" could be moved to the domain folder or packages/
+ *
+ * ********************************************************************************************
+ */
+import { useQueryOpenPositions } from "./mockdata";
+import {
+  formatNumberAsDecimal,
+  formatNumberAsPercent,
+  formatDateRelative,
+  formatDateDistance,
+} from "./intl";
+import { fromColNameToItemKey, SORT_BY, MARGIN_POSITION } from "./constants";
 
-function formatDateRelative(date: Date): string {
-  return formatRelative(date, new Date());
-}
-function formatDateDistance(date: Date): string {
-  return formatDistance(date, new Date(), { addSuffix: true });
-}
-function formatNumberAsDecimal(number: number, decimals = 2): string {
-  const formatter = Intl.NumberFormat(undefined, {
-    style: "decimal",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-  return formatter.format(number);
-}
-function formatNumberAsPercent(number: number, decimals = 2): string {
-  const formatter = Intl.NumberFormat(undefined, {
-    style: "percent",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-  return formatter.format(number);
-}
-function fromColNameToItemKey(name: string) {
-  const slug = name.replace(/\W/g, "");
-  return slug.charAt(0).toLowerCase() + slug.slice(1);
-}
-
-const SORT_BY = {
-  ASC: "asc",
-  DESC: "desc",
-};
-const MARGIN_POSITION: Record<string, string> = {
-  "0": "Unspecified",
-  "1": "Long",
-  "2": "Short",
-};
+/**
+ * ********************************************************************************************
+ *
+ * OpenPositionsTable Compound
+ *
+ * ********************************************************************************************
+ */
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
