@@ -196,7 +196,8 @@ function inputValidatorLeverage(
  *   - Query list of Pools
  *   - Query list of Tokens
  *   - Query Rowan price
- *   - Query User Wallet details @TODO
+     @TODO Add query to load user wallter details
+ *   - Query User Wallet details
  *
  * These values are required to bootstrap the Trade page
  *
@@ -298,6 +299,14 @@ const Trade = (props: TradeProps) => {
     return pools[0];
   }, [pools, selectedPool]);
 
+  /**
+   * ********************************************************************************************
+   *
+   * Open Positions and History data based on active pool
+   * @TODO Move query to child component to avoid loading data if component isn't in the screen
+   *
+   * ********************************************************************************************
+   */
   const openPositionsQuery = useQueryOpenPositions(activePool);
   const useQueryHistoryQuery = useQueryHistory(activePool);
 
@@ -792,6 +801,7 @@ const Trade = (props: TradeProps) => {
               Loading...
             </div>
           ) : (
+            // @TODO Restructure PortfolioTable to receive an address (Pool or User) and let it manage the loading of data
             <PortfolioTable
               openPositions={{
                 rows: openPositionsQuery.data as OpenPositionsTableProps["rows"],
