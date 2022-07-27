@@ -52,7 +52,7 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
           "md:flex-row md:justify-between md:items-end": responsive,
         })}
       >
-        <div className={clsx({ "md:min-w-[200px]": responsive })}>
+        <div className={clsx({ "md:min-w-[160px]": responsive })}>
           <TokenSelector
             label="Token"
             modalTitle={props.label}
@@ -61,7 +61,8 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
           />
         </div>
         <Input
-          inputClassName={clsx("text-right w-0", { "md:w-auto": responsive })}
+          containerClassName={clsx({ "md:min-w-[280px]": responsive })}
+          inputClassName="text-right"
           type="number"
           label="Amount"
           secondaryLabel={`Balance: ${
