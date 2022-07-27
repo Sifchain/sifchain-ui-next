@@ -103,7 +103,6 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     <>
       <div
         className={clsx("relative grid gap-1", {
-          "pt-[22px]": props.label !== undefined,
           "text-xs": props.size === "xs",
         })}
       >
