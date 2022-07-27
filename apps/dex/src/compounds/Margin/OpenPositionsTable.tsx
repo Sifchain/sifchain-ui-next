@@ -1,3 +1,4 @@
+import { pathOr } from "ramda";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
@@ -5,25 +6,35 @@ import Link from "next/link";
 
 import { Button, formatNumberAsCurrency, ChevronDownIcon } from "@sifchain/ui";
 
-import { NoResultsRow } from "./NoResultsRow";
-
 /**
  * ********************************************************************************************
  *
+ * - "components" should be moved to src/components or ui
  * - "mockdata" should be replaced by Data Services endpoint
  * - "intl" could be moved to the domain folder or packages/
  * - "constants" could be moved to the domain folder or packages/
  *
  * ********************************************************************************************
  */
-import { useQueryOpenPositions } from "./mockdata";
+import {
+  NoResultsRow,
+  PaginationShowItems,
+  PaginationShowPages,
+  PaginationButtons,
+} from "./_components";
+import { useQueryOpenPositions } from "./_mockdata";
 import {
   formatNumberAsDecimal,
   formatNumberAsPercent,
   formatDateRelative,
   formatDateDistance,
-} from "./intl";
-import { fromColNameToItemKey, SORT_BY, MARGIN_POSITION } from "./constants";
+} from "./_intl";
+import {
+  fromColNameToItemKey,
+  SORT_BY,
+  MARGIN_POSITION,
+  QS_DEFAULTS,
+} from "./_constants";
 
 /**
  * ********************************************************************************************
@@ -71,10 +82,10 @@ export type OpenPositionsTableProps = {
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const queryParams = {
-    page: (router.query["page"] as string) || "1",
-    limit: (router.query["limit"] as string) || "10",
-    orderBy: (router.query["orderBy"] as string) || "",
-    sortBy: (router.query["sortBy"] as string) || "desc",
+    page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
+    limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
+    orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
+    sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
   };
   const openPositionsQuery = useQueryOpenPositions(queryParams);
   const { hideColumns } = props;
@@ -88,36 +99,36 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return (
       <>
         <div className="flex flex-row bg-gray-800 items-center">
-          <span className="text-sm mx-4 py-3">
-            <span>Showing</span>
-            <span className="mx-1">{pagination.page}</span>
-            <span>of</span>
-            <span className="mx-1">{pages}</span>
-            <span>pages</span>
-          </span>
-          <ul className="flex flex-row text-sm">
-            {Array.from({ length: pages }, (_, index) => {
-              const page = ++index;
+          <PaginationShowItems
+            limit={Number(pagination.limit)}
+            page={Number(pagination.page)}
+            total={Number(pagination.total)}
+          />
+          <PaginationShowPages
+            page={Number(pagination.page)}
+            pages={Number(pages)}
+          />
+          <PaginationButtons
+            pages={Number(pages)}
+            render={(page) => {
               return (
-                <li key={index} className="flex-1 flex flex-col">
-                  <Link
-                    href={{ query: { ...router.query, page } }}
-                    scroll={false}
+                <Link
+                  href={{ query: { ...router.query, page } }}
+                  scroll={false}
+                >
+                  <a
+                    className={clsx("px-2 py-1 rounded", {
+                      "bg-gray-400": Number(pagination.page) === page,
+                    })}
                   >
-                    <a
-                      className={clsx("px-2 py-1 rounded", {
-                        "bg-gray-400": Number(pagination.page) === page,
-                      })}
-                    >
-                      {page}
-                    </a>
-                  </Link>
-                </li>
+                    {page}
+                  </a>
+                </Link>
               );
-            })}
-          </ul>
+            }}
+          />
           {openPositionsQuery.isRefetching && (
-            <span className="bg-yellow-600 text-yellow-200 p-2 text-sm rounded ml-4">
+            <span className="bg-yellow-600 text-yellow-200 px-4 py-2 text-xs rounded">
               Updating...
             </span>
           )}

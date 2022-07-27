@@ -3,6 +3,13 @@ export function fromColNameToItemKey(name: string) {
   return slug.charAt(0).toLowerCase() + slug.slice(1);
 }
 
+export const QS_DEFAULTS = {
+  page: "1",
+  limit: "30",
+  orderBy: "",
+  sortBy: "desc",
+};
+
 export const SORT_BY = {
   ASC: "asc",
   DESC: "desc",
