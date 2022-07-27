@@ -26,6 +26,7 @@ import { useQueryHistory } from "./_mockdata";
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import {
   fromColNameToItemKey,
+  findNextOrderAndSortBy,
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
@@ -105,22 +106,11 @@ const HistoryTable = () => {
                 {headers.map((title) => {
                   const itemKey = fromColNameToItemKey(title);
                   const itemActive = pagination.orderBy === itemKey;
-
-                  let nextSortBy = SORT_BY.DESC;
-                  let nextOrderBy = itemKey;
-
-                  if (itemActive) {
-                    nextSortBy = pagination.sortBy;
-                  }
-
-                  if (itemActive && nextSortBy === SORT_BY.ASC) {
-                    nextOrderBy = "";
-                    nextSortBy = "";
-                  }
-
-                  if (itemActive && nextSortBy === SORT_BY.DESC) {
-                    nextSortBy = SORT_BY.ASC;
-                  }
+                  const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
+                    itemKey,
+                    itemActive,
+                    currentSortBy: pagination.sortBy,
+                  });
                   return (
                     <th
                       key={itemKey}
