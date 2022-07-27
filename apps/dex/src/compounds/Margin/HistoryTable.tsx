@@ -224,7 +224,7 @@ const HistoryTable = () => {
                         {position}
                       </span>
                     </td>
-                    <td>{item.asset}</td>
+                    <td className="px-4 py-3">{item.asset}</td>
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
