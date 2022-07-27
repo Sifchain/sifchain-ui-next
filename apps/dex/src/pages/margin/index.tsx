@@ -1,24 +1,28 @@
 import type { NextPage } from "next";
 
-import Head from "next/head";
+import { pathOr } from "ramda";
 import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 import Link from "next/link";
 
-const DEFAULT_TAB_ITEM = "trade";
+const SLUGS = {
+  trade: { title: "Trade", slug: "trade" },
+  portfolio: { title: "Portfolio", slug: "portfolio" },
+} as const;
 const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
   {
-    title: "Trade",
-    slug: "trade",
+    title: SLUGS.trade.title,
+    slug: SLUGS.trade.slug,
     content: dynamic(() => import("~/compounds/Margin/Trade"), {
       suspense: true,
     }),
   },
   {
-    title: "Portfolio",
-    slug: "portfolio",
+    title: SLUGS.portfolio.title,
+    slug: SLUGS.portfolio.slug,
     content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
       suspense: true,
     }),
@@ -46,10 +50,16 @@ const Margin: NextPage = () => {
       return;
     }
 
-    if (router.query["tab"]) {
-      setActiveTab(router.query["tab"] as string);
+    /**
+     * @TODO Silently fallback to "Trade" in case the querystring doesn't match any slugs
+     *   - In this scenario, the URL will be stale but internal state is corrcect
+     *   - As an improvement, we could use `router.push` to update the URL as well
+     */
+    const tabOption = pathOr(SLUGS.portfolio.slug, ["tab"], router.query);
+    if (SLUGS[tabOption]) {
+      setActiveTab(tabOption);
     } else {
-      setActiveTab(DEFAULT_TAB_ITEM);
+      setActiveTab(SLUGS.trade.slug);
     }
   }, [router.isReady, router.query]);
 

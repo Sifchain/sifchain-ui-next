@@ -2,7 +2,6 @@ type NoResultsTrProps = {
   colSpan: number;
   message: string;
 };
-
 export function NoResultsRow(props: NoResultsTrProps) {
   return (
     <tr>
@@ -67,5 +66,13 @@ export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
         );
       })}
     </ul>
+  );
+}
+
+export function PillUpdating() {
+  return (
+    <span className="bg-yellow-600 text-yellow-200 px-4 py-2 text-xs rounded">
+      Updating...
+    </span>
   );
 }

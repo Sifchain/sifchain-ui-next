@@ -21,6 +21,7 @@ import {
   PaginationShowItems,
   PaginationShowPages,
   PaginationButtons,
+  PillUpdating,
 } from "./_components";
 import { useQueryOpenPositions } from "./_mockdata";
 import {
@@ -126,11 +127,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               );
             }}
           />
-          {openPositionsQuery.isRefetching && (
-            <span className="bg-yellow-600 text-yellow-200 px-4 py-2 text-xs rounded">
-              Updating...
-            </span>
-          )}
+          {openPositionsQuery.isRefetching && <PillUpdating />}
         </div>
         <div className="overflow-x-auto">
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">

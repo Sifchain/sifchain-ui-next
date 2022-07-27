@@ -21,6 +21,7 @@ import {
   PaginationShowItems,
   PaginationShowPages,
   PaginationButtons,
+  PillUpdating,
 } from "./_components";
 import { useQueryHistory } from "./_mockdata";
 import { formatDateRelative, formatDateDistance } from "./_intl";
@@ -93,11 +94,7 @@ const HistoryTable = () => {
               );
             }}
           />
-          {historyQuery.isRefetching && (
-            <span className="bg-yellow-600 text-yellow-200 px-4 py-2 text-xs rounded">
-              Updating...
-            </span>
-          )}
+          {historyQuery.isRefetching && <PillUpdating />}
         </div>
         <div className="overflow-x-auto">
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
