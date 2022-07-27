@@ -5,7 +5,7 @@ import { type FC, useMemo, memo } from "react";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 type Props = {
-  network: "ethereum" | "sifchain" | "cosmoshub";
+  network?: "ethereum" | "sifchain" | "cosmoshub";
   symbol: string;
   size: "xs" | "sm" | "md" | "lg" | "xl";
   invertColor?: boolean | undefined;
