@@ -15,15 +15,17 @@ export function useQueryOpenPositions(queryParams: {
   orderBy: string;
   sortBy: string;
 }) {
-  let results = cache.openPositions;
+  let maybeCacheResults = cache.openPositions;
 
-  if (typeof results === "undefined") {
+  if (typeof maybeCacheResults === "undefined") {
     const data = Array.from({ length: Number(queryParams.limit) * 5 }, () =>
       createOpenPositionsRow(),
     );
-    results = data;
+    maybeCacheResults = data;
     cache.openPositions = data;
   }
+
+  const results = maybeCacheResults;
 
   const paginatedResults = results.slice(
     (Number(queryParams.page) - 1) * Number(queryParams.limit), // 0, 50, 100
@@ -65,15 +67,17 @@ export function useQueryHistory(queryParams: {
   orderBy: string;
   sortBy: string;
 }) {
-  let results = cache.history;
+  let maybeCacheResults = cache.history;
 
-  if (typeof results === "undefined") {
+  if (typeof maybeCacheResults === "undefined") {
     const data = Array.from({ length: Number(queryParams.limit) * 5 }, () =>
       createHistoryRow(),
     );
-    results = data;
+    maybeCacheResults = data;
     cache.history = data;
   }
+
+  const results = maybeCacheResults;
 
   const paginatedResults = results.slice(
     (Number(queryParams.page) - 1) * Number(queryParams.limit), // 0, 50, 100
