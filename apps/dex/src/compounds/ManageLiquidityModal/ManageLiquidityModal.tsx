@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, Modal, ModalProps, PlusIcon } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
 import { SwapFieldset } from "../Swap";
+import { UnlockLiquidityTokenFieldset } from "./UnlockLiquidityTokenFieldset";
 
 type Action = "add" | "unlock";
 
@@ -49,12 +50,10 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
 const RemoveLiquidityForm = (props: ManageLiquidityModalProps) => {
   return (
     <form>
-      <SwapFieldset
-        label="Token 1"
-        denom={props.denom}
-        onDenomChange={() => {}}
-        onAmountChange={() => {}}
-        responsive={false}
+      <UnlockLiquidityTokenFieldset
+        label="From"
+        coinLeft={{ denom: props.denom, amount: "" }}
+        coinRight={{ denom: "rowan", amount: "" }}
       />
       <section className="p-4">
         <header className="mb-2">Est. amount you will receive:</header>
