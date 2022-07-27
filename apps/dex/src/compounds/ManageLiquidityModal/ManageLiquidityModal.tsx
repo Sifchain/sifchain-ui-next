@@ -8,8 +8,8 @@ type Action = "add" | "unlock";
 export type ManageLiquidityModalProps = ModalProps & {
   action?: Action;
   denom: string;
-  onRequestDenomChange: (denom: string) => unknown;
-  onRequestActionChange: (action: Action) => unknown;
+  onChangeDenom: (denom: string) => unknown;
+  onChangeAction: (action: Action) => unknown;
 };
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
@@ -99,7 +99,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
             (index) => {
               const option = Object.values(tabOptions)[index];
               if (option !== undefined) {
-                props.onRequestActionChange(option.value);
+                props.onChangeAction(option.value);
               }
             },
             [props, tabOptions],

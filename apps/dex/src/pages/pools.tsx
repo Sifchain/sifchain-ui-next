@@ -246,7 +246,7 @@ const Pools: NextPage = () => {
           [router],
         )}
         action={getFirstQueryValue<any>(router.query["action"])}
-        onRequestDenomChange={useCallback(
+        onChangeDenom={useCallback(
           (denom) =>
             router.replace(
               {
@@ -257,7 +257,7 @@ const Pools: NextPage = () => {
             ),
           [router],
         )}
-        onRequestActionChange={useCallback(
+        onChangeAction={useCallback(
           (action) =>
             router.replace({ query: { ...router.query, action } }, undefined, {
               shallow: true,

@@ -347,7 +347,7 @@ const AssetsPage: NextPage = () => {
         denom={router.query["denom"]?.toString() ?? ""}
         isOpen={router.query["action"] === "import"}
         onClose={useCallback(() => router.replace("/balances"), [router])}
-        onRequestDenomChange={useCallback(
+        onChangeDenom={useCallback(
           (denom) =>
             router.replace(
               `balances?action=import&denom=${encodeURIComponent(denom ?? "")}`,

@@ -35,7 +35,7 @@ import TokenSelector from "../TokenSelector";
 const ImportModal = (
   props: ModalProps & {
     denom: string;
-    onRequestDenomChange: (denom: string) => unknown;
+    onChangeDenom: (denom: string) => unknown;
   },
 ) => {
   const importTokensMutation = useImportTokensMutation();
@@ -199,7 +199,7 @@ const ImportModal = (
             modalTitle="Import"
             value={props.denom}
             onChange={useCallback(
-              (value) => props.onRequestDenomChange(value?.denom ?? ""),
+              (value) => props.onChangeDenom(value?.denom ?? ""),
               [props],
             )}
           />
