@@ -10,12 +10,14 @@ import Head from "next/head";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 import immer from "immer";
+import clsx from "clsx";
 
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
-import clsx from "clsx";
+
+import { createOpenPositionsRow, createHistoryRow } from "./mockdata";
 
 function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
@@ -704,7 +706,11 @@ const Trade = (props: TradeProps) => {
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
             openPositions={{
-              hideCols: ["unsettled-interest", "next-payment", "paid-interest"],
+              rows: Array.from({ length: 10 }, () => createOpenPositionsRow()),
+              hideCols: ["unsettledInterest", "nextPayment", "paidInterest"],
+            }}
+            history={{
+              rows: Array.from({ length: 10 }, () => createHistoryRow()),
             }}
           />
         </section>
