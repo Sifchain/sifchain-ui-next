@@ -19,6 +19,13 @@ import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistr
 
 import { createOpenPositionsRow, createHistoryRow } from "./mockdata";
 
+/**
+ * ********************************************************************************************
+ *
+ * Utilities for Trade Entry sidebar design
+ *
+ * ********************************************************************************************
+ */
 function HtmlUnicode({ name }: { name: string }) {
   const unicodes: Record<string, string | string> = {
     AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
@@ -50,6 +57,13 @@ function ValueFromTo({
   );
 }
 
+/**
+ * ********************************************************************************************
+ *
+ * Trade Entry Sidebar: Collateral Input Constants and Form Errors
+ *
+ * ********************************************************************************************
+ */
 const COLLATERAL_MIN_VALUE = 0;
 const COLLATERAL_MAX_VALUE = 1000000;
 const COLLATERAL_ERRORS = {
@@ -87,6 +101,13 @@ function inputValidatorCollateral(
   return payload;
 }
 
+/**
+ * ********************************************************************************************
+ *
+ * Trade Entry Sidebar: Position Input Constants and Form Errors
+ *
+ * ********************************************************************************************
+ */
 const POSITION_MIN_VALUE = 0;
 const POSITION_MAX_VALUE = 1000000;
 const POSITION_ERRORS = {
@@ -124,6 +145,13 @@ function inputValidatorPosition(
   return payload;
 }
 
+/**
+ * ********************************************************************************************
+ *
+ * Trade Entry Sidebar: Leverage Input Constants and Form Errors
+ *
+ * ********************************************************************************************
+ */
 const LEVERAGE_MIN_VALUE = 0;
 const LEVERAGE_MAX_VALUE = 2;
 const LEVERAGE_ERRORS = {
@@ -157,7 +185,14 @@ function inputValidatorLeverage(
   return payload;
 }
 
-const TradeLoader: NextPage = () => {
+/**
+ * ********************************************************************************************
+ *
+ * TradeCompound is responsible for loading Trade page required data
+ *
+ * ********************************************************************************************
+ */
+const TradeCompound: NextPage = () => {
   const tokenRegistry = useTokenRegistryQuery();
   const enhancedPools = useEnhancedPoolsQuery();
   const rowanPrice = useRowanPriceQuery();
@@ -180,6 +215,8 @@ const TradeLoader: NextPage = () => {
     <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
   );
 };
+
+export default TradeCompound;
 
 type TradeProps = {
   tokenRegistry: ReturnType<typeof useTokenRegistryQuery>;
@@ -718,5 +755,3 @@ const Trade = (props: TradeProps) => {
     </>
   );
 };
-
-export default TradeLoader;

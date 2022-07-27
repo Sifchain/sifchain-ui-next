@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { formatDistance, formatRelative } from "date-fns";
 import clsx from "clsx";
 
-import { formatNumberAsCurrency } from "@sifchain/ui";
+import { Button, formatNumberAsCurrency } from "@sifchain/ui";
 
 import { NoResultsRow } from "./NoResultsRow";
 
@@ -52,6 +52,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   "Health",
   "Date Opened",
   "Time Open",
+  "Close Position",
 ] as const;
 
 type HideColsUnion =
@@ -189,6 +190,17 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 </td>
                 <td className="px-4 py-3">
                   {formatDateDistance(item.timeOpen)}
+                </td>
+                <td className="px-4">
+                  <Button
+                    variant="secondary"
+                    as="button"
+                    size="xs"
+                    className="font-normal rounded"
+                    onClick={() => alert(`Close ${item.id}`)}
+                  >
+                    Close
+                  </Button>
                 </td>
               </tr>
             );
