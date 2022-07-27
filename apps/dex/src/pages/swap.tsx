@@ -18,7 +18,8 @@ import {
 import { useQuery } from "react-query";
 import tw from "tailwind-styled-components";
 
-import { SwapConfirmationModal, SwapFieldset } from "~/compounds/Swap";
+import { SwapConfirmationModal } from "~/compounds/Swap";
+import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useSwapMutation } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -332,13 +333,13 @@ const SwapPage = () => {
             }}
           >
             <div className="flex flex-col gap-3">
-              <SwapFieldset
+              <TokenAmountFieldset
                 label="From"
                 denom={fromDenom}
                 balance={fromToken?.balance}
                 amount={fromAmount}
-                onDenomChange={(denom) => setDenomsPair(denom, undefined)}
-                onAmountChange={(amount) => setFromAmount(amount)}
+                onChangeDenom={(denom) => setDenomsPair(denom, undefined)}
+                onChangeAmount={(amount) => setFromAmount(amount)}
               />
               <div className="flex justify-center align-middle my-[-2em] z-10">
                 <FlipButton
@@ -359,7 +360,7 @@ const SwapPage = () => {
                   <SwapIcon width="1.25em" height="1.25em" />
                 </FlipButton>
               </div>
-              <SwapFieldset
+              <TokenAmountFieldset
                 label="To"
                 denom={toDenom}
                 balance={toToken?.balance}
@@ -370,8 +371,8 @@ const SwapPage = () => {
                         .toFloatApproximation()
                         .toFixed(10)
                 }
-                onDenomChange={(denom) => setDenomsPair(undefined, denom)}
-                onAmountChange={(amount) => setFromAmount(amount)}
+                onChangeDenom={(denom) => setDenomsPair(undefined, denom)}
+                onChangeAmount={(amount) => setFromAmount(amount)}
               />
               <div className="flex justify-between items-center">
                 <label className="pr-6">Slippage</label>

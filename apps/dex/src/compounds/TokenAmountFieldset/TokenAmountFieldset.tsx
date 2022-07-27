@@ -10,23 +10,23 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-export type SwapFieldsetProps = {
+export type TokenAmountFieldsetProps = {
   label: string;
   denom: string;
   balance?: Decimal;
   amount?: string;
-  onDenomChange: (denom: string) => void;
-  onAmountChange: (amount: string) => void;
+  onChangeDenom: (denom: string) => void;
+  onChangeAmount: (amount: string) => void;
   responsive?: boolean;
 };
 
-export const SwapFieldset: FC<SwapFieldsetProps> = ({
+const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
   responsive = true,
   ...props
 }) => {
   const handleHalfClick = useCallback(() => {
     if (props.balance) {
-      props.onAmountChange(
+      props.onChangeAmount(
         (props.balance.toFloatApproximation() / 2).toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: props.balance.fractionalDigits,
@@ -38,7 +38,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = ({
 
   const handleMaxClick = useCallback(() => {
     if (props.balance) {
-      props.onAmountChange(props?.balance?.toString());
+      props.onChangeAmount(props?.balance?.toString());
     }
   }, [props]);
 
@@ -57,7 +57,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = ({
             label="Token"
             modalTitle={props.label}
             value={props.denom}
-            onChange={(token) => token && props.onDenomChange(token.denom)}
+            onChange={(token) => token && props.onChangeDenom(token.denom)}
           />
         </div>
         <Input
@@ -69,7 +69,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = ({
           }`}
           placeholder="Swap amount"
           value={props.amount}
-          onChange={(event) => props.onAmountChange(event.target.value)}
+          onChange={(event) => props.onChangeAmount(event.target.value)}
           leadingIcon={
             <div className="flex gap-1.5">
               <Label type="button" onClick={handleHalfClick}>
@@ -85,3 +85,5 @@ export const SwapFieldset: FC<SwapFieldsetProps> = ({
     </fieldset>
   );
 };
+
+export default TokenAmountFieldset;

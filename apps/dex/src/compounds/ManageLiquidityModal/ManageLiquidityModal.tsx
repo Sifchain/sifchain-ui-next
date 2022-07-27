@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Modal, ModalProps, PlusIcon } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
-import { SwapFieldset } from "../Swap";
+import TokenAmountFieldset from "../TokenAmountFieldset";
 import { UnlockLiquidityTokenFieldset } from "./UnlockLiquidityTokenFieldset";
 
 type Action = "add" | "unlock";
@@ -14,11 +14,11 @@ export type ManageLiquidityModalProps = ModalProps & {
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
   <form>
-    <SwapFieldset
+    <TokenAmountFieldset
       label="Token 1"
       denom={props.denom}
-      onDenomChange={() => {}}
-      onAmountChange={() => {}}
+      onChangeDenom={() => {}}
+      onChangeAmount={() => {}}
       responsive={false}
     />
     <div className="flex justify-center items-center my-[-1em]">
@@ -26,11 +26,11 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
         <PlusIcon />
       </div>
     </div>
-    <SwapFieldset
+    <TokenAmountFieldset
       label="Token 2"
       denom="rowan"
-      onDenomChange={() => {}}
-      onAmountChange={() => {}}
+      onChangeDenom={() => {}}
+      onChangeAmount={() => {}}
       responsive={false}
     />
     <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
