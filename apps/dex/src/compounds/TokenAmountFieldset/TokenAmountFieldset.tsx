@@ -1,5 +1,6 @@
 import type { Decimal } from "@cosmjs/math";
 import { Input, Label } from "@sifchain/ui";
+import clsx from "clsx";
 import { FC, useCallback } from "react";
 
 import TokenSelector from "../TokenSelector";
@@ -9,19 +10,24 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-export type SwapFieldsetProps = {
+export type TokenAmountFieldsetProps = {
   label: string;
   denom: string;
   balance?: Decimal;
   amount?: string;
-  onDenomChange: (denom: string) => void;
-  onAmountChange: (amount: string) => void;
+  onChangeDenom: (denom: string) => void;
+  onChangeAmount: (amount: string) => void;
+  responsive?: boolean;
+  tokenSelectionDisabled?: boolean;
 };
 
-export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
+const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
+  responsive = true,
+  ...props
+}) => {
   const handleHalfClick = useCallback(() => {
     if (props.balance) {
-      props.onAmountChange(
+      props.onChangeAmount(
         (props.balance.toFloatApproximation() / 2).toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: props.balance.fractionalDigits,
@@ -33,7 +39,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
 
   const handleMaxClick = useCallback(() => {
     if (props.balance) {
-      props.onAmountChange(props?.balance?.toString());
+      props.onChangeAmount(props?.balance?.toString());
     }
   }, [props]);
 
@@ -42,17 +48,22 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
       <div className="mb-3">
         <legend className="contents font-bold opacity-90">{props.label}</legend>
       </div>
-      <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-end">
-        <div className="md:min-w-[160px]">
+      <div
+        className={clsx("flex flex-col gap-2", {
+          "md:flex-row md:justify-between md:items-end": responsive,
+        })}
+      >
+        <div className={clsx({ "md:min-w-[160px]": responsive })}>
           <TokenSelector
             label="Token"
             modalTitle={props.label}
             value={props.denom}
-            onChange={(token) => token && props.onDenomChange(token.denom)}
+            onChange={(token) => token && props.onChangeDenom(token.denom)}
+            readonly={props.tokenSelectionDisabled}
           />
         </div>
         <Input
-          containerClassName="md:min-w-[280px]"
+          containerClassName={clsx({ "md:min-w-[280px]": responsive })}
           inputClassName="text-right"
           type="number"
           label="Amount"
@@ -61,7 +72,7 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
           }`}
           placeholder="Swap amount"
           value={props.amount}
-          onChange={(event) => props.onAmountChange(event.target.value)}
+          onChange={(event) => props.onChangeAmount(event.target.value)}
           leadingIcon={
             <div className="flex gap-1.5">
               <Label type="button" onClick={handleHalfClick}>
@@ -77,3 +88,5 @@ export const SwapFieldset: FC<SwapFieldsetProps> = (props) => {
     </fieldset>
   );
 };
+
+export default TokenAmountFieldset;

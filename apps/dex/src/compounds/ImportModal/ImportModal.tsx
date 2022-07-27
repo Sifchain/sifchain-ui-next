@@ -29,13 +29,13 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { isNilOrWhiteSpace } from "~/utils/string";
+import { isNilOrWhitespace } from "~/utils/string";
 import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
   props: ModalProps & {
     denom: string;
-    onRequestDenomChange: (denom: string) => unknown;
+    onChangeDenom: (denom: string) => unknown;
   },
 ) => {
   const importTokensMutation = useImportTokensMutation();
@@ -54,7 +54,7 @@ const ImportModal = (
     token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,
     enabled: token?.symbol.match(/^ceth$/i)
       ? true
-      : !isNilOrWhiteSpace(evmToken?.address),
+      : !isNilOrWhitespace(evmToken?.address),
   });
 
   const importTokenWalletBalance = useBalanceQuery(
@@ -199,7 +199,7 @@ const ImportModal = (
             modalTitle="Import"
             value={props.denom}
             onChange={useCallback(
-              (value) => props.onRequestDenomChange(value?.denom ?? ""),
+              (value) => props.onChangeDenom(value?.denom ?? ""),
               [props],
             )}
           />
