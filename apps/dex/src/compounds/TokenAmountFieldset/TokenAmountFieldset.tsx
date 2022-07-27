@@ -18,6 +18,7 @@ export type TokenAmountFieldsetProps = {
   onChangeDenom: (denom: string) => void;
   onChangeAmount: (amount: string) => void;
   responsive?: boolean;
+  tokenSelectionDisabled?: boolean;
 };
 
 const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
@@ -58,6 +59,7 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
             modalTitle={props.label}
             value={props.denom}
             onChange={(token) => token && props.onChangeDenom(token.denom)}
+            readonly={props.tokenSelectionDisabled}
           />
         </div>
         <Input

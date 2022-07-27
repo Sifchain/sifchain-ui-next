@@ -32,6 +32,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
       onChangeDenom={() => {}}
       onChangeAmount={() => {}}
       responsive={false}
+      tokenSelectionDisabled
     />
     <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
       <div>
