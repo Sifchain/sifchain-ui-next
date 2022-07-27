@@ -1,10 +1,14 @@
 import { Button, ButtonGroup, Modal, ModalProps, PlusIcon } from "@sifchain/ui";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { SwapFieldset } from "../Swap";
 
+type Action = "add" | "unlock";
+
 export type ManageLiquidityModalProps = ModalProps & {
+  action?: Action;
   denom: string;
   onRequestDenomChange: (denom: string) => unknown;
+  onRequestActionChange: (action: Action) => unknown;
 };
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
@@ -42,18 +46,64 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
   </form>
 );
 
+const RemoveLiquidityForm = (props: ManageLiquidityModalProps) => {
+  return (
+    <form>
+      <SwapFieldset
+        label="Token 1"
+        denom={props.denom}
+        onDenomChange={() => {}}
+        onAmountChange={() => {}}
+        responsive={false}
+      />
+      <section className="p-4">
+        <header className="mb-2">Est. amount you will receive:</header>
+        <dl className="flex flex-col gap-2 [&_dt]:font-semibold [&_dt]:uppercase [&>div]:flex [&>div]:justify-between">
+          <div>
+            <dt>{props.denom}</dt>
+            <dd>0($0)</dd>
+          </div>
+          <div>
+            <dt>ROWAN</dt>
+            <dd>0($0)</dd>
+          </div>
+        </dl>
+      </section>
+      <Button className="w-full">Add liquidity</Button>
+    </form>
+  );
+};
+
 const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
+  const tabOptions = useMemo<Array<{ label: string; value: Action }>>(
+    () => [
+      { label: "Add liquidity", value: "add" },
+      { label: "Remove liquidity", value: "unlock" },
+    ],
+    [],
+  );
+
+  const selectedTabIndex = useMemo(
+    () => Object.values(tabOptions).findIndex((x) => x.value === props.action),
+    [props.action, tabOptions],
+  );
+
   return (
     <Modal {...props} title="Pool">
       <div className="flex justify-between items-center gap-4 pb-4">
         <ButtonGroup
           className="flex-1 bg-black"
-          options={[
-            { label: "Add liquidity", value: "add" },
-            { label: "Remove liquidity", value: "remove" },
-          ]}
-          selectedIndex={0}
-          onChange={useCallback(() => {}, [])}
+          options={tabOptions}
+          selectedIndex={selectedTabIndex}
+          onChange={useCallback(
+            (index) => {
+              const option = Object.values(tabOptions)[index];
+              if (option !== undefined) {
+                props.onRequestActionChange(option.value);
+              }
+            },
+            [props, tabOptions],
+          )}
         />
         <dl className="flex flex-col gap-1 uppercase [&>div]:flex [&>div]:justify-between [&>div]:gap-4">
           <div>
@@ -66,7 +116,15 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
           </div>
         </dl>
       </div>
-      <AddLiquidityForm {...props} />
+      {useMemo(() => {
+        switch (selectedTabIndex) {
+          default:
+          case 0:
+            return <AddLiquidityForm {...props} />;
+          case 1:
+            return <RemoveLiquidityForm {...props} />;
+        }
+      }, [props, selectedTabIndex])}
     </Modal>
   );
 };
