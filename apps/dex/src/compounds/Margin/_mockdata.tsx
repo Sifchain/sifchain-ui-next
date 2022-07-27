@@ -18,18 +18,21 @@ export function useQueryOpenPositions(queryParams: {
   let maybeCacheResults = cache.openPositions;
 
   if (typeof maybeCacheResults === "undefined") {
-    const data = Array.from({ length: Number(queryParams.limit) * 5 }, () =>
-      createOpenPositionsRow(),
-    );
+    const data = createFakeOpenPositions({
+      limit: Number(queryParams.limit),
+    });
     maybeCacheResults = data;
     cache.openPositions = data;
   }
 
   const results = maybeCacheResults;
 
+  const pages = Math.ceil(Number(results.length) / Number(queryParams.limit));
+  const page =
+    Number(queryParams.page) > pages ? pages : Number(queryParams.page);
   const paginatedResults = results.slice(
-    (Number(queryParams.page) - 1) * Number(queryParams.limit), // 0, 50, 100
-    Number(queryParams.limit) * Number(queryParams.page), // 50, 100, 150
+    (page - 1) * Number(queryParams.limit),
+    Number(queryParams.limit) * page,
   );
 
   const query = () =>
@@ -39,7 +42,8 @@ export function useQueryOpenPositions(queryParams: {
           pagination: {
             total: `${results.length}`,
             limit: queryParams.limit,
-            page: queryParams.page,
+            pages: `${pages}`,
+            page: `${page}`,
             orderBy: queryParams.orderBy,
             sortBy: queryParams.sortBy,
           },
@@ -50,6 +54,7 @@ export function useQueryOpenPositions(queryParams: {
       pagination: {
         total: string;
         limit: string;
+        pages: string;
         page: string;
         orderBy: string;
         sortBy: string;
@@ -70,18 +75,21 @@ export function useQueryHistory(queryParams: {
   let maybeCacheResults = cache.history;
 
   if (typeof maybeCacheResults === "undefined") {
-    const data = Array.from({ length: Number(queryParams.limit) * 5 }, () =>
-      createHistoryRow(),
-    );
+    const data = createFakeHistory({
+      limit: Number(queryParams.limit),
+    });
     maybeCacheResults = data;
     cache.history = data;
   }
 
   const results = maybeCacheResults;
 
+  const pages = Math.ceil(Number(results.length) / Number(queryParams.limit));
+  const page =
+    Number(queryParams.page) > pages ? pages : Number(queryParams.page);
   const paginatedResults = results.slice(
-    (Number(queryParams.page) - 1) * Number(queryParams.limit), // 0, 50, 100
-    Number(queryParams.limit) * Number(queryParams.page), // 50, 100, 150
+    (page - 1) * Number(queryParams.limit),
+    Number(queryParams.limit) * page,
   );
 
   const query = () =>
@@ -91,7 +99,8 @@ export function useQueryHistory(queryParams: {
           pagination: {
             total: `${results.length}`,
             limit: queryParams.limit,
-            page: queryParams.page,
+            pages: `${pages}`,
+            page: `${page}`,
             orderBy: queryParams.orderBy,
             sortBy: queryParams.sortBy,
           },
@@ -102,6 +111,7 @@ export function useQueryHistory(queryParams: {
       pagination: {
         total: string;
         limit: string;
+        pages: string;
         page: string;
         orderBy: string;
         sortBy: string;
@@ -111,6 +121,29 @@ export function useQueryHistory(queryParams: {
   return useQuery(["History", queryParams], query, {
     keepPreviousData: true,
   });
+}
+
+function createFakeOpenPositions({
+  limit,
+  multi = 3.725,
+}: {
+  limit: number;
+  multi?: number;
+}) {
+  return Array.from({ length: Number(limit) * multi }, () =>
+    createOpenPositionsRow(),
+  );
+}
+function createFakeHistory({
+  limit,
+  multi = 3.725,
+}: {
+  limit: number;
+  multi?: number;
+}) {
+  return Array.from({ length: Number(limit) * multi }, () =>
+    createHistoryRow(),
+  );
 }
 
 function rand(range: number) {

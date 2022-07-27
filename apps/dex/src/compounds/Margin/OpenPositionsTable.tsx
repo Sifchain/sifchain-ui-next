@@ -93,9 +93,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   if (openPositionsQuery.isSuccess) {
     const { results, pagination } = openPositionsQuery.data;
-    const pages = Math.ceil(
-      Number(pagination.total) / Number(pagination.limit),
-    );
+
     return (
       <>
         <div className="flex flex-row bg-gray-800 items-center">
@@ -106,10 +104,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           />
           <PaginationShowPages
             page={Number(pagination.page)}
-            pages={Number(pages)}
+            pages={Number(pagination.pages)}
           />
           <PaginationButtons
-            pages={Number(pages)}
+            pages={Number(pagination.pages)}
             render={(page) => {
               return (
                 <Link

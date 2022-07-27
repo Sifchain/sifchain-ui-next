@@ -23,10 +23,11 @@ export function PaginationShowItems({
   page,
   total,
 }: PaginationShowItemsProps) {
+  const initial = limit * page;
   return (
     <p className="text-sm mx-4 py-3">
       <span>Showing</span>
-      <span className="mx-1">{limit * page}</span>
+      <span className="mx-1">{initial > total ? total : limit * page}</span>
       <span>of</span>
       <span className="mx-1">{total}</span>
       <span>items</span>
