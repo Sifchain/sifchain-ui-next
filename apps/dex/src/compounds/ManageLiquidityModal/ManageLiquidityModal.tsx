@@ -88,6 +88,16 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
     [props.action, tabOptions],
   );
 
+  const form = useMemo(() => {
+    switch (selectedTabIndex) {
+      default:
+      case 0:
+        return <AddLiquidityForm {...props} />;
+      case 1:
+        return <RemoveLiquidityForm {...props} />;
+    }
+  }, [props, selectedTabIndex]);
+
   return (
     <Modal {...props} title="Pool">
       <div className="flex justify-between items-center gap-4 pb-4">
@@ -116,15 +126,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
           </div>
         </dl>
       </div>
-      {useMemo(() => {
-        switch (selectedTabIndex) {
-          default:
-          case 0:
-            return <AddLiquidityForm {...props} />;
-          case 1:
-            return <RemoveLiquidityForm {...props} />;
-        }
-      }, [props, selectedTabIndex])}
+      {form}
     </Modal>
   );
 };
