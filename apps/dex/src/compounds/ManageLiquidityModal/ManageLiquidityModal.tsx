@@ -7,6 +7,41 @@ export type ManageLiquidityModalProps = ModalProps & {
   onRequestDenomChange: (denom: string) => unknown;
 };
 
+const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
+  <form>
+    <SwapFieldset
+      label="Token 1"
+      denom={props.denom}
+      onDenomChange={() => {}}
+      onAmountChange={() => {}}
+      responsive={false}
+    />
+    <div className="flex justify-center items-center my-[-1em]">
+      <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+        <PlusIcon />
+      </div>
+    </div>
+    <SwapFieldset
+      label="Token 2"
+      denom="rowan"
+      onDenomChange={() => {}}
+      onAmountChange={() => {}}
+      responsive={false}
+    />
+    <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
+      <div>
+        <dt>Est pool share</dt>
+        <dd>0.4%</dd>
+      </div>
+      <div>
+        <dt>Price impact</dt>
+        <dd>0.01%</dd>
+      </div>
+    </dl>
+    <Button className="w-full">Add liquidity</Button>
+  </form>
+);
+
 const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
   return (
     <Modal {...props} title="Pool">
@@ -31,38 +66,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
           </div>
         </dl>
       </div>
-      <form>
-        <SwapFieldset
-          label="Token 1"
-          denom={props.denom}
-          onDenomChange={() => {}}
-          onAmountChange={() => {}}
-          responsive={false}
-        />
-        <div className="flex justify-center items-center my-[-1em]">
-          <div className="bg-black rounded-full p-3 border-2 border-gray-800">
-            <PlusIcon />
-          </div>
-        </div>
-        <SwapFieldset
-          label="Token 2"
-          denom="rowan"
-          onDenomChange={() => {}}
-          onAmountChange={() => {}}
-          responsive={false}
-        />
-        <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
-          <div>
-            <dt>Est pool share</dt>
-            <dd>0.4%</dd>
-          </div>
-          <div>
-            <dt>Price impact</dt>
-            <dd>0.01%</dd>
-          </div>
-        </dl>
-        <Button className="w-full">Add liquidity</Button>
-      </form>
+      <AddLiquidityForm {...props} />
     </Modal>
   );
 };
