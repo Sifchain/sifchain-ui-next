@@ -1,5 +1,7 @@
 import type { NextPage } from "next";
 
+import { useQuery } from "react-query";
+
 import {
   Button,
   TwinRadioGroup,
@@ -18,6 +20,8 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
 import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 import { createOpenPositionsRow, createHistoryRow } from "./mockdata";
+import type { OpenPositionsTableProps } from "./OpenPositionsTable";
+import type { HistoryTableProps } from "./HistoryTable";
 
 /**
  * ********************************************************************************************
@@ -188,7 +192,13 @@ function inputValidatorLeverage(
 /**
  * ********************************************************************************************
  *
- * TradeCompound is responsible for loading Trade page required data
+ * TradeCompound is responsible for:
+ *   - Query list of Pools
+ *   - Query list of Tokens
+ *   - Query Rowan price
+ *   - Query User Wallet details @TODO
+ *
+ * These values are required to bootstrap the Trade page
  *
  * ********************************************************************************************
  */
@@ -218,6 +228,39 @@ const TradeCompound: NextPage = () => {
 
 export default TradeCompound;
 
+/**
+ * ********************************************************************************************
+ *
+ * Trade is responsible for loading:
+ *   - Query list of Open Positions based on selected Pool
+ *   - Query list of History based on selected Pool
+ *   - Perform trade entry calculations and trade summary
+ *   - Mutate/Submit a place buy order
+ *
+ * ********************************************************************************************
+ */
+function useQueryOpenPositions(address: any) {
+  const query = () =>
+    new Promise((res) => {
+      setTimeout(() => {
+        res(Array.from({ length: 10 }, () => createOpenPositionsRow()));
+      }, 2000);
+    });
+  return useQuery(["OpenPositions", address], query, {
+    keepPreviousData: true,
+  });
+}
+function useQueryHistory(address: any) {
+  const query = () =>
+    new Promise((res) => {
+      setTimeout(() => {
+        res(Array.from({ length: 10 }, () => createHistoryRow()));
+      }, 2000);
+    });
+  return useQuery(["History", address], query, {
+    keepPreviousData: true,
+  });
+}
 type TradeProps = {
   tokenRegistry: ReturnType<typeof useTokenRegistryQuery>;
   enhancedPools: ReturnType<typeof useEnhancedPoolsQuery>;
@@ -254,6 +297,9 @@ const Trade = (props: TradeProps) => {
     }
     return pools[0];
   }, [pools, selectedPool]);
+
+  const openPositionsQuery = useQueryOpenPositions(activePool);
+  const useQueryHistoryQuery = useQueryHistory(activePool);
 
   /**
    * ********************************************************************************************
@@ -741,15 +787,21 @@ const Trade = (props: TradeProps) => {
           </div>
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
-          <PortfolioTable
-            openPositions={{
-              rows: Array.from({ length: 10 }, () => createOpenPositionsRow()),
-              hideCols: ["unsettledInterest", "nextPayment", "paidInterest"],
-            }}
-            history={{
-              rows: Array.from({ length: 10 }, () => createHistoryRow()),
-            }}
-          />
+          {openPositionsQuery.isLoading || useQueryHistoryQuery.isLoading ? (
+            <div className="bg-gray-850 p-10 text-center text-gray-100">
+              Loading...
+            </div>
+          ) : (
+            <PortfolioTable
+              openPositions={{
+                rows: openPositionsQuery.data as OpenPositionsTableProps["rows"],
+                hideCols: ["unsettledInterest", "nextPayment", "paidInterest"],
+              }}
+              history={{
+                rows: useQueryHistoryQuery.data as HistoryTableProps["rows"],
+              }}
+            />
+          )}
         </section>
       </section>
     </>
