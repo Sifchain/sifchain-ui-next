@@ -20,3 +20,11 @@ export const Default = Template.bind({});
 Default.args = {
   placeholder: "Quick search...",
 };
+
+export const WithHotKey = Template.bind({});
+
+WithHotKey.args = {
+  placeholder: "Quick search...",
+  hotkey: "/",
+  containerClassName: "max-w-[220px]",
+};

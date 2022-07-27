@@ -22,6 +22,10 @@ export const StyledInput = tw.input`
   placeholder:text-gray-300
 `;
 
+export const HotKey = tw.span`
+  absolute text-xs right-3 px-1.5 py-0.5 font-normal rounded-sm bg-gray-700 text-gray-300
+`;
+
 export type InputProps = Omit<
   JSX.IntrinsicElements["input"],
   "ref" | "children" | "className"
@@ -115,11 +119,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={id}
             ref={inputRef}
           />
-          {hotkey && (
-            <span className="text-xs right-3 p-1 ring-1 rounded ring-gray-600 text-gray-300">
-              {hotkey}
-            </span>
-          )}
+          {Boolean(hotkey) && <HotKey>{hotkey}</HotKey>}
         </StyledInputContainer>
       </div>
     );
