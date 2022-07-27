@@ -4,8 +4,7 @@ import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-import type { OpenPositionsTableProps } from "./OpenPositionsTable";
-import type { HistoryTableProps } from "./HistoryTable";
+import type { OpenPositionsTableProps } from "~/compounds/Margin/OpenPositionsTable";
 
 const DEFAULT_OPTION_ITEM = "openPositions";
 const OPTIONS_ITEMS = [
@@ -26,32 +25,30 @@ const OPTIONS_ITEMS = [
 ];
 
 type PortfolioTableProps = {
+  queryId: string;
   openPositions?: {
-    rows: OpenPositionsTableProps["rows"];
-    hideCols?: OpenPositionsTableProps["hideCols"];
-  };
-  history?: {
-    rows: HistoryTableProps["rows"];
+    hideColumns: OpenPositionsTableProps["hideColumns"];
   };
   [key: string]: unknown;
 };
 export const PortfolioTable = (props: PortfolioTableProps) => {
   const router = useRouter();
+  const qsTab = router.query["tab"] as string;
   const qsOption = router.query["option"] as string;
   const option = qsOption || DEFAULT_OPTION_ITEM;
   const currentTab = OPTIONS_ITEMS.find(({ slug }) => slug === option) as any;
   const TabContent = currentTab.content;
-  const tabProps = props[currentTab.slug] as any;
+  const slugProps = props[currentTab.slug] as any;
 
   return (
     <>
-      <ul className="flex flex-row text-sm bg-gray-800 rounded-tl rounded-tr">
+      <ul className="flex flex-row text-sm  bg-gray-800">
         {OPTIONS_ITEMS.map(({ title, slug }) => {
           const isTabActive = currentTab?.slug === slug;
           return (
             <li key={slug}>
               <Link
-                href={{ query: { ...router.query, option: slug } }}
+                href={{ query: { tab: qsTab, option: slug } }}
                 scroll={false}
               >
                 <a
@@ -75,7 +72,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
             </div>
           }
         >
-          <TabContent {...tabProps} />
+          <TabContent {...slugProps} queryId={props.queryId} />
         </Suspense>
       )}
     </>
