@@ -69,7 +69,7 @@ const RemoveLiquidityForm = (props: ManageLiquidityModalProps) => {
           </div>
         </dl>
       </section>
-      <Button className="w-full">Add liquidity</Button>
+      <Button className="w-full">Unbond liquidity</Button>
     </form>
   );
 };
