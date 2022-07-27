@@ -10,7 +10,7 @@ import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhiteSpace } from "~/utils/string";
+import { isNilOrWhitespace } from "~/utils/string";
 
 const usePoolsPageData = () => {
   const tokenRegistryQuery = useTokenRegistryQuery();
@@ -114,11 +114,11 @@ const Pools: NextPage = () => {
                 const { q: _, ...queryWithoutQ } = router.query;
                 router.replace(
                   {
-                    query: isNilOrWhiteSpace(event.target.value)
+                    query: isNilOrWhitespace(event.target.value)
                       ? queryWithoutQ
                       : {
                           ...queryWithoutQ,
-                          q: isNilOrWhiteSpace(event.target.value)
+                          q: isNilOrWhitespace(event.target.value)
                             ? undefined
                             : encodeURIComponent(event.target.value),
                         },

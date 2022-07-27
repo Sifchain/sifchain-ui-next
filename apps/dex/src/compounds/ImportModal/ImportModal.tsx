@@ -29,7 +29,7 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { isNilOrWhiteSpace } from "~/utils/string";
+import { isNilOrWhitespace } from "~/utils/string";
 import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
@@ -54,7 +54,7 @@ const ImportModal = (
     token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,
     enabled: token?.symbol.match(/^ceth$/i)
       ? true
-      : !isNilOrWhiteSpace(evmToken?.address),
+      : !isNilOrWhitespace(evmToken?.address),
   });
 
   const importTokenWalletBalance = useBalanceQuery(

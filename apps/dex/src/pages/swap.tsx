@@ -26,7 +26,7 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhiteSpace } from "~/utils/string";
+import { isNilOrWhitespace } from "~/utils/string";
 
 export function useEnhancedToken(
   denom: string,
@@ -295,7 +295,7 @@ const SwapPage = () => {
       return "Loading";
     }
 
-    if (!isNilOrWhiteSpace(validationError?.message))
+    if (!isNilOrWhitespace(validationError?.message))
       return validationError?.message;
 
     return "Swap";
