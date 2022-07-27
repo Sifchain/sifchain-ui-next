@@ -50,7 +50,10 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
           const isTabActive = currentTab?.slug === slug;
           return (
             <li key={slug}>
-              <Link href={{ query: { ...router.query, option: slug } }}>
+              <Link
+                href={{ query: { ...router.query, option: slug } }}
+                scroll={false}
+              >
                 <a
                   className={clsx(
                     "flex mx-4 py-3",
