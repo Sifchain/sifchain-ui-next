@@ -568,7 +568,7 @@ const Trade = (props: TradeProps) => {
                   onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold input-appearance-none",
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputCollateral.error,
@@ -609,7 +609,7 @@ const Trade = (props: TradeProps) => {
                   onBlur={onBlurPosition}
                   onChange={onChangePosition}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold input-appearance-none",
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputPosition.error,
@@ -662,7 +662,7 @@ const Trade = (props: TradeProps) => {
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 input-appearance-none",
+                    "text-right text-sm bg-gray-700 rounded border-0",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputLeverage.error,
