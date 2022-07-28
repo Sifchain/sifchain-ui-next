@@ -7,69 +7,280 @@ import {
   TokenEntry,
 } from "@sifchain/ui";
 import Head from "next/head";
-
+import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
+import immer from "immer";
+import clsx from "clsx";
+
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
-import { useEffect, useMemo, useState } from "react";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
-function HtmlUnicode({ name }: { name: string }) {
-  const unicodes: Record<string, string | string> = {
-    AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
-    RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
-    EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
-  };
-  const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
-  return <span dangerouslySetInnerHTML={{ __html: entity }} />;
-}
+/**
+ * ********************************************************************************************
+ *
+ * - `_trade`: Constant values, functions to abstract logic, and input validation utilities used across Trade page. They will be moved to a different place.
+ *
+ * ********************************************************************************************
+ */
+import {
+  HtmlUnicode,
+  ValueFromTo,
+  COLLATERAL_MAX_VALUE,
+  POSITION_MAX_VALUE,
+  LEVERAGE_MAX_VALUE,
+  COLLATERAL_MIN_VALUE,
+  POSITION_MIN_VALUE,
+  LEVERAGE_MIN_VALUE,
+  inputValidatorLeverage,
+  inputValidatorPosition,
+  inputValidatorCollateral,
+} from "./_trade";
 
-function ValueFromTo({
-  from,
-  to,
-  almostEqual,
-  className,
-}: {
-  from: string;
-  to: string;
-  almostEqual?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={className}>
-      {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
-      <span className="ml-1 mr-1">{from}</span>
-      <HtmlUnicode name="RightwardsArrow" />
-      <span className="ml-1">{to}</span>
-    </span>
-  );
-}
-
-const Trade: NextPage = () => {
+/**
+ * ********************************************************************************************
+ *
+ * TradeCompound is responsible for:
+ *   - Query list of Pools
+ *   - Query list of Tokens
+ *   - Query Rowan price
+     @TODO Add query to load user wallter details
+ *   - Query User Wallet details
+ *
+ * These values are required to bootstrap the Trade page
+ *
+ * ********************************************************************************************
+ */
+const TradeCompound: NextPage = () => {
+  const tokenRegistry = useTokenRegistryQuery();
   const enhancedPools = useEnhancedPoolsQuery();
-  const useRowanPrice = useRowanPriceQuery();
+  const rowanPrice = useRowanPriceQuery();
 
-  const pools: ReturnType<typeof useEnhancedPoolsQuery>["data"] = useMemo(
-    () => enhancedPools.data || [],
-    [enhancedPools.data],
+  if (
+    tokenRegistry.isSuccess &&
+    enhancedPools.isSuccess &&
+    rowanPrice.isSuccess
+  ) {
+    return (
+      <Trade
+        tokenRegistry={tokenRegistry}
+        enhancedPools={enhancedPools}
+        rowanPrice={rowanPrice}
+      />
+    );
+  }
+
+  return (
+    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
   );
-  const [selectedPool, setSelectedPool] = useState(pools[0]);
+};
 
-  useEffect(() => {
-    if (pools && pools.length > 0) {
-      setSelectedPool(pools[0]);
+export default TradeCompound;
+
+/**
+ * ********************************************************************************************
+ *
+ * Trade is responsible for loading:
+ *   - Query list of Open Positions based on selected Pool
+ *   - Query list of History based on selected Pool
+ *   - Perform trade entry calculations and trade summary
+ *   - Mutate/Submit a place buy order
+ *
+ * ********************************************************************************************
+ */
+type TradeProps = {
+  tokenRegistry: ReturnType<typeof useTokenRegistryQuery>;
+  enhancedPools: ReturnType<typeof useEnhancedPoolsQuery>;
+  rowanPrice: ReturnType<typeof useRowanPriceQuery>;
+};
+const Trade = (props: TradeProps) => {
+  const { tokenRegistry, enhancedPools, rowanPrice } = props;
+
+  /**
+   * ********************************************************************************************
+   *
+   * Find ROWAN as "Token" from Registry to use it in TokenSelector dropdown
+   * For Collateral / Position dropdown logic
+   *
+   * ********************************************************************************************
+   */
+  const tokenRowan = useMemo(() => {
+    return tokenRegistry.data.find((token) => token.displaySymbol === "rowan");
+  }, [tokenRegistry.data]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Derivate `activePool` to enable "reactivity". On first load "pools[0]" may be "undefined"
+   * "setSelectedPool" is used in "Inputs Event Handlers" section
+   *
+   * ********************************************************************************************
+   */
+  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
+  const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
+  const activePool = useMemo(() => {
+    if (selectedPool) {
+      return selectedPool;
     }
+    return pools[0];
+  }, [pools, selectedPool]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Collateral default is to display "ROWAN" and it can be changed
+   *
+   * ********************************************************************************************
+   */
+  const [selectedCollateral, setSelectedCollateral] = useState(tokenRowan);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Position is derivate from Collateral + Active Pool
+   *   - If Collateral equals to Active Pool, return ROWAN (native)
+   *   - If Collateral is not equals to Active Pool, return Pool Asset (external)
+   *
+   * ********************************************************************************************
+   */
+  const selectedPosition = useMemo(() => {
+    if (selectedCollateral?.denom === activePool?.asset.denom) {
+      return tokenRowan;
+    }
+    return activePool?.asset;
+  }, [selectedCollateral, activePool, tokenRowan]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Collateral and Position dropdown must display only tokens from the pool + native (Rowan)
+   *
+   * ********************************************************************************************
+   */
+  const poolAvailableTokens = useMemo(() => {
+    if (activePool && activePool.asset && tokenRowan) {
+      return [activePool.asset, tokenRowan];
+    }
+    return [];
+  }, [activePool, tokenRowan]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Input validation and "Place Buy Order" disabling derivate
+   *
+   * ********************************************************************************************
+   */
+  const [inputCollateral, setInputCollateral] = useState({
+    value: `${COLLATERAL_MAX_VALUE}`,
+    error: "",
+  });
+  const [inputPosition, setInputPosition] = useState({
+    value: `${POSITION_MAX_VALUE}`,
+    error: "",
+  });
+  const [radioPositionSide, setRadioPositionSide] = useState("long");
+  const [inputLeverage, setInputLeverage] = useState({
+    value: `${LEVERAGE_MAX_VALUE}`,
+    error: "",
+  });
+
+  const isDisabledPlaceBuyOrder = useMemo(() => {
+    return (
+      Boolean(inputCollateral.error) ||
+      Boolean(inputPosition.error) ||
+      Boolean(inputLeverage.error)
+    );
+  }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * Changing `displaySymbol` to match design requirements and`TokenSelector` API
+   * We don't need that in the real object / data
+   *
+   * ********************************************************************************************
+   */
+  const modifiedActivePool = useMemo(() => {
+    return immer(activePool?.asset, (draftAsset) => {
+      if (draftAsset) {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }
+    });
+  }, [activePool?.asset]);
+  const modifiedPools = useMemo(() => {
+    return pools.map((pool) =>
+      immer(pool.asset, (draftAsset) => {
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+      }),
+    );
   }, [pools]);
 
+  /**
+   * ********************************************************************************************
+   *
+   * Inputs Event Handlers
+   *
+   * ********************************************************************************************
+   */
   const onChangePoolSelector = (token: TokenEntry) => {
     const asset = token as EnhancedRegistryAsset;
     const pool = pools.find(
       (pool) => pool.externalAsset?.symbol === asset.denom,
     );
     setSelectedPool(pool);
+    setSelectedCollateral(tokenRowan);
   };
-  const onChangeCollateral = (token: TokenEntry) => console.log(token);
-  const onChangePosition = (token: TokenEntry) => console.log(token);
+  const onChangeCollateralSelector = (token: TokenEntry) => {
+    setSelectedCollateral(token as EnhancedRegistryAsset);
+  };
+  const onChangePositionSide = (position: string) => {
+    setRadioPositionSide(position);
+  };
+  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "change");
+    setInputLeverage(payload);
+  };
+  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "blur");
+    setInputLeverage(payload);
+  };
+
+  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "change");
+    setInputPosition(payload);
+  };
+  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "blur");
+    setInputPosition(payload);
+  };
+
+  const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorCollateral($input, "change");
+    setInputCollateral(payload);
+  };
+  const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorCollateral($input, "blur");
+    setInputCollateral(payload);
+  };
+
+  const onClickResetPlaceBuyOrder = (
+    event: SyntheticEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    setSelectedPool(pools[0]);
+    setSelectedCollateral(tokenRowan);
+  };
+  const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
+    console.log(event.currentTarget);
+  };
 
   return (
     <>
@@ -81,9 +292,9 @@ const Trade: NextPage = () => {
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
               modalTitle="Pool"
-              value={selectedPool?.asset}
+              value={modifiedActivePool}
               onChange={onChangePoolSelector}
-              tokens={pools.map((pool) => pool.asset)}
+              tokens={modifiedPools}
               buttonClassName="text-base h-10 font-semibold"
             />
           </li>
@@ -92,7 +303,7 @@ const Trade: NextPage = () => {
               <span className="text-gray-300">Pool TVL</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(selectedPool?.stats.poolTVL || 0)}
+                  {formatNumberAsCurrency(activePool?.stats.poolTVL || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -103,7 +314,7 @@ const Trade: NextPage = () => {
               <span className="text-gray-300">Pool Volume</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(selectedPool?.stats.volume || 0)}
+                  {formatNumberAsCurrency(activePool?.stats.volume || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -114,7 +325,7 @@ const Trade: NextPage = () => {
               <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(useRowanPrice.data || 0, 4)}
+                  {formatNumberAsCurrency(rowanPrice.data || 0, 4)}
                 </span>
                 <span className="text-red-400">(-2.8%)</span>
               </span>
@@ -123,13 +334,13 @@ const Trade: NextPage = () => {
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">
-                {selectedPool?.stats.symbol?.toUpperCase()} Price
+                {activePool?.stats.symbol?.toUpperCase()} Price
               </span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
                   <span className="mr-1">
                     {formatNumberAsCurrency(
-                      Number(selectedPool?.stats.priceToken) || 0,
+                      Number(activePool?.stats.priceToken) || 0,
                     )}
                   </span>
                 </span>
@@ -200,48 +411,89 @@ const Trade: NextPage = () => {
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
                   modalTitle="Collateral"
-                  value={selectedPool?.asset}
-                  onChange={onChangeCollateral}
+                  value={selectedCollateral}
+                  onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
-                  tokens={pools.map((pool) => pool.asset)}
+                  tokens={poolAvailableTokens}
                 />
                 <input
-                  type="text"
-                  defaultValue="100,000"
-                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
+                  type="number"
+                  placeholder="Collateral amount"
+                  step="0.01"
+                  min={COLLATERAL_MIN_VALUE}
+                  max={COLLATERAL_MAX_VALUE}
+                  value={inputCollateral.value}
+                  onBlur={onBlurCollateral}
+                  onChange={onChangeCollateral}
+                  className={clsx(
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputCollateral.error,
+                    },
+                  )}
                 />
               </div>
-              <span className="text-gray-300 text-right mt-1">
-                <HtmlUnicode name="EqualsSign" />
-                <span className="ml-1">$1,000</span>
-              </span>
+              {inputCollateral.error ? (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded my-2">
+                  {inputCollateral.error}
+                </span>
+              ) : (
+                <span className="text-gray-300 text-right mt-1">
+                  <HtmlUnicode name="EqualsSign" />
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(Number(inputCollateral.value))}
+                  </span>
+                </span>
+              )}
             </li>
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
                   modalTitle="Position"
-                  value={selectedPool?.asset}
-                  onChange={onChangePosition}
+                  value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
                   readonly
-                  tokens={pools.map((pool) => pool.asset)}
+                  tokens={poolAvailableTokens}
                 />
                 <input
-                  type="text"
-                  defaultValue="1"
-                  className="text-right text-sm bg-gray-700 rounded border-0 font-semibold"
+                  type="number"
+                  placeholder="Position amount"
+                  step="0.01"
+                  min={POSITION_MIN_VALUE}
+                  max={POSITION_MAX_VALUE}
+                  value={inputPosition.value}
+                  onBlur={onBlurPosition}
+                  onChange={onChangePosition}
+                  className={clsx(
+                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputPosition.error,
+                    },
+                  )}
                 />
               </div>
-              <span className="text-gray-300 text-right mt-1">
-                <HtmlUnicode name="EqualsSign" />
-                <span className="ml-1">$2,000</span>
-              </span>
+              {inputPosition.error ? (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded mt-2">
+                  {inputPosition.error}
+                </span>
+              ) : (
+                <span className="text-gray-300 text-right mt-1">
+                  <HtmlUnicode name="EqualsSign" />
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(Number(inputPosition.value))}
+                  </span>
+                </span>
+              )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
               <TwinRadioGroup
+                value={radioPositionSide}
                 className="col-span-3 self-end text-sm"
                 name="margin-side"
+                onChange={onChangePositionSide}
                 options={[
                   {
                     title: "Long",
@@ -259,11 +511,28 @@ const Trade: NextPage = () => {
                   <span className="text-gray-400">Up to 2x</span>
                 </span>
                 <input
-                  type="text"
-                  defaultValue="2x"
-                  className="text-sm bg-gray-700 rounded border-0"
+                  type="number"
+                  placeholder="Leverage amount"
+                  step="0.01"
+                  min={LEVERAGE_MIN_VALUE}
+                  max={LEVERAGE_MAX_VALUE}
+                  value={inputLeverage.value}
+                  onChange={onChangeLeverage}
+                  onBlur={onBlurLeverage}
+                  className={clsx(
+                    "text-right text-sm bg-gray-700 rounded border-0",
+                    {
+                      "ring ring-red-600 focus:ring focus:ring-red-600":
+                        inputLeverage.error,
+                    },
+                  )}
                 />
               </div>
+              {Boolean(inputLeverage.error) && (
+                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded">
+                  {inputLeverage.error}
+                </span>
+              )}
             </li>
           </ul>
           <div className="p-4">
@@ -329,6 +598,7 @@ const Trade: NextPage = () => {
               as="button"
               size="xs"
               className="text-gray-300 font-normal self-center"
+              onClick={onClickResetPlaceBuyOrder}
             >
               Reset
             </Button>
@@ -337,6 +607,8 @@ const Trade: NextPage = () => {
               as="button"
               size="md"
               className="col-span-3 rounded"
+              disabled={isDisabledPlaceBuyOrder}
+              onClick={onClickPlaceBuyOrder}
             >
               Place buy order
             </Button>
@@ -344,8 +616,9 @@ const Trade: NextPage = () => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
+            queryId="SomePoolIdOrAddress"
             openPositions={{
-              hideCols: ["unsettled-interest", "next-payment", "paid-interest"],
+              hideColumns: ["unsettledInterest", "nextPayment", "paidInterest"],
             }}
           />
         </section>
@@ -353,5 +626,3 @@ const Trade: NextPage = () => {
     </>
   );
 };
-
-export default Trade;

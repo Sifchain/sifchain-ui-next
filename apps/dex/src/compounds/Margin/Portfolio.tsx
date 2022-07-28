@@ -11,7 +11,7 @@ const Portfolio: NextPage = () => {
         <title>Sichain Dex - Margin - Portfolio</title>
       </Head>
       <section className="mt-4 border border-gold-800 rounded overflow-hidden">
-        <PortfolioTable />
+        <PortfolioTable queryId="SomeUserIdOrAddress" />
       </section>
     </>
   );

@@ -9,7 +9,10 @@ export type TabsWithSuspenseProps = {
   items: {
     title: string;
     slug: string;
-    content: any; // TODO: I could not find a better type here (e.g., JSX.Elements did not worked)
+    /**
+     * @TODO I could not find a better type here (e.g., JSX.Elements, ReactNode did not worked)
+     */
+    content: any;
   }[];
   renderItem: (title: string, slug: string) => ReactNode;
   fallbackSuspense?: ReactNode;

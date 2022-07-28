@@ -1,24 +1,28 @@
 import type { NextPage } from "next";
 
-import Head from "next/head";
+import { pathOr } from "ramda";
 import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 import Link from "next/link";
 
-const DEFAULT_TAB_ITEM = "trade";
-const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
+const TABS = {
+  trade: { title: "Trade", slug: "trade" },
+  portfolio: { title: "Portfolio", slug: "portfolio" },
+} as const;
+const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   {
-    title: "Trade",
-    slug: "trade",
+    title: TABS.trade.title,
+    slug: TABS.trade.slug,
     content: dynamic(() => import("~/compounds/Margin/Trade"), {
       suspense: true,
     }),
   },
   {
-    title: "Portfolio",
-    slug: "portfolio",
+    title: TABS.portfolio.title,
+    slug: TABS.portfolio.slug,
     content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
       suspense: true,
     }),
@@ -46,11 +50,14 @@ const Margin: NextPage = () => {
       return;
     }
 
-    if (router.query["tab"]) {
-      setActiveTab(router.query["tab"] as string);
-    } else {
-      setActiveTab(DEFAULT_TAB_ITEM);
-    }
+    /**
+     * @TODO Silently fallback to "Trade" in case the querystring doesn't match any slugs
+     *   - In this scenario, the URL will be stale but internal state is corrcect
+     *   - As an improvement, we could use `router.push` to update the URL as well
+     */
+    const tabOption = pathOr(TABS.trade.slug, ["tab"], router.query);
+    const matchContent = pathOr(TABS.trade, [tabOption], TABS);
+    setActiveTab(matchContent.slug);
   }, [router.isReady, router.query]);
 
   return (
@@ -66,7 +73,7 @@ const Margin: NextPage = () => {
         {router.isReady && activeTab !== null ? (
           <TabsWithSuspense
             activeTab={activeTab}
-            items={TAB_ITEMS}
+            items={TABS_CONTENT}
             renderItem={(title, slug) => (
               <Link href={{ query: { tab: slug } }}>
                 <a className="flex py-2">{title}</a>
