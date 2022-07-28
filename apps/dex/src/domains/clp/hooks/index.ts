@@ -1,5 +1,6 @@
 export * from "./liquidityProvider";
 export * from "./useEnhancedPools";
+export * from "./useEnhancedToken";
 export * from "./usePools";
 export * from "./usePoolStats";
 export * from "./useRowanPrice";

@@ -15,83 +15,17 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useQuery } from "react-query";
 import tw from "tailwind-styled-components";
 
 import { SwapConfirmationModal } from "~/compounds/Swap";
 import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useSwapMutation } from "~/domains/clp";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { useEnhancedTokenQuery, useSwapMutation } from "~/domains/clp";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhitespace } from "~/utils/string";
-
-export function useEnhancedToken(
-  denom: string,
-  options?: { refetchInterval: number; enabled: boolean },
-) {
-  const registryQuery = useTokenRegistryQuery();
-  const allBalancesQuery = useAllBalancesQuery();
-
-  const registryEntry = registryQuery.indexedByDenom[denom];
-  const balanceEntry = useMemo(
-    () =>
-      allBalancesQuery.data?.find(
-        (entry) =>
-          entry.denom === denom || entry.denom === registryEntry?.denom,
-      ),
-    [allBalancesQuery.data, registryEntry?.denom, denom],
-  );
-
-  const poolQuery = useSifnodeQuery(
-    "clp.getPool",
-    [
-      {
-        symbol: denom,
-      },
-    ],
-    options,
-  );
-
-  const derivedQuery = useQuery(
-    ["enhanced-token", denom],
-    () => {
-      if (!registryEntry) {
-        console.log(`Token registry entry not found for ${denom}`);
-        return;
-      }
-
-      return {
-        ...registryEntry,
-        balance: balanceEntry?.amount,
-        pool: poolQuery.data?.pool,
-      };
-    },
-    {
-      enabled:
-        Boolean(denom) &&
-        registryQuery.isSuccess &&
-        (denom === "rowan" || poolQuery.isSuccess),
-    },
-  );
-
-  return {
-    ...derivedQuery,
-    isLoading:
-      derivedQuery.isLoading ||
-      registryQuery.isLoading ||
-      allBalancesQuery.isLoading ||
-      poolQuery.isLoading,
-    error:
-      derivedQuery.error ??
-      registryQuery.error ??
-      allBalancesQuery.error ??
-      poolQuery.error,
-  };
-}
 
 const FlipButton = tw.button<{
   $flipped: boolean;
@@ -169,8 +103,8 @@ const SwapPage = () => {
     enabled: !isConfirmationModalOpen,
   };
 
-  const { data: fromToken } = useEnhancedToken(fromDenom, commonOptions);
-  const { data: toToken } = useEnhancedToken(toDenom, commonOptions);
+  const { data: fromToken } = useEnhancedTokenQuery(fromDenom, commonOptions);
+  const { data: toToken } = useEnhancedTokenQuery(toDenom, commonOptions);
 
   const pmtpParamsQuery = useSifnodeQuery(
     "clp.getPmtpParams",
