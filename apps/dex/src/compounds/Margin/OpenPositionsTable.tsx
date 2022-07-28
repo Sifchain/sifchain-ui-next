@@ -1,5 +1,4 @@
 import { pathOr } from "ramda";
-import { useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
@@ -91,7 +90,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   };
   const openPositionsQuery = useQueryOpenPositions(queryParams);
   const { hideColumns } = props;
-  const headers = useMemo(() => OPEN_POSITIONS_HEADER_ITEMS, []);
+  const headers = OPEN_POSITIONS_HEADER_ITEMS;
 
   if (openPositionsQuery.isSuccess) {
     const { results, pagination } = openPositionsQuery.data;

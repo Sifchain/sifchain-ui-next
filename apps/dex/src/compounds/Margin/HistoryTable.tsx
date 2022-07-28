@@ -1,5 +1,4 @@
 import { pathOr } from "ramda";
-import { useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
@@ -58,7 +57,7 @@ const HistoryTable = () => {
     sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
   };
   const historyQuery = useQueryHistory(queryParams);
-  const headers = useMemo(() => HISTORY_HEADER_ITEMS, []);
+  const headers = HISTORY_HEADER_ITEMS;
 
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
