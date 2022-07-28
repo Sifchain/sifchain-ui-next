@@ -1,5 +1,5 @@
 import type { IAsset, NetworkKind } from "@sifchain/common";
-import type { StringIndexed } from "@sifchain/ui";
+import { Maybe, StringIndexed } from "@sifchain/ui";
 
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
@@ -34,27 +34,24 @@ export default function useTokenRegistryQuery(
       data.registry.entries
         // base token have no unitDenom
         .filter((x) => x.unitDenom === "")
-        .reduce((acc, entry) => {
-          const asset = (indexedBySymbol[entry.denom.toLowerCase()] ||
+        .reduce<EnhancedRegistryAsset[]>((acc, entry) => {
+          const maybeAsset = (indexedBySymbol[entry.denom.toLowerCase()] ||
             indexedBySymbol[entry.baseDenom.toLowerCase()] ||
             indexedBySymbol[entry.denom.slice(1).toLowerCase()]) as
             | EnhancedRegistryAsset
             | undefined;
 
-          return asset === undefined
-            ? acc
-            : [
-                ...acc,
-                {
-                  ...asset,
-                  denom: entry.denom,
-                  chainId:
-                    entry.denom === env?.nativeAsset.symbol.toLowerCase()
-                      ? env.sifChainId
-                      : entry.ibcCounterpartyChainId,
-                },
-              ];
-        }, [] as EnhancedRegistryAsset[])
+          return Maybe.of(maybeAsset).mapOr(acc, (asset) =>
+            acc.concat({
+              ...asset,
+              denom: entry.denom,
+              chainId:
+                entry.denom === env?.nativeAsset.symbol.toLowerCase()
+                  ? env.sifChainId
+                  : entry.ibcCounterpartyChainId,
+            }),
+          );
+        }, [])
     );
   }, [data?.registry?.entries, env, indexedBySymbol]);
 

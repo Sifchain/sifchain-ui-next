@@ -33,7 +33,7 @@ export class Maybe<T> {
     return new Maybe<U>(undefined);
   }
 
-  public mapOr<U>(defaultValue: U, fn: (value: T) => U): U {
+  public mapOr<U>(defaultValue: U, fn: (value: NonNullable<T>) => U): U {
     if (this.isSome) {
       return fn(this.value as NonNullable<T>);
     }
