@@ -300,7 +300,7 @@ const Trade = (props: TradeProps) => {
               value={modifiedActivePool}
               onChange={onChangePoolSelector}
               tokens={modifiedPools}
-              buttonClassName="text-base h-10 font-semibold"
+              buttonClassName="overflow-hidden text-base h-10 font-semibold"
             />
           </li>
           <li className="py-4">
@@ -425,7 +425,7 @@ const Trade = (props: TradeProps) => {
                       : undefined
                   }
                   onChange={onChangeCollateralSelector}
-                  buttonClassName="h-9 !text-sm"
+                  buttonClassName="overflow-hidden h-9 !text-sm"
                   tokens={poolAvailableTokens}
                 />
                 <input
@@ -465,9 +465,9 @@ const Trade = (props: TradeProps) => {
                 <BaseTokenSelector
                   modalTitle="Position"
                   value={selectedPosition}
-                  buttonClassName="h-9 !text-sm"
-                  readonly
+                  buttonClassName="overflow-hidden h-9 !text-sm"
                   tokens={poolAvailableTokens}
+                  readonly
                 />
                 <input
                   type="number"
