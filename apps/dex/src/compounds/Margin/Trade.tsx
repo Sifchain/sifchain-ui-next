@@ -59,18 +59,18 @@ import { toTokenEntry } from "../TokenSelector";
  */
 const TradeCompound: NextPage = () => {
   const enhancedPools = useEnhancedPoolsQuery();
-  const allBalances = useAllBalancesQuery();
+  // const allBalances = useAllBalancesQuery();
   const balancesStats = useBalancesStats();
 
   if (
     enhancedPools.isSuccess &&
-    allBalances.isSuccess &&
+    // allBalances.isSuccess &&
     balancesStats.isSuccess
   ) {
     return (
       <Trade
         enhancedPools={enhancedPools}
-        allBalances={allBalances}
+        // allBalances={allBalances}
         accountBalance={
           balancesStats.data?.availableInUsdc.toFloatApproximation() ?? 0
         }
@@ -98,7 +98,7 @@ export default TradeCompound;
  */
 type TradeProps = {
   enhancedPools: ReturnType<typeof useEnhancedPoolsQuery>;
-  allBalances: ReturnType<typeof useAllBalancesQuery>;
+  // allBalances: ReturnType<typeof useAllBalancesQuery>;
   accountBalance: number;
 };
 
