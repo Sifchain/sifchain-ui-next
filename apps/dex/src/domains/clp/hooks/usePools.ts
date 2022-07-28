@@ -17,7 +17,7 @@ export function usePoolsQuery() {
 
       return {
         ...poolsRes,
-        pools: poolsRes?.pools.map((x) => ({
+        pools: poolsRes.pools.map((x) => ({
           ...x,
           externalAssetBalance: Decimal.fromAtomics(
             x.externalAssetBalance,
