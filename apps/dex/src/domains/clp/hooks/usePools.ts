@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { invariant } from "@sifchain/ui";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -12,22 +13,22 @@ export function usePoolsQuery() {
   return useQuery(
     "pools",
     () => {
-      return poolsRes === undefined
-        ? undefined
-        : {
-            ...poolsRes,
-            pools: poolsRes?.pools.map((x) => ({
-              ...x,
-              externalAssetBalance: Decimal.fromAtomics(
-                x.externalAssetBalance,
-                indexedByDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0,
-              ),
-              nativeAssetBalance: Decimal.fromAtomics(
-                x.nativeAssetBalance,
-                env?.nativeAsset.decimals ?? 0,
-              ),
-            })),
-          };
+      invariant(poolsRes !== undefined, "poolsRes is undefined");
+
+      return {
+        ...poolsRes,
+        pools: poolsRes.pools.map((x) => ({
+          ...x,
+          externalAssetBalance: Decimal.fromAtomics(
+            x.externalAssetBalance,
+            indexedByDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0,
+          ),
+          nativeAssetBalance: Decimal.fromAtomics(
+            x.nativeAssetBalance,
+            env?.nativeAsset.decimals ?? 0,
+          ),
+        })),
+      };
     },
     {
       enabled:

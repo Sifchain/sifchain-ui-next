@@ -1,4 +1,5 @@
-import { propOr, sum } from "rambda";
+import { Maybe } from "@sifchain/ui";
+import { compose, map, propOr, sum } from "rambda";
 import { useMemo } from "react";
 import { usePoolStatsQuery } from "./usePoolStats";
 
@@ -6,7 +7,11 @@ export function useTVLQuery() {
   const { data: poolStats, ...poolStatsQuery } = usePoolStatsQuery();
 
   const tvl = useMemo(
-    () => sum((poolStats?.pools ?? []).map(propOr(0, "poolTVL"))),
+    () =>
+      Maybe.of(poolStats?.pools).mapOr(
+        0,
+        compose(sum, map(propOr(0, "poolTVL"))),
+      ),
     [poolStats],
   );
 
