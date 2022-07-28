@@ -20,168 +20,23 @@ import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistr
 /**
  * ********************************************************************************************
  *
- * Utilities for Trade Entry sidebar design
+ * - `_trade`: Constant values, functions to abstract logic, and input validation utilities used across Trade page. They will be moved to a different place.
  *
  * ********************************************************************************************
  */
-function HtmlUnicode({ name }: { name: string }) {
-  const unicodes: Record<string, string | string> = {
-    AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
-    RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
-    EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
-  };
-  const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
-  return <span dangerouslySetInnerHTML={{ __html: entity }} />;
-}
-
-function ValueFromTo({
-  from,
-  to,
-  almostEqual,
-  className,
-}: {
-  from: string;
-  to: string;
-  almostEqual?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={className}>
-      {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
-      <span className="ml-1 mr-1">{from}</span>
-      <HtmlUnicode name="RightwardsArrow" />
-      <span className="ml-1">{to}</span>
-    </span>
-  );
-}
-
-/**
- * ********************************************************************************************
- *
- * Trade Entry Sidebar: Collateral Input Constants and Form Errors
- *
- * ********************************************************************************************
- */
-const COLLATERAL_MIN_VALUE = 0;
-const COLLATERAL_MAX_VALUE = 1000000;
-const COLLATERAL_ERRORS = {
-  INVALID_NUMBER: `Collateral amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
-  INVALID_RANGE: `Collateral amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
-};
-function inputValidatorCollateral(
-  $input: HTMLInputElement,
-  event: "blur" | "change",
-) {
-  const value = Number($input.value);
-  const payload = {
-    value: $input.value,
-    error: "",
-  };
-  if ($input.value !== "" && Number.isNaN(value)) {
-    payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
-  }
-
-  if (
-    $input.value !== "" &&
-    (value > COLLATERAL_MAX_VALUE || value < COLLATERAL_MIN_VALUE)
-  ) {
-    payload.error = COLLATERAL_ERRORS.INVALID_RANGE;
-  }
-
-  if (event === "blur" && $input.value === "") {
-    payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
-  }
-
-  return payload;
-}
-
-/**
- * ********************************************************************************************
- *
- * Trade Entry Sidebar: Position Input Constants and Form Errors
- *
- * ********************************************************************************************
- */
-const POSITION_MIN_VALUE = 0;
-const POSITION_MAX_VALUE = 1000000;
-const POSITION_ERRORS = {
-  INVALID_NUMBER: `Position amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
-  INVALID_RANGE: `Position amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
-};
-function inputValidatorPosition(
-  $input: HTMLInputElement,
-  event: "blur" | "change",
-) {
-  const value = Number($input.value);
-  const payload = {
-    value: $input.value,
-    error: "",
-  };
-  if ($input.value !== "" && Number.isNaN(value)) {
-    payload.error = POSITION_ERRORS.INVALID_NUMBER;
-  }
-
-  if (
-    $input.value !== "" &&
-    (value > POSITION_MAX_VALUE || value < POSITION_MIN_VALUE)
-  ) {
-    payload.error = POSITION_ERRORS.INVALID_RANGE;
-  }
-
-  if (event === "blur" && $input.value === "") {
-    payload.error = POSITION_ERRORS.INVALID_NUMBER;
-  }
-
-  return payload;
-}
-
-/**
- * ********************************************************************************************
- *
- * Trade Entry Sidebar: Leverage Input Constants and Form Errors
- *
- * ********************************************************************************************
- */
-const LEVERAGE_MIN_VALUE = 0;
-const LEVERAGE_MAX_VALUE = 2;
-const LEVERAGE_ERRORS = {
-  INVALID_NUMBER: "Leverage amount must be between 0 and 2",
-  INVALID_RANGE: "Leverage amount must be between 0 and 2",
-};
-function inputValidatorLeverage(
-  $input: HTMLInputElement,
-  event: "blur" | "change",
-) {
-  const value = Number($input.value);
-  const payload = {
-    value: $input.value,
-    error: "",
-  };
-  if ($input.value !== "" && Number.isNaN(value)) {
-    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
-  }
-
-  if (
-    $input.value !== "" &&
-    (value > LEVERAGE_MAX_VALUE || value < LEVERAGE_MIN_VALUE)
-  ) {
-    payload.error = LEVERAGE_ERRORS.INVALID_RANGE;
-  }
-
-  if (event === "blur" && $input.value === "") {
-    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
-  }
-
-  return payload;
-}
+import {
+  HtmlUnicode,
+  ValueFromTo,
+  COLLATERAL_MAX_VALUE,
+  POSITION_MAX_VALUE,
+  LEVERAGE_MAX_VALUE,
+  COLLATERAL_MIN_VALUE,
+  POSITION_MIN_VALUE,
+  LEVERAGE_MIN_VALUE,
+  inputValidatorLeverage,
+  inputValidatorPosition,
+  inputValidatorCollateral,
+} from "./_trade";
 
 /**
  * ********************************************************************************************
@@ -262,8 +117,8 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
   const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
+  const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
   const activePool = useMemo(() => {
     if (selectedPool) {
       return selectedPool;
@@ -383,16 +238,17 @@ const Trade = (props: TradeProps) => {
   const onChangePositionSide = (position: string) => {
     setRadioPositionSide(position);
   };
-  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur");
-    setInputLeverage(payload);
-  };
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorLeverage($input, "change");
     setInputLeverage(payload);
   };
+  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "blur");
+    setInputLeverage(payload);
+  };
+
   const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "change");
@@ -403,6 +259,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorPosition($input, "blur");
     setInputPosition(payload);
   };
+
   const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
@@ -413,6 +270,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorCollateral($input, "blur");
     setInputCollateral(payload);
   };
+
   const onClickResetPlaceBuyOrder = (
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {

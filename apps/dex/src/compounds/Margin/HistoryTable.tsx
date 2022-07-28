@@ -9,10 +9,10 @@ import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 /**
  * ********************************************************************************************
  *
- * - "components" should be moved to src/components or ui
- * - "mockdata" should be replaced by Data Services endpoint
- * - "intl" could be moved to the domain folder or packages/
- * - "constants" could be moved to the domain folder or packages/
+ * `_components`: "Dumb Components" used across Margin. They will be moved to a different place.
+ * `_mockdata`: To mock React-Query and fake the Data Services reponses
+ * `_intl`: Functions to format data used across Margin. They will be moved to a different place.
+ * `_tables`: Constant values, functions to abstract logic, and pagination utilities used across Open Positions and History tables. They will be moved to a different place.
  *
  * ********************************************************************************************
  */
@@ -31,7 +31,7 @@ import {
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
-} from "./_constants";
+} from "./_tables";
 
 /**
  * ********************************************************************************************

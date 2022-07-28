@@ -1,24 +1,37 @@
+/**
+ * ********************************************************************************************
+ *
+ * Utilities for Open Positions and History Tables Compounds
+ *
+ * ********************************************************************************************
+ */
+
+/**
+ * Transform a column name "Unrealized P&L" into a slug/key "unrealizedPL"
+ */
+export function fromColNameToItemKey(name: string) {
+  const slug = name.replace(/\W/g, "");
+  return slug.charAt(0).toLowerCase() + slug.slice(1);
+}
+
+/**
+ * Pagination constants and helpers
+ */
+export const SORT_BY = {
+  ASC: "asc",
+  DESC: "desc",
+};
 export const QS_DEFAULTS = {
   page: "1",
   limit: "30",
   orderBy: "",
-  sortBy: "desc",
-};
-
-export const SORT_BY = {
-  ASC: "asc",
-  DESC: "desc",
+  sortBy: SORT_BY.DESC,
 };
 export const MARGIN_POSITION: Record<string, string> = {
   "0": "Unspecified",
   "1": "Long",
   "2": "Short",
 };
-
-export function fromColNameToItemKey(name: string) {
-  const slug = name.replace(/\W/g, "");
-  return slug.charAt(0).toLowerCase() + slug.slice(1);
-}
 
 type FindNextOrderAndSortByProps = {
   itemActive: boolean;

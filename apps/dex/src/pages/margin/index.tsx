@@ -8,21 +8,21 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 
-const SLUGS = {
+const TABS = {
   trade: { title: "Trade", slug: "trade" },
   portfolio: { title: "Portfolio", slug: "portfolio" },
 } as const;
-const TAB_ITEMS: TabsWithSuspenseProps["items"] = [
+const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   {
-    title: SLUGS.trade.title,
-    slug: SLUGS.trade.slug,
+    title: TABS.trade.title,
+    slug: TABS.trade.slug,
     content: dynamic(() => import("~/compounds/Margin/Trade"), {
       suspense: true,
     }),
   },
   {
-    title: SLUGS.portfolio.title,
-    slug: SLUGS.portfolio.slug,
+    title: TABS.portfolio.title,
+    slug: TABS.portfolio.slug,
     content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
       suspense: true,
     }),
@@ -55,12 +55,9 @@ const Margin: NextPage = () => {
      *   - In this scenario, the URL will be stale but internal state is corrcect
      *   - As an improvement, we could use `router.push` to update the URL as well
      */
-    const tabOption = pathOr(SLUGS.portfolio.slug, ["tab"], router.query);
-    if (SLUGS[tabOption]) {
-      setActiveTab(tabOption);
-    } else {
-      setActiveTab(SLUGS.trade.slug);
-    }
+    const tabOption = pathOr(TABS.trade.slug, ["tab"], router.query);
+    const matchContent = pathOr(TABS.trade, [tabOption], TABS);
+    setActiveTab(matchContent.slug);
   }, [router.isReady, router.query]);
 
   return (
@@ -76,7 +73,7 @@ const Margin: NextPage = () => {
         {router.isReady && activeTab !== null ? (
           <TabsWithSuspense
             activeTab={activeTab}
-            items={TAB_ITEMS}
+            items={TABS_CONTENT}
             renderItem={(title, slug) => (
               <Link href={{ query: { tab: slug } }}>
                 <a className="flex py-2">{title}</a>
