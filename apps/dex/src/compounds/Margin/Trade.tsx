@@ -150,7 +150,7 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom === activePool?.asset.denom) {
+    if (selectedCollateralDenom.toLowerCase() === activePool?.asset.denom) {
       return enhancedRowan.data;
     }
     return activePool?.asset;
