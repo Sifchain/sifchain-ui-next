@@ -40,9 +40,8 @@ import {
   useAllBalancesQuery,
   useBalancesStats,
 } from "~/domains/bank/hooks/balances";
+
 import { toTokenEntry } from "../TokenSelector";
-import { sum } from "rambda";
-import { Decimal } from "@cosmjs/math";
 
 /**
  * ********************************************************************************************
