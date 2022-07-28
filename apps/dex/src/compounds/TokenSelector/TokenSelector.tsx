@@ -12,7 +12,7 @@ export type TokenSelectorProps = Omit<
   "tokens" | "value" | "onChange"
 > & { value?: string; onChange: (token?: EnhancedRegistryAsset) => unknown };
 
-const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
+export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   id: x.denom,
   name: x.name,
   symbol: x.symbol,
