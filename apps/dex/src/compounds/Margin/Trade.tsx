@@ -425,7 +425,7 @@ const Trade = (props: TradeProps) => {
                       : undefined
                   }
                   onChange={onChangeCollateralSelector}
-                  buttonClassName="overflow-hidden h-9 !text-sm"
+                  buttonClassName="h-9 !text-sm"
                   tokens={poolAvailableTokens}
                 />
                 <input
@@ -465,7 +465,7 @@ const Trade = (props: TradeProps) => {
                 <BaseTokenSelector
                   modalTitle="Position"
                   value={selectedPosition}
-                  buttonClassName="overflow-hidden h-9 !text-sm"
+                  buttonClassName="h-9 !text-sm"
                   tokens={poolAvailableTokens}
                   readonly
                 />
