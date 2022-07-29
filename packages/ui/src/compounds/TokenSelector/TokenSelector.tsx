@@ -233,3 +233,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     </>
   );
 };
+
+TokenSelector.defaultProps = {
+  fullWidth: true,
+};
