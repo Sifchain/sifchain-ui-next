@@ -56,7 +56,7 @@ export type TokenSelectorProps = {
   size?: "xs";
   buttonClassName?: string;
   readonly?: boolean;
-  fullWidth?: boolean;
+  inline?: boolean;
 };
 
 type SortKeys = keyof TokenEntry;
@@ -105,7 +105,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       <div
         className={clsx(
           "relative gap-1",
-          props.fullWidth ? "grid" : "inline-grid",
+          props.inline ? "inline-grid" : "grid",
           {
             "text-xs": props.size === "xs",
           },
@@ -232,8 +232,4 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       </Modal>
     </>
   );
-};
-
-TokenSelector.defaultProps = {
-  fullWidth: true,
 };

@@ -18,7 +18,7 @@ Default.args = {
   tokens: [...tokens],
 };
 
-export const FullWidth: ComponentStory<typeof TokenSelector> = (args) => {
+export const Inline: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
       <ol className="list-decimal pl-4 mb-4">
@@ -28,12 +28,12 @@ export const FullWidth: ComponentStory<typeof TokenSelector> = (args) => {
         <li>Label is optional</li>
       </ol>
 
-      <TokenSelector {...args} fullWidth />
+      <TokenSelector {...args} inline />
     </div>
   );
 };
 
-FullWidth.args = {
+Inline.args = {
   modalTitle: "From",
   tokens: [...tokens],
 };
