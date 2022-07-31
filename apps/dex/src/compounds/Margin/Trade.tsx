@@ -36,10 +36,7 @@ import {
   inputValidatorPosition,
   inputValidatorCollateral,
 } from "./_trade";
-import {
-  useAllBalancesQuery,
-  useBalancesStats,
-} from "~/domains/bank/hooks/balances";
+import { useBalancesStats } from "~/domains/bank/hooks/balances";
 
 import { toTokenEntry } from "../TokenSelector";
 
