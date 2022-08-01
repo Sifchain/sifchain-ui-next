@@ -15,7 +15,7 @@ export const calculatePoolUnits = (
   const pu = new BigNumber(poolUnits);
 
   if (pea.isZero() || pna.isZero() || pu.isZero()) {
-    return nativeAmount;
+    return new BigNumber(nativeAmount);
   }
 
   if (ea.isZero() && na.isZero()) {
@@ -31,7 +31,9 @@ export const calculatePoolUnits = (
 
   // ((P (a R + A r))
   const numerator = pu.times(
-    ea.times(pooledNativeAmount).plus(pooledExternalAmount).times(nativeAmount),
+    ea
+      .times(pooledNativeAmount)
+      .plus(new BigNumber(pooledExternalAmount).times(nativeAmount)),
   );
   const denominator = new BigNumber(2)
     .times(pooledExternalAmount)
