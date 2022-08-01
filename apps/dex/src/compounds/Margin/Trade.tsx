@@ -1,11 +1,6 @@
 import type { NextPage } from "next";
 
-import {
-  Button,
-  TwinRadioGroup,
-  formatNumberAsCurrency,
-  TokenEntry,
-} from "@sifchain/ui";
+import { Button, formatNumberAsCurrency, TokenEntry } from "@sifchain/ui";
 import Head from "next/head";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
@@ -182,7 +177,6 @@ const Trade = (props: TradeProps) => {
     value: `${POSITION_MAX_VALUE}`,
     error: "",
   });
-  const [radioPositionSide, setRadioPositionSide] = useState("long");
   const [inputLeverage, setInputLeverage] = useState({
     value: `${LEVERAGE_MAX_VALUE}`,
     error: "",
@@ -236,9 +230,6 @@ const Trade = (props: TradeProps) => {
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
     setSelectedCollateralDenom(token.symbol);
-  };
-  const onChangePositionSide = (position: string) => {
-    setRadioPositionSide(position);
   };
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
@@ -498,22 +489,9 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
-              <TwinRadioGroup
-                value={radioPositionSide}
-                className="col-span-3 self-end text-sm"
-                name="margin-side"
-                onChange={onChangePositionSide}
-                options={[
-                  {
-                    title: "Long",
-                    value: "long",
-                  },
-                  {
-                    title: "Short",
-                    value: "short",
-                  },
-                ]}
-              />
+              <p className="col-span-3 self-end text-sm font-semibold p-2 text-center cursor-pointer bg-gray-500 text-gray-200 z-10 rounded hover:ring-1 hover:ring-indigo-300">
+                Long
+              </p>
               <div className="col-span-3 flex flex-col">
                 <span className="text-xs text-gray-300 mb-1">
                   <span className="mr-1">Leverage</span>
