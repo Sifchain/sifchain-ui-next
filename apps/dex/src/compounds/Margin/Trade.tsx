@@ -20,7 +20,6 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
  */
 import {
   HtmlUnicode,
-  ValueFromTo,
   COLLATERAL_MAX_VALUE,
   POSITION_MAX_VALUE,
   LEVERAGE_MAX_VALUE,
@@ -355,56 +354,6 @@ const Trade = (props: TradeProps) => {
       </section>
       <section className="mt-4 text-xs grid grid-cols-7 gap-x-5">
         <aside className="bg-gray-800 border border-gold-800 rounded col-span-2 flex flex-col">
-          <ul className="border-b border-gold-800 flex flex-col gap-4 p-4">
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Account Balance
-                </span>
-                <ValueFromTo
-                  from={props.accountBalance.toLocaleString("en-us", {
-                    style: "currency",
-                    currency: "USD",
-                  })}
-                  to="$49,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Collateral Balance
-                </span>
-                <ValueFromTo
-                  from="$5,000"
-                  to="$4,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                <ValueFromTo from="40,000 ROWAN" to="40,000 ROWAN" />
-              </p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Total Borrowed
-                </span>
-                <ValueFromTo
-                  from="$10,000"
-                  to="$11,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                <ValueFromTo from="100,000 ROWAN" to="100,000 ROWAN" />
-              </p>
-            </li>
-          </ul>
           <ul className="border-b border-gold-800 flex flex-col gap-0 p-4">
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>

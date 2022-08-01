@@ -17,27 +17,6 @@ export function HtmlUnicode({ name }: { name: string }) {
   return <span dangerouslySetInnerHTML={{ __html: entity }} />;
 }
 
-export function ValueFromTo({
-  from,
-  to,
-  almostEqual,
-  className,
-}: {
-  from: string;
-  to: string;
-  almostEqual?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={className}>
-      {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
-      <span className="ml-1 mr-1">{from}</span>
-      <HtmlUnicode name="RightwardsArrow" />
-      <span className="ml-1">{to}</span>
-    </span>
-  );
-}
-
 /**
  * ********************************************************************************************
  *
