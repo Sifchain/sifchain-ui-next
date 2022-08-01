@@ -627,7 +627,12 @@ const Trade = (props: TradeProps) => {
           <PortfolioTable
             queryId="SomePoolIdOrAddress"
             openPositions={{
-              hideColumns: ["unsettledInterest", "nextPayment", "paidInterest"],
+              hideColumns: [
+                "pool",
+                "unsettledInterest",
+                "nextPayment",
+                "paidInterest",
+              ],
             }}
           />
         </section>
