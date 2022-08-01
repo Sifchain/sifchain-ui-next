@@ -46,7 +46,7 @@ import {
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
-  "Position",
+  "Position", // Maps to "amount" field
   "Asset",
   "Base Leverage",
   "Unrealized P&L",
@@ -57,14 +57,14 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   "Health",
   "Date Opened",
   "Time Open",
-  "Close Position",
+  "Close Position", // We don't display this text
 ] as const;
 
 type HideColsUnion =
   | "pool"
   | "side"
-  | "asset"
   | "amount"
+  | "asset"
   | "baseLeverage"
   | "unrealizedPL"
   | "interestRate"
@@ -257,7 +257,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     >
                       {formatNumberAsCurrency(Number(item.paidInterest))}
                     </td>
-                    <td className="px-4 py-3">{item.health}</td>
+                    <td className="px-4 py-3">
+                      {formatNumberAsDecimal(Number(item.health))}
+                    </td>
                     <td className="px-4 py-3">
                       {formatDateRelative(item.dateOpened)}
                     </td>

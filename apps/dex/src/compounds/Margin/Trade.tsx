@@ -34,6 +34,7 @@ import {
 import { useBalancesStats } from "~/domains/bank/hooks/balances";
 
 import { toTokenEntry } from "../TokenSelector";
+import { formatNumberAsDecimal } from "./_intl";
 
 /**
  * ********************************************************************************************
@@ -344,7 +345,9 @@ const Trade = (props: TradeProps) => {
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">Pool Health</span>
-              <span className="font-semibold text-sm">&ndash;</span>
+              <span className="font-semibold text-sm">
+                {formatNumberAsDecimal(Number(Math.random()))}
+              </span>
             </div>
           </li>
         </ul>
