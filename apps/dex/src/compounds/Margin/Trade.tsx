@@ -285,6 +285,7 @@ const Trade = (props: TradeProps) => {
         <ul className="grid grid-cols-7 gap-5">
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
+              textPlaceholder=""
               modalTitle="Pool"
               value={modifiedActivePool}
               onChange={onChangePoolSelector}
@@ -409,6 +410,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
+                  textPlaceholder=""
                   modalTitle="Collateral"
                   value={
                     selectedCollateral.data
@@ -454,6 +456,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
+                  textPlaceholder=""
                   modalTitle="Position"
                   value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
