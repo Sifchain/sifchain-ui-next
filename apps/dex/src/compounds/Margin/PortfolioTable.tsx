@@ -55,8 +55,8 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
   const slugProps = props[currentTab.slug];
 
   return (
-    <>
-      <ul className="flex flex-row text-sm  bg-gray-800">
+    <div className="relative">
+      <ul className="flex flex-row text-sm bg-gray-800">
         {Object.values(OPTIONS_ITEMS).map(({ slug, title }) => {
           const isTabActive = currentTab.slug === slug;
           return (
@@ -86,9 +86,13 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
             </div>
           }
         >
-          <TabContent {...slugProps} queryId={props.queryId} />
+          <TabContent
+            {...slugProps}
+            classNamePaginationContainer="absolute right-0 top-0"
+            queryId={props.queryId}
+          />
         </Suspense>
       )}
-    </>
+    </div>
   );
 };

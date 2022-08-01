@@ -76,10 +76,10 @@ type HideColsUnion =
   | "dateOpened"
   | "timeOpen";
 export type OpenPositionsTableProps = {
+  classNamePaginationContainer?: string;
   queryId: string;
   hideColumns?: HideColsUnion[];
 };
-
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const queryParams = {
@@ -97,7 +97,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
     return (
       <>
-        <div className="flex flex-row bg-gray-800 items-center">
+        <div
+          className={clsx(
+            "flex flex-row bg-gray-800 items-center",
+            props.classNamePaginationContainer,
+          )}
+        >
           <PaginationShowItems
             limit={Number(pagination.limit)}
             page={Number(pagination.page)}

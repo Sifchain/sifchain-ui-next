@@ -48,7 +48,10 @@ const HISTORY_HEADER_ITEMS = [
   "Amount",
   "Realized P&L",
 ];
-const HistoryTable = () => {
+export type HistoryTableProps = {
+  classNamePaginationContainer?: string;
+};
+const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const queryParams = {
     page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
@@ -64,7 +67,12 @@ const HistoryTable = () => {
 
     return (
       <>
-        <div className="flex flex-row bg-gray-800 items-center">
+        <div
+          className={clsx(
+            "flex flex-row bg-gray-800 items-center",
+            props.classNamePaginationContainer,
+          )}
+        >
           <PaginationShowItems
             limit={Number(pagination.limit)}
             page={Number(pagination.page)}
