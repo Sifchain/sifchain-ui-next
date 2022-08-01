@@ -18,7 +18,6 @@ import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import {
   NoResultsRow,
   PaginationShowItems,
-  PaginationShowPages,
   PaginationButtons,
   PillUpdating,
 } from "./_components";
@@ -73,14 +72,11 @@ const HistoryTable = (props: HistoryTableProps) => {
             props.classNamePaginationContainer,
           )}
         >
+          {historyQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
             page={Number(pagination.page)}
             total={Number(pagination.total)}
-          />
-          <PaginationShowPages
-            page={Number(pagination.page)}
-            pages={Number(pagination.pages)}
           />
           <PaginationButtons
             pages={Number(pagination.pages)}
@@ -101,7 +97,6 @@ const HistoryTable = (props: HistoryTableProps) => {
               );
             }}
           />
-          {historyQuery.isRefetching && <PillUpdating />}
         </div>
         <div className="overflow-x-auto">
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
