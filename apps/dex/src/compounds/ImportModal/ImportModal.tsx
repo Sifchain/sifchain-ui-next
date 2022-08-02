@@ -207,10 +207,9 @@ const ImportModal = (
             inputClassName="text-right"
             type="number"
             label="Amount"
-            secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
-              undefined,
-              { maximumFractionDigits: 6 },
-            )}`}
+            secondaryLabel={`Balance: ${(
+              walletBalance?.toFloatApproximation() ?? 0
+            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),
