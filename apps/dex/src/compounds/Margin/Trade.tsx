@@ -132,11 +132,10 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [selectedCollateralDenom, setSelectedCollateralDenom] = useState(
-    DEFAULT_COLLATERAL_DENOM,
+    activePool?.asset.denom?.toLowerCase() as string,
   );
 
   const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
-
   /**
    * ********************************************************************************************
    *
@@ -147,7 +146,7 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom.toLowerCase() === activePool?.asset.denom) {
+    if (selectedCollateralDenom === activePool?.asset.denom) {
       return enhancedRowan.data;
     }
     return activePool?.asset;
