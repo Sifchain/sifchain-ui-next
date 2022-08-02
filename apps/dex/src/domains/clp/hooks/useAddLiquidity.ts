@@ -1,8 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
 import { calculatePoolUnits } from "@sifchain/math";
-import { DEFAULT_FEE } from "@sifchain/stargate";
-import { invariant } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import {
   Dispatch,
@@ -12,9 +10,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useMutation } from "react-query";
-import useSifSigner from "~/hooks/useSifSigner";
-import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import { usePoolQuery } from "./usePool";
 
 const useAddLiquidity = (denom: string, symmetric = true) => {
@@ -132,40 +127,6 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
     externalAmountDecimal,
     poolUnits,
     poolShare,
-  };
-};
-
-export const useAddLiquidityMutation = () => {
-  const { signer } = useSifSigner();
-  const { data: stargateClient } = useSifSigningStargateClient();
-
-  const baseMutation = useMutation(
-    async (variables: { nativeAmount: string; externalAmount: string }) => {
-      invariant(signer !== undefined, "signer is undefined");
-      invariant(stargateClient !== undefined, "stargateClient is undefined");
-
-      const signerAddress = (await signer.getAccounts())[0]?.address ?? "";
-
-      return stargateClient.signAndBroadcast(
-        signerAddress,
-        [
-          {
-            typeUrl: "/sifnode.clp.v1.MsgAddLiquidity",
-            value: {
-              signer: signerAddress,
-              nativeAssetAmount: variables.nativeAmount,
-              externalAssetAmount: variables.externalAmount,
-            },
-          },
-        ],
-        DEFAULT_FEE,
-      );
-    },
-  );
-
-  return {
-    ...baseMutation,
-    isReady: signer !== undefined && stargateClient !== undefined,
   };
 };
 

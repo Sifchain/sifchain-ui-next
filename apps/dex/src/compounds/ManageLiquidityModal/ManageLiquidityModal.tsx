@@ -7,9 +7,8 @@ import {
   RacetrackSpinnerIcon,
 } from "@sifchain/ui";
 import { FormEventHandler, useCallback, useMemo } from "react";
-import useAddLiquidity, {
-  useAddLiquidityMutation,
-} from "~/domains/clp/hooks/useAddLiquidity";
+import useAddLiquidity from "~/domains/clp/hooks/useAddLiquidity";
+import useAddLiquidityMutation from "~/domains/clp/hooks/useAddLiquidityMutation";
 import TokenAmountFieldset from "../TokenAmountFieldset";
 import { UnlockLiquidityTokenFieldset } from "./UnlockLiquidityTokenFieldset";
 
