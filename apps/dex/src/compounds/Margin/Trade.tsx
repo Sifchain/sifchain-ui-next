@@ -272,8 +272,13 @@ const Trade = (props: TradeProps) => {
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setSelectedPool(pools[0]);
-    setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
+    const clean = {
+      value: "",
+      error: "",
+    };
+    setInputCollateral(clean);
+    setInputPosition(clean);
+    setInputLeverage(clean);
   };
   const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
     console.log(event.currentTarget);
