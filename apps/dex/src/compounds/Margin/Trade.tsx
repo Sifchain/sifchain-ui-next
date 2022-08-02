@@ -201,14 +201,14 @@ const Trade = (props: TradeProps) => {
   const modifiedActivePool = useMemo(() => {
     return immer(activePool?.asset, (draftAsset) => {
       if (draftAsset) {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
       }
     });
   }, [activePool?.asset]);
   const modifiedPools = useMemo(() => {
     return pools.map((pool) =>
       immer(pool.asset, (draftAsset) => {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
       }),
     );
   }, [pools]);
@@ -229,7 +229,7 @@ const Trade = (props: TradeProps) => {
     setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
-    setSelectedCollateralDenom(token.symbol);
+    setSelectedCollateralDenom(token.symbol.toLowerCase());
   };
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
