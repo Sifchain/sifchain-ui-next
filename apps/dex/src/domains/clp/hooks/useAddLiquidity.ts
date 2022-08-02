@@ -14,6 +14,7 @@ import { usePoolQuery } from "./usePool";
 
 const useAddLiquidity = (denom: string, symmetric = true) => {
   const poolQuery = usePoolQuery(denom);
+  const pool = poolQuery.data?.pool;
 
   const [activeInput, setActiveInput] = useState<
     "native" | "external" | undefined
@@ -25,50 +26,48 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
   const nativeAmountDecimal = useMemo(
     () =>
       runCatching(() =>
-        poolQuery.data?.pool === undefined
+        pool === undefined
           ? undefined
           : Decimal.fromUserInput(
               nativeAmount,
-              poolQuery.data.pool.nativeAssetBalance.fractionalDigits,
+              pool.nativeAssetBalance.fractionalDigits,
             ),
       )[1],
-    [nativeAmount, poolQuery.data?.pool],
+    [nativeAmount, pool],
   );
   const externalAmountDecimal = useMemo(
     () =>
       runCatching(() =>
-        poolQuery.data?.pool === undefined
+        pool === undefined
           ? undefined
           : Decimal.fromUserInput(
               externalAmount,
-              poolQuery.data.pool.externalAssetBalance.fractionalDigits,
+              pool.externalAssetBalance.fractionalDigits,
             ),
       )[1],
-    [externalAmount, poolQuery.data?.pool],
+    [externalAmount, pool],
   );
 
   const [poolUnits, poolShare] = useMemo(() => {
-    if (poolQuery.data?.pool === undefined) return [undefined, undefined];
+    if (pool === undefined) return [undefined, undefined];
 
     const expectedPoolUnits = calculatePoolUnits(
       new BigNumber(nativeAmount).shiftedBy(
-        poolQuery.data.pool.nativeAssetBalance.fractionalDigits,
+        pool.nativeAssetBalance.fractionalDigits,
       ),
       new BigNumber(externalAmount).shiftedBy(
-        poolQuery.data.pool.externalAssetBalance.fractionalDigits,
+        pool.externalAssetBalance.fractionalDigits,
       ),
-      poolQuery.data.pool.nativeAssetBalance.atomics,
-      poolQuery.data.pool.externalAssetBalance.atomics,
-      poolQuery.data.pool.poolUnits,
+      pool.nativeAssetBalance.atomics,
+      pool.externalAssetBalance.atomics,
+      pool.poolUnits,
     );
 
     return [
       expectedPoolUnits.toNumber(),
-      expectedPoolUnits
-        .div(expectedPoolUnits.plus(poolQuery.data.pool.poolUnits))
-        .toNumber(),
+      expectedPoolUnits.div(expectedPoolUnits.plus(pool.poolUnits)).toNumber(),
     ] as const;
-  }, [externalAmount, nativeAmount, poolQuery.data?.pool]);
+  }, [externalAmount, nativeAmount, pool]);
 
   const setNativeAmount = useCallback<Dispatch<SetStateAction<string>>>(
     (value) => {
@@ -87,9 +86,8 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
   );
 
   useEffect(() => {
-    if (poolQuery.data?.pool === undefined || !symmetric) return;
+    if (pool === undefined || !symmetric) return;
 
-    const pool = poolQuery.data.pool;
     switch (activeInput) {
       case "native":
         _setExternalAmount(
@@ -114,7 +112,7 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
     activeInput,
     externalAmount,
     nativeAmount,
-    poolQuery.data?.pool,
+    pool,
     setExternalAmount,
     setNativeAmount,
     symmetric,
