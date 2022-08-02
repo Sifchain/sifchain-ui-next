@@ -1,5 +1,15 @@
-import { Button, ButtonGroup, Modal, ModalProps, PlusIcon } from "@sifchain/ui";
-import { useCallback, useMemo } from "react";
+import {
+  Button,
+  ButtonGroup,
+  Modal,
+  ModalProps,
+  PlusIcon,
+  RacetrackSpinnerIcon,
+} from "@sifchain/ui";
+import { FormEventHandler, useCallback, useMemo } from "react";
+import useAddLiquidity, {
+  useAddLiquidityMutation,
+} from "~/domains/clp/hooks/useAddLiquidity";
 import TokenAmountFieldset from "../TokenAmountFieldset";
 import { UnlockLiquidityTokenFieldset } from "./UnlockLiquidityTokenFieldset";
 
@@ -12,41 +22,93 @@ export type ManageLiquidityModalProps = ModalProps & {
   onChangeAction: (action: Action) => unknown;
 };
 
-const AddLiquidityForm = (props: ManageLiquidityModalProps) => (
-  <form>
-    <TokenAmountFieldset
-      label="Token 1"
-      denom={props.denom}
-      onChangeDenom={() => {}}
-      onChangeAmount={() => {}}
-      responsive={false}
-    />
-    <div className="flex justify-center items-center my-[-1em]">
-      <div className="bg-black rounded-full p-3 border-2 border-gray-800">
-        <PlusIcon />
+const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const {
+    nativeAmountState: [nativeAmount, setNativeAmount],
+    externalAmountState: [externalAmount, setExternalAmount],
+    nativeAmountDecimal,
+    externalAmountDecimal,
+    poolShare,
+  } = useAddLiquidity(props.denom);
+  const addLiquidityMutation = useAddLiquidityMutation();
+
+  const buttonMessage = useMemo(() => {
+    if (addLiquidityMutation.isError || addLiquidityMutation.isSuccess) {
+      return "Close";
+    }
+
+    return [
+      addLiquidityMutation.isLoading && <RacetrackSpinnerIcon key="1" />,
+      "Add liquidity",
+    ];
+  }, [
+    addLiquidityMutation.isError,
+    addLiquidityMutation.isLoading,
+    addLiquidityMutation.isSuccess,
+  ]);
+
+  const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    (event) => {
+      event.preventDefault();
+
+      if (addLiquidityMutation.isError || addLiquidityMutation.isSuccess) {
+        return props.onClose(false);
+      }
+
+      if (
+        nativeAmountDecimal !== undefined &&
+        externalAmountDecimal !== undefined
+      ) {
+        addLiquidityMutation.mutate({
+          nativeAmount: nativeAmountDecimal.atomics,
+          externalAmount: externalAmountDecimal.atomics,
+        });
+      }
+    },
+    [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props],
+  );
+
+  return (
+    <form onSubmit={onSubmit}>
+      <TokenAmountFieldset
+        label="Token 1"
+        denom={props.denom}
+        amount={externalAmount}
+        onChangeDenom={() => {}}
+        onChangeAmount={setExternalAmount}
+        responsive={false}
+      />
+      <div className="flex justify-center items-center my-[-1em]">
+        <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+          <PlusIcon />
+        </div>
       </div>
-    </div>
-    <TokenAmountFieldset
-      label="Token 2"
-      denom="rowan"
-      onChangeDenom={() => {}}
-      onChangeAmount={() => {}}
-      responsive={false}
-      tokenSelectionDisabled
-    />
-    <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
-      <div>
-        <dt>Est pool share</dt>
-        <dd>0.4%</dd>
-      </div>
-      <div>
-        <dt>Price impact</dt>
-        <dd>0.01%</dd>
-      </div>
-    </dl>
-    <Button className="w-full">Add liquidity</Button>
-  </form>
-);
+      <TokenAmountFieldset
+        label="Token 2"
+        denom="rowan"
+        amount={nativeAmount}
+        onChangeDenom={() => {}}
+        onChangeAmount={setNativeAmount}
+        responsive={false}
+        tokenSelectionDisabled
+      />
+      <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
+        <div>
+          <dt>Est pool share</dt>
+          <dd>
+            {poolShare?.toLocaleString(undefined, {
+              style: "percent",
+              maximumFractionDigits: 2,
+            })}
+          </dd>
+        </div>
+      </dl>
+      <Button className="w-full" disabled={addLiquidityMutation.isLoading}>
+        {buttonMessage}
+      </Button>
+    </form>
+  );
+};
 
 const RemoveLiquidityForm = (props: ManageLiquidityModalProps) => {
   return (
