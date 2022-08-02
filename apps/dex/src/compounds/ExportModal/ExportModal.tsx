@@ -105,14 +105,16 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       return "Close";
     }
 
-    return [
-      exportTokensMutation.isLoading ? (
-        <RacetrackSpinnerIcon />
-      ) : (
-        <ArrowDownIcon className="rotate-180" />
-      ),
-      "Export",
-    ];
+    return (
+      <>
+        {exportTokensMutation.isLoading ? (
+          <RacetrackSpinnerIcon />
+        ) : (
+          <ArrowDownIcon className="rotate-180" />
+        )}
+        Export
+      </>
+    );
   }, [
     error,
     exportTokensMutation.isError,

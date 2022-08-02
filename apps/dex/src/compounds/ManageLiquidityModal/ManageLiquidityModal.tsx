@@ -79,10 +79,12 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
       return "Close";
     }
 
-    return [
-      addLiquidityMutation.isLoading && <RacetrackSpinnerIcon key="1" />,
-      "Add liquidity",
-    ];
+    return (
+      <>
+        {addLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Add
+        liquidity
+      </>
+    );
   }, [
     addLiquidityMutation.isError,
     addLiquidityMutation.isLoading,

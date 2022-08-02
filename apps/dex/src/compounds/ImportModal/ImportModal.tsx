@@ -137,14 +137,16 @@ const ImportModal = (
       return "Close";
     }
 
-    return [
-      importTokensMutation.isLoading ? (
-        <RacetrackSpinnerIcon />
-      ) : (
-        <ArrowDownIcon />
-      ),
-      "Import",
-    ];
+    return (
+      <>
+        {importTokensMutation.isLoading ? (
+          <RacetrackSpinnerIcon />
+        ) : (
+          <ArrowDownIcon />
+        )}
+        Import
+      </>
+    );
   }, [
     error,
     importTokensMutation.isError,
