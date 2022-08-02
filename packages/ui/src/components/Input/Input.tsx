@@ -52,6 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       containerClassName,
       inputClassName,
       size,
+      fullWidth,
       ...props
     },
     ref,
@@ -80,7 +81,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={clsx("relative grid gap-1", {
-          "w-full": props.fullWidth,
+          "w-full": fullWidth,
         })}
       >
         {(label || secondaryLabel) && (
