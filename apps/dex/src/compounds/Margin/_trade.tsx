@@ -7,35 +7,18 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
  *
  * ********************************************************************************************
  */
-export function HtmlUnicode({ name }: { name: string }) {
-  const unicodes: Record<string, string | string> = {
+type HtmlUnicodeProps = {
+  name: "AlmostEqualTo" | "RightwardsArrow" | "EqualsSign" | "MiddleDot";
+};
+export function HtmlUnicode({ name }: HtmlUnicodeProps) {
+  const unicodes: Record<string, string> = {
     AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
     RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
     EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
+    MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
   };
   const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
   return <span dangerouslySetInnerHTML={{ __html: entity }} />;
-}
-
-export function ValueFromTo({
-  from,
-  to,
-  almostEqual,
-  className,
-}: {
-  from: string;
-  to: string;
-  almostEqual?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={className}>
-      {almostEqual ? <HtmlUnicode name="AlmostEqualTo" /> : null}
-      <span className="ml-1 mr-1">{from}</span>
-      <HtmlUnicode name="RightwardsArrow" />
-      <span className="ml-1">{to}</span>
-    </span>
-  );
 }
 
 /**

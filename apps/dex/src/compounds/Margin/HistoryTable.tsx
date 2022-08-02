@@ -18,7 +18,6 @@ import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import {
   NoResultsRow,
   PaginationShowItems,
-  PaginationShowPages,
   PaginationButtons,
   PillUpdating,
 } from "./_components";
@@ -48,7 +47,10 @@ const HISTORY_HEADER_ITEMS = [
   "Amount",
   "Realized P&L",
 ];
-const HistoryTable = () => {
+export type HistoryTableProps = {
+  classNamePaginationContainer?: string;
+};
+const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const queryParams = {
     page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
@@ -64,15 +66,17 @@ const HistoryTable = () => {
 
     return (
       <>
-        <div className="flex flex-row bg-gray-800 items-center">
+        <div
+          className={clsx(
+            "flex flex-row bg-gray-800 items-center",
+            props.classNamePaginationContainer,
+          )}
+        >
+          {historyQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
             page={Number(pagination.page)}
             total={Number(pagination.total)}
-          />
-          <PaginationShowPages
-            page={Number(pagination.page)}
-            pages={Number(pagination.pages)}
           />
           <PaginationButtons
             pages={Number(pagination.pages)}
@@ -93,7 +97,6 @@ const HistoryTable = () => {
               );
             }}
           />
-          {historyQuery.isRefetching && <PillUpdating />}
         </div>
         <div className="overflow-x-auto">
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">

@@ -18,7 +18,6 @@ import { Button, formatNumberAsCurrency, ChevronDownIcon } from "@sifchain/ui";
 import {
   NoResultsRow,
   PaginationShowItems,
-  PaginationShowPages,
   PaginationButtons,
   PillUpdating,
 } from "./_components";
@@ -47,8 +46,8 @@ import {
 const OPEN_POSITIONS_HEADER_ITEMS = [
   "Pool",
   "Side",
+  "Position", // Maps to "amount" field
   "Asset",
-  "Amount",
   "Base Leverage",
   "Unrealized P&L",
   "Interest Rate",
@@ -58,14 +57,14 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   "Health",
   "Date Opened",
   "Time Open",
-  "Close Position",
+  "Close Position", // We don't display this text
 ] as const;
 
 type HideColsUnion =
   | "pool"
   | "side"
-  | "asset"
   | "amount"
+  | "asset"
   | "baseLeverage"
   | "unrealizedPL"
   | "interestRate"
@@ -76,10 +75,10 @@ type HideColsUnion =
   | "dateOpened"
   | "timeOpen";
 export type OpenPositionsTableProps = {
+  classNamePaginationContainer?: string;
   queryId: string;
   hideColumns?: HideColsUnion[];
 };
-
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const queryParams = {
@@ -97,15 +96,17 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
     return (
       <>
-        <div className="flex flex-row bg-gray-800 items-center">
+        <div
+          className={clsx(
+            "flex flex-row bg-gray-800 items-center",
+            props.classNamePaginationContainer,
+          )}
+        >
+          {openPositionsQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
             page={Number(pagination.page)}
             total={Number(pagination.total)}
-          />
-          <PaginationShowPages
-            page={Number(pagination.page)}
-            pages={Number(pagination.pages)}
           />
           <PaginationButtons
             pages={Number(pagination.pages)}
@@ -126,7 +127,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               );
             }}
           />
-          {openPositionsQuery.isRefetching && <PillUpdating />}
         </div>
         <div className="overflow-x-auto">
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
@@ -147,32 +147,34 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="font-normal px-4 py-3"
                       hidden={hideColumns?.includes(itemKey as HideColsUnion)}
                     >
-                      <Link
-                        href={{
-                          query: {
-                            ...router.query,
-                            orderBy: nextOrderBy,
-                            sortBy: nextSortBy,
-                          },
-                        }}
-                        scroll={false}
-                      >
-                        <a
-                          className={clsx("flex flex-row items-center", {
-                            "text-white font-semibold": itemActive,
-                          })}
+                      {itemKey === "closePosition" ? null : (
+                        <Link
+                          href={{
+                            query: {
+                              ...router.query,
+                              orderBy: nextOrderBy,
+                              sortBy: nextSortBy,
+                            },
+                          }}
+                          scroll={false}
                         >
-                          {title}
-                          {itemActive && (
-                            <ChevronDownIcon
-                              className={clsx("ml-1 transition-transform", {
-                                "-rotate-180":
-                                  pagination.sortBy === SORT_BY.ASC,
-                              })}
-                            />
-                          )}
-                        </a>
-                      </Link>
+                          <a
+                            className={clsx("flex flex-row items-center", {
+                              "text-white font-semibold": itemActive,
+                            })}
+                          >
+                            {title}
+                            {itemActive && (
+                              <ChevronDownIcon
+                                className={clsx("ml-1 transition-transform", {
+                                  "-rotate-180":
+                                    pagination.sortBy === SORT_BY.ASC,
+                                })}
+                              />
+                            )}
+                          </a>
+                        </Link>
+                      )}
                     </th>
                   );
                 })}
@@ -192,7 +194,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
                 return (
                   <tr key={item.id}>
-                    <td className="px-4 py-3">{item.pool}</td>
+                    <td
+                      className="px-4 py-3"
+                      hidden={hideColumns?.includes("pool")}
+                    >
+                      {item.pool}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
@@ -204,7 +211,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         {position}
                       </span>
                     </td>
-                    <td className="px-4 py-3">{item.asset}</td>
+
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
@@ -215,6 +222,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         {formatNumberAsCurrency(Number(item.amount), 4)}
                       </span>
                     </td>
+                    <td className="px-4 py-3">{item.asset}</td>
                     <td className="px-4 py-3">
                       {formatNumberAsDecimal(Number(item.baseLeverage))}x
                     </td>
@@ -249,7 +257,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     >
                       {formatNumberAsCurrency(Number(item.paidInterest))}
                     </td>
-                    <td className="px-4 py-3">{item.health}</td>
+                    <td className="px-4 py-3">
+                      {formatNumberAsDecimal(Number(item.health))}
+                    </td>
                     <td className="px-4 py-3">
                       {formatDateRelative(item.dateOpened)}
                     </td>

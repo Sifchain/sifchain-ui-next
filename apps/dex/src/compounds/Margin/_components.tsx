@@ -34,22 +34,6 @@ export function PaginationShowItems({
   );
 }
 
-type PaginationShowPagesProps = {
-  page: number;
-  pages: number;
-};
-export function PaginationShowPages({ page, pages }: PaginationShowPagesProps) {
-  return (
-    <p className="text-sm mx-4 py-3">
-      <span>Page</span>
-      <span className="mx-1">{page}</span>
-      <span>of</span>
-      <span className="mx-1">{pages}</span>
-      <span>pages</span>
-    </p>
-  );
-}
-
 type PaginationButtonsProps = {
   pages: number;
   render: (page: number) => React.ReactNode;

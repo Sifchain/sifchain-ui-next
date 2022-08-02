@@ -2,9 +2,9 @@ import type { NextPage } from "next";
 
 import {
   Button,
-  TwinRadioGroup,
   formatNumberAsCurrency,
   TokenEntry,
+  ArrowDownIcon,
 } from "@sifchain/ui";
 import Head from "next/head";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
@@ -25,7 +25,6 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
  */
 import {
   HtmlUnicode,
-  ValueFromTo,
   COLLATERAL_MAX_VALUE,
   POSITION_MAX_VALUE,
   LEVERAGE_MAX_VALUE,
@@ -39,6 +38,7 @@ import {
 import { useBalancesStats } from "~/domains/bank/hooks/balances";
 
 import { toTokenEntry } from "../TokenSelector";
+import { formatNumberAsDecimal } from "./_intl";
 
 /**
  * ********************************************************************************************
@@ -182,7 +182,6 @@ const Trade = (props: TradeProps) => {
     value: `${POSITION_MAX_VALUE}`,
     error: "",
   });
-  const [radioPositionSide, setRadioPositionSide] = useState("long");
   const [inputLeverage, setInputLeverage] = useState({
     value: `${LEVERAGE_MAX_VALUE}`,
     error: "",
@@ -207,14 +206,14 @@ const Trade = (props: TradeProps) => {
   const modifiedActivePool = useMemo(() => {
     return immer(activePool?.asset, (draftAsset) => {
       if (draftAsset) {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
       }
     });
   }, [activePool?.asset]);
   const modifiedPools = useMemo(() => {
     return pools.map((pool) =>
       immer(pool.asset, (draftAsset) => {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} / ROWAN`;
+        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
       }),
     );
   }, [pools]);
@@ -235,10 +234,7 @@ const Trade = (props: TradeProps) => {
     setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
-    setSelectedCollateralDenom(token.symbol);
-  };
-  const onChangePositionSide = (position: string) => {
-    setRadioPositionSide(position);
+    setSelectedCollateralDenom(token.symbol.toLowerCase());
   };
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
@@ -293,6 +289,7 @@ const Trade = (props: TradeProps) => {
         <ul className="grid grid-cols-7 gap-5">
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
+              textPlaceholder=""
               modalTitle="Pool"
               value={modifiedActivePool}
               onChange={onChangePoolSelector}
@@ -353,68 +350,21 @@ const Trade = (props: TradeProps) => {
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">Pool Health</span>
-              <span className="font-semibold text-sm">&ndash;</span>
+              <span className="font-semibold text-sm">
+                {formatNumberAsDecimal(Number(Math.random()))}
+              </span>
             </div>
           </li>
         </ul>
       </section>
       <section className="mt-4 text-xs grid grid-cols-7 gap-x-5">
         <aside className="bg-gray-800 border border-gold-800 rounded col-span-2 flex flex-col">
-          <ul className="border-b border-gold-800 flex flex-col gap-4 p-4">
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Account Balance
-                </span>
-                <ValueFromTo
-                  from={props.accountBalance.toLocaleString("en-us", {
-                    style: "currency",
-                    currency: "USD",
-                  })}
-                  to="$49,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Collateral Balance
-                </span>
-                <ValueFromTo
-                  from="$5,000"
-                  to="$4,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                <ValueFromTo from="40,000 ROWAN" to="40,000 ROWAN" />
-              </p>
-            </li>
-            <li>
-              <div className="flex flex-row">
-                <span className="mr-auto min-w-fit text-gray-300">
-                  Total Borrowed
-                </span>
-                <ValueFromTo
-                  from="$10,000"
-                  to="$11,000"
-                  almostEqual={true}
-                  className="font-semibold"
-                />
-              </div>
-              <p className="text-gray-400 text-xs w-full text-right">
-                <ValueFromTo from="100,000 ROWAN" to="100,000 ROWAN" />
-              </p>
-            </li>
-          </ul>
           <ul className="border-b border-gold-800 flex flex-col gap-0 p-4">
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
+                  textPlaceholder=""
                   modalTitle="Collateral"
                   value={
                     selectedCollateral.data
@@ -460,6 +410,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
+                  textPlaceholder=""
                   modalTitle="Position"
                   value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
@@ -498,22 +449,9 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
-              <TwinRadioGroup
-                value={radioPositionSide}
-                className="col-span-3 self-end text-sm"
-                name="margin-side"
-                onChange={onChangePositionSide}
-                options={[
-                  {
-                    title: "Long",
-                    value: "long",
-                  },
-                  {
-                    title: "Short",
-                    value: "short",
-                  },
-                ]}
-              />
+              <p className="col-span-3 self-end text-sm font-semibold p-2 text-center cursor-pointer bg-gray-500 text-gray-200 z-10 rounded hover:ring-1 hover:ring-indigo-300">
+                Long
+              </p>
               <div className="col-span-3 flex flex-col">
                 <span className="text-xs text-gray-300 mb-1">
                   <span className="mr-1">Leverage</span>
@@ -545,63 +483,72 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           <div className="p-4">
-            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
+            <p className="text-center text-base">Review opening trade</p>
+            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg mt-4">
+              <li className="text-base font-semibold">USDC</li>
               <li>
                 <div className="flex flex-row">
                   <span className="mr-auto min-w-fit text-gray-300">
-                    Collateral Balance
+                    Collateral
                   </span>
-                  <span>$1,000 </span>
+                  <span>$1,000 USDC</span>
                 </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  50,000 ROWAN
-                </p>
               </li>
               <li>
                 <div className="flex flex-row">
                   <span className="mr-auto min-w-fit text-gray-300">
-                    Borrow Amount
+                    Borrow amount
                   </span>
-                  <span>$1,000</span>
+                  <span>$2,000 USDC</span>
                 </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  100,000 ROWAN
-                </p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Overall Position
-                  </span>
-                  <span>$2,000</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">2ETH</p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Trade Fees
-                  </span>
-                  <span>&minus;$50</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  .0005 ETH
-                </p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Resulting Position
-                  </span>
-                  <span>$1,900</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  1.9 ETH
-                </p>
               </li>
             </ul>
+            <div className="flex justify-center items-center my-[-1em]">
+              <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+                <ArrowDownIcon className="text-lg" />
+              </div>
+            </div>
+            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
+              <li className="text-base font-semibold">ROWAN</li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Entry price
+                  </span>
+                  <span>$0.005</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Position size
+                  </span>
+                  <span>$400,000 ROWAN</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">Fees</span>
+                  <span>&minus;$50</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Opening position
+                  </span>
+                  <span>$399.900 ROWAN</span>
+                </div>
+              </li>
+            </ul>
+            <div className="flex flex-row mt-2">
+              <span className="mr-auto min-w-fit text-gray-300">
+                Current interest rate
+              </span>
+              <span>25%</span>
+            </div>
           </div>
-          <div className="grid grid-cols-4 gap-2 px-4 pb-4">
+          <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
             <Button
               variant="tertiary"
               as="button"
@@ -627,7 +574,12 @@ const Trade = (props: TradeProps) => {
           <PortfolioTable
             queryId="SomePoolIdOrAddress"
             openPositions={{
-              hideColumns: ["unsettledInterest", "nextPayment", "paidInterest"],
+              hideColumns: [
+                "pool",
+                "unsettledInterest",
+                "nextPayment",
+                "paidInterest",
+              ],
             }}
           />
         </section>

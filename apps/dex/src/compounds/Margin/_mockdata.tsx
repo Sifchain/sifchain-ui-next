@@ -166,7 +166,7 @@ function createOpenPositionsRow() {
     unsettledInterest: "12893",
     nextPayment: new Date(),
     paidInterest: "81273",
-    health: `${rand(100)}`,
+    health: `${Math.random()}`,
     dateOpened: new Date(),
     timeOpen: new Date(),
   };

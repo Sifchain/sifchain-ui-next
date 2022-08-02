@@ -57,6 +57,7 @@ export type TokenSelectorProps = {
   buttonClassName?: string;
   readonly?: boolean;
   inline?: boolean;
+  textPlaceholder?: string;
 };
 
 type SortKeys = keyof TokenEntry;
@@ -174,7 +175,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
               <Combobox.Input
                 as={SearchInput}
                 fullWidth
-                placeholder="0x0000"
+                placeholder={props.textPlaceholder}
                 onChange={(event) => setQuery(event.target.value)}
                 displayValue={(token: TokenEntry) =>
                   token.displaySymbol || token.symbol
@@ -232,4 +233,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       </Modal>
     </>
   );
+};
+TokenSelector.defaultProps = {
+  textPlaceholder: "0x0000",
 };
