@@ -17,6 +17,7 @@
     "@sifchain/common": "workspace:*",
     "@sifchain/cosmos-connect": "workspace:*",
     "@sifchain/evm": "workspace:*",
+    "@sifchain/math": "workspace:*",
     "@sifchain/proto-types": "workspace:*",
     "@sifchain/sif-api": "workspace:*",
     "@sifchain/stargate": "workspace:*",

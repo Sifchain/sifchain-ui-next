@@ -1,18 +1,17 @@
+import { calculatePoolUnits } from "@sifchain/math";
 import BigNumber from "bignumber.js";
 import {
   Dispatch,
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
-import useSifnodeQuery from "~/hooks/useSifnodeQuery";
-import { isNilOrWhitespace } from "~/utils/string";
+import { usePoolQuery } from "./usePool";
 
 const useAddLiquidity = (denom: string, symmetric = true) => {
-  const poolQuery = useSifnodeQuery("clp.getPool", [{ symbol: denom }], {
-    enabled: !isNilOrWhitespace(denom),
-  });
+  const poolQuery = usePoolQuery(denom);
 
   const [activeInput, setActiveInput] = useState<
     "native" | "external" | undefined
@@ -20,6 +19,29 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
 
   const [nativeAmount, _setNativeAmount] = useState("");
   const [externalAmount, _setExternalAmount] = useState("");
+
+  const [poolUnits, poolShare] = useMemo(() => {
+    if (poolQuery.data?.pool === undefined) return [undefined, undefined];
+
+    const expectedPoolUnits = calculatePoolUnits(
+      new BigNumber(nativeAmount).shiftedBy(
+        poolQuery.data.pool.nativeAssetBalance.fractionalDigits,
+      ),
+      new BigNumber(externalAmount).shiftedBy(
+        poolQuery.data.pool.externalAssetBalance.fractionalDigits,
+      ),
+      poolQuery.data.pool.nativeAssetBalance.atomics,
+      poolQuery.data.pool.externalAssetBalance.atomics,
+      poolQuery.data.pool.poolUnits,
+    );
+
+    return [
+      expectedPoolUnits.toNumber(),
+      expectedPoolUnits
+        .div(expectedPoolUnits.plus(poolQuery.data.pool.poolUnits))
+        .toNumber(),
+    ] as const;
+  }, [externalAmount, nativeAmount, poolQuery.data?.pool]);
 
   const setNativeAmount = useCallback<Dispatch<SetStateAction<string>>>(
     (value) => {
@@ -45,8 +67,8 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
       case "native":
         _setExternalAmount(
           new BigNumber(nativeAmount)
-            .times(pool.externalAssetBalance)
-            .div(pool.nativeAssetBalance)
+            .times(pool.externalAssetBalance.toString())
+            .div(pool.nativeAssetBalance.toString())
             .decimalPlaces(5)
             .toString(),
         );
@@ -55,8 +77,8 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
       case "external":
         _setNativeAmount(
           new BigNumber(externalAmount)
-            .times(pool.nativeAssetBalance)
-            .div(pool.externalAssetBalance)
+            .times(pool.nativeAssetBalance.toString())
+            .div(pool.externalAssetBalance.toString())
             .decimalPlaces(5)
             .toString(),
         );
@@ -74,6 +96,8 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
   return {
     nativeAmountState: [nativeAmount, setNativeAmount] as const,
     externalAmountState: [externalAmount, setExternalAmount] as const,
+    poolUnits,
+    poolShare,
   };
 };
 
