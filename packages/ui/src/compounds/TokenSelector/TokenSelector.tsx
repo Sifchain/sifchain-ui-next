@@ -56,6 +56,7 @@ export type TokenSelectorProps = {
   size?: "xs";
   buttonClassName?: string;
   readonly?: boolean;
+  inline?: boolean;
 };
 
 type SortKeys = keyof TokenEntry;
@@ -102,14 +103,18 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   return (
     <>
       <div
-        className={clsx("relative grid gap-1", {
-          "text-xs": props.size === "xs",
-        })}
+        className={clsx(
+          "relative gap-1",
+          props.inline ? "inline-grid" : "grid",
+          {
+            "text-xs": props.size === "xs",
+          },
+        )}
       >
         {props.label && <span className="input-label">{props.label}</span>}
         <button
           className={clsx(
-            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5",
+            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5 overflow-hidden",
             props.buttonClassName,
           )}
           onClick={(e) => {
@@ -125,7 +130,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
                 size={props.size}
               />
-              <span className="uppercase text-white overflow-hidden text-ellipsis whitespace-nowrap">
+              <span className="uppercase block text-white overflow-hidden text-ellipsis whitespace-nowrap">
                 {selectedToken.displaySymbol}
               </span>
             </>

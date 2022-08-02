@@ -13,9 +13,8 @@ import immer from "immer";
 import clsx from "clsx";
 
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
-import { useEnhancedPoolsQuery, useRowanPriceQuery } from "~/domains/clp";
+import { useEnhancedPoolsQuery, useEnhancedTokenQuery } from "~/domains/clp";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
-import useTokenRegistryQuery from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 /**
  * ********************************************************************************************
@@ -37,6 +36,9 @@ import {
   inputValidatorPosition,
   inputValidatorCollateral,
 } from "./_trade";
+import { useBalancesStats } from "~/domains/bank/hooks/balances";
+
+import { toTokenEntry } from "../TokenSelector";
 
 /**
  * ********************************************************************************************
@@ -53,20 +55,22 @@ import {
  * ********************************************************************************************
  */
 const TradeCompound: NextPage = () => {
-  const tokenRegistry = useTokenRegistryQuery();
   const enhancedPools = useEnhancedPoolsQuery();
-  const rowanPrice = useRowanPriceQuery();
+  // const allBalances = useAllBalancesQuery();
+  const balancesStats = useBalancesStats();
 
   if (
-    tokenRegistry.isSuccess &&
     enhancedPools.isSuccess &&
-    rowanPrice.isSuccess
+    // allBalances.isSuccess &&
+    balancesStats.isSuccess
   ) {
     return (
       <Trade
-        tokenRegistry={tokenRegistry}
         enhancedPools={enhancedPools}
-        rowanPrice={rowanPrice}
+        // allBalances={allBalances}
+        accountBalance={
+          balancesStats.data?.availableInUsdc.toFloatApproximation() ?? 0
+        }
       />
     );
   }
@@ -90,24 +94,15 @@ export default TradeCompound;
  * ********************************************************************************************
  */
 type TradeProps = {
-  tokenRegistry: ReturnType<typeof useTokenRegistryQuery>;
   enhancedPools: ReturnType<typeof useEnhancedPoolsQuery>;
-  rowanPrice: ReturnType<typeof useRowanPriceQuery>;
+  // allBalances: ReturnType<typeof useAllBalancesQuery>;
+  accountBalance: number;
 };
-const Trade = (props: TradeProps) => {
-  const { tokenRegistry, enhancedPools, rowanPrice } = props;
 
-  /**
-   * ********************************************************************************************
-   *
-   * Find ROWAN as "Token" from Registry to use it in TokenSelector dropdown
-   * For Collateral / Position dropdown logic
-   *
-   * ********************************************************************************************
-   */
-  const tokenRowan = useMemo(() => {
-    return tokenRegistry.data.find((token) => token.displaySymbol === "rowan");
-  }, [tokenRegistry.data]);
+const DEFAULT_COLLATERAL_DENOM = "rowan";
+
+const Trade = (props: TradeProps) => {
+  const { enhancedPools } = props;
 
   /**
    * ********************************************************************************************
@@ -119,12 +114,15 @@ const Trade = (props: TradeProps) => {
    */
   const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
   const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
+
   const activePool = useMemo(() => {
     if (selectedPool) {
       return selectedPool;
     }
     return pools[0];
   }, [pools, selectedPool]);
+
+  const enhancedRowan = useEnhancedTokenQuery(DEFAULT_COLLATERAL_DENOM);
 
   /**
    * ********************************************************************************************
@@ -133,7 +131,11 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const [selectedCollateral, setSelectedCollateral] = useState(tokenRowan);
+  const [selectedCollateralDenom, setSelectedCollateralDenom] = useState(
+    DEFAULT_COLLATERAL_DENOM,
+  );
+
+  const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
 
   /**
    * ********************************************************************************************
@@ -145,11 +147,11 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateral?.denom === activePool?.asset.denom) {
-      return tokenRowan;
+    if (selectedCollateralDenom.toLowerCase() === activePool?.asset.denom) {
+      return enhancedRowan.data;
     }
     return activePool?.asset;
-  }, [selectedCollateral, activePool, tokenRowan]);
+  }, [selectedCollateralDenom, activePool, enhancedRowan.data]);
 
   /**
    * ********************************************************************************************
@@ -159,11 +161,11 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const poolAvailableTokens = useMemo(() => {
-    if (activePool && activePool.asset && tokenRowan) {
-      return [activePool.asset, tokenRowan];
+    if (activePool && activePool.asset && enhancedRowan.data) {
+      return [activePool.asset, enhancedRowan.data];
     }
     return [];
-  }, [activePool, tokenRowan]);
+  }, [activePool, enhancedRowan.data]);
 
   /**
    * ********************************************************************************************
@@ -230,10 +232,10 @@ const Trade = (props: TradeProps) => {
       (pool) => pool.externalAsset?.symbol === asset.denom,
     );
     setSelectedPool(pool);
-    setSelectedCollateral(tokenRowan);
+    setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
   };
   const onChangeCollateralSelector = (token: TokenEntry) => {
-    setSelectedCollateral(token as EnhancedRegistryAsset);
+    setSelectedCollateralDenom(token.symbol);
   };
   const onChangePositionSide = (position: string) => {
     setRadioPositionSide(position);
@@ -276,7 +278,7 @@ const Trade = (props: TradeProps) => {
   ) => {
     event.preventDefault();
     setSelectedPool(pools[0]);
-    setSelectedCollateral(tokenRowan);
+    setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
   };
   const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
     console.log(event.currentTarget);
@@ -295,7 +297,7 @@ const Trade = (props: TradeProps) => {
               value={modifiedActivePool}
               onChange={onChangePoolSelector}
               tokens={modifiedPools}
-              buttonClassName="text-base h-10 font-semibold"
+              buttonClassName="overflow-hidden text-base h-10 font-semibold"
             />
           </li>
           <li className="py-4">
@@ -325,7 +327,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-gray-300">ROWAN Price</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(rowanPrice.data || 0, 4)}
+                  {formatNumberAsCurrency(enhancedRowan.data?.priceUsd || 0, 4)}
                 </span>
                 <span className="text-red-400">(-2.8%)</span>
               </span>
@@ -365,7 +367,10 @@ const Trade = (props: TradeProps) => {
                   Account Balance
                 </span>
                 <ValueFromTo
-                  from="$50,000"
+                  from={props.accountBalance.toLocaleString("en-us", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
                   to="$49,000"
                   almostEqual={true}
                   className="font-semibold"
@@ -411,7 +416,11 @@ const Trade = (props: TradeProps) => {
               <div className="grid grid-cols-2 gap-2">
                 <BaseTokenSelector
                   modalTitle="Collateral"
-                  value={selectedCollateral}
+                  value={
+                    selectedCollateral.data
+                      ? toTokenEntry(selectedCollateral.data)
+                      : undefined
+                  }
                   onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
                   tokens={poolAvailableTokens}
@@ -454,8 +463,8 @@ const Trade = (props: TradeProps) => {
                   modalTitle="Position"
                   value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
-                  readonly
                   tokens={poolAvailableTokens}
+                  readonly
                 />
                 <input
                   type="number"
