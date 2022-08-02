@@ -1,5 +1,7 @@
+import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import { DEFAULT_FEE } from "@sifchain/stargate";
-import { invariant } from "@sifchain/ui";
+import { invariant, toast } from "@sifchain/ui";
+import { isNil } from "rambda";
 import { useMutation } from "react-query";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
@@ -29,6 +31,29 @@ const useAddLiquidityMutation = () => {
         ],
         DEFAULT_FEE,
       );
+    },
+    {
+      onMutate: () => {
+        toast.info("Add liquidity inprogress");
+      },
+      onSettled: (data, error) => {
+        if (!isNil(error)) {
+          if (error instanceof Error || "message" in (error as Error)) {
+            toast.error((error as Error).message);
+          } else {
+            toast.error("Failed to add liquidity");
+          }
+          return;
+        }
+
+        if (data === undefined) return;
+
+        if (Boolean(error) || isDeliverTxFailure(data)) {
+          toast.error(data?.rawLog ?? "Failed to add liquidity");
+        } else if (data !== undefined && isDeliverTxSuccess(data)) {
+          toast.success(`Successfully added liquidity`);
+        }
+      },
     },
   );
 
