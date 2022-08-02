@@ -7,8 +7,10 @@ import {
   RacetrackSpinnerIcon,
 } from "@sifchain/ui";
 import { FormEventHandler, useCallback, useMemo } from "react";
+import { useBalanceQuery } from "~/domains/bank/hooks/balances";
 import useAddLiquidity from "~/domains/clp/hooks/useAddLiquidity";
 import useAddLiquidityMutation from "~/domains/clp/hooks/useAddLiquidityMutation";
+import { useDexEnvironment } from "~/domains/core/envs";
 import TokenAmountFieldset from "../TokenAmountFieldset";
 import { UnlockLiquidityTokenFieldset } from "./UnlockLiquidityTokenFieldset";
 
@@ -22,6 +24,7 @@ export type ManageLiquidityModalProps = ModalProps & {
 };
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const { data: env } = useDexEnvironment();
   const {
     nativeAmountState: [nativeAmount, setNativeAmount],
     externalAmountState: [externalAmount, setExternalAmount],
@@ -31,7 +34,47 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
   } = useAddLiquidity(props.denom);
   const addLiquidityMutation = useAddLiquidityMutation();
 
+  const { data: nativeBalance } = useBalanceQuery(
+    env?.sifChainId ?? "",
+    env?.nativeAsset.symbol.toLowerCase() ?? "",
+    { enabled: env !== undefined },
+  );
+  const { data: externalBalance } = useBalanceQuery(
+    env?.sifChainId ?? "",
+    props.denom,
+    {
+      enabled: env !== undefined,
+    },
+  );
+
+  const validationError = useMemo(() => {
+    if (!addLiquidityMutation.isReady) {
+      return new Error("Please connect Sifchain wallet");
+    }
+
+    if (
+      (nativeBalance !== undefined &&
+        nativeAmountDecimal?.isGreaterThan(nativeBalance.amount)) ||
+      (externalBalance &&
+        externalAmountDecimal?.isGreaterThan(externalBalance.amount))
+    ) {
+      return new Error("Insufficient balance");
+    }
+
+    return;
+  }, [
+    addLiquidityMutation.isReady,
+    externalAmountDecimal,
+    externalBalance,
+    nativeAmountDecimal,
+    nativeBalance,
+  ]);
+
   const buttonMessage = useMemo(() => {
+    if (validationError !== undefined) {
+      return validationError.message;
+    }
+
     if (addLiquidityMutation.isError || addLiquidityMutation.isSuccess) {
       return "Close";
     }
@@ -44,6 +87,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
     addLiquidityMutation.isError,
     addLiquidityMutation.isLoading,
     addLiquidityMutation.isSuccess,
+    validationError,
   ]);
 
   const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
@@ -73,6 +117,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         label="Token 1"
         denom={props.denom}
         amount={externalAmount}
+        balance={externalBalance?.amount}
         onChangeDenom={() => {}}
         onChangeAmount={setExternalAmount}
         responsive={false}
@@ -84,8 +129,9 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
       </div>
       <TokenAmountFieldset
         label="Token 2"
-        denom="rowan"
+        denom={env?.nativeAsset.symbol.toLowerCase() ?? "rowan"}
         amount={nativeAmount}
+        balance={nativeBalance?.amount}
         onChangeDenom={() => {}}
         onChangeAmount={setNativeAmount}
         responsive={false}
@@ -102,7 +148,12 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
           </dd>
         </div>
       </dl>
-      <Button className="w-full" disabled={addLiquidityMutation.isLoading}>
+      <Button
+        className="w-full"
+        disabled={
+          addLiquidityMutation.isLoading || validationError !== undefined
+        }
+      >
         {buttonMessage}
       </Button>
     </form>
