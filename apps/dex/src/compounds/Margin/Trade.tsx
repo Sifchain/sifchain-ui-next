@@ -1,6 +1,11 @@
 import type { NextPage } from "next";
 
-import { Button, formatNumberAsCurrency, TokenEntry } from "@sifchain/ui";
+import {
+  Button,
+  formatNumberAsCurrency,
+  TokenEntry,
+  ArrowDownIcon,
+} from "@sifchain/ui";
 import Head from "next/head";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
@@ -478,63 +483,72 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           <div className="p-4">
-            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
+            <p className="text-center text-base">Review opening trade</p>
+            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg mt-4">
+              <li className="text-base font-semibold">USDC</li>
               <li>
                 <div className="flex flex-row">
                   <span className="mr-auto min-w-fit text-gray-300">
-                    Collateral Balance
+                    Collateral
                   </span>
-                  <span>$1,000 </span>
+                  <span>$1,000 USDC</span>
                 </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  50,000 ROWAN
-                </p>
               </li>
               <li>
                 <div className="flex flex-row">
                   <span className="mr-auto min-w-fit text-gray-300">
-                    Borrow Amount
+                    Borrow amount
                   </span>
-                  <span>$1,000</span>
+                  <span>$2,000 USDC</span>
                 </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  100,000 ROWAN
-                </p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Overall Position
-                  </span>
-                  <span>$2,000</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">2ETH</p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Trade Fees
-                  </span>
-                  <span>&minus;$50</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  .0005 ETH
-                </p>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Resulting Position
-                  </span>
-                  <span>$1,900</span>
-                </div>
-                <p className="text-gray-400 text-xs w-full text-right">
-                  1.9 ETH
-                </p>
               </li>
             </ul>
+            <div className="flex justify-center items-center my-[-1em]">
+              <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+                <ArrowDownIcon className="text-lg" />
+              </div>
+            </div>
+            <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
+              <li className="text-base font-semibold">ROWAN</li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Entry price
+                  </span>
+                  <span>$0.005</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Position size
+                  </span>
+                  <span>$400,000 ROWAN</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">Fees</span>
+                  <span>&minus;$50</span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row">
+                  <span className="mr-auto min-w-fit text-gray-300">
+                    Opening position
+                  </span>
+                  <span>$399.900 ROWAN</span>
+                </div>
+              </li>
+            </ul>
+            <div className="flex flex-row mt-2">
+              <span className="mr-auto min-w-fit text-gray-300">
+                Current interest rate
+              </span>
+              <span>25%</span>
+            </div>
           </div>
-          <div className="grid grid-cols-4 gap-2 px-4 pb-4">
+          <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
             <Button
               variant="tertiary"
               as="button"
