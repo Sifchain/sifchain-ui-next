@@ -19,6 +19,7 @@ export type TokenAmountFieldsetProps = {
   onChangeAmount: (amount: string) => void;
   responsive?: boolean;
   tokenSelectionDisabled?: boolean;
+  disabled?: boolean;
 };
 
 const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
@@ -74,15 +75,18 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
           value={props.amount}
           onChange={(event) => props.onChangeAmount(event.target.value)}
           leadingIcon={
-            <div className="flex gap-1.5">
-              <Label type="button" onClick={handleHalfClick}>
-                Half
-              </Label>
-              <Label type="button" onClick={handleMaxClick}>
-                Max
-              </Label>
-            </div>
+            !props.disabled && (
+              <div className="flex gap-1.5">
+                <Label type="button" onClick={handleHalfClick}>
+                  Half
+                </Label>
+                <Label type="button" onClick={handleMaxClick}>
+                  Max
+                </Label>
+              </div>
+            )
           }
+          disabled={props.disabled}
         />
       </div>
     </fieldset>
