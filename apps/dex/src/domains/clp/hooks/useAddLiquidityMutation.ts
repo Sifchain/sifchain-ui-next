@@ -11,7 +11,11 @@ const useAddLiquidityMutation = () => {
   const { data: stargateClient } = useSifSigningStargateClient();
 
   const baseMutation = useMutation(
-    async (variables: { nativeAmount: string; externalAmount: string }) => {
+    async (variables: {
+      denom: string;
+      nativeAmount: string;
+      externalAmount: string;
+    }) => {
       invariant(signer !== undefined, "signer is undefined");
       invariant(stargateClient !== undefined, "stargateClient is undefined");
 
@@ -26,6 +30,7 @@ const useAddLiquidityMutation = () => {
               signer: signerAddress,
               nativeAssetAmount: variables.nativeAmount,
               externalAssetAmount: variables.externalAmount,
+              externalAsset: { symbol: variables.denom },
             },
           },
         ],

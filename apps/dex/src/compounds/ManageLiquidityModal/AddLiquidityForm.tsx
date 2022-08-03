@@ -89,6 +89,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         externalAmountDecimal !== undefined
       ) {
         addLiquidityMutation.mutate({
+          denom: props.denom,
           nativeAmount: nativeAmountDecimal.atomics,
           externalAmount: externalAmountDecimal.atomics,
         });
