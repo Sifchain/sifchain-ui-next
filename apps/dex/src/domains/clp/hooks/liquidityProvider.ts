@@ -5,6 +5,8 @@ import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useQueryClient from "~/hooks/useQueryClient";
 
+export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
+
 export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
   const { signer } = useSigner(env?.sifChainId ?? "", {
@@ -15,7 +17,7 @@ export const useLiquidityProvidersQuery = () => {
   const { data: sifQueryClient } = useQueryClient();
 
   return useQuery(
-    ["pools", signer],
+    LIQUIDITY_PROVIDER_QUERY_KEY,
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({

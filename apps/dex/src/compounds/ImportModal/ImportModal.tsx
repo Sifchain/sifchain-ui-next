@@ -137,14 +137,16 @@ const ImportModal = (
       return "Close";
     }
 
-    return [
-      importTokensMutation.isLoading ? (
-        <RacetrackSpinnerIcon />
-      ) : (
-        <ArrowDownIcon />
-      ),
-      "Import",
-    ];
+    return (
+      <>
+        {importTokensMutation.isLoading ? (
+          <RacetrackSpinnerIcon />
+        ) : (
+          <ArrowDownIcon />
+        )}
+        Import
+      </>
+    );
   }, [
     error,
     importTokensMutation.isError,
@@ -207,10 +209,9 @@ const ImportModal = (
             inputClassName="text-right"
             type="number"
             label="Amount"
-            secondaryLabel={`Balance: ${(walletBalance ?? 0).toLocaleString(
-              undefined,
-              { maximumFractionDigits: 6 },
-            )}`}
+            secondaryLabel={`Balance: ${(
+              walletBalance?.toFloatApproximation() ?? 0
+            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),

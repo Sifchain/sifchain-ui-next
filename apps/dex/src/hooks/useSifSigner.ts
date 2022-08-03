@@ -1,5 +1,4 @@
 import { useSigner } from "@sifchain/cosmos-connect";
-import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 
 const useSifSigner = () => {
