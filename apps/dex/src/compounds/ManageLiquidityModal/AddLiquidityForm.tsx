@@ -97,6 +97,11 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
     [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props],
   );
 
+  const inputsDisabled =
+    addLiquidityMutation.isLoading ||
+    addLiquidityMutation.isSuccess ||
+    addLiquidityMutation.isError;
+
   return (
     <form onSubmit={onSubmit}>
       <TokenAmountFieldset
@@ -107,6 +112,8 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         onChangeDenom={() => {}}
         onChangeAmount={setExternalAmount}
         responsive={false}
+        tokenSelectionDisabled={inputsDisabled}
+        disabled={inputsDisabled}
       />
       <div className="flex justify-center items-center my-[-1em]">
         <div className="bg-black rounded-full p-3 border-2 border-gray-800">
@@ -122,6 +129,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         onChangeAmount={setNativeAmount}
         responsive={false}
         tokenSelectionDisabled
+        disabled={inputsDisabled}
       />
       <dl className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:justify-between">
         <div>
