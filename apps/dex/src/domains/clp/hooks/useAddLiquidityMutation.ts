@@ -2,11 +2,13 @@ import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
 import { isNil } from "rambda";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import { LIQUIDITY_PROVIDER_QUERY_KEY } from "./liquidityProvider";
 
 const useAddLiquidityMutation = () => {
+  const queryClient = useQueryClient();
   const { signer } = useSifSigner();
   const { data: stargateClient } = useSifSigningStargateClient();
 
@@ -57,6 +59,7 @@ const useAddLiquidityMutation = () => {
           toast.error(data?.rawLog ?? "Failed to add liquidity");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
           toast.success(`Successfully added liquidity`);
+          queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
         }
       },
     },
