@@ -328,12 +328,13 @@ const Trade = (props: TradeProps) => {
         <ul className="grid grid-cols-7 gap-5">
           <li className="col-span-2 pl-4 py-4">
             <BaseTokenSelector
-              textPlaceholder=""
-              modalTitle="Pool"
+              textPlaceholder="Search pools"
+              modalTitle="Select Pool"
               value={modifiedActivePool}
               onChange={onChangePoolSelector}
               tokens={modifiedPools}
               buttonClassName="overflow-hidden text-base h-10 font-semibold"
+              hideColumns={["balance"]}
             />
           </li>
           <li className="py-4">
@@ -413,6 +414,7 @@ const Trade = (props: TradeProps) => {
                   onChange={onChangeCollateralSelector}
                   buttonClassName="h-9 !text-sm"
                   tokens={poolAvailableTokens}
+                  hideColumns={["balance"]}
                 />
                 <input
                   type="number"
@@ -454,6 +456,7 @@ const Trade = (props: TradeProps) => {
                   value={selectedPosition}
                   buttonClassName="h-9 !text-sm"
                   tokens={poolAvailableTokens}
+                  hideColumns={["balance"]}
                   readonly
                 />
                 <input
