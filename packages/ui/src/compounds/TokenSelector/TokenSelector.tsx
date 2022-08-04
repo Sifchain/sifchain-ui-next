@@ -187,20 +187,21 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
               </Button>
             </div>
             <div className="flex items-center py-1 px-4 justify-between transition-colors">
-              {SORT_KEYS.map((key) => (
-                <button
-                  key={key}
-                  className="uppercase text-gray-300 flex gap-2 items-center"
-                  onClick={sort.bind(null, key)}
-                  hidden={props.hideColumns?.includes(key)}
-                >
-                  {key}{" "}
-                  <SortIcon
-                    active={key === sortKey}
-                    sortDirection={sortDirection}
-                  />
-                </button>
-              ))}
+              {SORT_KEYS.map((key) =>
+                props.hideColumns?.includes(key) ? null : (
+                  <button
+                    key={key}
+                    className="uppercase text-gray-300 flex gap-2 items-center"
+                    onClick={sort.bind(null, key)}
+                  >
+                    {key}{" "}
+                    <SortIcon
+                      active={key === sortKey}
+                      sortDirection={sortDirection}
+                    />
+                  </button>
+                ),
+              )}
             </div>
 
             <Combobox.Options as={ListContainer} static>
