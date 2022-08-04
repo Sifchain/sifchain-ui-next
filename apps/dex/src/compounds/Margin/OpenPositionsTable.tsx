@@ -311,10 +311,14 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           id={positionToClose.id}
           isOpen={positionToClose.isOpen}
           onTransitionEnd={() => {
-            setPositionToClose((prev) => ({ ...prev, id: "" }));
+            if (positionToClose.id !== "") {
+              setPositionToClose((prev) => ({ ...prev, id: "" }));
+            }
           }}
           onClose={() => {
-            setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+            if (positionToClose.isOpen) {
+              setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+            }
           }}
           onMutationSuccess={(position) => {
             toast.success(
@@ -504,8 +508,8 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
         )}
         {positionToCloseMutation.isError ? (
           <p className="text-center p-4 mt-4 rounded bg-red-200 text-red-800">
-            An error occurred:{" "}
-            {(positionToCloseMutation.error as Error).message}
+            <span className="mr-1">An error occurred:</span>
+            <span>{(positionToCloseMutation.error as Error).message}</span>
           </p>
         ) : null}
       </>

@@ -9,6 +9,19 @@ const cache: TCache = {
   history: undefined,
 };
 
+export function useMutationConfirmOpenPosition() {
+  return useMutation((position: { id: string }) => {
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        if (rand(30) > 10) {
+          res(position);
+        } else {
+          rej(new Error("Something when wrong"));
+        }
+      }, 1000);
+    });
+  });
+}
 export function useMutationPositionToClose() {
   return useMutation((position: { id: string }) => {
     return new Promise((res, rej) => {

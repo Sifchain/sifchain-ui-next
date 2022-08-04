@@ -14,7 +14,7 @@ export type TokenItemProps = Pick<
   | "hasDarkIcon"
   | "homeNetworkUrl"
 > & {
-  balance: string;
+  balance?: string;
   selected: boolean;
   active: boolean;
 };
@@ -47,13 +47,13 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
         </span>
         <span className="text-gray-300 text-sm font-normal">{props.name}</span>
       </div>
-      <div>
-        {Boolean(props.balance) && (
+      {Boolean(props.balance) && (
+        <div>
           <span className="text-white font-semibold text-sm">
             {props.balance}
           </span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
