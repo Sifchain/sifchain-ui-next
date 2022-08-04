@@ -1,20 +1,25 @@
+import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 import type { NextPage } from "next";
 
+import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
+import clsx from "clsx";
+import Head from "next/head";
+import immer from "immer";
+
 import {
+  ArrowDownIcon,
   Button,
   formatNumberAsCurrency,
+  Modal,
+  toast,
   TokenEntry,
-  ArrowDownIcon,
+  TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
-import Head from "next/head";
-import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
-import { TokenSelector as BaseTokenSelector } from "@sifchain/ui";
-import immer from "immer";
-import clsx from "clsx";
 
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
+import { toTokenEntry } from "~/compounds/TokenSelector";
+import { useBalancesStats } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery } from "~/domains/clp";
-import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
 /**
  * ********************************************************************************************
@@ -35,10 +40,8 @@ import {
   inputValidatorPosition,
   inputValidatorCollateral,
 } from "./_trade";
-import { useBalancesStats } from "~/domains/bank/hooks/balances";
-
-import { toTokenEntry } from "../TokenSelector";
 import { formatNumberAsDecimal } from "./_intl";
+import { useMutationConfirmTradeOpen } from "./_mockdata";
 
 /**
  * ********************************************************************************************
@@ -169,7 +172,7 @@ const Trade = (props: TradeProps) => {
   /**
    * ********************************************************************************************
    *
-   * Input validation and "Place Buy Order" disabling derivate
+   * Input validation and "Open trade" disabling derivate
    *
    * ********************************************************************************************
    */
@@ -186,13 +189,46 @@ const Trade = (props: TradeProps) => {
     error: "",
   });
 
-  const isDisabledPlaceBuyOrder = useMemo(() => {
+  const isDisabledOpenTrade = useMemo(() => {
     return (
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
       Boolean(inputLeverage.error)
     );
   }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
+
+  /**
+   * ********************************************************************************************
+   *
+   * "Confirm Open trade" modal
+   *
+   * ********************************************************************************************
+   */
+  const [checkbox01, setCheckbox01] = useState(false);
+  const [checkbox02, setCheckbox02] = useState(false);
+
+  const confirmTradeOpenMutation = useMutationConfirmTradeOpen();
+  const [modalConfirmOpenTrade, setModalConfirmOpenTrade] = useState({
+    isOpen: false,
+  });
+
+  const isDisabledConfirmOpenTrade = useMemo(() => {
+    return checkbox01 === false || checkbox02 === false;
+  }, [checkbox01, checkbox02]);
+  const onClickConfirmOpenTrade = async (
+    event: SyntheticEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    try {
+      const position = (await confirmTradeOpenMutation.mutateAsync({
+        id: "1234",
+      })) as { id: string };
+      setModalConfirmOpenTrade({ isOpen: false });
+      toast.success(`Trade opened successfully! Trade ID: ${position.id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   /**
    * ********************************************************************************************
@@ -268,9 +304,7 @@ const Trade = (props: TradeProps) => {
     setInputCollateral(payload);
   };
 
-  const onClickResetPlaceBuyOrder = (
-    event: SyntheticEvent<HTMLButtonElement>,
-  ) => {
+  const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const clean = {
       value: "",
@@ -280,8 +314,9 @@ const Trade = (props: TradeProps) => {
     setInputPosition(clean);
     setInputLeverage(clean);
   };
-  const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
-    console.log(event.currentTarget);
+  const onClickOpenTrade = (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setModalConfirmOpenTrade({ isOpen: true });
   };
 
   return (
@@ -558,7 +593,7 @@ const Trade = (props: TradeProps) => {
               as="button"
               size="xs"
               className="text-gray-300 font-normal self-center"
-              onClick={onClickResetPlaceBuyOrder}
+              onClick={onClickReset}
             >
               Reset
             </Button>
@@ -566,11 +601,11 @@ const Trade = (props: TradeProps) => {
               variant="primary"
               as="button"
               size="md"
-              className="col-span-3 rounded"
-              disabled={isDisabledPlaceBuyOrder}
-              onClick={onClickPlaceBuyOrder}
+              className="col-span-3"
+              disabled={isDisabledOpenTrade}
+              onClick={onClickOpenTrade}
             >
-              Place buy order
+              Open trade
             </Button>
           </div>
         </aside>
@@ -588,6 +623,119 @@ const Trade = (props: TradeProps) => {
           />
         </section>
       </section>
+      <Modal
+        className="text-sm"
+        isOpen={modalConfirmOpenTrade.isOpen}
+        onTransitionEnd={() => {
+          setCheckbox01(false);
+          setCheckbox02(false);
+        }}
+        onClose={() => {
+          if (modalConfirmOpenTrade.isOpen) {
+            setModalConfirmOpenTrade({ isOpen: false });
+          }
+        }}
+      >
+        <>
+          <h1 className="text-lg font-bold text-center">
+            Review opening trade
+          </h1>
+          <ul className="flex flex-col gap-3 mt-6">
+            <li>
+              <div className="flex flex-row">
+                <span className="mr-auto min-w-fit text-gray-300">
+                  Opening position
+                </span>
+                <span>399,999 ROWAN</span>
+              </div>
+            </li>
+            <li>
+              <div className="flex flex-row">
+                <span className="mr-auto min-w-fit text-gray-300">
+                  Entry price
+                </span>
+                <span>$0.005</span>
+              </div>
+            </li>
+            <li>
+              <div className="flex flex-row">
+                <span className="mr-auto min-w-fit text-gray-300">
+                  Current interest rate
+                </span>
+                <span>25%</span>
+              </div>
+            </li>
+          </ul>
+          <ul className="mt-6">
+            <li>
+              <label
+                htmlFor="checkbox01"
+                className="bg-gray-700 p-4 flex flex-row items-start gap-2 rounded"
+              >
+                <input
+                  id="checkbox01"
+                  name="checkbox01"
+                  type="checkbox"
+                  checked={checkbox01}
+                  onChange={() => {
+                    setCheckbox01(!checkbox01);
+                  }}
+                />
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
+                  iusto fugiat iste asperiores, non amet eligendi vitae culpa,
+                  aperiam voluptates accusamus voluptatem quibusdam modi maxime
+                  facere aliquam quae saepe quaerat.
+                </p>
+              </label>
+            </li>
+            <li>
+              <label
+                htmlFor="checkbox02"
+                className="bg-gray-700 p-4 flex flex-row items-start gap-2 rounded mt-4"
+              >
+                <input
+                  id="checkbox02"
+                  name="checkbox02"
+                  type="checkbox"
+                  checked={checkbox02}
+                  onChange={() => {
+                    setCheckbox02(!checkbox02);
+                  }}
+                />
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
+                  iusto fugiat iste asperiores, non amet eligendi vitae culpa,
+                  aperiam voluptates accusamus voluptatem quibusdam modi maxime
+                  facere aliquam quae saepe quaerat.
+                </p>
+              </label>
+            </li>
+          </ul>
+          {confirmTradeOpenMutation.isLoading ? (
+            <p className="text-center rounded py-3 px-4 mt-6 bg-indigo-200 text-indigo-800">
+              Opening trade...
+            </p>
+          ) : (
+            <Button
+              variant="primary"
+              as="button"
+              size="md"
+              className="w-full mt-6"
+              disabled={isDisabledConfirmOpenTrade}
+              onClick={onClickConfirmOpenTrade}
+            >
+              Confirm open trade
+            </Button>
+          )}
+          {confirmTradeOpenMutation.isError ? (
+            <p className="text-center p-4 mt-6 rounded bg-red-200 text-red-800">
+              <span className="mr-1">An error occurred:</span>
+              <span>{(confirmTradeOpenMutation.error as Error).message}</span>
+            </p>
+          ) : null}
+        </>
+      </Modal>
     </>
   );
 };
