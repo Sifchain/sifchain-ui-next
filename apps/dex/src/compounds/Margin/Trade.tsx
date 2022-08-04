@@ -41,7 +41,7 @@ import {
   inputValidatorCollateral,
 } from "./_trade";
 import { formatNumberAsDecimal } from "./_intl";
-import { useMutationConfirmTradeOpen } from "./_mockdata";
+import { useMutationConfirmOpenPosition } from "./_mockdata";
 
 /**
  * ********************************************************************************************
@@ -172,7 +172,7 @@ const Trade = (props: TradeProps) => {
   /**
    * ********************************************************************************************
    *
-   * Input validation and "Open trade" disabling derivate
+   * Input validation and "Open position" disabling derivate
    *
    * ********************************************************************************************
    */
@@ -189,7 +189,7 @@ const Trade = (props: TradeProps) => {
     error: "",
   });
 
-  const isDisabledOpenTrade = useMemo(() => {
+  const isDisabledOpenPosition = useMemo(() => {
     return (
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
@@ -200,31 +200,33 @@ const Trade = (props: TradeProps) => {
   /**
    * ********************************************************************************************
    *
-   * "Confirm Open trade" modal
+   * "Confirm open position" modal
    *
    * ********************************************************************************************
    */
   const [checkbox01, setCheckbox01] = useState(false);
   const [checkbox02, setCheckbox02] = useState(false);
 
-  const confirmTradeOpenMutation = useMutationConfirmTradeOpen();
-  const [modalConfirmOpenTrade, setModalConfirmOpenTrade] = useState({
+  const confirmOpenPositionMutation = useMutationConfirmOpenPosition();
+  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
 
-  const isDisabledConfirmOpenTrade = useMemo(() => {
+  const isDisabledConfirmOpenPosition = useMemo(() => {
     return checkbox01 === false || checkbox02 === false;
   }, [checkbox01, checkbox02]);
-  const onClickConfirmOpenTrade = async (
+  const onClickConfirmOpenPosition = async (
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     try {
-      const position = (await confirmTradeOpenMutation.mutateAsync({
+      const position = (await confirmOpenPositionMutation.mutateAsync({
         id: "1234",
       })) as { id: string };
-      setModalConfirmOpenTrade({ isOpen: false });
-      toast.success(`Trade opened successfully! Trade ID: ${position.id}`);
+      setModalConfirmOpenPosition({ isOpen: false });
+      toast.success(
+        `Position created successfully! Position ID: ${position.id}`,
+      );
     } catch (err) {
       console.log(err);
     }
@@ -314,9 +316,9 @@ const Trade = (props: TradeProps) => {
     setInputPosition(clean);
     setInputLeverage(clean);
   };
-  const onClickOpenTrade = (event: SyntheticEvent<HTMLButtonElement>) => {
+  const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setModalConfirmOpenTrade({ isOpen: true });
+    setModalConfirmOpenPosition({ isOpen: true });
   };
 
   return (
@@ -605,10 +607,10 @@ const Trade = (props: TradeProps) => {
               as="button"
               size="md"
               className="col-span-3"
-              disabled={isDisabledOpenTrade}
-              onClick={onClickOpenTrade}
+              disabled={isDisabledOpenPosition}
+              onClick={onClickOpenPosition}
             >
-              Open trade
+              Open position
             </Button>
           </div>
         </aside>
@@ -628,14 +630,14 @@ const Trade = (props: TradeProps) => {
       </section>
       <Modal
         className="text-sm"
-        isOpen={modalConfirmOpenTrade.isOpen}
+        isOpen={modalConfirmOpenPosition.isOpen}
         onTransitionEnd={() => {
           setCheckbox01(false);
           setCheckbox02(false);
         }}
         onClose={() => {
-          if (modalConfirmOpenTrade.isOpen) {
-            setModalConfirmOpenTrade({ isOpen: false });
+          if (modalConfirmOpenPosition.isOpen) {
+            setModalConfirmOpenPosition({ isOpen: false });
           }
         }}
       >
@@ -715,7 +717,7 @@ const Trade = (props: TradeProps) => {
               </label>
             </li>
           </ul>
-          {confirmTradeOpenMutation.isLoading ? (
+          {confirmOpenPositionMutation.isLoading ? (
             <p className="text-center rounded py-3 px-4 mt-6 bg-indigo-200 text-indigo-800">
               Opening trade...
             </p>
@@ -725,16 +727,18 @@ const Trade = (props: TradeProps) => {
               as="button"
               size="md"
               className="w-full mt-6"
-              disabled={isDisabledConfirmOpenTrade}
-              onClick={onClickConfirmOpenTrade}
+              disabled={isDisabledConfirmOpenPosition}
+              onClick={onClickConfirmOpenPosition}
             >
-              Confirm open trade
+              Confirm open position
             </Button>
           )}
-          {confirmTradeOpenMutation.isError ? (
+          {confirmOpenPositionMutation.isError ? (
             <p className="text-center p-4 mt-6 rounded bg-red-200 text-red-800">
               <span className="mr-1">An error occurred:</span>
-              <span>{(confirmTradeOpenMutation.error as Error).message}</span>
+              <span>
+                {(confirmOpenPositionMutation.error as Error).message}
+              </span>
             </p>
           ) : null}
         </>

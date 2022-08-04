@@ -14,7 +14,7 @@ export type TokenItemProps = Pick<
   | "hasDarkIcon"
   | "homeNetworkUrl"
 > & {
-  balance: string;
+  balance?: string;
   selected: boolean;
   active: boolean;
 };

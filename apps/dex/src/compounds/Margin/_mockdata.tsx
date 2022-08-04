@@ -9,7 +9,7 @@ const cache: TCache = {
   history: undefined,
 };
 
-export function useMutationConfirmTradeOpen() {
+export function useMutationConfirmOpenPosition() {
   return useMutation((position: { id: string }) => {
     return new Promise((res, rej) => {
       setTimeout(() => {
