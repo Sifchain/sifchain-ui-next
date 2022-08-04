@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 
 type TCache = {
   openPositions: undefined | ReturnType<typeof createOpenPositionsRow>[];
@@ -8,6 +8,36 @@ const cache: TCache = {
   openPositions: undefined,
   history: undefined,
 };
+
+export function useMutationPositionToClose() {
+  return useMutation((position: { id: string }) => {
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        if (rand(30) > 10) {
+          res(position);
+        } else {
+          rej(new Error("Something when wrong"));
+        }
+      }, 1000);
+    });
+  });
+}
+export function useQueryPositionToClose(params: { id: string }) {
+  return useQuery<{ id: string }, Error>(
+    ["PositionToClose", params.id],
+    () =>
+      new Promise((res, rej) => {
+        setTimeout(() => {
+          if (rand(30) > 10) {
+            res({ id: params.id });
+          } else {
+            rej(new Error("Something when wrong"));
+          }
+        }, 1000);
+      }),
+    { enabled: Boolean(params.id), retry: false },
+  );
+}
 
 export function useQueryOpenPositions(queryParams: {
   limit: string;

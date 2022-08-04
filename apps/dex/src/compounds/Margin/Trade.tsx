@@ -132,11 +132,10 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [selectedCollateralDenom, setSelectedCollateralDenom] = useState(
-    DEFAULT_COLLATERAL_DENOM,
+    activePool?.asset.denom?.toLowerCase() as string,
   );
 
   const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
-
   /**
    * ********************************************************************************************
    *
@@ -147,7 +146,7 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom.toLowerCase() === activePool?.asset.denom) {
+    if (selectedCollateralDenom === activePool?.asset.denom) {
       return enhancedRowan.data;
     }
     return activePool?.asset;
@@ -273,8 +272,13 @@ const Trade = (props: TradeProps) => {
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setSelectedPool(pools[0]);
-    setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
+    const clean = {
+      value: "",
+      error: "",
+    };
+    setInputCollateral(clean);
+    setInputPosition(clean);
+    setInputLeverage(clean);
   };
   const onClickPlaceBuyOrder = (event: SyntheticEvent<HTMLButtonElement>) => {
     console.log(event.currentTarget);

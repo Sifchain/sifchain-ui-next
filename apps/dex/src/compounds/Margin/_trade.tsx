@@ -33,12 +33,11 @@ export const COLLATERAL_MAX_VALUE = 1000000;
 
 /** @TODO Validate error message states with PM */
 const COLLATERAL_ERRORS = {
-  INVALID_NUMBER: `Collateral amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
+  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
   INVALID_RANGE: `Collateral amount must be between ${formatNumberAsCurrency(
     0,
   )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
+  INSUFFICIENT_BALANCE: "Insufficient balance",
 };
 export function inputValidatorCollateral(
   $input: HTMLInputElement,
@@ -65,6 +64,13 @@ export function inputValidatorCollateral(
     payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
   }
 
+  if (event === "blur" && Number($input.value) === 0) {
+    payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
+  }
+
+  // @TODO If they enter collateral that is greater than their available balance:
+  // Return validation for INSUFFICIENT_BALANCE
+
   return payload;
 }
 
@@ -80,12 +86,12 @@ export const POSITION_MAX_VALUE = 1000000;
 
 /** @TODO Validate error message states with PM */
 const POSITION_ERRORS = {
-  INVALID_NUMBER: `Position amount must be between ${formatNumberAsCurrency(
-    0,
-  )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
+  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
   INVALID_RANGE: `Position amount must be between ${formatNumberAsCurrency(
     0,
   )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
+  POSITION_SIZE_EXCEEDS_LEVERAGE_LIMITS:
+    "Position size exceeds leverage limits",
 };
 export function inputValidatorPosition(
   $input: HTMLInputElement,
@@ -111,6 +117,13 @@ export function inputValidatorPosition(
   if (event === "blur" && $input.value === "") {
     payload.error = POSITION_ERRORS.INVALID_NUMBER;
   }
+
+  if (event === "blur" && Number($input.value) === 0) {
+    payload.error = POSITION_ERRORS.INVALID_NUMBER;
+  }
+
+  // @TODO If they enter position that amounts to greater than 2x leverage:
+  // Return validation for POSITION_SIZE_EXCEEDS_LEVERAGE_LIMITS
 
   return payload;
 }
