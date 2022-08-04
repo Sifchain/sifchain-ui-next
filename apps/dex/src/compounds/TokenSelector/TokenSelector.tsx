@@ -30,13 +30,12 @@ export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
 const TokenSelector = (props: TokenSelectorProps) => {
   const { data: registry, indexedByDenom } = useTokenRegistryQuery();
 
-  const token =
-    props.value === undefined ? undefined : indexedByDenom[props.value];
+  const token = props.value ? indexedByDenom[props.value] : undefined;
 
   return (
     <BaseTokenSelector
       {...props}
-      value={token === undefined ? undefined : toTokenEntry(token)}
+      value={token ? toTokenEntry(token) : undefined}
       tokens={useMemo(() => registry.map(toTokenEntry), [registry])}
       onChange={useCallback(
         (token: TokenEntry) => props.onChange(indexedByDenom[token.id ?? ""]),
