@@ -522,7 +522,7 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           <div className="p-4">
-            <p className="text-center text-base">Review opening trade</p>
+            <p className="text-center text-base">Review trade</p>
             <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg mt-4">
               <li className="text-base font-semibold">USDC</li>
               <li>
