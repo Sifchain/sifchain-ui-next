@@ -6,6 +6,49 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useQueryClient from "~/hooks/useQueryClient";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
+export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";
+
+export const useLiquidityProviderQuery = (denom: string) => {
+  const { data: env } = useDexEnvironment();
+  const { signer } = useSigner(env?.sifChainId ?? "", {
+    enabled: env !== undefined,
+  });
+  const { isSuccess: isTokenRegistrySuccess, indexedByDenom } =
+    useTokenRegistryQuery();
+  const { data: sifQueryClient } = useQueryClient();
+
+  return useQuery(
+    LIQUIDITY_PROVIDER_QUERY_KEY,
+    async () => {
+      const account = await signer?.getAccounts();
+      const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
+        lpAddress: account?.[0]?.address ?? "",
+        symbol: denom,
+      });
+
+      return lpRes === undefined
+        ? undefined
+        : {
+            ...lpRes,
+            externalAssetBalance: Decimal.fromAtomics(
+              lpRes.externalAssetBalance,
+              indexedByDenom[denom]?.decimals ?? 0,
+            ),
+            nativeAssetBalance: Decimal.fromAtomics(
+              lpRes.nativeAssetBalance,
+              env?.nativeAsset.decimals ?? 0,
+            ),
+          };
+    },
+    {
+      enabled:
+        isTokenRegistrySuccess &&
+        env !== undefined &&
+        signer !== undefined &&
+        sifQueryClient != undefined,
+    },
+  );
+};
 
 export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
@@ -17,7 +60,7 @@ export const useLiquidityProvidersQuery = () => {
   const { data: sifQueryClient } = useQueryClient();
 
   return useQuery(
-    LIQUIDITY_PROVIDER_QUERY_KEY,
+    LIQUIDITY_PROVIDERS_QUERY_KEY,
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({
