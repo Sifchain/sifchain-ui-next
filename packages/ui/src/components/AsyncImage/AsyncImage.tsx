@@ -26,14 +26,11 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
   const shouldRenderPlaceholder = Boolean(!loaded && placeholder);
 
   return (
-    <figure
-      style={{
-        height: height,
-        width: width,
-      }}
+    <picture
+      style={{ height, width }}
       className={clsx(
-        containerClassName,
         "relative grid place-items-center overflow-hidden",
+        containerClassName,
       )}
     >
       {shouldRenderPlaceholder && <>{placeholder}</>}
@@ -50,6 +47,6 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
         )}
         {...props}
       />
-    </figure>
+    </picture>
   );
 });

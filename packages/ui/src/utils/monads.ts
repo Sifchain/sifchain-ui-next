@@ -45,5 +45,19 @@ export class Maybe<T> {
     return defaultValue;
   }
 
-  //
+  mapOrUndefined<U>(fn: (value: NonNullable<T>) => U): U | undefined {
+    if (this.isSome) {
+      return fn(this._value as NonNullable<T>);
+    }
+
+    return undefined;
+  }
+
+  mapOrNull<U>(fn: (value: NonNullable<T>) => U): U | null {
+    if (this.isSome) {
+      return fn(this._value as NonNullable<T>);
+    }
+
+    return null;
+  }
 }

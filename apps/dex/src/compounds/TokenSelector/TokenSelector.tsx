@@ -1,9 +1,13 @@
 import {
+  Maybe,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
   TokenSelectorProps as BaseTokenSelectorProps,
 } from "@sifchain/ui";
+import { pipe } from "ramda";
 import { useCallback, useMemo } from "react";
+
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
@@ -23,25 +27,58 @@ export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   homeNetworkUrl:
     x.network !== x.homeNetwork ? `/chains/${x.homeNetwork}.png` : undefined,
   imageUrl: x.imageUrl ?? "",
-  balance: "",
+  balance: "0.00",
   hasDarkIcon: Boolean(x.hasDarkIcon),
 });
 
-const TokenSelector = (props: TokenSelectorProps) => {
-  const { data: registry, indexedByDenom } = useTokenRegistryQuery();
+export function useTokenEntriesWithBalance() {
+  const { data: registry } = useTokenRegistryQuery();
+  const { findBySymbolOrDenom } = useAllBalancesQuery();
 
-  const token =
-    props.value === undefined ? undefined : indexedByDenom[props.value];
+  const toTokenEntryWithBalance = useCallback(
+    (token: TokenEntry) => {
+      const balance = findBySymbolOrDenom(token.id ?? token.symbol);
+
+      return balance?.amount
+        ? {
+            ...token,
+            balance: balance.amount
+              .toFloatApproximation()
+              .toLocaleString(undefined, {
+                style: "decimal",
+              }),
+          }
+        : token;
+    },
+    [findBySymbolOrDenom],
+  );
+
+  return useMemo(
+    () => registry.map(pipe(toTokenEntry, toTokenEntryWithBalance)),
+    [registry, toTokenEntryWithBalance],
+  );
+}
+
+const TokenSelector = (props: TokenSelectorProps) => {
+  const { indexedByDenom } = useTokenRegistryQuery();
+
+  const handleChange = useCallback(
+    (token: TokenEntry) => props.onChange(indexedByDenom[token.id ?? ""]),
+    [indexedByDenom, props],
+  );
+
+  const tokens = useTokenEntriesWithBalance();
+
+  const value = Maybe.of(props.value)
+    .map((x) => indexedByDenom[x])
+    .mapOr(undefined, toTokenEntry);
 
   return (
     <BaseTokenSelector
       {...props}
-      value={token === undefined ? undefined : toTokenEntry(token)}
-      tokens={useMemo(() => registry.map(toTokenEntry), [registry])}
-      onChange={useCallback(
-        (token: TokenEntry) => props.onChange(indexedByDenom[token.id ?? ""]),
-        [indexedByDenom, props],
-      )}
+      value={value}
+      tokens={tokens}
+      onChange={handleChange}
     />
   );
 };

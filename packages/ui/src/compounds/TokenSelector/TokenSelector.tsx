@@ -87,11 +87,10 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const filtered = useMemo(() => {
     return !sanitizedQuery.length
       ? sorted
-      : sorted.filter(
-          (token) =>
-            token.name.toLowerCase().includes(sanitizedQuery) ||
-            token.symbol.toLowerCase().includes(sanitizedQuery) ||
-            token.displaySymbol.toLowerCase().includes(sanitizedQuery),
+      : sorted.filter((token) =>
+          [token.name, token.symbol, token.displaySymbol].some((value) =>
+            value.toLowerCase().includes(sanitizedQuery),
+          ),
         );
   }, [sorted, sanitizedQuery]);
 
@@ -168,6 +167,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
           value={selectedToken}
           onChange={(token) => {
             setSelectedToken(token);
+            setQuery("");
             setIsOpen(false);
           }}
         >
@@ -179,7 +179,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 placeholder={props.textPlaceholder}
                 onChange={(event) => setQuery(event.target.value)}
                 displayValue={(token: TokenEntry) =>
-                  token.displaySymbol || token.symbol
+                  sanitizedQuery || token.displaySymbol || token.symbol
                 }
               />
               <Button variant="secondary" className="h-11 w-11 !p-0 hidden">
