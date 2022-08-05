@@ -27,13 +27,10 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
 
   return (
     <picture
-      style={{
-        height: height,
-        width: width,
-      }}
+      style={{ height, width }}
       className={clsx(
-        containerClassName,
         "relative grid place-items-center overflow-hidden",
+        containerClassName,
       )}
     >
       {shouldRenderPlaceholder && <>{placeholder}</>}
