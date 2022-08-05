@@ -3,7 +3,11 @@ import { useSigner } from "@sifchain/cosmos-connect";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { useBlockTimeQuery } from "~/hooks/useBlockTime";
+import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
+import useSifnodeQuery from "~/hooks/useSifnodeQuery";
+import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
 export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";
@@ -16,6 +20,11 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } =
     useTokenRegistryQuery();
   const { data: sifQueryClient } = useQueryClient();
+  const { data: rewardParamsRes } = useSifnodeQuery("clp.getRewardParams", [
+    {},
+  ]);
+  const { data: blockTime } = useBlockTimeQuery();
+  const { data: blockHeight } = useCurrentBlockHeight();
 
   return useQuery(
     LIQUIDITY_PROVIDER_QUERY_KEY,
@@ -38,6 +47,24 @@ export const useLiquidityProviderQuery = (denom: string) => {
               lpRes.nativeAssetBalance,
               env?.nativeAsset.decimals ?? 0,
             ),
+            liquidityProvider:
+              lpRes.liquidityProvider === undefined
+                ? undefined
+                : {
+                    ...lpRes.liquidityProvider,
+                    unlocks: lpRes.liquidityProvider.unlocks.map((unlock) => ({
+                      ...unlock,
+                      ...getLiquidityUnlockStatus(
+                        unlock.requestHeight.toNumber(),
+                        rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
+                          0,
+                        rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
+                          0,
+                        blockHeight ?? 0,
+                        blockTime ?? 0,
+                      ),
+                    })),
+                  },
           };
     },
     {
@@ -45,7 +72,10 @@ export const useLiquidityProviderQuery = (denom: string) => {
         isTokenRegistrySuccess &&
         env !== undefined &&
         signer !== undefined &&
-        sifQueryClient != undefined,
+        sifQueryClient != undefined &&
+        rewardParamsRes !== undefined &&
+        blockTime !== undefined &&
+        blockHeight !== undefined,
     },
   );
 };
@@ -58,6 +88,11 @@ export const useLiquidityProvidersQuery = () => {
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } =
     useTokenRegistryQuery();
   const { data: sifQueryClient } = useQueryClient();
+  const { data: rewardParamsRes } = useSifnodeQuery("clp.getRewardParams", [
+    {},
+  ]);
+  const { data: blockTime } = useBlockTimeQuery();
+  const { data: blockHeight } = useCurrentBlockHeight();
 
   return useQuery(
     LIQUIDITY_PROVIDERS_QUERY_KEY,
@@ -82,6 +117,24 @@ export const useLiquidityProvidersQuery = () => {
                 x.nativeAssetBalance,
                 env?.nativeAsset.decimals ?? 0,
               ),
+              liquidityProvider:
+                x.liquidityProvider === undefined
+                  ? undefined
+                  : {
+                      ...x.liquidityProvider,
+                      unlocks: x.liquidityProvider.unlocks.map((unlock) => ({
+                        ...unlock,
+                        ...getLiquidityUnlockStatus(
+                          unlock.requestHeight.toNumber(),
+                          rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
+                            0,
+                          rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
+                            0,
+                          blockHeight ?? 0,
+                          blockTime ?? 0,
+                        ),
+                      })),
+                    },
             })),
           };
     },
@@ -90,7 +143,10 @@ export const useLiquidityProvidersQuery = () => {
         isTokenRegistrySuccess &&
         env !== undefined &&
         signer !== undefined &&
-        sifQueryClient != undefined,
+        sifQueryClient != undefined &&
+        rewardParamsRes !== undefined &&
+        blockTime !== undefined &&
+        blockHeight !== undefined,
     },
   );
 };
