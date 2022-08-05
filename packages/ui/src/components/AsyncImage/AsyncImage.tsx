@@ -26,7 +26,7 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
   const shouldRenderPlaceholder = Boolean(!loaded && placeholder);
 
   return (
-    <figure
+    <picture
       style={{
         height: height,
         width: width,
@@ -50,6 +50,6 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
         )}
         {...props}
       />
-    </figure>
+    </picture>
   );
 });
