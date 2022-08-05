@@ -10,6 +10,7 @@ import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidi
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
+import { withRedirectOnMount } from "~/lib/featureFlags";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhitespace } from "~/utils/string";
 
@@ -78,7 +79,7 @@ const usePoolsPageData = () => {
   );
 };
 
-const Pools: NextPage = () => {
+const PoolsPage: NextPage = () => {
   const router = useRouter();
   const { data } = usePoolsPageData();
   const searchQuery = decodeURIComponent(
@@ -269,4 +270,7 @@ const Pools: NextPage = () => {
   );
 };
 
-export default Pools;
+export default withRedirectOnMount(PoolsPage, {
+  redirectTo: "/margin",
+  redirectIf: ({ flags }) => flags.has("margin-standalone"),
+});

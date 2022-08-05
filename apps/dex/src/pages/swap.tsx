@@ -7,6 +7,7 @@ import {
   SwapIcon,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
   startTransition,
@@ -24,6 +25,7 @@ import { useEnhancedTokenQuery, useSwapMutation } from "~/domains/clp";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import { withRedirectOnMount } from "~/lib/featureFlags";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhitespace } from "~/utils/string";
 
@@ -53,7 +55,7 @@ function formatPercent(value: Decimal | number, maximumFractionDigits = 6) {
   });
 }
 
-const SwapPage = () => {
+const SwapPage: NextPage = () => {
   const router = useRouter();
 
   const swapMutation = useSwapMutation();
@@ -381,4 +383,7 @@ const SwapPage = () => {
   );
 };
 
-export default SwapPage;
+export default withRedirectOnMount(SwapPage, {
+  redirectTo: "/margin",
+  redirectIf: ({ flags }) => flags.has("margin-standalone"),
+});
