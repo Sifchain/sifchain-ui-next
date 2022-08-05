@@ -5,7 +5,10 @@ import { isNil } from "rambda";
 import { useMutation, useQueryClient } from "react-query";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
-import { LIQUIDITY_PROVIDERS_QUERY_KEY } from "./liquidityProvider";
+import {
+  LIQUIDITY_PROVIDERS_QUERY_KEY,
+  LIQUIDITY_PROVIDER_QUERY_KEY,
+} from "./liquidityProvider";
 
 const useAddLiquidityMutation = () => {
   const queryClient = useQueryClient();
@@ -59,6 +62,7 @@ const useAddLiquidityMutation = () => {
           toast.error(data?.rawLog ?? "Failed to add liquidity");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
           toast.success(`Successfully added liquidity`);
+          queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
           queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
