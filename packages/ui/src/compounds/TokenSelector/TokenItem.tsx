@@ -14,7 +14,7 @@ export type TokenItemProps = Pick<
   | "hasDarkIcon"
   | "homeNetworkUrl"
 > & {
-  balance?: string;
+  balance?: number;
   selected: boolean;
   active: boolean;
 };
@@ -47,10 +47,13 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
         </span>
         <span className="text-gray-300 text-sm font-normal">{props.name}</span>
       </div>
-      {Boolean(props.balance) && (
+      {props.balance !== undefined && (
         <div>
           <span className="text-white font-semibold text-sm">
-            {props.balance}
+            {props.balance.toLocaleString(undefined, {
+              style: "decimal",
+              maximumFractionDigits: 4,
+            })}
           </span>
         </div>
       )}

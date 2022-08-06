@@ -10,5 +10,5 @@ export type TokenEntry = {
   imageUrl?: string;
   homeNetworkUrl?: string;
   hasDarkIcon?: boolean;
-  balance?: string;
+  balance?: number;
 };

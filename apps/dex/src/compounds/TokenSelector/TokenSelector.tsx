@@ -27,7 +27,6 @@ export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   homeNetworkUrl:
     x.network !== x.homeNetwork ? `/chains/${x.homeNetwork}.png` : undefined,
   imageUrl: x.imageUrl ?? "",
-  balance: "0.00",
   hasDarkIcon: Boolean(x.hasDarkIcon),
 });
 
@@ -42,11 +41,7 @@ export function useTokenEntriesWithBalance() {
       return balance?.amount
         ? {
             ...token,
-            balance: balance.amount
-              .toFloatApproximation()
-              .toLocaleString(undefined, {
-                style: "decimal",
-              }),
+            balance: balance.amount.toFloatApproximation(),
           }
         : token;
     },

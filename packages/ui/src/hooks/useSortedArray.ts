@@ -1,38 +1,54 @@
 import { useCallback, useMemo, useState } from "react";
 
-export function useSortedArray<T>(tokens: T[], defaulSortKey: keyof T) {
-  const [sortKey, setSortKey] = useState<keyof T>(defaulSortKey);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+const isTypeOf =
+  <T>(type: "string" | "number") =>
+  (value: unknown): value is T =>
+    typeof value === type;
+
+const isNumber = isTypeOf<number>("number");
+const isString = isTypeOf<string>("string");
+
+export type SortableAs = "string" | "number";
+
+export type SortOptions<T> = {
+  sortKey: keyof T;
+  sortDirection: "asc" | "desc";
+  sortAs?: "string" | "number";
+};
+
+export function useSortedArray<T>(tokens: T[], defaultOptions: SortOptions<T>) {
+  const [{ sortAs, sortKey, sortDirection }, setSortOptions] =
+    useState(defaultOptions);
 
   const sorted = useMemo(() => {
     const sorted = [...tokens].sort((a, b) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
 
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
+      if (sortAs === "number" || (isNumber(aValue) && isNumber(bValue))) {
+        const a = Number(aValue ?? 0);
+        const b = Number(bValue ?? 0);
+        return a === b ? 0 : a > b ? 1 : -1;
       }
 
-      if (aValue === bValue) {
-        return 0;
+      if (sortAs === "string" || (isString(aValue) && isString(bValue))) {
+        return String(aValue).localeCompare(String(bValue));
       }
-      if (aValue < bValue) {
-        return sortDirection === "asc" ? -1 : 1;
-      }
-      return sortDirection === "asc" ? 1 : -1;
+      return 0;
     });
-    return sorted;
+
+    return sortDirection === "asc" ? sorted : [...sorted].reverse();
   }, [sortKey, sortDirection, tokens]);
 
   const handleSortClick = useCallback(
-    (key: keyof T) => {
-      if (sortKey === key) {
-        setSortDirection((x) => (x === "asc" ? "desc" : "asc"));
+    (options: SortOptions<T>) => {
+      if (sortKey === options.sortKey) {
+        setSortOptions((x) => ({
+          ...x,
+          sortDirection: x.sortDirection === "asc" ? "desc" : "asc",
+        }));
       } else {
-        setSortKey(key);
-        setSortDirection("asc");
+        setSortOptions(options);
       }
     },
     [sortKey],

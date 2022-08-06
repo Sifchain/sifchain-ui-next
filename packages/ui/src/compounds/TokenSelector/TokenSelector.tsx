@@ -7,14 +7,14 @@ import {
   AsyncImage,
   Button,
   ChevronDownIcon,
+  LockIcon,
   Modal,
   PencilIcon,
   RacetrackSpinnerIcon,
   SearchInput,
   SortIcon,
-  LockIcon,
 } from "../../components";
-import { useSortedArray } from "../../hooks";
+import { SortOptions, useSortedArray } from "../../hooks";
 import { TokenItem, TokenItemProps } from "./TokenItem";
 import type { TokenEntry } from "./types";
 
@@ -63,7 +63,18 @@ export type TokenSelectorProps = {
 
 type SortKeys = keyof TokenEntry;
 
-const SORT_KEYS: SortKeys[] = ["name", "balance"];
+const SORT_KEYS: SortOptions<TokenEntry>[] = [
+  {
+    sortKey: "name",
+    sortAs: "string",
+    sortDirection: "asc",
+  },
+  {
+    sortKey: "balance",
+    sortAs: "number",
+    sortDirection: "desc",
+  },
+];
 
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +84,11 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [query, setQuery] = useState("");
   const { sorted, sort, sortKey, sortDirection } = useSortedArray(
     props.tokens,
-    "name",
+    {
+      sortKey: "balance",
+      sortAs: "number",
+      sortDirection: "desc",
+    },
   );
 
   useEffect(() => {
@@ -187,16 +202,16 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
               </Button>
             </div>
             <div className="flex items-center py-1 px-4 justify-between transition-colors">
-              {SORT_KEYS.map((key) =>
-                props.hideColumns?.includes(key) ? null : (
+              {SORT_KEYS.map((options) =>
+                props.hideColumns?.includes(options.sortKey) ? null : (
                   <button
-                    key={key}
+                    key={options.sortKey}
                     className="uppercase text-gray-300 flex gap-2 items-center"
-                    onClick={sort.bind(null, key)}
+                    onClick={sort.bind(null, options)}
                   >
-                    {key}{" "}
+                    {options.sortKey}{" "}
                     <SortIcon
-                      active={key === sortKey}
+                      active={options.sortKey === sortKey}
                       sortDirection={sortDirection}
                     />
                   </button>
