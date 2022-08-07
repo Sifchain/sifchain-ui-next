@@ -556,7 +556,7 @@ const Trade = (props: TradeProps) => {
                 </div>
               </li>
             </ul>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 mt-8">
               <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
                 <AssetIcon symbol="rowan" network="sifchain" size="sm" />
                 <span className="ml-1">ROWAN</span>
