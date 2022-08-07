@@ -135,7 +135,7 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [selectedCollateralDenom, setSelectedCollateralDenom] = useState(
-    activePool?.asset.denom?.toLowerCase() as string,
+    activePool?.asset.symbol.toLowerCase() as string,
   );
 
   const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
