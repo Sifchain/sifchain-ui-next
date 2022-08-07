@@ -1,30 +1,36 @@
-import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import { ChangeEvent, SyntheticEvent, useCallback } from "react";
 import type { NextPage } from "next";
 
-import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
+import { pathOr } from "ramda";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
 import clsx from "clsx";
 import Head from "next/head";
-import immer from "immer";
 
 import {
   Button,
   formatNumberAsCurrency,
   Modal,
+  RacetrackSpinnerIcon,
+  SwapIcon,
   toast,
   TokenEntry,
+  TokenItem,
+  TokenItemProps,
   TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
-import { toTokenEntry } from "~/compounds/TokenSelector";
 import { useBalancesStats } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery } from "~/domains/clp";
 
 /**
  * ********************************************************************************************
  *
- * - `_trade`: Constant values, functions to abstract logic, and input validation utilities used across Trade page. They will be moved to a different place.
+ * `_trade`: Input validation for Trade page.
+ * `_mockdata`: To mock React-Query and fake the Data Services reponses
+ * `_intl`: Functions to format data used across Margin. They will be moved to a different place.
  *
  * ********************************************************************************************
  */
@@ -89,10 +95,10 @@ export default TradeCompound;
  * ********************************************************************************************
  *
  * Trade is responsible for loading:
- *   - Query list of Open Positions based on selected Pool
- *   - Query list of History based on selected Pool
+ *   - Query list of Open Positions based on pool active
+ *   - Query list of History based on pool active
  *   - Perform trade entry calculations and trade summary
- *   - Mutate/Submit a place buy order
+ *   - Mutate/Submit an open mtp position
  *
  * ********************************************************************************************
  */
@@ -102,43 +108,60 @@ type TradeProps = {
   accountBalance: number;
 };
 
-const DEFAULT_COLLATERAL_DENOM = "rowan";
+const ROWAN_DENOM = "rowan";
+const mutateDisplaySymbol = (displaySymbol: string) =>
+  `${displaySymbol.toUpperCase()} · ${ROWAN_DENOM.toUpperCase()}`;
 
 const Trade = (props: TradeProps) => {
+  const router = useRouter();
   const { enhancedPools } = props;
 
   /**
    * ********************************************************************************************
    *
-   * Derivate `activePool` to enable "reactivity". On first load "pools[0]" may be "undefined"
-   * "setSelectedPool" is used in "Inputs Event Handlers" section
+   * Rowan Token doesn't change
    *
    * ********************************************************************************************
    */
-  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
-  const [selectedPool, setSelectedPool] = useState<typeof pools[0]>();
-
-  const activePool = useMemo(() => {
-    if (selectedPool) {
-      return selectedPool;
-    }
-    return pools[0];
-  }, [pools, selectedPool]);
-
-  const enhancedRowan = useEnhancedTokenQuery(DEFAULT_COLLATERAL_DENOM);
+  const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
 
   /**
    * ********************************************************************************************
    *
-   * Collateral default is to display "ROWAN" and it can be changed
+   * If there's a "pool" in the URL, we use it to filter and sete the pool active based on it
+   * Otherwise, return the first result of the pools list
    *
    * ********************************************************************************************
    */
-  const [selectedCollateralDenom, setSelectedCollateralDenom] = useState(
-    activePool?.asset.symbol.toLowerCase() as string,
-  );
+  const qsPool = pathOr(undefined, ["pool"], router.query);
+  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
+  const poolsAssets = useMemo(() => pools.map((pool) => pool.asset), [pools]);
+  const poolActive = useMemo(() => {
+    if (qsPool) {
+      const pool = pools.find((pool) => pool.asset.denom === qsPool);
+      if (pool) {
+        return pool;
+      }
+    }
+    return pools[0];
+  }, [pools, qsPool]);
 
+  /**
+   * ********************************************************************************************
+   *
+   * Collateral default is to set the "non-rowan"/"external" asset
+   *   - If doesn't exist, return ROWAN
+   *
+   * ********************************************************************************************
+   */
+  const selectedCollateralDenom = useMemo(() => {
+    if (poolActive && poolActive.asset.denom) {
+      return poolActive.asset.denom;
+    }
+    return ROWAN_DENOM;
+  }, [poolActive]);
   const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
+
   /**
    * ********************************************************************************************
    *
@@ -149,25 +172,14 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom === activePool?.asset.denom) {
+    if (selectedCollateralDenom === poolActive?.asset.denom) {
       return enhancedRowan.data;
     }
-    return activePool?.asset;
-  }, [selectedCollateralDenom, activePool, enhancedRowan.data]);
-
-  /**
-   * ********************************************************************************************
-   *
-   * Collateral and Position dropdown must display only tokens from the pool + native (Rowan)
-   *
-   * ********************************************************************************************
-   */
-  const poolAvailableTokens = useMemo(() => {
-    if (activePool && activePool.asset && enhancedRowan.data) {
-      return [activePool.asset, enhancedRowan.data];
+    if (poolActive) {
+      return poolActive.asset;
     }
-    return [];
-  }, [activePool, enhancedRowan.data]);
+    return enhancedRowan.data;
+  }, [selectedCollateralDenom, poolActive, enhancedRowan.data]);
 
   /**
    * ********************************************************************************************
@@ -235,66 +247,10 @@ const Trade = (props: TradeProps) => {
   /**
    * ********************************************************************************************
    *
-   * Changing `displaySymbol` to match design requirements and`TokenSelector` API
-   * We don't need that in the real object / data
+   * "Collateral" input form handlers
    *
    * ********************************************************************************************
    */
-  const modifiedActivePool = useMemo(() => {
-    return immer(activePool?.asset, (draftAsset) => {
-      if (draftAsset) {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
-      }
-    });
-  }, [activePool?.asset]);
-  const modifiedPools = useMemo(() => {
-    return pools.map((pool) =>
-      immer(pool.asset, (draftAsset) => {
-        draftAsset.displaySymbol = `${draftAsset?.displaySymbol} · ROWAN`;
-      }),
-    );
-  }, [pools]);
-
-  /**
-   * ********************************************************************************************
-   *
-   * Inputs Event Handlers
-   *
-   * ********************************************************************************************
-   */
-  const onChangePoolSelector = (token: TokenEntry) => {
-    const asset = token as EnhancedRegistryAsset;
-    const pool = pools.find(
-      (pool) => pool.externalAsset?.symbol === asset.denom,
-    );
-    setSelectedPool(pool);
-    setSelectedCollateralDenom(DEFAULT_COLLATERAL_DENOM);
-  };
-  const onChangeCollateralSelector = (token: TokenEntry) => {
-    setSelectedCollateralDenom(token.symbol.toLowerCase());
-  };
-  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "change");
-    setInputLeverage(payload);
-  };
-  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur");
-    setInputLeverage(payload);
-  };
-
-  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "change");
-    setInputPosition(payload);
-  };
-  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "blur");
-    setInputPosition(payload);
-  };
-
   const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
@@ -306,6 +262,49 @@ const Trade = (props: TradeProps) => {
     setInputCollateral(payload);
   };
 
+  /**
+   * ********************************************************************************************
+   *
+   * "Position" input form handlers
+   *
+   * ********************************************************************************************
+   */
+  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "change");
+    setInputPosition(payload);
+  };
+  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorPosition($input, "blur");
+    setInputPosition(payload);
+  };
+
+  /**
+   * ********************************************************************************************
+   *
+   * "Leverage" input form handlers
+   *
+   * ********************************************************************************************
+   */
+  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "change");
+    setInputLeverage(payload);
+  };
+  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
+    const $input = event.currentTarget;
+    const payload = inputValidatorLeverage($input, "blur");
+    setInputLeverage(payload);
+  };
+
+  /**
+   * ********************************************************************************************
+   *
+   * "Review trade" form handlers
+   *
+   * ********************************************************************************************
+   */
   const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const clean = {
@@ -321,6 +320,49 @@ const Trade = (props: TradeProps) => {
     setModalConfirmOpenPosition({ isOpen: true });
   };
 
+  /**
+   * ********************************************************************************************
+   *
+   * "Pool Selector" values and handlers
+   *
+   * We mutate `displaySymbol` used by TokenSelector to display the asset name
+   * Requirements for Trade says we need to show "<external-asset-name> · ROWAN"
+   *
+   * ********************************************************************************************
+   */
+  const tokenSelectorValue = useMemo(() => {
+    if (poolActive) {
+      return {
+        ...poolActive.asset,
+        displaySymbol: mutateDisplaySymbol(poolActive?.asset.displaySymbol),
+      };
+    }
+    return undefined;
+  }, [poolActive]);
+
+  const onRenderTokenItem = useCallback((props: TokenItemProps) => {
+    const displaySymbol = mutateDisplaySymbol(props.displaySymbol);
+    return <TokenItem {...props} displaySymbol={displaySymbol} />;
+  }, []);
+
+  const onChangePoolSelector = useCallback(
+    (token: TokenEntry) => {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            pool: token.symbol.toLowerCase(),
+          },
+        },
+        undefined,
+        {
+          scroll: false,
+        },
+      );
+    },
+    [router],
+  );
+
   return (
     <>
       <Head>
@@ -332,11 +374,12 @@ const Trade = (props: TradeProps) => {
             <BaseTokenSelector
               textPlaceholder="Search pools"
               modalTitle="Select Pool"
-              value={modifiedActivePool}
-              onChange={onChangePoolSelector}
-              tokens={modifiedPools}
+              value={tokenSelectorValue}
+              tokens={poolsAssets}
               buttonClassName="overflow-hidden text-base h-10 font-semibold"
               hideColumns={["balance"]}
+              renderTokenItem={onRenderTokenItem}
+              onChange={onChangePoolSelector}
             />
           </li>
           <li className="py-4">
@@ -344,7 +387,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-gray-300">Pool TVL</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(activePool?.stats.poolTVL || 0)}
+                  {formatNumberAsCurrency(poolActive?.stats.poolTVL || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -355,7 +398,7 @@ const Trade = (props: TradeProps) => {
               <span className="text-gray-300">Pool Volume</span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
-                  {formatNumberAsCurrency(activePool?.stats.volume || 0)}
+                  {formatNumberAsCurrency(poolActive?.stats.volume || 0)}
                 </span>
                 <span className="text-green-400">(+2.8%)</span>
               </span>
@@ -375,13 +418,13 @@ const Trade = (props: TradeProps) => {
           <li className="py-4">
             <div className="flex flex-col">
               <span className="text-gray-300">
-                {activePool?.stats.symbol?.toUpperCase()} Price
+                {poolActive?.asset.label} Price
               </span>
               <span className="font-semibold text-sm">
                 <span className="mr-1">
                   <span className="mr-1">
                     {formatNumberAsCurrency(
-                      Number(activePool?.stats.priceToken) || 0,
+                      Number(poolActive?.stats.priceToken) || 0,
                     )}
                   </span>
                 </span>
@@ -405,19 +448,20 @@ const Trade = (props: TradeProps) => {
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Collateral</span>
               <div className="grid grid-cols-2 gap-2">
-                <BaseTokenSelector
-                  textPlaceholder=""
-                  modalTitle="Collateral"
-                  value={
-                    selectedCollateral.data
-                      ? toTokenEntry(selectedCollateral.data)
-                      : undefined
-                  }
-                  onChange={onChangeCollateralSelector}
-                  buttonClassName="h-9 !text-sm"
-                  tokens={poolAvailableTokens}
-                  hideColumns={["balance"]}
-                />
+                <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                  {selectedCollateral.data ? (
+                    <>
+                      <AssetIcon
+                        symbol={selectedCollateral.data.denom}
+                        network="sifchain"
+                        size="sm"
+                      />
+                      <span>{selectedCollateral.data.name}</span>
+                    </>
+                  ) : (
+                    <RacetrackSpinnerIcon />
+                  )}
+                </p>
                 <input
                   type="number"
                   placeholder="Collateral amount"
@@ -449,18 +493,27 @@ const Trade = (props: TradeProps) => {
                 </span>
               )}
             </li>
+            <li className="flex justify-center items-center py-5 relative">
+              <div className="h-1 w-full bg-gray-900" />
+              <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800 absolute">
+                <SwapIcon className="text-lg" />
+              </div>
+            </li>
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
               <div className="grid grid-cols-2 gap-2">
-                <BaseTokenSelector
-                  textPlaceholder=""
-                  modalTitle="Position"
-                  value={selectedPosition}
-                  buttonClassName="h-9 !text-sm"
-                  tokens={poolAvailableTokens}
-                  hideColumns={["balance"]}
-                  readonly
-                />
+                <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                  {selectedPosition ? (
+                    <>
+                      <AssetIcon
+                        symbol={selectedPosition.denom as string}
+                        network="sifchain"
+                        size="sm"
+                      />
+                      <span>{selectedPosition.name}</span>
+                    </>
+                  ) : null}
+                </p>
                 <input
                   type="number"
                   placeholder="Position amount"
@@ -493,7 +546,7 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
-              <p className="col-span-3 self-end text-sm font-semibold p-2 text-center cursor-pointer bg-gray-500 text-gray-200 z-10 rounded hover:ring-1 hover:ring-indigo-300">
+              <p className="col-span-3 self-end text-sm font-semibold p-2 text-center bg-gray-500 text-gray-200 rounded">
                 Long
               </p>
               <div className="col-span-3 flex flex-col">
@@ -526,108 +579,149 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
           </ul>
-          <div className="p-4">
-            <p className="text-center text-base">Review trade</p>
-            <ul className="flex flex-col gap-3 mt-4">
-              <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-                <span className="ml-1">USDC</span>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Collateral
-                  </span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">$1,000</span>
-                    <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-                  </div>
-                </div>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Borrow amount
-                  </span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">$2,000</span>
-                    <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <ul className="flex flex-col gap-3 mt-8">
-              <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-                <span className="ml-1">ROWAN</span>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Entry price
-                  </span>
-                  <span>$0.005</span>
-                </div>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Position size
-                  </span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">$400,000</span>
-                    <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-                  </div>
-                </div>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-                  <span>&minus;$50</span>
-                </div>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Opening position
-                  </span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">$320,000</span>
-                    <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-                  </div>
-                </div>
-              </li>
-              <li className="px-4">
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">
-                    Current interest rate
-                  </span>
-                  <span>25%</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
-            <Button
-              variant="tertiary"
-              as="button"
-              size="xs"
-              className="text-gray-300 font-normal self-center"
-              onClick={onClickReset}
-            >
-              Reset
-            </Button>
-            <Button
-              variant="primary"
-              as="button"
-              size="md"
-              className="col-span-3"
-              disabled={isDisabledOpenPosition}
-              onClick={onClickOpenPosition}
-            >
-              Open position
-            </Button>
-          </div>
+          {selectedCollateral.data && selectedPosition ? (
+            <>
+              <div className="p-4">
+                <p className="text-center text-base">Review trade</p>
+                <ul className="flex flex-col gap-3 mt-4">
+                  <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+                    <AssetIcon
+                      symbol={selectedCollateral.data.denom}
+                      network="sifchain"
+                      size="sm"
+                    />
+                    <span className="ml-1">
+                      {selectedCollateral.data.name.toUpperCase()}
+                    </span>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Collateral
+                      </span>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-1">$1,000</span>
+                        <AssetIcon
+                          symbol={selectedCollateral.data.denom}
+                          network="sifchain"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Borrow amount
+                      </span>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-1">$2,000</span>
+                        <AssetIcon
+                          symbol={selectedCollateral.data.denom}
+                          network="sifchain"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <ul className="flex flex-col gap-3 mt-8">
+                  <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+                    <AssetIcon
+                      symbol={selectedPosition.denom as string}
+                      network="sifchain"
+                      size="sm"
+                    />
+                    <span className="ml-1">
+                      {selectedPosition.name.toUpperCase()}
+                    </span>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Entry price
+                      </span>
+                      <span>$0.005</span>
+                    </div>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Position size
+                      </span>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-1">$400,000</span>
+                        <AssetIcon
+                          symbol={selectedPosition.denom as string}
+                          network="sifchain"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Fees
+                      </span>
+                      <div className="flex flex-row items-center gap-1">
+                        <HtmlUnicode name="MinusSign" />
+                        <span>$50</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Opening position
+                      </span>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-1">$320,000</span>
+                        <AssetIcon
+                          symbol={selectedPosition.denom as string}
+                          network="sifchain"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                  <li className="px-4">
+                    <div className="flex flex-row items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">
+                        Current interest rate
+                      </span>
+                      <span>25%</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
+                <Button
+                  variant="tertiary"
+                  as="button"
+                  size="xs"
+                  className="text-gray-300 font-normal self-center"
+                  onClick={onClickReset}
+                >
+                  Reset
+                </Button>
+                <Button
+                  variant="primary"
+                  as="button"
+                  size="md"
+                  className="col-span-3"
+                  disabled={isDisabledOpenPosition}
+                  onClick={onClickOpenPosition}
+                >
+                  Open position
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="text-4xl flex items-center justify-center p-2 m-4 rounded bg-gray-850">
+              <RacetrackSpinnerIcon />
+            </p>
+          )}
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
