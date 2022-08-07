@@ -1,4 +1,4 @@
-import { ChangeEvent, SyntheticEvent, useCallback } from "react";
+import type { ChangeEvent, SyntheticEvent } from "react";
 import type { NextPage } from "next";
 
 import { pathOr } from "ramda";
@@ -154,12 +154,18 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
+  const [switchCollateralAndPosition, setSwitchCollateralAndPosition] =
+    useState(false);
   const selectedCollateralDenom = useMemo(() => {
-    if (poolActive && poolActive.asset.denom) {
+    if (
+      poolActive &&
+      poolActive.asset.denom &&
+      switchCollateralAndPosition === false
+    ) {
       return poolActive.asset.denom;
     }
     return ROWAN_DENOM;
-  }, [poolActive]);
+  }, [poolActive, switchCollateralAndPosition]);
   const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
 
   /**
@@ -196,6 +202,7 @@ const Trade = (props: TradeProps) => {
     value: `${POSITION_MAX_VALUE}`,
     error: "",
   });
+
   const [inputLeverage, setInputLeverage] = useState({
     value: `${LEVERAGE_MAX_VALUE}`,
     error: "",
@@ -340,28 +347,38 @@ const Trade = (props: TradeProps) => {
     return undefined;
   }, [poolActive]);
 
-  const onRenderTokenItem = useCallback((props: TokenItemProps) => {
+  const onRenderTokenItem = (props: TokenItemProps) => {
     const displaySymbol = mutateDisplaySymbol(props.displaySymbol);
     return <TokenItem {...props} displaySymbol={displaySymbol} />;
-  }, []);
+  };
 
-  const onChangePoolSelector = useCallback(
-    (token: TokenEntry) => {
-      router.push(
-        {
-          query: {
-            ...router.query,
-            pool: token.symbol.toLowerCase(),
-          },
+  const onChangePoolSelector = (token: TokenEntry) => {
+    router.push(
+      {
+        query: {
+          ...router.query,
+          pool: token.symbol.toLowerCase(),
         },
-        undefined,
-        {
-          scroll: false,
-        },
-      );
-    },
-    [router],
-  );
+      },
+      undefined,
+      {
+        scroll: false,
+      },
+    );
+  };
+
+  const onClickSwitch = (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setInputCollateral((prev) => ({
+      ...prev,
+      value: inputPosition.value,
+    }));
+    setInputPosition((prev) => ({
+      ...prev,
+      value: inputCollateral.value,
+    }));
+    setSwitchCollateralAndPosition((prev) => !prev);
+  };
 
   return (
     <>
@@ -495,9 +512,16 @@ const Trade = (props: TradeProps) => {
             </li>
             <li className="flex justify-center items-center py-5 relative">
               <div className="h-1 w-full bg-gray-900" />
-              <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800 absolute">
-                <SwapIcon className="text-lg" />
-              </div>
+              <button
+                type="button"
+                onClick={onClickSwitch}
+                className={clsx(
+                  "bg-gray-900 rounded-full p-3 border-2 border-gray-800 absolute text-lg transition-transform hover:scale-125",
+                  switchCollateralAndPosition ? "rotate-180" : "rotate-0",
+                )}
+              >
+                <SwapIcon />
+              </button>
             </li>
             <li className="flex flex-col">
               <span className="text-xs text-gray-300 mb-1">Position</span>
