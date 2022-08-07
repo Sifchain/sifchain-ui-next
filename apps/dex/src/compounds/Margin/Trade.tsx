@@ -662,11 +662,14 @@ const Trade = (props: TradeProps) => {
           </h1>
           <ul className="flex flex-col gap-3 mt-6">
             <li>
-              <div className="flex flex-row">
+              <div className="flex flex-row items-center">
                 <span className="mr-auto min-w-fit text-gray-300">
                   Opening position
                 </span>
-                <span>399,999 ROWAN</span>
+                <div className="flex flex-row items-center">
+                  <span className="mr-1">$214,990</span>
+                  <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+                </div>
               </div>
             </li>
             <li>
