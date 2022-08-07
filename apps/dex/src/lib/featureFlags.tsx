@@ -1,4 +1,6 @@
+import { useRouter } from "next/router";
 import type { FC, PropsWithChildren, ReactNode } from "react";
+
 import { useRedirectOnMount } from "~/hooks/useRedirectOnMount";
 
 export type FlagsState = {
@@ -41,14 +43,21 @@ export function withRedirectOnMount<T>(
   options: {
     redirectTo: string;
     redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
+    fallback?: ReactNode;
   },
 ) {
   function RedirectOnMount(innerProps: T) {
+    const router = useRouter();
+
     const flags = useFeatureFlags();
 
     useRedirectOnMount(options.redirectTo, options.redirectIf({ flags }));
 
-    return <InnerComponent {...innerProps} />;
+    return router.isReady ? (
+      <InnerComponent {...innerProps} />
+    ) : (
+      options.fallback ?? <>...</>
+    );
   }
 
   RedirectOnMount.displayName = `withRedirectOnMount(${InnerComponent.displayName})`;
