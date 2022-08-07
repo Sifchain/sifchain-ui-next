@@ -20,7 +20,10 @@ import {
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
-import { useBalancesStats } from "~/domains/bank/hooks/balances";
+import {
+  useAllBalancesQuery,
+  useBalancesStats,
+} from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery } from "~/domains/clp";
 
 /**
@@ -132,6 +135,7 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const qsPool = pathOr(undefined, ["pool"], router.query);
+
   const pools = useMemo(() => {
     if (enhancedPools.data) {
       return enhancedPools.data.map((pool) => {
@@ -154,6 +158,7 @@ const Trade = (props: TradeProps) => {
     }
     return [];
   }, [enhancedPools.data]);
+
   const poolActive = useMemo(() => {
     if (qsPool) {
       const pool = pools.find((pool) => pool.asset.denom === qsPool);
@@ -174,6 +179,7 @@ const Trade = (props: TradeProps) => {
    */
   const [switchCollateralAndPosition, setSwitchCollateralAndPosition] =
     useState(false);
+
   const selectedCollateralDenom = useMemo(() => {
     if (
       poolActive &&
@@ -184,7 +190,10 @@ const Trade = (props: TradeProps) => {
     }
     return ROWAN_DENOM;
   }, [poolActive, switchCollateralAndPosition]);
-  const selectedCollateral = useEnhancedTokenQuery(selectedCollateralDenom);
+
+  const { data: selectedCollateral } = useEnhancedTokenQuery(
+    selectedCollateralDenom,
+  );
 
   /**
    * ********************************************************************************************
@@ -213,11 +222,12 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [inputCollateral, setInputCollateral] = useState({
-    value: `${COLLATERAL_MAX_VALUE}`,
+    value: `0`,
     error: "",
   });
+
   const [inputPosition, setInputPosition] = useState({
-    value: `${POSITION_MAX_VALUE}`,
+    value: `0`,
     error: "",
   });
 
@@ -225,6 +235,28 @@ const Trade = (props: TradeProps) => {
     value: `${LEVERAGE_MAX_VALUE}`,
     error: "",
   });
+
+  const { findBySymbolOrDenom } = useAllBalancesQuery();
+
+  const positionBalance = useMemo(
+    () =>
+      selectedPosition
+        ? findBySymbolOrDenom(
+            selectedPosition?.denom ?? selectedPosition?.symbol,
+          )
+        : undefined,
+    [findBySymbolOrDenom, selectedPosition],
+  );
+
+  const collateralBalance = useMemo(
+    () =>
+      selectedCollateral
+        ? findBySymbolOrDenom(
+            selectedCollateral?.denom ?? selectedCollateral?.symbol,
+          )
+        : undefined,
+    [findBySymbolOrDenom, selectedCollateral],
+  );
 
   const isDisabledOpenPosition = useMemo(() => {
     return (
@@ -252,6 +284,7 @@ const Trade = (props: TradeProps) => {
   const isDisabledConfirmOpenPosition = useMemo(() => {
     return checkbox01 === false || checkbox02 === false;
   }, [checkbox01, checkbox02]);
+
   const onClickConfirmOpenPosition = async (
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
@@ -281,6 +314,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorCollateral($input, "change");
     setInputCollateral(payload);
   };
+
   const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "blur");
@@ -299,6 +333,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorPosition($input, "change");
     setInputPosition(payload);
   };
+
   const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "blur");
@@ -317,6 +352,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage($input, "change");
     setInputLeverage(payload);
   };
+
   const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorLeverage($input, "blur");
@@ -340,6 +376,7 @@ const Trade = (props: TradeProps) => {
     setInputPosition(clean);
     setInputLeverage(clean);
   };
+
   const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
@@ -464,18 +501,25 @@ const Trade = (props: TradeProps) => {
             <li className="flex flex-col">
               <div className="text-xs mb-1 flex flex-row">
                 <span className="mr-auto">Collateral</span>
-                <span className="text-gray-300">Balance: $9,000</span>
+                <span className="text-gray-300">
+                  Balance:
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(
+                      collateralBalance?.amount?.toFloatApproximation() ?? 0,
+                    )}
+                  </span>
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
-                  {selectedCollateral.data ? (
+                  {selectedCollateral ? (
                     <>
                       <AssetIcon
-                        symbol={selectedCollateral.data.denom}
+                        symbol={selectedCollateral.denom}
                         network="sifchain"
                         size="sm"
                       />
-                      <span>{selectedCollateral.data.name}</span>
+                      <span>{selectedCollateral.name}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -528,7 +572,14 @@ const Trade = (props: TradeProps) => {
             <li className="flex flex-col">
               <div className="text-xs mb-1 flex flex-row">
                 <span className="mr-auto">Position</span>
-                <span className="text-gray-300">Balance: $9,000</span>
+                <span className="text-gray-300">
+                  Balance:
+                  <span className="ml-1">
+                    {formatNumberAsCurrency(
+                      positionBalance?.amount?.toFloatApproximation() ?? 0,
+                    )}
+                  </span>
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
@@ -608,19 +659,19 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
           </ul>
-          {selectedCollateral.data && selectedPosition ? (
+          {selectedCollateral && selectedPosition ? (
             <>
               <div className="p-4">
                 <p className="text-center text-base">Review trade</p>
                 <ul className="flex flex-col gap-3 mt-4">
                   <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
                     <AssetIcon
-                      symbol={selectedCollateral.data.denom}
+                      symbol={selectedCollateral.denom}
                       network="sifchain"
                       size="sm"
                     />
                     <span className="ml-1">
-                      {selectedCollateral.data.name.toUpperCase()}
+                      {selectedCollateral.name.toUpperCase()}
                     </span>
                   </li>
                   <li className="px-4">
@@ -631,7 +682,7 @@ const Trade = (props: TradeProps) => {
                       <div className="flex flex-row items-center">
                         <span className="mr-1">$1,000</span>
                         <AssetIcon
-                          symbol={selectedCollateral.data.denom}
+                          symbol={selectedCollateral.denom}
                           network="sifchain"
                           size="sm"
                         />
@@ -646,7 +697,7 @@ const Trade = (props: TradeProps) => {
                       <div className="flex flex-row items-center">
                         <span className="mr-1">$2,000</span>
                         <AssetIcon
-                          symbol={selectedCollateral.data.denom}
+                          symbol={selectedCollateral.denom}
                           network="sifchain"
                           size="sm"
                         />
