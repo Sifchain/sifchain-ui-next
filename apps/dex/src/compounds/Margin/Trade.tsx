@@ -462,7 +462,10 @@ const Trade = (props: TradeProps) => {
         <aside className="bg-gray-800 border border-gold-800 rounded col-span-2 flex flex-col">
           <ul className="border-b border-gold-800 flex flex-col gap-0 p-4">
             <li className="flex flex-col">
-              <span className="text-xs text-gray-300 mb-1">Collateral</span>
+              <div className="text-xs mb-1 flex flex-row">
+                <span className="mr-auto">Collateral</span>
+                <span className="text-gray-300">Balance: $9,000</span>
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
                   {selectedCollateral.data ? (
@@ -523,7 +526,10 @@ const Trade = (props: TradeProps) => {
               </button>
             </li>
             <li className="flex flex-col">
-              <span className="text-xs text-gray-300 mb-1">Position</span>
+              <div className="text-xs mb-1 flex flex-row">
+                <span className="mr-auto">Position</span>
+                <span className="text-gray-300">Balance: $9,000</span>
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
                   {selectedPosition ? (
