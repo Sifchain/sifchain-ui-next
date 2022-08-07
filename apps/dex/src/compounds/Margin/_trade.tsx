@@ -8,7 +8,12 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
  * ********************************************************************************************
  */
 type HtmlUnicodeProps = {
-  name: "AlmostEqualTo" | "RightwardsArrow" | "EqualsSign" | "MiddleDot";
+  name:
+    | "AlmostEqualTo"
+    | "RightwardsArrow"
+    | "EqualsSign"
+    | "MiddleDot"
+    | "MinusSign";
 };
 export function HtmlUnicode({ name }: HtmlUnicodeProps) {
   const unicodes: Record<string, string> = {
@@ -16,6 +21,7 @@ export function HtmlUnicode({ name }: HtmlUnicodeProps) {
     RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
     EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
     MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
+    MinusSign: "&minus;", // https://www.compart.com/en/unicode/U+2212
   };
   const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
   return <span dangerouslySetInnerHTML={{ __html: entity }} />;
@@ -29,7 +35,7 @@ export function HtmlUnicode({ name }: HtmlUnicodeProps) {
  * ********************************************************************************************
  */
 export const COLLATERAL_MIN_VALUE = 0;
-export const COLLATERAL_MAX_VALUE = 1000000;
+export const COLLATERAL_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 
 /** @TODO Validate error message states with PM */
 const COLLATERAL_ERRORS = {
@@ -82,7 +88,7 @@ export function inputValidatorCollateral(
  * ********************************************************************************************
  */
 export const POSITION_MIN_VALUE = 0;
-export const POSITION_MAX_VALUE = 1000000;
+export const POSITION_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 
 /** @TODO Validate error message states with PM */
 const POSITION_ERRORS = {
