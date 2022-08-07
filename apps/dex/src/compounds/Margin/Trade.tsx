@@ -15,8 +15,6 @@ import {
   SwapIcon,
   toast,
   TokenEntry,
-  TokenItem,
-  TokenItemProps,
   TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
 
@@ -512,7 +510,7 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="flex justify-center items-center py-5 relative">
-              <div className="h-1 w-full bg-gray-900" />
+              <div className="h-[2px] w-full bg-gray-900" />
               <button
                 type="button"
                 onClick={onClickSwitch}
