@@ -7,7 +7,6 @@ import Head from "next/head";
 import immer from "immer";
 
 import {
-  ArrowDownIcon,
   Button,
   formatNumberAsCurrency,
   Modal,
@@ -557,11 +556,6 @@ const Trade = (props: TradeProps) => {
                 </div>
               </li>
             </ul>
-            <div className="flex justify-center items-center my-[-1em] relative">
-              <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800">
-                <ArrowDownIcon className="text-lg" />
-              </div>
-            </div>
             <ul className="flex flex-col gap-3">
               <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
                 <AssetIcon symbol="rowan" network="sifchain" size="sm" />
