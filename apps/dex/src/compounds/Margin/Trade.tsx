@@ -134,8 +134,28 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const qsPool = pathOr(undefined, ["pool"], router.query);
-  const pools = useMemo(() => enhancedPools.data || [], [enhancedPools.data]);
-  const poolsAssets = useMemo(() => pools.map((pool) => pool.asset), [pools]);
+  const pools = useMemo(() => {
+    if (enhancedPools.data) {
+      return enhancedPools.data.map((pool) => {
+        /**
+         * We mutate `displaySymbol` used by TokenSelector to display the correct asset name
+         * required by business requirements: "Display <external-asset-name> · ROWAN"
+         *
+         * This IS NOT a "TokenSelector item render" only problem, because the internal state
+         * of TokenSelector uses the "tokens" array prop to change the value, creating a mismatch
+         * we need to mutate the array passed to TokenSelector, hence this mutation here
+         *
+         */
+        const modifiedPool = { ...pool };
+        modifiedPool.asset = {
+          ...pool.asset,
+          displaySymbol: mutateDisplaySymbol(pool.asset.displaySymbol),
+        };
+        return modifiedPool;
+      });
+    }
+    return [];
+  }, [enhancedPools.data]);
   const poolActive = useMemo(() => {
     if (qsPool) {
       const pool = pools.find((pool) => pool.asset.denom === qsPool);
@@ -332,26 +352,8 @@ const Trade = (props: TradeProps) => {
    *
    * "Pool Selector" values and handlers
    *
-   * We mutate `displaySymbol` used by TokenSelector to display the asset name
-   * Requirements for Trade says we need to show "<external-asset-name> · ROWAN"
-   *
    * ********************************************************************************************
    */
-  const tokenSelectorValue = useMemo(() => {
-    if (poolActive) {
-      return {
-        ...poolActive.asset,
-        displaySymbol: mutateDisplaySymbol(poolActive?.asset.displaySymbol),
-      };
-    }
-    return undefined;
-  }, [poolActive]);
-
-  const onRenderTokenItem = (props: TokenItemProps) => {
-    const displaySymbol = mutateDisplaySymbol(props.displaySymbol);
-    return <TokenItem {...props} displaySymbol={displaySymbol} />;
-  };
-
   const onChangePoolSelector = (token: TokenEntry) => {
     router.push(
       {
@@ -391,11 +393,10 @@ const Trade = (props: TradeProps) => {
             <BaseTokenSelector
               textPlaceholder="Search pools"
               modalTitle="Select Pool"
-              value={tokenSelectorValue}
-              tokens={poolsAssets}
+              value={poolActive?.asset}
+              tokens={pools.map((pool) => pool.asset)}
               buttonClassName="overflow-hidden text-base h-10 font-semibold"
               hideColumns={["balance"]}
-              renderTokenItem={onRenderTokenItem}
               onChange={onChangePoolSelector}
             />
           </li>
