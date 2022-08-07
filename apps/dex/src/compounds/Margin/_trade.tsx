@@ -1,5 +1,13 @@
 import { formatNumberAsCurrency } from "@sifchain/ui";
 
+const UNICODE_CHARS = {
+  AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
+  RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
+  EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
+  MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
+  MinusSign: "&minus;", // https://www.compart.com/en/unicode/U+2212
+};
+
 /**
  * ********************************************************************************************
  *
@@ -8,16 +16,11 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
  * ********************************************************************************************
  */
 type HtmlUnicodeProps = {
-  name: "AlmostEqualTo" | "RightwardsArrow" | "EqualsSign" | "MiddleDot";
+  name: keyof typeof UNICODE_CHARS;
 };
+
 export function HtmlUnicode({ name }: HtmlUnicodeProps) {
-  const unicodes: Record<string, string> = {
-    AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
-    RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
-    EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
-    MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
-  };
-  const entity = unicodes[name] || `MISSING_UNICODE: ${name}`;
+  const entity = UNICODE_CHARS[name] || `MISSING_UNICODE: ${name}`;
   return <span dangerouslySetInnerHTML={{ __html: entity }} />;
 }
 
@@ -29,7 +32,7 @@ export function HtmlUnicode({ name }: HtmlUnicodeProps) {
  * ********************************************************************************************
  */
 export const COLLATERAL_MIN_VALUE = 0;
-export const COLLATERAL_MAX_VALUE = 1000000;
+export const COLLATERAL_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 
 /** @TODO Validate error message states with PM */
 const COLLATERAL_ERRORS = {
@@ -82,7 +85,7 @@ export function inputValidatorCollateral(
  * ********************************************************************************************
  */
 export const POSITION_MIN_VALUE = 0;
-export const POSITION_MAX_VALUE = 1000000;
+export const POSITION_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 
 /** @TODO Validate error message states with PM */
 const POSITION_ERRORS = {

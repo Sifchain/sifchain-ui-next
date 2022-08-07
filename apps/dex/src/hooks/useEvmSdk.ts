@@ -1,6 +1,9 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
+import { invariant } from "@sifchain/ui";
+import type { Signer } from "ethers";
 import { useQuery } from "react-query";
 import { useSigner } from "wagmi";
+
 import { useDexEnvKind } from "~/domains/core/envs";
 
 const useEvmSdk = () => {
@@ -10,14 +13,15 @@ const useEvmSdk = () => {
   return useQuery(
     ["evm-sdk", environment],
     () => {
+      invariant(signer !== undefined, "signer is required");
+
       switch (environment) {
         case "devnet":
-          return getDevnetSdk(signer!);
+          return getDevnetSdk(signer as Signer);
         case "testnet":
-          return getTestnetSdk(signer!);
-        case "mainnet":
+          return getTestnetSdk(signer as Signer);
         default:
-          return getMainnetSdk(signer!);
+          return getMainnetSdk(signer as Signer);
       }
     },
     { enabled: signer !== undefined },

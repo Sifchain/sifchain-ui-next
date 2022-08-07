@@ -2,6 +2,7 @@ import { pathOr } from "ramda";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
+import { useState, SyntheticEvent } from "react";
 
 import {
   Button,
@@ -11,7 +12,7 @@ import {
   ArrowDownIcon,
   toast,
 } from "@sifchain/ui";
-import { useState, SyntheticEvent } from "react";
+import AssetIcon from "~/compounds/AssetIcon";
 
 /**
  * ********************************************************************************************
@@ -388,58 +389,67 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
     content = (
       <>
         <h1 className="text-lg font-bold text-center">Review closing trade</h1>
-        <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg mt-4">
-          <li className="text-base font-semibold">ROWAN</li>
-          <li>
-            <div className="flex flex-row">
+        <ul className="flex flex-col gap-3 mt-4">
+          <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+            <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+            <span className="ml-1">ROWAN</span>
+          </li>
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Entry price
               </span>
               <span>$.005</span>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Opening position
               </span>
-              <span>$399,999 ROWAN</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">$399,999</span>
+                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Opening value
               </span>
               <span>$1,999.50</span>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Total interest paid
               </span>
-              <span>100,000 ROWAN</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">$399,999</span>
+                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Current position
               </span>
               <span>299,900 ROWAN</span>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Current price
               </span>
               <span>$.05</span>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Current value
               </span>
@@ -447,45 +457,57 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
             </div>
           </li>
         </ul>
-        <div className="flex justify-center items-center my-[-1em]">
-          <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+        <div className="flex justify-center items-center my-[-1em] relative">
+          <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800">
             <ArrowDownIcon className="text-lg" />
           </div>
         </div>
-        <ul className="bg-gray-850 flex flex-col gap-3 p-4 rounded-lg">
-          <li className="text-base font-semibold">USDC</li>
-          <li>
-            <div className="flex flex-row">
+        <ul className="flex flex-col gap-3">
+          <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+            <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+            <span className="ml-1">USDC</span>
+          </li>
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Closing position
               </span>
-              <span>14,995 USDC</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">$14,995</span>
+                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-              <span>5 USDC</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">$5,00</span>
+                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Price Impact
               </span>
               <span>10%</span>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">
                 Resulting amount
               </span>
-              <span>14,990 USDC</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">$14,990</span>
+                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
-          <li>
-            <div className="flex flex-row">
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">PnL</span>
               <span>$12,990.50</span>
             </div>
@@ -503,7 +525,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
             className="rounded w-full mt-4"
             onClick={onClickConfirmClose}
           >
-            Confirm Close
+            Confirm close
           </Button>
         )}
         {positionToCloseMutation.isError ? (

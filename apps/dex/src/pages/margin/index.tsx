@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
+import { useFeatureFlag } from "~/lib/featureFlags";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
@@ -60,6 +61,8 @@ const Margin: NextPage = () => {
     setActiveTab(matchContent.slug);
   }, [router.isReady, router.query]);
 
+  const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+
   return (
     <>
       <Head>
@@ -67,9 +70,11 @@ const Margin: NextPage = () => {
       </Head>
 
       <section className="w-full bg-black py-12 px-24">
-        <header className="mb-6">
-          <h2 className="text-2xl font-bold text-white">Margin</h2>
-        </header>
+        {!isMarginStandaloneOn && (
+          <header className="mb-6">
+            <h2 className="text-2xl font-bold text-white">Margin</h2>
+          </header>
+        )}
         {router.isReady && activeTab !== null ? (
           <TabsWithSuspense
             activeTab={activeTab}

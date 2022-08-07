@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ascend, descend, sort } from "ramda";
 import { useCallback, useMemo, useState } from "react";
+
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
@@ -20,6 +21,7 @@ import {
   useBalancesStats,
   useBalancesWithPool,
 } from "~/domains/bank/hooks/balances";
+import { withRedirectOnMount } from "~/lib/featureFlags";
 
 const TokenFigure = (props: {
   symbol: string;
@@ -39,7 +41,7 @@ const TokenFigure = (props: {
   );
 };
 
-const AssetsPage: NextPage = () => {
+const BalancesPage: NextPage = () => {
   const router = useRouter();
   const balances = useBalancesWithPool();
   const balancesStats = useBalancesStats();
@@ -364,4 +366,7 @@ const AssetsPage: NextPage = () => {
   );
 };
 
-export default AssetsPage;
+export default withRedirectOnMount(BalancesPage, {
+  redirectTo: "/margin",
+  redirectIf: ({ flags }) => flags.has("margin-standalone"),
+});

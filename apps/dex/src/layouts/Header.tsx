@@ -14,6 +14,7 @@ import {
   SurfaceB,
   SwapIcon,
   useWindowSize,
+  SifchainLogo,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -21,10 +22,10 @@ import { useRouter } from "next/router";
 
 import WalletConnector from "~/compounds/WalletConnector";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
-import { useFlag } from "~/lib/flags";
+import { useFeatureFlag } from "~/lib/featureFlags";
 
 export function useMenuItems() {
-  const isMarginEnabled = useFlag("margin");
+  const isMarginEnabled = useFeatureFlag("margin");
   return [
     {
       title: "Swap",
@@ -57,6 +58,7 @@ export function useMenuItems() {
 
 const Header = () => {
   const windowSize = useWindowSize();
+  const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
 
   return (
     <header className="bg-black md:p-4 grid">
@@ -70,8 +72,11 @@ const Header = () => {
             <>
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
                 <Link href="/">
-                  <a className="md:p-1 p-2">
+                  <a className="md:p-1 p-2 flex items-center gap-4">
                     <SifchainLogoRound className="inline-block text-[44px]" />
+                    {isMarginStandaloneOn && (
+                      <h1 className="text-2xl font-semibold pl-3">Margin</h1>
+                    )}
                   </a>
                 </Link>
                 <div className="md:hidden">
@@ -90,7 +95,11 @@ const Header = () => {
                   static={windowSize.width >= 768}
                 >
                   <div className="grid md:flex p-4 md:p-0 gap-4 xl:gap-6 4xl:gap-8 md:w-full">
-                    <Nav />
+                    {!isMarginStandaloneOn ? (
+                      <Nav />
+                    ) : (
+                      <div className="flex-1" />
+                    )}
                     <RowanStats />
                     <WalletConnector />
                   </div>
