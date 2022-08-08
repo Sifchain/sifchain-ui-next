@@ -70,7 +70,7 @@ const Header = () => {
           {({ open }) => (
             <>
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
-                <Link href={isMarginStandaloneOn ? "/margin/" : "/"}>
+                <Link href={isMarginStandaloneOn ? "/margin" : "/"}>
                   <a className="md:p-1 p-2 flex items-center gap-4">
                     <SifchainLogoRound className="inline-block text-[44px]" />
                     {isMarginStandaloneOn && (

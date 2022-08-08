@@ -25,7 +25,6 @@ import { useEnhancedTokenQuery, useSwapMutation } from "~/domains/clp";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
-import { withRedirectOnMount } from "~/lib/featureFlags";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhitespace } from "~/utils/string";
 
@@ -383,7 +382,4 @@ const SwapPage: NextPage = () => {
   );
 };
 
-export default withRedirectOnMount(SwapPage, {
-  redirectTo: "/margin",
-  redirectIf: ({ flags }) => flags.has("margin-standalone"),
-});
+export default SwapPage;
