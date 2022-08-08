@@ -355,7 +355,30 @@ const Trade = (props: TradeProps) => {
   const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
+
+    const positionTokenPrice =
+      selectedPosition?.denom === ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken ?? 0;
+
+    const collateralTokenPrice =
+      selectedPosition?.denom !== ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken ?? 0;
+
+    const collateralDollarValue =
+      (collateralTokenPrice ?? 0) * Number(payload.value);
+
+    // colleteral dollar value * leverage / position token price
+    const positionInputAmount =
+      (collateralDollarValue * Number(inputLeverage.value)) /
+      positionTokenPrice;
+
     setInputCollateral(payload);
+    setInputPosition({
+      value: String(positionInputAmount),
+      error: "",
+    });
   };
 
   const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
@@ -374,7 +397,29 @@ const Trade = (props: TradeProps) => {
   const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "change");
+
+    const positionTokenPrice =
+      selectedPosition?.denom === ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken ?? 0;
+
+    const collateralTokenPrice =
+      selectedPosition?.denom !== ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken ?? 0;
+
+    const positionDollarValue =
+      (positionTokenPrice ?? 0) * Number(payload.value);
+
+    // position dollar value / leverage / collateral token price
+    const collateralInputAmount =
+      positionDollarValue / Number(inputLeverage.value) / collateralTokenPrice;
+
     setInputPosition(payload);
+    setInputCollateral({
+      value: String(collateralInputAmount),
+      error: "",
+    });
   };
 
   const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
@@ -393,6 +438,31 @@ const Trade = (props: TradeProps) => {
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
     const payload = inputValidatorLeverage($input, "change");
+
+    if (!payload.error) {
+      const positionTokenPrice =
+        selectedPosition?.denom === ROWAN_DENOM
+          ? rowanPrice
+          : poolActive?.stats.priceToken ?? 0;
+
+      const collateralTokenPrice =
+        selectedPosition?.denom !== ROWAN_DENOM
+          ? rowanPrice
+          : poolActive?.stats.priceToken ?? 0;
+
+      const collateralDollarValue =
+        (collateralTokenPrice ?? 0) * Number(inputCollateral.value);
+
+      // colleteral dollar value * leverage / position token price
+      const positionInputAmount =
+        (collateralDollarValue * Number(payload.value)) / positionTokenPrice;
+
+      setInputPosition({
+        value: String(positionInputAmount),
+        error: "",
+      });
+    }
+
     setInputLeverage(payload);
   };
 
