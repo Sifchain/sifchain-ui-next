@@ -1,5 +1,6 @@
 import type { ChangeEvent, SyntheticEvent } from "react";
 import type { NextPage } from "next";
+import type { IAsset } from "@sifchain/common";
 
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
@@ -162,7 +163,8 @@ const Trade = (props: TradeProps) => {
         modifiedPool.asset = {
           ...pool.asset,
           displaySymbol: mutateDisplaySymbol(pool.asset.displaySymbol),
-        };
+          priceUsd: pool.stats.priceToken,
+        } as IAsset & { priceUsd: number };
         return modifiedPool;
       });
     }
@@ -190,20 +192,16 @@ const Trade = (props: TradeProps) => {
   const [switchCollateralAndPosition, setSwitchCollateralAndPosition] =
     useState(false);
 
-  const selectedCollateralDenom = useMemo(() => {
-    if (
-      poolActive &&
-      poolActive.asset.denom &&
-      switchCollateralAndPosition === false
-    ) {
-      return poolActive.asset.denom;
+  const selectedCollateral = useMemo(() => {
+    if (poolActive && switchCollateralAndPosition === false) {
+      return poolActive.asset;
     }
-    return ROWAN_DENOM;
-  }, [poolActive, switchCollateralAndPosition]);
-
-  const { data: selectedCollateral } = useEnhancedTokenQuery(
-    selectedCollateralDenom,
-  );
+    return enhancedRowan.data;
+  }, [
+    enhancedRowan.data,
+    poolActive,
+    switchCollateralAndPosition,
+  ]) as IAsset & { priceUsd: number };
 
   /**
    * ********************************************************************************************
@@ -215,12 +213,14 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom === poolActive?.asset.denom || !poolActive) {
+    if (selectedCollateral?.denom === poolActive?.asset.denom || !poolActive) {
       return enhancedRowan.data;
     }
 
-    return { ...poolActive.asset, priceUsd: poolActive.stats.priceToken };
-  }, [selectedCollateralDenom, poolActive, enhancedRowan.data]);
+    return poolActive.asset;
+  }, [selectedCollateral?.denom, poolActive, enhancedRowan.data]) as IAsset & {
+    priceUsd: number;
+  };
 
   /**
    * ********************************************************************************************
@@ -631,11 +631,11 @@ const Trade = (props: TradeProps) => {
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                <div className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
                   {selectedCollateral ? (
                     <>
                       <AssetIcon
-                        symbol={selectedCollateral.denom}
+                        symbol={selectedCollateral.denom as string}
                         network="sifchain"
                         size="sm"
                       />
@@ -644,7 +644,7 @@ const Trade = (props: TradeProps) => {
                   ) : (
                     <RacetrackSpinnerIcon />
                   )}
-                </p>
+                </div>
                 <input
                   type="number"
                   placeholder="Collateral amount"
@@ -702,7 +702,7 @@ const Trade = (props: TradeProps) => {
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <p className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                <div className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
                   {selectedPosition ? (
                     <>
                       <AssetIcon
@@ -713,7 +713,7 @@ const Trade = (props: TradeProps) => {
                       <span>{selectedPosition.name}</span>
                     </>
                   ) : null}
-                </p>
+                </div>
                 <input
                   type="number"
                   placeholder="Position amount"
@@ -786,7 +786,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="flex flex-col gap-3 mt-4">
                   <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
                     <AssetIcon
-                      symbol={selectedCollateral.denom}
+                      symbol={selectedCollateral.denom as string}
                       network="sifchain"
                       size="sm"
                     />
@@ -807,7 +807,7 @@ const Trade = (props: TradeProps) => {
                           )}
                         </span>
                         <AssetIcon
-                          symbol={selectedCollateral.denom}
+                          symbol={selectedCollateral.denom as string}
                           network="sifchain"
                           size="sm"
                         />
@@ -829,7 +829,7 @@ const Trade = (props: TradeProps) => {
                           )}
                         </span>
                         <AssetIcon
-                          symbol={selectedCollateral.denom}
+                          symbol={selectedCollateral.denom as string}
                           network="sifchain"
                           size="sm"
                         />
@@ -947,9 +947,9 @@ const Trade = (props: TradeProps) => {
               </div>
             </>
           ) : (
-            <p className="text-4xl flex items-center justify-center p-2 m-4 rounded bg-gray-850">
+            <div className="text-4xl flex items-center justify-center p-2 m-4 rounded bg-gray-850">
               <RacetrackSpinnerIcon />
-            </p>
+            </div>
           )}
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
