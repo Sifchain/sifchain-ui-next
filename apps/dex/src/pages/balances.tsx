@@ -21,7 +21,6 @@ import {
   useBalancesStats,
   useBalancesWithPool,
 } from "~/domains/bank/hooks/balances";
-import { withRedirectOnMount } from "~/lib/featureFlags";
 
 const TokenFigure = (props: {
   symbol: string;
@@ -366,7 +365,4 @@ const BalancesPage: NextPage = () => {
   );
 };
 
-export default withRedirectOnMount(BalancesPage, {
-  redirectTo: "/margin",
-  redirectIf: ({ flags }) => flags.has("margin-standalone"),
-});
+export default BalancesPage;

@@ -14,7 +14,6 @@ import {
   SurfaceB,
   SwapIcon,
   useWindowSize,
-  SifchainLogo,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -71,7 +70,7 @@ const Header = () => {
           {({ open }) => (
             <>
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
-                <Link href="/">
+                <Link href={isMarginStandaloneOn ? "/margin/" : "/"}>
                   <a className="md:p-1 p-2 flex items-center gap-4">
                     <SifchainLogoRound className="inline-block text-[44px]" />
                     {isMarginStandaloneOn && (
