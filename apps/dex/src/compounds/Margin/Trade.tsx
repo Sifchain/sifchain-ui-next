@@ -24,7 +24,11 @@ import {
   useAllBalancesQuery,
   useBalancesStats,
 } from "~/domains/bank/hooks/balances";
-import { useEnhancedPoolsQuery, useEnhancedTokenQuery } from "~/domains/clp";
+import {
+  useEnhancedPoolsQuery,
+  useEnhancedTokenQuery,
+  useRowanPriceQuery,
+} from "~/domains/clp";
 
 /**
  * ********************************************************************************************
@@ -116,6 +120,8 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 const Trade = (props: TradeProps) => {
   const router = useRouter();
   const { enhancedPools } = props;
+
+  const { data: rowanPrice } = useRowanPriceQuery();
 
   /**
    * ********************************************************************************************
@@ -236,27 +242,64 @@ const Trade = (props: TradeProps) => {
     error: "",
   });
 
-  const { findBySymbolOrDenom } = useAllBalancesQuery();
+  const { findBySymbolOrDenom: findBalanceBySymbolOrDenom } =
+    useAllBalancesQuery();
 
   const positionBalance = useMemo(
     () =>
       selectedPosition
-        ? findBySymbolOrDenom(
+        ? findBalanceBySymbolOrDenom(
             selectedPosition?.denom ?? selectedPosition?.symbol,
           )
         : undefined,
-    [findBySymbolOrDenom, selectedPosition],
+    [findBalanceBySymbolOrDenom, selectedPosition],
   );
+
+  const positionDollarValue = useMemo(() => {
+    if (!selectedPosition || !inputPosition.value) {
+      return 0;
+    }
+
+    const tokenPrice =
+      selectedPosition.denom === ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken;
+
+    return (tokenPrice ?? 0) * Number(inputPosition.value);
+  }, [
+    selectedPosition,
+    inputPosition.value,
+    rowanPrice,
+    poolActive?.stats.priceToken,
+  ]);
 
   const collateralBalance = useMemo(
     () =>
       selectedCollateral
-        ? findBySymbolOrDenom(
+        ? findBalanceBySymbolOrDenom(
             selectedCollateral?.denom ?? selectedCollateral?.symbol,
           )
         : undefined,
-    [findBySymbolOrDenom, selectedCollateral],
+    [findBalanceBySymbolOrDenom, selectedCollateral],
   );
+
+  const collateralDollarValue = useMemo(() => {
+    if (!selectedCollateral || !inputCollateral.value) {
+      return 0;
+    }
+
+    const tokenPrice =
+      selectedCollateral.denom === ROWAN_DENOM
+        ? rowanPrice
+        : poolActive?.stats.priceToken;
+
+    return (tokenPrice ?? 0) * Number(inputCollateral.value);
+  }, [
+    selectedCollateral,
+    inputCollateral.value,
+    rowanPrice,
+    poolActive?.stats.priceToken,
+  ]);
 
   const isDisabledOpenPosition = useMemo(() => {
     return (
@@ -504,7 +547,7 @@ const Trade = (props: TradeProps) => {
                 <span className="text-gray-300">
                   Balance:
                   <span className="ml-1">
-                    {formatNumberAsCurrency(
+                    {formatNumberAsDecimal(
                       collateralBalance?.amount?.toFloatApproximation() ?? 0,
                     )}
                   </span>
@@ -551,7 +594,7 @@ const Trade = (props: TradeProps) => {
                 <span className="text-gray-300 text-right mt-1">
                   <HtmlUnicode name="EqualsSign" />
                   <span className="ml-1">
-                    {formatNumberAsCurrency(Number(inputCollateral.value))}
+                    {formatNumberAsCurrency(collateralDollarValue, 4)}
                   </span>
                 </span>
               )}
@@ -575,7 +618,7 @@ const Trade = (props: TradeProps) => {
                 <span className="text-gray-300">
                   Balance:
                   <span className="ml-1">
-                    {formatNumberAsCurrency(
+                    {formatNumberAsDecimal(
                       positionBalance?.amount?.toFloatApproximation() ?? 0,
                     )}
                   </span>
@@ -620,7 +663,7 @@ const Trade = (props: TradeProps) => {
                 <span className="text-gray-300 text-right mt-1">
                   <HtmlUnicode name="EqualsSign" />
                   <span className="ml-1">
-                    {formatNumberAsCurrency(Number(inputPosition.value))}
+                    {formatNumberAsCurrency(positionDollarValue, 4)}
                   </span>
                 </span>
               )}
