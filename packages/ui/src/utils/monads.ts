@@ -5,12 +5,23 @@
 export class Maybe<T> {
   private _value: T | undefined | null;
 
+  private _isNone = false;
+
   constructor(value?: T | null) {
     this._value = value;
+    this._isNone = value === null || value === undefined;
   }
 
-  static of<T>(value: T) {
+  static of<T>(value?: T) {
     return new Maybe(value);
+  }
+
+  static ofFalsy<T>(value?: T) {
+    return new Maybe(Boolean(value) ? value : undefined);
+  }
+
+  get isSome() {
+    return this._isNone === false;
   }
 
   valueOr<U>(defaultValue: U): T | U {
@@ -19,14 +30,6 @@ export class Maybe<T> {
     }
 
     return defaultValue;
-  }
-
-  get isSome() {
-    return this._value !== undefined && this._value !== null;
-  }
-
-  get isNone() {
-    return this._value === null || this._value === undefined;
   }
 
   map<U>(fn: (value: NonNullable<T>) => U) {
@@ -46,18 +49,10 @@ export class Maybe<T> {
   }
 
   mapOrUndefined<U>(fn: (value: NonNullable<T>) => U): U | undefined {
-    if (this.isSome) {
-      return fn(this._value as NonNullable<T>);
-    }
-
-    return undefined;
+    return this.mapOr(undefined, fn);
   }
 
   mapOrNull<U>(fn: (value: NonNullable<T>) => U): U | null {
-    if (this.isSome) {
-      return fn(this._value as NonNullable<T>);
-    }
-
-    return null;
+    return this.mapOr(null, fn);
   }
 }
