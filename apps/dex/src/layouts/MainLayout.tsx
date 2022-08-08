@@ -13,10 +13,10 @@ import Header from "./Header";
 
 const Shell = tw.div`
   flex flex-col
-  min-h-screen w-full bg-slate-100
+  min-h-screen w-full bg-black
   text-slate-100
   subpixel-antialiased
-  bg-forest bg-cover bg-center bg-no-repeat bg-fixed
+  bg-cover bg-center bg-no-repeat bg-fixed
 `;
 
 export type Props = PropsWithChildren;
