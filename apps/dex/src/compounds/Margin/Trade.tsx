@@ -793,7 +793,12 @@ const Trade = (props: TradeProps) => {
                         Collateral
                       </span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">$1,000</span>
+                        <span className="mr-1">
+                          {formatNumberAsDecimal(
+                            Number(inputCollateral.value),
+                            4,
+                          )}
+                        </span>
                         <AssetIcon
                           symbol={selectedCollateral.denom}
                           network="sifchain"
@@ -808,7 +813,14 @@ const Trade = (props: TradeProps) => {
                         Borrow amount
                       </span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">$2,000</span>
+                        <span className="mr-1">
+                          {formatNumberAsDecimal(
+                            Number(inputCollateral.value) *
+                              Number(inputLeverage.value) -
+                              Number(inputCollateral.value),
+                            4,
+                          )}
+                        </span>
                         <AssetIcon
                           symbol={selectedCollateral.denom}
                           network="sifchain"
