@@ -483,13 +483,18 @@ const Trade = (props: TradeProps) => {
    */
   const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const clean = {
-      value: "",
+    setInputCollateral({
+      value: String(COLLATERAL_MIN_VALUE),
       error: "",
-    };
-    setInputCollateral(clean);
-    setInputPosition(clean);
-    setInputLeverage(clean);
+    });
+    setInputPosition({
+      value: String(POSITION_MIN_VALUE),
+      error: "",
+    });
+    setInputLeverage({
+      value: String(LEVERAGE_MAX_VALUE),
+      error: "",
+    });
   };
 
   const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {

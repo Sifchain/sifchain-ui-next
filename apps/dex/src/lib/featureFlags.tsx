@@ -12,15 +12,22 @@ export type FlagsState = {
 
 export type FeatureFlags = keyof FlagsState["features"];
 
-export function useFeatureFlags() {
+export function getFeatureFlags() {
   const rawFeatures = process.env["NEXT_PUBLIC_FEATURES"] ?? "";
   return new Set<FeatureFlags>(rawFeatures.split(/,(\s+)?/) as FeatureFlags[]);
 }
 
-export function useFeatureFlag(key: FeatureFlags) {
-  const features = useFeatureFlags();
-
+export function hasFeatureFlag(key: FeatureFlags) {
+  const features = getFeatureFlags();
   return features.has(key);
+}
+
+export function useFeatureFlags() {
+  return getFeatureFlags();
+}
+
+export function useFeatureFlag(key: FeatureFlags) {
+  return hasFeatureFlag(key);
 }
 
 type FeatureFlagProps = PropsWithChildren<{

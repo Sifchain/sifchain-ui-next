@@ -10,7 +10,6 @@ import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidi
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
-import { withRedirectOnMount } from "~/lib/featureFlags";
 import { getFirstQueryValue } from "~/utils/query";
 import { isNilOrWhitespace } from "~/utils/string";
 
@@ -118,7 +117,7 @@ const PoolsPage: NextPage = () => {
               value={searchQuery}
               onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
                 (event) => {
-                  const { q: _, ...queryWithoutQ } = router.query;
+                  const { q: _q, ...queryWithoutQ } = router.query;
                   router.replace(
                     {
                       query: isNilOrWhitespace(event.target.value)
@@ -270,7 +269,4 @@ const PoolsPage: NextPage = () => {
   );
 };
 
-export default withRedirectOnMount(PoolsPage, {
-  redirectTo: "/margin",
-  redirectIf: ({ flags }) => flags.has("margin-standalone"),
-});
+export default PoolsPage;
