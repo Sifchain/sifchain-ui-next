@@ -20,10 +20,7 @@ import {
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
-import {
-  useAllBalancesQuery,
-  useBalancesStats,
-} from "~/domains/bank/hooks/balances";
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
@@ -73,17 +70,14 @@ const INTEREST_RATE = 0.25;
  * ********************************************************************************************
  */
 const TradeCompound: NextPage = () => {
-  const balancesStats = useBalancesStats();
   const enhancedPools = useEnhancedPoolsQuery();
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
 
   if (
-    balancesStats.isSuccess &&
     enhancedPools.isSuccess &&
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
-    balancesStats.data &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data
@@ -93,7 +87,6 @@ const TradeCompound: NextPage = () => {
       <Trade
         enhancedPools={enhancedPools.data}
         enhancedRowan={enhancedRowan.data}
-        accountBalance={balancesStats.data.availableInUsdc.toFloatApproximation()}
       />
     );
   }
@@ -125,7 +118,6 @@ type TradeProps = {
     ReturnType<typeof useEnhancedTokenQuery>["data"],
     undefined
   >;
-  accountBalance: number;
 };
 
 const ROWAN_DENOM = "rowan";
