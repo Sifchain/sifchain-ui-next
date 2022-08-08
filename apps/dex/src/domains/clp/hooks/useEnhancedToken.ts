@@ -57,7 +57,10 @@ export function useEnhancedTokenQuery(
         ...registryEntry,
         balance: balanceEntry?.amount,
         pool: poolQuery.data?.pool,
-        priceUsd: stat?.priceToken ?? 0,
+        priceUsd:
+          denom.toLowerCase() === "rowan"
+            ? Number(poolStatsQuery.data?.rowanUSD)
+            : stat?.priceToken ?? 0,
       };
     },
     {
