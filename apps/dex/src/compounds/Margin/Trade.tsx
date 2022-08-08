@@ -52,7 +52,11 @@ import {
   inputValidatorCollateral,
 } from "./_trade";
 import { formatNumberAsDecimal } from "./_intl";
+
 import { useMutationConfirmOpenPosition } from "./_mockdata";
+
+const FEE_USDC = 0.5;
+const INTEREST_RATE = 0.25;
 
 /**
  * ********************************************************************************************
@@ -211,13 +215,11 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const selectedPosition = useMemo(() => {
-    if (selectedCollateralDenom === poolActive?.asset.denom) {
+    if (selectedCollateralDenom === poolActive?.asset.denom || !poolActive) {
       return enhancedRowan.data;
     }
-    if (poolActive) {
-      return poolActive.asset;
-    }
-    return enhancedRowan.data;
+
+    return { ...poolActive.asset, priceUsd: poolActive.stats.priceToken };
   }, [selectedCollateralDenom, poolActive, enhancedRowan.data]);
 
   /**
@@ -846,7 +848,12 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">
                         Entry price
                       </span>
-                      <span>$0.005</span>
+                      <span>
+                        {formatNumberAsCurrency(
+                          selectedPosition.priceUsd ?? 0,
+                          4,
+                        )}
+                      </span>
                     </div>
                   </li>
                   <li className="px-4">
@@ -855,7 +862,12 @@ const Trade = (props: TradeProps) => {
                         Position size
                       </span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">$400,000</span>
+                        <span className="mr-1">
+                          {formatNumberAsDecimal(
+                            Number(inputPosition.value),
+                            4,
+                          )}
+                        </span>
                         <AssetIcon
                           symbol={selectedPosition.denom as string}
                           network="sifchain"
@@ -871,7 +883,7 @@ const Trade = (props: TradeProps) => {
                       </span>
                       <div className="flex flex-row items-center gap-1">
                         <HtmlUnicode name="MinusSign" />
-                        <span>$50</span>
+                        <span>{formatNumberAsCurrency(FEE_USDC)}</span>
                       </div>
                     </div>
                   </li>
@@ -881,7 +893,14 @@ const Trade = (props: TradeProps) => {
                         Opening position
                       </span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">$320,000</span>
+                        <span className="mr-1">
+                          {formatNumberAsDecimal(
+                            Number(inputPosition.value) > 0
+                              ? Number(inputPosition.value) -
+                                  FEE_USDC / Number(selectedPosition.priceUsd)
+                              : 0,
+                          )}
+                        </span>
                         <AssetIcon
                           symbol={selectedPosition.denom as string}
                           network="sifchain"
@@ -895,7 +914,7 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">
                         Current interest rate
                       </span>
-                      <span>25%</span>
+                      <span>{INTEREST_RATE * 100}%</span>
                     </div>
                   </li>
                 </ul>
