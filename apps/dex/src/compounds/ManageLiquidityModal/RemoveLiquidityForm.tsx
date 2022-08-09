@@ -1,4 +1,4 @@
-import { Button, RacetrackSpinnerIcon } from "@sifchain/ui";
+import { Button, Fieldset, Input, RacetrackSpinnerIcon } from "@sifchain/ui";
 import {
   ChangeEventHandler,
   FormEventHandler,
@@ -66,19 +66,28 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <input
-        className="w-full"
-        type="range"
-        min={0}
-        max={1}
-        step={0.01}
-        value={unlockPercentage}
-        onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
-          (event) => setUnlockPercentage(event.target.value),
-          [setUnlockPercentage],
-        )}
-        disabled={inputDisabled}
-      />
+      <Fieldset className="flex gap-2" label="Unbond amount">
+        <input
+          className="w-full"
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={unlockPercentage}
+          onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
+            (event) => setUnlockPercentage(event.target.value),
+            [setUnlockPercentage],
+          )}
+          disabled={inputDisabled}
+        />
+        <Input
+          containerClassName="w-16 text-lg"
+          inputClassName="text-end"
+          value={Number(unlockPercentage).toLocaleString(undefined, {
+            style: "percent",
+          })}
+        />
+      </Fieldset>
       <section className="p-4">
         <header className="mb-2">Est. amount you will receive:</header>
         <dl className="flex flex-col gap-2 [&_dt]:font-semibold [&_dt]:uppercase [&>div]:flex [&>div]:justify-between">
