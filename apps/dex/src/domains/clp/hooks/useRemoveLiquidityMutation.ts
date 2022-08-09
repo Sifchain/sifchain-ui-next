@@ -42,6 +42,9 @@ const useRemoveLiquidityMutation = () => {
         toast.info("Claiming unlocked liquidity inprogress");
       },
       onSettled: (data, error) => {
+        queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
+        queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
+
         if (!isNil(error)) {
           if (error instanceof Error || "message" in (error as Error)) {
             toast.error((error as Error).message);
@@ -57,8 +60,6 @@ const useRemoveLiquidityMutation = () => {
           toast.error(data?.rawLog ?? "Failed to claim unlocked liquidity");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
           toast.success(`Successfully claimed unlocked liquidity`);
-          queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
-          queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
     },

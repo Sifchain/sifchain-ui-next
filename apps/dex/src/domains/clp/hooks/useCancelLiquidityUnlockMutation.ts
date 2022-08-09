@@ -42,6 +42,9 @@ const useCancelLiquidityUnlockMutation = () => {
         toast.info("Cancel unbonding request inprogress");
       },
       onSettled: (data, error) => {
+        queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
+        queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
+
         if (!isNil(error)) {
           if (error instanceof Error || "message" in (error as Error)) {
             toast.error((error as Error).message);
@@ -57,8 +60,6 @@ const useCancelLiquidityUnlockMutation = () => {
           toast.error(data?.rawLog ?? "Failed to cancel unbonding request");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
           toast.success("Successfully cancel unbonding request");
-          queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
-          queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
     },
