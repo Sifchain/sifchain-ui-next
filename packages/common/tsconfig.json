@@ -16,6 +16,5 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src", "./vitest.config.ts"]
 }

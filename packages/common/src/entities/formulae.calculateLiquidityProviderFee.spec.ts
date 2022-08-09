@@ -1,8 +1,9 @@
+import { expect, test } from "vitest";
+
 import { calculateProviderFee } from "./formulae";
 import tests from "../../test/test-tables/singleswap_liquidityfees.json";
 
 import { Amount } from "./Amount";
-import { expect, test } from "vitest";
 
 tests.SingleSwapLiquidityFee.forEach(({ x, X, Y, expected }: any) => {
   test(`Calc LP fee for swapping ${x}, expecting ${expected}`, () => {

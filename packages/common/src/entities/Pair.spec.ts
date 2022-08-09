@@ -25,15 +25,7 @@ describe("Pair", () => {
     network: "ethereum",
     homeNetwork: "ethereum",
   });
-  const ETH = Asset({
-    decimals: 18,
-    symbol: "eth",
-    displaySymbol: "ETH",
-    label: "ETH",
-    name: "Ethereum",
-    network: "ethereum",
-    homeNetwork: "ethereum",
-  });
+
   const ROWAN = Asset({
     decimals: 18,
     symbol: "rowan",
