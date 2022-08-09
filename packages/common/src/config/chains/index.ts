@@ -62,14 +62,50 @@ export type ChainConfigByNetworkEnv = Record<
   Record<NetworkKind, ChainConfig>
 >;
 
-export const CHAINCONFIG_BY_NETWORK_ENV: ChainConfigByNetworkEnv =
-  Object.fromEntries(
-    [...NETWORK_ENVS].map((env) => [
-      env,
-      Object.entries(CONFIG_LOOKUP).reduce(
-        (acc, [key, value]) => ({ ...acc, [key]: value[env] }),
-        {},
-      ),
-      ,
-    ]),
-  );
+function getChainConfigWithFallbackOrThrow(
+  env: NetworkEnv,
+  networkKind: NetworkKind,
+  networkLookup: NetEnvChainConfigLookup,
+) {
+  const config = networkLookup[env];
+
+  if (!config) {
+    const envMatch = (["testnet", "mainnet"] as NetworkEnv[]).find(
+      (env) => networkLookup[env] !== undefined,
+    );
+
+    if (!envMatch) {
+      throw new Error(
+        `No config found for network "${networkKind}" on env "${env}"`,
+      );
+    }
+
+    console.warn(
+      `[network:${networkKind}] ${env} config fallback to ${envMatch}`,
+    );
+    return networkLookup[envMatch];
+  }
+
+  return config;
+}
+
+export const CHAINCONFIG_BY_NETWORK_ENV = Object.fromEntries(
+  [...NETWORK_ENVS].map((env) => [
+    env,
+    Object.entries(CONFIG_LOOKUP).reduce(
+      (acc, [networkKind, networkLookup]) => {
+        const config = getChainConfigWithFallbackOrThrow(
+          env,
+          networkKind as NetworkKind,
+          networkLookup,
+        );
+
+        return {
+          ...acc,
+          [networkKind]: config,
+        };
+      },
+      {},
+    ),
+  ]),
+) as ChainConfigByNetworkEnv;
