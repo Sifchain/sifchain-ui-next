@@ -61,6 +61,9 @@ const usePoolsPageData = () => {
           liquidityProvider.externalAssetBalance.toString(),
         );
 
+        const currentUnlockRequest =
+          liquidityProvider.liquidityProvider.unlocks[0];
+
         return {
           ...x,
           denom: token?.denom,
@@ -72,7 +75,9 @@ const usePoolsPageData = () => {
           liquidityProviderPoolValue: rowanPoolValue
             .plus(externalAssetPoolValue)
             .toNumber(),
-          unlock: liquidityProvider.liquidityProvider.unlocks[0],
+          unlock: currentUnlockRequest?.expired
+            ? undefined
+            : currentUnlockRequest,
         };
       }),
     }),
