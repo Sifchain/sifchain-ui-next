@@ -52,18 +52,20 @@ export const useLiquidityProviderQuery = (denom: string) => {
                 ? undefined
                 : {
                     ...lpRes.liquidityProvider,
-                    unlocks: lpRes.liquidityProvider.unlocks.map((unlock) => ({
-                      ...unlock,
-                      ...getLiquidityUnlockStatus(
-                        unlock.requestHeight.toNumber(),
-                        rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
-                          0,
-                        rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
-                          0,
-                        blockHeight ?? 0,
-                        blockTime ?? 0,
-                      ),
-                    })),
+                    unlocks: lpRes.liquidityProvider.unlocks
+                      .filter((unlock) => unlock.units !== "0")
+                      .map((unlock) => ({
+                        ...unlock,
+                        ...getLiquidityUnlockStatus(
+                          unlock.requestHeight.toNumber(),
+                          rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
+                            0,
+                          rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
+                            0,
+                          blockHeight ?? 0,
+                          blockTime ?? 0,
+                        ),
+                      })),
                   },
           };
     },
@@ -122,18 +124,20 @@ export const useLiquidityProvidersQuery = () => {
                   ? undefined
                   : {
                       ...x.liquidityProvider,
-                      unlocks: x.liquidityProvider.unlocks.map((unlock) => ({
-                        ...unlock,
-                        ...getLiquidityUnlockStatus(
-                          unlock.requestHeight.toNumber(),
-                          rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
-                            0,
-                          rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
-                            0,
-                          blockHeight ?? 0,
-                          blockTime ?? 0,
-                        ),
-                      })),
+                      unlocks: x.liquidityProvider.unlocks
+                        .filter((unlock) => unlock.units !== "0")
+                        .map((unlock) => ({
+                          ...unlock,
+                          ...getLiquidityUnlockStatus(
+                            unlock.requestHeight.toNumber(),
+                            rewardParamsRes?.params?.liquidityRemovalLockPeriod.toNumber() ??
+                              0,
+                            rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
+                              0,
+                            blockHeight ?? 0,
+                            blockTime ?? 0,
+                          ),
+                        })),
                     },
             })),
           };
