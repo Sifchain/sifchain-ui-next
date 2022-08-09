@@ -39,7 +39,7 @@ const useUnlockLiquidityMutation = () => {
     },
     {
       onMutate: () => {
-        toast.info("Unbond liquidity inprogress");
+        toast.info("Unbonding liquidity inprogress");
       },
       onSettled: (data, error) => {
         if (!isNil(error)) {
