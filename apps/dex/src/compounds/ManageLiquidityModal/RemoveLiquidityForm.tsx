@@ -7,9 +7,13 @@ import {
 } from "react";
 import useUnlockLiquidity from "~/domains/clp/hooks/useUnlockLiquidity";
 import useUnlockLiquidityMutation from "~/domains/clp/hooks/useUnlockLiquidityMutation";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { ManageLiquidityModalProps } from "./types";
 
 const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const { indexedByDenom } = useTokenRegistryQuery();
+  const externalToken = indexedByDenom[props.denom];
+
   const unlockLiquidityMutation = useUnlockLiquidityMutation();
   const {
     unlockPercentageState: [unlockPercentage, setUnlockPercentage],
@@ -79,7 +83,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
         <header className="mb-2">Est. amount you will receive:</header>
         <dl className="flex flex-col gap-2 [&_dt]:font-semibold [&_dt]:uppercase [&>div]:flex [&>div]:justify-between">
           <div>
-            <dt>{props.denom}</dt>
+            <dt>{externalToken?.displaySymbol}</dt>
             <dd>
               {externalAssetAmount.toLocaleString(undefined, {
                 maximumFractionDigits: 6,
