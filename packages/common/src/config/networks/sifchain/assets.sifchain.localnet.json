@@ -1,0 +1,33 @@
+{
+  "$schema": "./_assets.sifchain.schema.json",
+  "assets": [
+    {
+      "decimals": 18,
+      "displaySymbol": "rowan",
+      "homeNetwork": "sifchain",
+      "imageUrl": "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
+      "name": "Rowan",
+      "network": "sifchain",
+      "symbol": "ROWAN"
+    },
+    {
+      "decimals": 18,
+      "displaySymbol": "DINO",
+      "homeNetwork": "ethereum",
+      "imageUrl": "https://assets.coingecko.com/coins/images/17103/small/DINO.png?1626244014",
+      "name": "DinoSwap",
+      "network": "sifchain",
+      "symbol": "CDINO"
+    },
+    {
+      "decimals": 18,
+      "displaySymbol": "UST (ERC-20)",
+      "homeNetwork": "ethereum",
+      "imageUrl": "https://assets.coingecko.com/coins/images/12681/small/UST.png?1601612407",
+      "label": "Terra USD",
+      "name": "Terra USD",
+      "network": "sifchain",
+      "symbol": "CUST"
+    }
+  ]
+}
