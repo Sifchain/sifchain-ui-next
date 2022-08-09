@@ -36,9 +36,9 @@ export class Pair {
 
   getAmount(asset: IAsset | string) {
     const assetSymbol = typeof asset === "string" ? asset : asset.symbol;
-    const found = this.amounts.find((amount) => {
-      return amount.symbol === assetSymbol;
-    });
+    const found = this.amounts.find(
+      (amount) => amount.symbol.toLowerCase() === assetSymbol.toLowerCase(),
+    );
     if (!found) throw new Error(`Asset ${assetSymbol} doesnt exist in pair`);
     return found;
   }

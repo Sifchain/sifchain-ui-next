@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { getTestingTokens } from "../../test/utils/getTestingToken";
-import { Asset } from "./Asset";
+import { Asset, IAsset } from "./Asset";
 import { AssetAmount } from "./AssetAmount";
 import { CompositePool, Pool } from "./Pool";
 
@@ -11,7 +11,7 @@ describe("Pool", () => {
     "BTK",
     "ETH",
     "ROWAN",
-  ]);
+  ]) as [IAsset, IAsset, IAsset, IAsset];
 
   // TODO: Confirm with Blockscience
   // x = Sent Asset Amount, X = Sent Asset Pool Balance, Y = Received Asset Pool Balance
