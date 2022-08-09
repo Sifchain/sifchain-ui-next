@@ -12,6 +12,7 @@ import devnetconfig from "./networks/config.devnet.json";
 import localnetconfig from "./networks/config.localnet.json";
 import mainnnetconfig from "./networks/config.mainnet.json";
 import testnetconfig from "./networks/config.testnet.json";
+import tempnetconfig from "./networks/config.tempnet.json";
 
 type ConfigMap = Record<NetworkEnv, ReturnType<typeof parseConfig>>;
 
@@ -98,6 +99,12 @@ export async function getConfig(
       testnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["testnet"],
+      peggyCompatibleCosmosBaseDenoms,
+    ),
+    tempnet: parseConfig(
+      tempnetconfig as CoreConfig,
+      allAssets,
+      CHAINCONFIG_BY_NETWORK_ENV["tempnet"],
       peggyCompatibleCosmosBaseDenoms,
     ),
     mainnet: parseConfig(

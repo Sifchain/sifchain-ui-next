@@ -1,13 +1,19 @@
 import { NetworkKind } from "~/entities";
 import { AppCookies } from "./AppCookies";
 
-export type NetworkEnv = "localnet" | "devnet" | "testnet" | "mainnet";
+export type NetworkEnv =
+  | "localnet"
+  | "devnet"
+  | "testnet"
+  | "mainnet"
+  | "tempnet";
 
 export const NETWORK_ENVS: Set<NetworkEnv> = new Set<NetworkEnv>([
   "localnet",
   "devnet",
   "testnet",
   "mainnet",
+  "tempnet",
 ]);
 
 type AssetTag = `${NetworkKind}.${NetworkEnv}`;
@@ -36,6 +42,12 @@ export const PROFILE_LOOKUP: Record<NetworkEnv, EnvProfileConfig> = {
     kind: "devnet",
     ethAssetTag: "ethereum.devnet",
     sifAssetTag: "sifchain.devnet",
+    cosmoshubAssetTag: "cosmoshub.testnet",
+  },
+  tempnet: {
+    kind: "tempnet",
+    ethAssetTag: "ethereum.testnet",
+    sifAssetTag: "sifchain.testnet",
     cosmoshubAssetTag: "cosmoshub.testnet",
   },
   localnet: {
