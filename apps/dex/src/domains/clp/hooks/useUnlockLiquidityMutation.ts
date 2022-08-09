@@ -10,17 +10,13 @@ import {
   LIQUIDITY_PROVIDER_QUERY_KEY,
 } from "./liquidityProvider";
 
-const useAddLiquidityMutation = () => {
+const useUnlockLiquidityMutation = () => {
   const queryClient = useQueryClient();
   const { signer } = useSifSigner();
   const { data: stargateClient } = useSifSigningStargateClient();
 
   const baseMutation = useMutation(
-    async (variables: {
-      denom: string;
-      nativeAmount: string;
-      externalAmount: string;
-    }) => {
+    async (variables: { denom: string; units: string }) => {
       invariant(signer !== undefined, "signer is undefined");
       invariant(stargateClient !== undefined, "stargateClient is undefined");
 
@@ -30,12 +26,11 @@ const useAddLiquidityMutation = () => {
         signerAddress,
         [
           {
-            typeUrl: "/sifnode.clp.v1.MsgAddLiquidity",
+            typeUrl: "/sifnode.clp.v1.MsgUnlockLiquidityRequest",
             value: {
               signer: signerAddress,
-              nativeAssetAmount: variables.nativeAmount,
-              externalAssetAmount: variables.externalAmount,
               externalAsset: { symbol: variables.denom },
+              units: variables.units,
             },
           },
         ],
@@ -44,14 +39,14 @@ const useAddLiquidityMutation = () => {
     },
     {
       onMutate: () => {
-        toast.info("Add liquidity inprogress");
+        toast.info("Unbonding liquidity inprogress");
       },
       onSettled: (data, error) => {
         if (!isNil(error)) {
           if (error instanceof Error || "message" in (error as Error)) {
             toast.error((error as Error).message);
           } else {
-            toast.error("Failed to add liquidity");
+            toast.error("Failed to unbond liquidity");
           }
           return;
         }
@@ -59,9 +54,9 @@ const useAddLiquidityMutation = () => {
         if (data === undefined) return;
 
         if (Boolean(error) || isDeliverTxFailure(data)) {
-          toast.error(data?.rawLog ?? "Failed to add liquidity");
+          toast.error(data?.rawLog ?? "Failed to unbond liquidity");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
-          toast.success(`Successfully added liquidity`);
+          toast.success(`Successfully unbonded liquidity`);
           queryClient.invalidateQueries(LIQUIDITY_PROVIDER_QUERY_KEY);
           queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
@@ -75,4 +70,4 @@ const useAddLiquidityMutation = () => {
   };
 };
 
-export default useAddLiquidityMutation;
+export default useUnlockLiquidityMutation;

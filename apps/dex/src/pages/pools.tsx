@@ -1,4 +1,10 @@
-import { Button, ChevronDownIcon, PoolsIcon, SearchInput } from "@sifchain/ui";
+import {
+  Button,
+  ChevronDownIcon,
+  PoolsIcon,
+  RacetrackSpinnerIcon,
+  SearchInput,
+} from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -8,6 +14,8 @@ import { ChangeEventHandler, useCallback, useMemo } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
+import useCancelLiquidityUnlockMutation from "~/domains/clp/hooks/useCancelLiquidityUnlockMutation";
+import useRemoveLiquidityMutation from "~/domains/clp/hooks/useRemoveLiquidityMutation";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
@@ -42,6 +50,7 @@ const usePoolsPageData = () => {
             denom: token?.denom,
             liquidityProviderPoolShare: 0,
             liquidityProviderPoolValue: 0,
+            unlock: undefined,
           };
 
         const rowanPoolValue = new BigNumber(
@@ -51,6 +60,9 @@ const usePoolsPageData = () => {
         const externalAssetPoolValue = new BigNumber(x.priceToken ?? 0).times(
           liquidityProvider.externalAssetBalance.toString(),
         );
+
+        const currentUnlockRequest =
+          liquidityProvider.liquidityProvider.unlocks[0];
 
         return {
           ...x,
@@ -63,6 +75,9 @@ const usePoolsPageData = () => {
           liquidityProviderPoolValue: rowanPoolValue
             .plus(externalAssetPoolValue)
             .toNumber(),
+          unlock: currentUnlockRequest?.expired
+            ? undefined
+            : currentUnlockRequest,
         };
       }),
     }),
@@ -103,6 +118,9 @@ const PoolsPage: NextPage = () => {
       ),
     [filteredPools],
   );
+
+  const removeLiquidityMutation = useRemoveLiquidityMutation();
+  const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
 
   const selectedDenom = getFirstQueryValue(router.query["denom"]);
 
@@ -232,6 +250,49 @@ const PoolsPage: NextPage = () => {
                   >
                     <PoolsIcon /> Pool
                   </Button>
+                  {x.unlock && (
+                    <div className="flex gap-3 mt-2">
+                      <Button
+                        className="flex-1"
+                        variant="outline"
+                        onClick={() =>
+                          cancelUnlockMutation.mutate({
+                            denom: x.denom ?? "",
+                            units: x.unlock?.units ?? "0",
+                          })
+                        }
+                        disabled={
+                          cancelUnlockMutation.isLoading ||
+                          removeLiquidityMutation.isLoading
+                        }
+                      >
+                        {cancelUnlockMutation.isLoading &&
+                          cancelUnlockMutation.variables?.denom === x.denom && (
+                            <RacetrackSpinnerIcon />
+                          )}
+                        Cancel request
+                      </Button>
+                      <Button
+                        className="flex-1"
+                        variant="outline"
+                        onClick={() =>
+                          removeLiquidityMutation.mutate({
+                            denom: x.denom ?? "",
+                            units: x.unlock?.units ?? "0",
+                          })
+                        }
+                        disabled={
+                          cancelUnlockMutation.isLoading ||
+                          removeLiquidityMutation.isLoading
+                        }
+                      >
+                        {removeLiquidityMutation.isLoading &&
+                          removeLiquidityMutation.variables?.denom ===
+                            x.denom && <RacetrackSpinnerIcon />}
+                        Claim liquidity
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </details>
             ))}

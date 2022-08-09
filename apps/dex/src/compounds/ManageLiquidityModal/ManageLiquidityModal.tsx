@@ -1,7 +1,7 @@
 import { ButtonGroup, Modal } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
 import AddLiquidityForm from "./AddLiquidityForm";
-import RemoveLiquidityForm from "./RemoveLiquidityForm";
+import UnlockLiquidityForm from "./RemoveLiquidityForm";
 import type { Action, ManageLiquidityModalProps } from "./types";
 
 const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
@@ -24,7 +24,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
       case 0:
         return <AddLiquidityForm {...props} />;
       case 1:
-        return <RemoveLiquidityForm {...props} />;
+        return <UnlockLiquidityForm {...props} />;
     }
   }, [props, selectedTabIndex]);
 

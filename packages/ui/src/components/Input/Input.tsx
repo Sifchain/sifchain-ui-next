@@ -13,13 +13,20 @@ const SIZE_CLASSES = {
 type InputSize = keyof typeof SIZE_CLASSES;
 
 export const StyledInputContainer = tw.div`
-  relative flex items-center h-12
+  border-gray-600 bg-gray-700 rounded-md opacity-90 outline-none p-2 px-4
+  focus-within:outline-none focus-within:ring focus-within:ring-gray-400/80
+  hover:opacity-100 flex-1
+  flex items-center gap-1
 `;
 
 export const StyledInput = tw.input`
-  appearance-none input absolute inset-0 border-none outline-none 
-  focus:outline-none focus:ring ring-gray-400/80  h-full w-full px-2 text-gray-100
+  flex-1 p-0
+  bg-transparent outline-none border-none focus:ring-transparent
+  [&::-webkit-inner-spin-button]:appearance-none
+  [&::-webkit-outer-spin-button]:appearance-none
+  text-gray-50 text-base md:text-lg
   placeholder:text-gray-300
+  disabled:placeholder:text-gray-600
 `;
 
 export const HotKey = tw.span`
@@ -34,6 +41,7 @@ export type InputProps = Omit<
   secondaryLabel?: ReactNode | string;
   hideLabel?: boolean;
   leadingIcon?: ReactNode | string;
+  trailingIcon?: ReactNode | string;
   hotkey?: string;
   containerClassName?: string;
   inputClassName?: string;
@@ -47,6 +55,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       label,
       secondaryLabel,
       leadingIcon,
+      trailingIcon,
       hotkey,
       hideLabel,
       containerClassName,
@@ -109,9 +118,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <StyledInputContainer
           className={clsx(containerClassName, SIZE_CLASSES[size ?? "md"])}
         >
-          {leadingIcon && (
-            <div className="translate-x-2 z-10">{leadingIcon}</div>
-          )}
+          {leadingIcon}
           <StyledInput
             aria-label={typeof label === "string" ? label : ""}
             {...props}
@@ -120,6 +127,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={id}
             ref={inputRef}
           />
+          {trailingIcon}
           {Boolean(hotkey) && <HotKey>{hotkey}</HotKey>}
         </StyledInputContainer>
       </div>

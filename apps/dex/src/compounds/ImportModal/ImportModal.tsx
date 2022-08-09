@@ -218,7 +218,7 @@ const ImportModal = (
               [],
             )}
             leadingIcon={
-              <div className="flex gap-1.5 pl-1.5">
+              <div className="flex gap-1.5">
                 <Label
                   type="button"
                   onClick={useCallback(() => {
