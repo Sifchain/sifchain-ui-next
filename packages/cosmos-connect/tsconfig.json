@@ -7,6 +7,5 @@
     "exactOptionalPropertyTypes": false,
     "jsx": "react"
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src", "test"]
 }

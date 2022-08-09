@@ -75,11 +75,25 @@ export class Pool extends Pair {
   }
 
   get externalAmount() {
-    return this.amounts.find((amount) => amount.symbol !== "rowan")!;
+    const amount = this.amounts.find(
+      (amount) => amount.symbol.toLowerCase() !== "rowan",
+    );
+
+    if (!amount) {
+      throw new Error("Pool does not have an external asset");
+    }
+
+    return amount;
   }
 
   get nativeAmount() {
-    return this.amounts.find((amount) => amount.symbol === "rowan")!;
+    const amount = this.amounts.find(
+      (amount) => amount.symbol.toLowerCase() === "rowan",
+    );
+    if (!amount) {
+      throw new Error("Pool does not have rowan");
+    }
+    return amount;
   }
 
   calcProviderFee(x: IAssetAmount) {
@@ -187,7 +201,7 @@ export class Pool extends Pair {
     );
     const newTotalPoolUnits = lpUnits.add(this.poolUnits);
 
-    return [newTotalPoolUnits, lpUnits];
+    return [newTotalPoolUnits, lpUnits] as const;
   }
 }
 
@@ -220,20 +234,16 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
     get externalAmount() {
       return amounts[0] as IAssetAmount;
     },
-
     get nativeAmount() {
       return amounts[1] as IAssetAmount;
     },
-
     get nativeSwapPrice() {
       return pair1.nativeSwapPrice || pair2.nativeSwapPrice;
     },
-
     get externalSwapPrice() {
       return pair1.externalSwapPrice || pair2.externalSwapPrice;
     },
-
-    getAmount: (asset: IAsset | string) => {
+    getAmount(asset: IAsset | string) {
       if (Asset(asset).symbol === nativeSymbol) {
         throw new Error(`Asset ${nativeSymbol} doesnt exist in pair`);
       }
@@ -241,11 +251,11 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
       // quicker to try catch than contains
       try {
         return pair1.getAmount(asset);
-      } catch (err) {}
-
-      return pair2.getAmount(asset);
+      } catch (err) {
+        // if pair1 doesnt have this asset, try pair2
+        return pair2.getAmount(asset);
+      }
     },
-
     otherAsset(asset: IAsset) {
       const otherAsset = amounts.find(
         (amount) => amount.symbol !== asset.symbol,
@@ -300,7 +310,6 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
 
       return second.calcSwapResult(nativeAmount);
     },
-
     calcReverseSwapResult(S: IAssetAmount) {
       // TODO: possibly use a combined formula
       const [first, second] = pair1.contains(S)
