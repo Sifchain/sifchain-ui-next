@@ -1,4 +1,6 @@
 import { Button, Fieldset, Input, RacetrackSpinnerIcon } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
+import { clamp } from "rambda";
 import {
   ChangeEventHandler,
   FormEventHandler,
@@ -59,6 +61,18 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
     [props, units, unlockLiquidityMutation],
   );
 
+  const onChangePercentageInput = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >(
+    (event) => {
+      const value = event.target.value.replace(".", "").trim();
+      const parsedValue = clamp(0, 100, parseInt(value));
+
+      setUnlockPercentage(new BigNumber(parsedValue).div(100).toString());
+    },
+    [setUnlockPercentage],
+  );
+
   const inputDisabled =
     unlockLiquidityMutation.isLoading ||
     unlockLiquidityMutation.isSuccess ||
@@ -81,11 +95,16 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
           disabled={inputDisabled}
         />
         <Input
-          containerClassName="w-16 text-lg"
-          inputClassName="text-end"
-          value={Number(unlockPercentage).toLocaleString(undefined, {
-            style: "percent",
-          })}
+          type="number"
+          containerClassName="w-20"
+          inputClassName="w-0 text-lg text-end"
+          trailingIcon={<span>%</span>}
+          value={Number(unlockPercentage)
+            .toLocaleString(undefined, {
+              style: "percent",
+            })
+            .replace("%", "")}
+          onChange={onChangePercentageInput}
         />
       </Fieldset>
       <section className="p-4">
