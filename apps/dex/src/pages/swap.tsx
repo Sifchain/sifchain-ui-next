@@ -92,7 +92,8 @@ const SwapPage: NextPage = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const [slippageInput, setSlippageInput] = useState("0.5");
-  const slippage = new BigNumber(slippageInput).div(100).toNumber();
+  // need || 0 in case of NaN
+  const slippage = new BigNumber(slippageInput).div(100).toNumber() || 0;
   const slippageOptions = [
     { label: "0.5%", value: 0.005 },
     { label: "1%", value: 0.01 },
