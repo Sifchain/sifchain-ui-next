@@ -16,7 +16,7 @@ import * as url from "url";
 import * as isomorphicFetch from "isomorphic-fetch";
 import { Configuration } from "./configuration";
 
-const BASE_PATH = "https://data.sifchain.finance/beta".replace(/\/+$/, "");
+const BASE_PATH = "http://localhost:8080".replace(/\/+$/, "");
 
 /**
  *
@@ -578,116 +578,6 @@ export interface GetSummaryResponse {
 /**
  *
  * @export
- * @interface GetTokenStatsResponse
- */
-export interface GetTokenStatsResponse {
-  /**
-   *
-   * @type {string}
-   * @memberof GetTokenStatsResponse
-   */
-  rowanUSD?: string;
-  /**
-   *
-   * @type {Array<GetTokenStatsResponsePools>}
-   * @memberof GetTokenStatsResponse
-   */
-  pools?: Array<GetTokenStatsResponsePools>;
-}
-/**
- *
- * @export
- * @interface GetTokenStatsResponsePools
- */
-export interface GetTokenStatsResponsePools {
-  /**
-   *
-   * @type {string}
-   * @memberof GetTokenStatsResponsePools
-   */
-  symbol?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  priceToken?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  poolDepth?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  poolTVL?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  volume?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  arb?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  dailySwapFees?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  poolBalance?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  poolBalanceInRowan?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  accruedNumBlocksRewards?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  rewardPeriodNativeDistributed?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  blocksPerYear?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  rewardApr?: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetTokenStatsResponsePools
-   */
-  poolApr?: number;
-}
-/**
- *
- * @export
  * @interface GetTokenValueResponse
  */
 export interface GetTokenValueResponse {
@@ -917,12 +807,117 @@ export const AssetsApiFetchParamCreator = function (
 ) {
   return {
     /**
+     * This endpoint is to provide a summary for each currency available on the exchange.
+     * @summary Get details on available crypto currencies.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAssets(options: any = {}): FetchArgs {
+      const localVarPath = `/asset`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * This end point gets the statistics of tokens
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getTokenStats(options: any = {}): FetchArgs {
       const localVarPath = `/asset/tokenStats`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This end point gets the statistics of tokens
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenStatsPMTP(options: any = {}): FetchArgs {
+      const localVarPath = `/asset/tokenStatsPMTP`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenValue(symbol: string, options: any = {}): FetchArgs {
+      // verify required parameter 'symbol' is not null or undefined
+      if (symbol === null || symbol === undefined) {
+        throw new RequiredError(
+          "symbol",
+          "Required parameter symbol was null or undefined when calling getTokenValue.",
+        );
+      }
+      const localVarPath = `/asset/{symbol}`.replace(
+        `{${"symbol"}}`,
+        encodeURIComponent(String(symbol)),
+      );
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: "GET" }, options);
       const localVarHeaderParameter = {} as any;
@@ -957,15 +952,106 @@ export const AssetsApiFetchParamCreator = function (
 export const AssetsApiFp = function (configuration?: Configuration) {
   return {
     /**
+     * This endpoint is to provide a summary for each currency available on the exchange.
+     * @summary Get details on available crypto currencies.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAssets(
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetAssetsResponse>> {
+      const localVarFetchArgs =
+        AssetsApiFetchParamCreator(configuration).getAssets(options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * This end point gets the statistics of tokens
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getTokenStats(
       options?: any,
-    ): (fetch?: FetchAPI, basePath?: string) => Promise<GetTokenStatsResponse> {
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<GetCirculatingSupplyResponse> {
       const localVarFetchArgs =
         AssetsApiFetchParamCreator(configuration).getTokenStats(options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This end point gets the statistics of tokens
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenStatsPMTP(
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<GetCirculatingSupplyResponse> {
+      const localVarFetchArgs =
+        AssetsApiFetchParamCreator(configuration).getTokenStatsPMTP(options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenValue(
+      symbol: string,
+      options?: any,
+    ): (fetch?: FetchAPI, basePath?: string) => Promise<GetTokenValueResponse> {
+      const localVarFetchArgs = AssetsApiFetchParamCreator(
+        configuration,
+      ).getTokenValue(symbol, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
         basePath: string = BASE_PATH,
@@ -996,12 +1082,44 @@ export const AssetsApiFactory = function (
 ) {
   return {
     /**
+     * This endpoint is to provide a summary for each currency available on the exchange.
+     * @summary Get details on available crypto currencies.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAssets(options?: any) {
+      return AssetsApiFp(configuration).getAssets(options)(fetch, basePath);
+    },
+    /**
      * This end point gets the statistics of tokens
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getTokenStats(options?: any) {
       return AssetsApiFp(configuration).getTokenStats(options)(fetch, basePath);
+    },
+    /**
+     * This end point gets the statistics of tokens
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenStatsPMTP(options?: any) {
+      return AssetsApiFp(configuration).getTokenStatsPMTP(options)(
+        fetch,
+        basePath,
+      );
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getTokenValue(symbol: string, options?: any) {
+      return AssetsApiFp(configuration).getTokenValue(symbol, options)(
+        fetch,
+        basePath,
+      );
     },
   };
 };
@@ -1014,6 +1132,20 @@ export const AssetsApiFactory = function (
  */
 export class AssetsApi extends BaseAPI {
   /**
+   * This endpoint is to provide a summary for each currency available on the exchange.
+   * @summary Get details on available crypto currencies.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AssetsApi
+   */
+  public getAssets(options?: any) {
+    return AssetsApiFp(this.configuration).getAssets(options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
    * This end point gets the statistics of tokens
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1021,6 +1153,33 @@ export class AssetsApi extends BaseAPI {
    */
   public getTokenStats(options?: any) {
     return AssetsApiFp(this.configuration).getTokenStats(options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   * This end point gets the statistics of tokens
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AssetsApi
+   */
+  public getTokenStatsPMTP(options?: any) {
+    return AssetsApiFp(this.configuration).getTokenStatsPMTP(options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   *
+   * @param {string} symbol
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AssetsApi
+   */
+  public getTokenValue(symbol: string, options?: any) {
+    return AssetsApiFp(this.configuration).getTokenValue(symbol, options)(
       this.fetch,
       this.basePath,
     );
@@ -1129,12 +1288,61 @@ export const NetworkApiFetchParamCreator = function (
       };
     },
     /**
-     * This end point gets daily OHLC ticker data.
-     * @param {string} symbol
+     *
+     * @param {string} type
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getHistoricalPrice(symbol: string, options: any = {}): FetchArgs {
+    getDispensation(type: string, options: any = {}): FetchArgs {
+      // verify required parameter 'type' is not null or undefined
+      if (type === null || type === undefined) {
+        throw new RequiredError(
+          "type",
+          "Required parameter type was null or undefined when calling getDispensation.",
+        );
+      }
+      const localVarPath = `/network/dispensation/{type}`.replace(
+        `{${"type"}}`,
+        encodeURIComponent(String(type)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This end point gets daily OHLC ticker data.
+     * @param {string} symbol
+     * @param {number} [limit]
+     * @param {number} [page]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getHistoricalPrice(
+      symbol: string,
+      limit?: number,
+      page?: number,
+      options: any = {},
+    ): FetchArgs {
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
@@ -1146,6 +1354,110 @@ export const NetworkApiFetchParamCreator = function (
         `{${"symbol"}}`,
         encodeURIComponent(String(symbol)),
       );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (limit !== undefined) {
+        localVarQueryParameter["limit"] = limit;
+      }
+
+      if (page !== undefined) {
+        localVarQueryParameter["page"] = page;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns reward and lpp distribution amount since beginning of time
+     * @summary Get the historical distribution of rewards and lppd
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getLppdReward(address: string, options: any = {}): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getLppdReward.",
+        );
+      }
+      const localVarPath = `/network/lppdReward/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {string} lpAddress
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getNetChange(
+      symbol: string,
+      lpAddress: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'symbol' is not null or undefined
+      if (symbol === null || symbol === undefined) {
+        throw new RequiredError(
+          "symbol",
+          "Required parameter symbol was null or undefined when calling getNetChange.",
+        );
+      }
+      // verify required parameter 'lpAddress' is not null or undefined
+      if (lpAddress === null || lpAddress === undefined) {
+        throw new RequiredError(
+          "lpAddress",
+          "Required parameter lpAddress was null or undefined when calling getNetChange.",
+        );
+      }
+      const localVarPath = `/network/{symbol}/netChange/{lpAddress}`
+        .replace(`{${"symbol"}}`, encodeURIComponent(String(symbol)))
+        .replace(`{${"lpAddress"}}`, encodeURIComponent(String(lpAddress)));
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: "GET" }, options);
       const localVarHeaderParameter = {} as any;
@@ -1177,6 +1489,91 @@ export const NetworkApiFetchParamCreator = function (
      */
     getNetworkInfo(options: any = {}): FetchArgs {
       const localVarPath = `/network`;
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardConfig(type: string, options: any = {}): FetchArgs {
+      // verify required parameter 'type' is not null or undefined
+      if (type === null || type === undefined) {
+        throw new RequiredError(
+          "type",
+          "Required parameter type was null or undefined when calling getRewardConfig.",
+        );
+      }
+      const localVarPath = `/network/rewardConfig/{type}`.replace(
+        `{${"type"}}`,
+        encodeURIComponent(String(type)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns reward based liquidity events
+     * @summary Get the reward payout info
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardUser(address: string, options: any = {}): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getRewardUser.",
+        );
+      }
+      const localVarPath = `/network/rewardPay/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
       const localVarUrlObj = url.parse(localVarPath, true);
       const localVarRequestOptions = Object.assign({ method: "GET" }, options);
       const localVarHeaderParameter = {} as any;
@@ -1328,13 +1725,46 @@ export const NetworkApiFp = function (configuration?: Configuration) {
       };
     },
     /**
+     *
+     * @param {string} type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getDispensation(
+      type: string,
+      options?: any,
+    ): (fetch?: FetchAPI, basePath?: string) => Promise<GetPoolResponse> {
+      const localVarFetchArgs = NetworkApiFetchParamCreator(
+        configuration,
+      ).getDispensation(type, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * This end point gets daily OHLC ticker data.
      * @param {string} symbol
+     * @param {number} [limit]
+     * @param {number} [page]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getHistoricalPrice(
       symbol: string,
+      limit?: number,
+      page?: number,
       options?: any,
     ): (
       fetch?: FetchAPI,
@@ -1342,7 +1772,74 @@ export const NetworkApiFp = function (configuration?: Configuration) {
     ) => Promise<Array<GetHistoricalPriceResponse>> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
         configuration,
-      ).getHistoricalPrice(symbol, options);
+      ).getHistoricalPrice(symbol, limit, page, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns reward and lpp distribution amount since beginning of time
+     * @summary Get the historical distribution of rewards and lppd
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getLppdReward(
+      address: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetPoolResponse>> {
+      const localVarFetchArgs = NetworkApiFetchParamCreator(
+        configuration,
+      ).getLppdReward(address, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {string} lpAddress
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getNetChange(
+      symbol: string,
+      lpAddress: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<GetLiquidityProviderResponse> {
+      const localVarFetchArgs = NetworkApiFetchParamCreator(
+        configuration,
+      ).getNetChange(symbol, lpAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
         basePath: string = BASE_PATH,
@@ -1369,6 +1866,68 @@ export const NetworkApiFp = function (configuration?: Configuration) {
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetNetworkResponse> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).getNetworkInfo(options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     *
+     * @param {string} type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardConfig(
+      type: string,
+      options?: any,
+    ): (fetch?: FetchAPI, basePath?: string) => Promise<GetPoolResponse> {
+      const localVarFetchArgs = NetworkApiFetchParamCreator(
+        configuration,
+      ).getRewardConfig(type, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns reward based liquidity events
+     * @summary Get the reward payout info
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardUser(
+      address: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetPoolResponse>> {
+      const localVarFetchArgs = NetworkApiFetchParamCreator(
+        configuration,
+      ).getRewardUser(address, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
         basePath: string = BASE_PATH,
@@ -1463,16 +2022,64 @@ export const NetworkApiFactory = function (
       );
     },
     /**
-     * This end point gets daily OHLC ticker data.
-     * @param {string} symbol
+     *
+     * @param {string} type
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getHistoricalPrice(symbol: string, options?: any) {
-      return NetworkApiFp(configuration).getHistoricalPrice(symbol, options)(
+    getDispensation(type: string, options?: any) {
+      return NetworkApiFp(configuration).getDispensation(type, options)(
         fetch,
         basePath,
       );
+    },
+    /**
+     * This end point gets daily OHLC ticker data.
+     * @param {string} symbol
+     * @param {number} [limit]
+     * @param {number} [page]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getHistoricalPrice(
+      symbol: string,
+      limit?: number,
+      page?: number,
+      options?: any,
+    ) {
+      return NetworkApiFp(configuration).getHistoricalPrice(
+        symbol,
+        limit,
+        page,
+        options,
+      )(fetch, basePath);
+    },
+    /**
+     * This endpoint returns reward and lpp distribution amount since beginning of time
+     * @summary Get the historical distribution of rewards and lppd
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getLppdReward(address: string, options?: any) {
+      return NetworkApiFp(configuration).getLppdReward(address, options)(
+        fetch,
+        basePath,
+      );
+    },
+    /**
+     *
+     * @param {string} symbol
+     * @param {string} lpAddress
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getNetChange(symbol: string, lpAddress: string, options?: any) {
+      return NetworkApiFp(configuration).getNetChange(
+        symbol,
+        lpAddress,
+        options,
+      )(fetch, basePath);
     },
     /**
      *
@@ -1481,6 +2088,31 @@ export const NetworkApiFactory = function (
      */
     getNetworkInfo(options?: any) {
       return NetworkApiFp(configuration).getNetworkInfo(options)(
+        fetch,
+        basePath,
+      );
+    },
+    /**
+     *
+     * @param {string} type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardConfig(type: string, options?: any) {
+      return NetworkApiFp(configuration).getRewardConfig(type, options)(
+        fetch,
+        basePath,
+      );
+    },
+    /**
+     * This endpoint returns reward based liquidity events
+     * @summary Get the reward payout info
+     * @param {string} address Wallet address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getRewardUser(address: string, options?: any) {
+      return NetworkApiFp(configuration).getRewardUser(address, options)(
         fetch,
         basePath,
       );
@@ -1545,17 +2177,71 @@ export class NetworkApi extends BaseAPI {
   }
 
   /**
-   * This end point gets daily OHLC ticker data.
-   * @param {string} symbol
+   *
+   * @param {string} type
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NetworkApi
    */
-  public getHistoricalPrice(symbol: string, options?: any) {
-    return NetworkApiFp(this.configuration).getHistoricalPrice(symbol, options)(
+  public getDispensation(type: string, options?: any) {
+    return NetworkApiFp(this.configuration).getDispensation(type, options)(
       this.fetch,
       this.basePath,
     );
+  }
+
+  /**
+   * This end point gets daily OHLC ticker data.
+   * @param {string} symbol
+   * @param {number} [limit]
+   * @param {number} [page]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NetworkApi
+   */
+  public getHistoricalPrice(
+    symbol: string,
+    limit?: number,
+    page?: number,
+    options?: any,
+  ) {
+    return NetworkApiFp(this.configuration).getHistoricalPrice(
+      symbol,
+      limit,
+      page,
+      options,
+    )(this.fetch, this.basePath);
+  }
+
+  /**
+   * This endpoint returns reward and lpp distribution amount since beginning of time
+   * @summary Get the historical distribution of rewards and lppd
+   * @param {string} address Wallet address
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NetworkApi
+   */
+  public getLppdReward(address: string, options?: any) {
+    return NetworkApiFp(this.configuration).getLppdReward(address, options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   *
+   * @param {string} symbol
+   * @param {string} lpAddress
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NetworkApi
+   */
+  public getNetChange(symbol: string, lpAddress: string, options?: any) {
+    return NetworkApiFp(this.configuration).getNetChange(
+      symbol,
+      lpAddress,
+      options,
+    )(this.fetch, this.basePath);
   }
 
   /**
@@ -1566,6 +2252,35 @@ export class NetworkApi extends BaseAPI {
    */
   public getNetworkInfo(options?: any) {
     return NetworkApiFp(this.configuration).getNetworkInfo(options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   *
+   * @param {string} type
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NetworkApi
+   */
+  public getRewardConfig(type: string, options?: any) {
+    return NetworkApiFp(this.configuration).getRewardConfig(type, options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   * This endpoint returns reward based liquidity events
+   * @summary Get the reward payout info
+   * @param {string} address Wallet address
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NetworkApi
+   */
+  public getRewardUser(address: string, options?: any) {
+    return NetworkApiFp(this.configuration).getRewardUser(address, options)(
       this.fetch,
       this.basePath,
     );
@@ -2240,6 +2955,146 @@ export const StatsApiFetchParamCreator = function (
       };
     },
     /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getMarginHistory.",
+        );
+      }
+      const localVarPath = `/margin/history/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter["offset"] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter["limit"] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter["orderBy"] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter["sortBy"] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getMarginOpenPosition.",
+        );
+      }
+      const localVarPath = `/margin/openPosition/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter["offset"] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter["limit"] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter["orderBy"] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter["sortBy"] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2392,6 +3247,88 @@ export const StatsApiFp = function (configuration?: Configuration) {
       };
     },
     /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetPoolResponse>> {
+      const localVarFetchArgs = StatsApiFetchParamCreator(
+        configuration,
+      ).getMarginHistory(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetPoolResponse>> {
+      const localVarFetchArgs = StatsApiFetchParamCreator(
+        configuration,
+      ).getMarginOpenPosition(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2490,6 +3427,62 @@ export const StatsApiFactory = function (
       );
     },
     /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ) {
+      return StatsApiFp(configuration).getMarginHistory(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options,
+      )(fetch, basePath);
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ) {
+      return StatsApiFp(configuration).getMarginOpenPosition(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options,
+      )(fetch, basePath);
+    },
+    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2558,6 +3551,66 @@ export class StatsApi extends BaseAPI {
   }
 
   /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin trade history filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatsApi
+   */
+  public getMarginHistory(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any,
+  ) {
+    return StatsApiFp(this.configuration).getMarginHistory(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options,
+    )(this.fetch, this.basePath);
+  }
+
+  /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin open position filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatsApi
+   */
+  public getMarginOpenPosition(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any,
+  ) {
+    return StatsApiFp(this.configuration).getMarginOpenPosition(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options,
+    )(this.fetch, this.basePath);
+  }
+
+  /**
    *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2591,6 +3644,103 @@ export const TradesApiFetchParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanks(type: string, options: any = {}): FetchArgs {
+      // verify required parameter 'type' is not null or undefined
+      if (type === null || type === undefined) {
+        throw new RequiredError(
+          "type",
+          "Required parameter type was null or undefined when calling getCompetitionRanks.",
+        );
+      }
+      const localVarPath = `/trade/tx_vol/{type}`.replace(
+        `{${"type"}}`,
+        encodeURIComponent(String(type)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} token token
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanksByToken(
+      token: string,
+      type: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'token' is not null or undefined
+      if (token === null || token === undefined) {
+        throw new RequiredError(
+          "token",
+          "Required parameter token was null or undefined when calling getCompetitionRanksByToken.",
+        );
+      }
+      // verify required parameter 'type' is not null or undefined
+      if (type === null || type === undefined) {
+        throw new RequiredError(
+          "type",
+          "Required parameter type was null or undefined when calling getCompetitionRanksByToken.",
+        );
+      }
+      const localVarPath = `/trade/{token}/tx_vol/{type}`
+        .replace(`{${"token"}}`, encodeURIComponent(String(token)))
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)));
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      * The trades endpoint is to return data on all recently completed trades for a given market pair.
      * @summary Get recently completed trades for a given market (24 hours)
@@ -2644,6 +3794,74 @@ export const TradesApiFetchParamCreator = function (
 export const TradesApiFp = function (configuration?: Configuration) {
   return {
     /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanks(
+      type: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetTradeResponse>> {
+      const localVarFetchArgs = TradesApiFetchParamCreator(
+        configuration,
+      ).getCompetitionRanks(type, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} token token
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanksByToken(
+      token: string,
+      type: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetTradeResponse>> {
+      const localVarFetchArgs = TradesApiFetchParamCreator(
+        configuration,
+      ).getCompetitionRanksByToken(token, type, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
      * The trades endpoint is to return data on all recently completed trades for a given market pair.
      * @summary Get recently completed trades for a given market (24 hours)
      * @param {string} marketPair A pair such as “eth_usdt”. Must be seperated by an underscore and in the format {base}_{target}.
@@ -2690,6 +3908,34 @@ export const TradesApiFactory = function (
 ) {
   return {
     /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanks(type: string, options?: any) {
+      return TradesApiFp(configuration).getCompetitionRanks(type, options)(
+        fetch,
+        basePath,
+      );
+    },
+    /**
+     * This endpoint returns result based on volume or txns
+     * @summary Get the ranks of trading competition
+     * @param {string} token token
+     * @param {string} type Competition type.  Either vol or tx.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCompetitionRanksByToken(token: string, type: string, options?: any) {
+      return TradesApiFp(configuration).getCompetitionRanksByToken(
+        token,
+        type,
+        options,
+      )(fetch, basePath);
+    },
+    /**
      * The trades endpoint is to return data on all recently completed trades for a given market pair.
      * @summary Get recently completed trades for a given market (24 hours)
      * @param {string} marketPair A pair such as “eth_usdt”. Must be seperated by an underscore and in the format {base}_{target}.
@@ -2712,6 +3958,42 @@ export const TradesApiFactory = function (
  * @extends {BaseAPI}
  */
 export class TradesApi extends BaseAPI {
+  /**
+   * This endpoint returns result based on volume or txns
+   * @summary Get the ranks of trading competition
+   * @param {string} type Competition type.  Either vol or tx.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TradesApi
+   */
+  public getCompetitionRanks(type: string, options?: any) {
+    return TradesApiFp(this.configuration).getCompetitionRanks(type, options)(
+      this.fetch,
+      this.basePath,
+    );
+  }
+
+  /**
+   * This endpoint returns result based on volume or txns
+   * @summary Get the ranks of trading competition
+   * @param {string} token token
+   * @param {string} type Competition type.  Either vol or tx.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TradesApi
+   */
+  public getCompetitionRanksByToken(
+    token: string,
+    type: string,
+    options?: any,
+  ) {
+    return TradesApiFp(this.configuration).getCompetitionRanksByToken(
+      token,
+      type,
+      options,
+    )(this.fetch, this.basePath);
+  }
+
   /**
    * The trades endpoint is to return data on all recently completed trades for a given market pair.
    * @summary Get recently completed trades for a given market (24 hours)
