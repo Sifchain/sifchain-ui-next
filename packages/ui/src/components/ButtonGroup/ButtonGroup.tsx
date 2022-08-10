@@ -8,7 +8,7 @@ export type Option<T> = {
 
 export type ButtonGroupProps<T> = {
   options: Option<T>[];
-  selectedIndex: number;
+  selectedIndex?: number;
   onChange: (index: number) => void;
   className?: string;
   itemClassName?: string | ((index: number) => string);
@@ -17,7 +17,7 @@ export type ButtonGroupProps<T> = {
 };
 
 type IndicatorProps = {
-  selectedIndex: number;
+  selectedIndex?: number;
   itemWidth: number;
   padding: number;
   gap: number;
@@ -26,6 +26,8 @@ type IndicatorProps = {
 };
 
 const Indicator: FC<IndicatorProps> = (props) => {
+  if (props.selectedIndex === undefined) return null;
+
   const leftOffset = (props.itemWidth - props.padding) * props.selectedIndex;
 
   return (
@@ -76,6 +78,8 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         padding={6}
         gap={props.gap ?? 0}
       />
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore:next-line */}
       <Indicator
         selectedIndex={props.selectedIndex}
         optionsLength={props.options.length}

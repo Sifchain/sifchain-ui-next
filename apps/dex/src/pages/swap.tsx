@@ -3,6 +3,7 @@ import { runCatching } from "@sifchain/common";
 import {
   Button,
   ButtonGroup,
+  Input,
   RacetrackSpinnerIcon,
   SwapIcon,
 } from "@sifchain/ui";
@@ -90,14 +91,19 @@ const SwapPage: NextPage = () => {
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
+  const [slippageInput, setSlippageInput] = useState("0.5");
+  // need || 0 in case of NaN
+  const slippage = new BigNumber(slippageInput).div(100).toNumber() || 0;
   const slippageOptions = [
     { label: "0.5%", value: 0.005 },
     { label: "1%", value: 0.01 },
     { label: "1.5%", value: 0.015 },
   ];
-  const [selectedSlippageIndex, setSelectedSlippageIndex] = useState(0);
+  const selectedSlippageIndex = slippageOptions.findIndex(
+    (x) => x.value === slippage,
+  );
+
   const [fromAmount, setFromAmount] = useState("");
-  const slippage = slippageOptions[selectedSlippageIndex]?.value;
 
   const commonOptions = {
     refetchInterval: 6000,
@@ -311,7 +317,7 @@ const SwapPage: NextPage = () => {
               />
               <div className="flex justify-between items-center">
                 <label className="pr-6">Slippage</label>
-                <div>
+                <div className="flex gap-2 items-center">
                   <ButtonGroup
                     className="bg-black"
                     itemClassName="px-4"
@@ -319,7 +325,21 @@ const SwapPage: NextPage = () => {
                     gap={8}
                     selectedIndex={selectedSlippageIndex}
                     options={slippageOptions}
-                    onChange={setSelectedSlippageIndex}
+                    onChange={(index) =>
+                      setSlippageInput(
+                        new BigNumber(slippageOptions[index]?.value ?? 0)
+                          .times(100)
+                          .toString() ?? "0.5",
+                      )
+                    }
+                  />
+                  <Input
+                    type="number"
+                    containerClassName="w-20"
+                    inputClassName="w-0 !text-md text-end"
+                    trailingIcon={<span>%</span>}
+                    value={slippageInput}
+                    onChange={(event) => setSlippageInput(event.target.value)}
                   />
                 </div>
               </div>

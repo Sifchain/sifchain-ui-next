@@ -7,7 +7,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import useUnlockLiquidity from "~/domains/clp/hooks/useUnlockLiquidity";
+import useUnlockLiquidity from "~/domains/clp/formHooks/useUnlockLiquidity";
 import useUnlockLiquidityMutation from "~/domains/clp/hooks/useUnlockLiquidityMutation";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { ManageLiquidityModalProps } from "./types";
