@@ -27,7 +27,7 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhitespace } from "~/utils/string";
+import { isNilOrWhitespace } from "@sifchain/utils";
 
 const FlipButton = tw.button<{
   $flipped: boolean;

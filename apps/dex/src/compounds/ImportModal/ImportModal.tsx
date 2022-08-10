@@ -10,6 +10,7 @@ import {
   ModalProps,
   RacetrackSpinnerIcon,
 } from "@sifchain/ui";
+import { isNilOrWhitespace } from "@sifchain/utils";
 import { isNil } from "rambda";
 import {
   ChangeEventHandler,
@@ -29,7 +30,6 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { isNilOrWhitespace } from "~/utils/string";
 import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
