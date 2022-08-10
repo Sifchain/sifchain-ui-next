@@ -22,6 +22,7 @@
     "@sifchain/sif-api": "workspace:*",
     "@sifchain/stargate": "workspace:*",
     "@sifchain/ui": "workspace:*",
+    "@sifchain/utils": "workspace:*",
     "@walletconnect/client": "2.0.0-beta.26",
     "@walletconnect/cosmos-provider": "2.0.0-beta.26",
     "@walletconnect/ethereum-provider": "2.0.0-beta.26",
@@ -42,7 +43,7 @@
     "react-inlinesvg": "^3.0.0",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.2",
-    "wagmi": "^0.4.12",
+    "wagmi": "^0.6.2",
     "zustand": "4.0.0-rc.1",
     "zustand-immer-store": "^0.9.4"
   },

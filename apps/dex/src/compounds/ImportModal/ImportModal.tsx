@@ -10,6 +10,7 @@ import {
   ModalProps,
   RacetrackSpinnerIcon,
 } from "@sifchain/ui";
+import { isNilOrWhitespace } from "@sifchain/utils";
 import { isNil } from "rambda";
 import {
   ChangeEventHandler,
@@ -29,7 +30,6 @@ import {
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { isNilOrWhitespace } from "~/utils/string";
 import TokenSelector from "../TokenSelector";
 
 const ImportModal = (
@@ -48,7 +48,7 @@ const ImportModal = (
   const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
-  const { data: evmAccount } = useAccount();
+  const evmAccount = useAccount();
   const { data: evmWalletBalance } = useBalance({
     addressOrName: evmAccount?.address ?? "",
     token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,

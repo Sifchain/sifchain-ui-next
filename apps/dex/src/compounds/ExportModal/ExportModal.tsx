@@ -42,7 +42,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   const { accounts: cosmAccounts } = useAccounts(token?.chainId ?? "", {
     enabled: token !== undefined && !isEthToken,
   });
-  const { data: ethAccount } = useAccount();
+  const ethAccount = useAccount();
   const recipientAddress = isEthToken
     ? ethAccount?.address
     : cosmAccounts?.[0]?.address;

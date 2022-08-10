@@ -1,3 +1,4 @@
+import { getDefaultProvider } from "ethers";
 import type { PropsWithChildren } from "react";
 import { createClient, WagmiConfig } from "wagmi";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
@@ -5,6 +6,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 const client = createClient({
+  provider: getDefaultProvider(),
   autoConnect: true,
   connectors: [
     new MetaMaskConnector(),

@@ -19,7 +19,7 @@ import useRemoveLiquidityMutation from "~/domains/clp/hooks/useRemoveLiquidityMu
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhitespace } from "~/utils/string";
+import { isNilOrWhitespace } from "@sifchain/utils";
 
 const usePoolsPageData = () => {
   const tokenRegistryQuery = useTokenRegistryQuery();
