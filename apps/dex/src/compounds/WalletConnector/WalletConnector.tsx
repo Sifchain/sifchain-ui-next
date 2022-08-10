@@ -87,7 +87,7 @@ const WalletConnector: FC = () => {
   const {
     connectors: evmConnectors,
     connectAsync: connectEvm,
-    isConnected: isEthConnected,
+    isSuccess: isEthConnected,
     data: evmData,
   } = useEtherConnect();
 
@@ -246,7 +246,7 @@ const WalletConnector: FC = () => {
                 const account = await connector.getAccount();
                 setAccounts(assoc("ethereum", [account]));
               } else {
-                const account = await connectEvm(connector);
+                const account = await connectEvm({ connector });
                 setAccounts(assoc("ethereum", [account]));
               }
             }

@@ -48,7 +48,7 @@ const ImportModal = (
   const balances = useAllBalancesQuery();
   const balance = balances.indexedByDenom?.[props.denom];
 
-  const { data: evmAccount } = useAccount();
+  const evmAccount = useAccount();
   const { data: evmWalletBalance } = useBalance({
     addressOrName: evmAccount?.address ?? "",
     token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,
