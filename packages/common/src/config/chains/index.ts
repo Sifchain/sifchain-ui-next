@@ -81,31 +81,35 @@ function getChainConfigWithFallbackOrThrow(
     }
 
     console.warn(
-      `[network:${networkKind}] ${env} config fallback to ${envMatch}`,
+      `[network] ${env} config fallback to ${envMatch} for ${networkKind}`,
     );
-    return networkLookup[envMatch];
+    return networkLookup[envMatch] as ChainConfig;
   }
 
   return config;
 }
 
-export const CHAINCONFIG_BY_NETWORK_ENV = Object.fromEntries(
-  [...NETWORK_ENVS].map((env) => [
-    env,
-    Object.entries(CONFIG_LOOKUP).reduce(
-      (acc, [networkKind, networkLookup]) => {
-        const config = getChainConfigWithFallbackOrThrow(
-          env,
-          networkKind as NetworkKind,
-          networkLookup,
-        );
+function buildChainConfigIndex() {
+  return Object.fromEntries(
+    [...NETWORK_ENVS].map((env) => [
+      env,
+      Object.entries(CONFIG_LOOKUP).reduce(
+        (acc, [networkKind, networkLookup]) => {
+          const config = getChainConfigWithFallbackOrThrow(
+            env,
+            networkKind as NetworkKind,
+            networkLookup,
+          );
 
-        return {
-          ...acc,
-          [networkKind]: config,
-        };
-      },
-      {},
-    ),
-  ]),
-) as ChainConfigByNetworkEnv;
+          return {
+            ...acc,
+            [networkKind]: config,
+          };
+        },
+        {},
+      ),
+    ]),
+  ) as ChainConfigByNetworkEnv;
+}
+
+export const CHAINCONFIG_BY_NETWORK_ENV = buildChainConfigIndex();

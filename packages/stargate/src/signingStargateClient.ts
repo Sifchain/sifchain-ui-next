@@ -349,25 +349,24 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
     const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
 
-    return this.#parseSwapResult(
-      this.#simulateAutoCompositePoolSwap(
-        {
-          ...fromCoin,
-          poolNativeAssetBalance: firstPoolRes.pool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance:
-            firstPoolRes.pool?.externalAssetBalance ?? "0",
-        },
-        {
-          ...toCoin,
-          poolNativeAssetBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance:
-            secondPoolRes.pool?.externalAssetBalance ?? "0",
-        },
-        pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
-        slippage,
-      ),
-      toCoin.denom,
+    const swapResult = this.#simulateAutoCompositePoolSwap(
+      {
+        ...fromCoin,
+        poolNativeAssetBalance: firstPoolRes.pool?.nativeAssetBalance ?? "0",
+        poolExternalAssetBalance:
+          firstPoolRes.pool?.externalAssetBalance ?? "0",
+      },
+      {
+        ...toCoin,
+        poolNativeAssetBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
+        poolExternalAssetBalance:
+          secondPoolRes.pool?.externalAssetBalance ?? "0",
+      },
+      pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+      slippage,
     );
+
+    return this.#parseSwapResult(swapResult, toCoin.denom);
   }
 
   #simulateAutoCompositePoolSwap(
