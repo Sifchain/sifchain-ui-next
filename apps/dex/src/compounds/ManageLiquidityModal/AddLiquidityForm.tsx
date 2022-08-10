@@ -1,7 +1,7 @@
 import { Button, PlusIcon, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { FormEventHandler, useCallback, useMemo } from "react";
 import { useBalanceQuery } from "~/domains/bank/hooks/balances";
-import useAddLiquidity from "~/domains/clp/hooks/useAddLiquidity";
+import useAddLiquidity from "~/domains/clp/formHooks/useAddLiquidity";
 import useAddLiquidityMutation from "~/domains/clp/hooks/useAddLiquidityMutation";
 import { useDexEnvironment } from "~/domains/core/envs";
 import TokenAmountFieldset from "../TokenAmountFieldset";

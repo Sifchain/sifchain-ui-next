@@ -1,7 +1,7 @@
 import { runCatching } from "@sifchain/common";
 import BigNumber from "bignumber.js";
 import { useMemo, useState } from "react";
-import { useLiquidityProviderQuery } from "./liquidityProvider";
+import { useLiquidityProviderQuery } from "../hooks/liquidityProvider";
 
 const useUnlockLiquidity = (denom: string) => {
   const { data: liquidityProviderRes } = useLiquidityProviderQuery(denom);

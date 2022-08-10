@@ -10,7 +10,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { usePoolQuery } from "./usePool";
+import { usePoolQuery } from "../hooks/usePool";
 
 const useAddLiquidity = (denom: string, symmetric = true) => {
   const poolQuery = usePoolQuery(denom);
