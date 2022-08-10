@@ -1,3 +1,4 @@
+import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
@@ -30,18 +31,26 @@ export function useOpenMTPMutation() {
     );
   }
 
+  let toastId: string | number;
+
   return useMutation(mutation, {
     onMutate() {
-      toast.info("Open MTP inprogress");
+      toastId = toast.info("Opening margin position", {
+        isLoading: true,
+        autoClose: false,
+      });
     },
-    onSuccess() {
-      toast.success("Open MTP success");
-    },
-    onError(error) {
-      if (isError(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error("Failed to open MTP");
+    onSettled(data, error) {
+      toast.dismiss(toastId);
+
+      if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
+        const errorMessage = isError(error)
+          ? `Failed to open margin position: ${error.message}`
+          : data?.rawLog ?? "Failed to open margin position";
+
+        toast.error(errorMessage);
+      } else if (data !== undefined && isDeliverTxSuccess(data)) {
+        toast.success(`Successfully openned margin position`);
       }
     },
   });
