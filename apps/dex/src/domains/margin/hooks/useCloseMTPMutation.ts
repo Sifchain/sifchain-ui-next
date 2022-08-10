@@ -1,7 +1,8 @@
+import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { useMutation, isError } from "react-query";
+import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
@@ -30,18 +31,27 @@ export function useCloseMTPMutation() {
     );
   }
 
+  let toastId: string | number;
+
   return useMutation(mutation, {
     onMutate() {
-      toast.info("Close MTP inprogress");
+      toastId = toast.info("Closing margin position", {
+        isLoading: true,
+        autoClose: false,
+      });
     },
-    onSuccess() {
-      toast.success("Close MTP success");
-    },
-    onError(error) {
-      if (isError(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error("Failed to close MTP");
+
+    onSettled(data, error) {
+      toast.dismiss(toastId);
+
+      if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
+        const errorMessage = isError(error)
+          ? `Failed to close margin position: ${error.message}`
+          : data?.rawLog ?? "Failed to close margin position";
+
+        toast.error(errorMessage);
+      } else if (data !== undefined && isDeliverTxSuccess(data)) {
+        toast.success(`Successfully closed margin position`);
       }
     },
   });
