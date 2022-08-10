@@ -3,8 +3,10 @@ info:
   title: Sichain API
   version: 0.0.5
 servers:
+  # Added by API Auto Mocking Plugin
+  - url: http://localhost:8080
   - url: https://data.sifchain.finance/beta
-    description: API Gateway
+    description: AWS API Gateway
 
 tags:
   - name: Pools
@@ -50,7 +52,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Displa individual Pool info
+          description: Display individual Pool info
           content:
             application/json:
               schema:
@@ -283,6 +285,47 @@ paths:
   #                 items:
   #                   $ref: '#/components/schemas/getPeggedAssetsResponse'
   #       x-swagger-router-controller: Peggy
+  /asset:
+    get:
+      tags:
+        - Assets
+      summary: Get details on available crypto currencies.
+      description:
+        This endpoint is to provide a summary for each currency available
+        on the exchange.
+      operationId: getAssets
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getAssetsResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Assets
+  /asset/{symbol}:
+    get:
+      tags:
+        - Assets
+      operationId: getTokenValue
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: This endpoint gets USD value of token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetTokenValueResponse"
+      x-swagger-router-controller: Assets
   /asset/totalSupply:
     get:
       tags:
@@ -349,14 +392,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTokenStatsResponse"
+                $ref: "#/components/schemas/getCirculatingSupplyResponse"
       x-swagger-router-controller: Assets
 
   /asset/tokenStatsPMTP:
     get:
       tags:
         - Assets
-      description: This end point gets the statistics of tokens (with margin)
+      description: This end point gets the statistics of tokens
       operationId: getTokenStatsPMTP
       responses:
         "200":
@@ -364,7 +407,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTokenStatsPMTPResponse"
+                $ref: "#/components/schemas/getCirculatingSupplyResponse"
       x-swagger-router-controller: Assets
 
   /network:
@@ -379,6 +422,79 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/getNetworkResponse"
+      x-swagger-router-controller: Network
+
+  /network/dispensation/{type}:
+    get:
+      tags:
+        - Network
+      operationId: getDispensation
+      parameters:
+        - name: type
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dispensation List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Network
+
+  /network/rewardConfig/{type}:
+    get:
+      tags:
+        - Network
+      operationId: getRewardConfig
+      parameters:
+        - name: type
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reward Configuration Setting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getPoolResponse"
+      x-swagger-router-controller: Network
+
+  /network/{symbol}/netChange/{lpAddress}:
+    get:
+      tags:
+        - Network
+      operationId: getNetChange
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: lpAddress
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Displays net gain or loss for a liquidity provider with specified address and token symbol
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getLiquidityProviderResponse"
       x-swagger-router-controller: Network
 
   /dailyPrice:
@@ -425,6 +541,18 @@ paths:
           explode: false
           schema:
             type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 500
+            description: The number results returned per page.
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+            description: The page number.
       responses:
         "200":
           description: Successful operation.
@@ -507,6 +635,224 @@ paths:
                   $ref: "#/components/schemas/getTradeResponse"
                 x-content-type: application/json
       x-swagger-router-controller: Trades
+
+  /trade/{token}/tx_vol/{type}:
+    get:
+      tags:
+        - Trades
+      summary: Get the ranks of trading competition
+      description: This endpoint returns result based on volume or txns
+      operationId: getCompetitionRanksByToken
+      parameters:
+        - name: token
+          in: path
+          description: token
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: type
+          in: path
+          description: Competition type.  Either vol or tx.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getTradeResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Trades
+
+  /trade/tx_vol/{type}:
+    get:
+      tags:
+        - Trades
+      summary: Get the ranks of trading competition
+      description: This endpoint returns result based on volume or txns
+      operationId: getCompetitionRanks
+      parameters:
+        - name: type
+          in: path
+          description: Competition type.  Either vol or tx.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getTradeResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Trades
+
+  /network/rewardPay/{address}:
+    get:
+      tags:
+        - Network
+      summary: Get the reward payout info
+      description: This endpoint returns reward based liquidity events
+      operationId: getRewardUser
+      parameters:
+        - name: address
+          in: path
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reward Payout Amount
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+  /network/lppdReward/{address}:
+    get:
+      tags:
+        - Network
+      summary: Get the historical distribution of rewards and lppd
+      description: This endpoint returns reward and lpp distribution amount since beginning of time
+      operationId: getLppdReward
+      parameters:
+        - name: address
+          in: path
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reward Payout Amount
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+  /margin/openPosition/{address}:
+    get:
+      tags:
+        - Stats
+      summary: Get margin open position filtered by user
+      description: This endpoint returns open position history filtered per user address
+      operationId: getMarginOpenPosition
+      parameters:
+        - name: address
+          in: path
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of items to return
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+          description: column to sort by
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: direction to sort
+
+      responses:
+        "200":
+          description: Margin Open Position
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
+  /margin/history/{address}:
+    get:
+      tags:
+        - Stats
+      summary: Get margin trade history filtered by user
+      description: This endpoint returns open position history filtered per user address
+      operationId: getMarginHistory
+      parameters:
+        - name: address
+          in: path
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of items to return
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+          description: column to sort by
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: direction to sort
+
+      responses:
+        "200":
+          description: Margin Open Position
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/getPoolResponse"
+                x-content-type: application/json
+      x-swagger-router-controller: Network
 
 components:
   schemas:
@@ -696,92 +1042,6 @@ components:
         amount:
           type: string
           example: "1000000000000000000000000000"
-    getTokenStatsResponse:
-      type: object
-      properties:
-        rowanUSD:
-          type: string
-        pools:
-          type: array
-          items:
-            type: object
-            properties:
-              symbol:
-                type: string
-              priceToken:
-                type: number
-              poolDepth:
-                type: number
-              poolTVL:
-                type: number
-              volume:
-                type: number
-              arb:
-                type: number
-              dailySwapFees:
-                type: number
-              poolBalance:
-                type: number
-              poolBalanceInRowan:
-                type: number
-              accruedNumBlocksRewards:
-                type: number
-              rewardPeriodNativeDistributed:
-                type: number
-              blocksPerYear:
-                type: number
-              rewardApr:
-                type: number
-              poolApr:
-                type: number
-
-    getTokenStatsPMTPResponse:
-      type: object
-      properties:
-        rowanUSD:
-          type: string
-        pools:
-          type: array
-          items:
-            type: object
-            properties:
-              symbol:
-                type: string
-              priceToken:
-                type: number
-              poolDepth:
-                type: number
-              poolTVL:
-                type: number
-              volume:
-                type: number
-              arb:
-                type: number
-              dailySwapFees:
-                type: number
-              poolBalance:
-                type: number
-              poolBalanceInRowan:
-                type: number
-              accruedNumBlocksRewards:
-                type: number
-              rewardPeriodNativeDistributed:
-                type: number
-              blocksPerYear:
-                type: number
-              rewardApr:
-                type: number
-              poolApr:
-                type: number
-              health":
-                type: number
-              native_custody:
-                type: string
-              native_liability:
-                type: number
-              interest_rate:
-                type: number
-
     getCirculatingSupplyResponse:
       type: object
       properties:
@@ -960,3 +1220,4 @@ components:
       example:
         symbol: ROWAN
         balance: "12345556"
+x-aws-api-id: "i7q5doxsoi"
