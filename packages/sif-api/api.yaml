@@ -392,7 +392,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getCirculatingSupplyResponse"
+                $ref: "#/components/schemas/getTokenStatsResponse"
       x-swagger-router-controller: Assets
 
   /asset/tokenStatsPMTP:
@@ -407,7 +407,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getCirculatingSupplyResponse"
+                $ref: "#/components/schemas/getTokenStatsPMTPResponse"
       x-swagger-router-controller: Assets
 
   /network:
@@ -856,6 +856,90 @@ paths:
 
 components:
   schemas:
+    getTokenStatsResponse:
+      type: object
+      properties:
+        rowanUSD:
+          type: string
+        pools:
+          type: array
+          items:
+            type: object
+            properties:
+              symbol:
+                type: string
+              priceToken:
+                type: number
+              poolDepth:
+                type: number
+              poolTVL:
+                type: number
+              volume:
+                type: number
+              arb:
+                type: number
+              dailySwapFees:
+                type: number
+              poolBalance:
+                type: number
+              poolBalanceInRowan:
+                type: number
+              accruedNumBlocksRewards:
+                type: number
+              rewardPeriodNativeDistributed:
+                type: number
+              blocksPerYear:
+                type: number
+              rewardApr:
+                type: number
+              poolApr:
+                type: number
+    getTokenStatsPMTPResponse:
+      type: object
+      properties:
+        rowanUSD:
+          type: string
+        pools:
+          type: array
+          items:
+            type: object
+            properties:
+              symbol:
+                type: string
+              priceToken:
+                type: number
+              poolDepth:
+                type: number
+              poolTVL:
+                type: number
+              volume:
+                type: number
+              arb:
+                type: number
+              dailySwapFees:
+                type: number
+              poolBalance:
+                type: number
+              poolBalanceInRowan:
+                type: number
+              accruedNumBlocksRewards:
+                type: number
+              rewardPeriodNativeDistributed:
+                type: number
+              blocksPerYear:
+                type: number
+              rewardApr:
+                type: number
+              poolApr:
+                type: number
+              health":
+                type: number
+              native_custody:
+                type: string
+              native_liability:
+                type: number
+              interest_rate:
+                type: number
     getPoolsResponse:
       type: object
       properties:

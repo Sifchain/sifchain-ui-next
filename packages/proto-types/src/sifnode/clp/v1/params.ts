@@ -1,12 +1,13 @@
 /* eslint-disable */
 import Long from "long";
-import * as _m0 from "protobufjs/minimal";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "sifnode.clp.v1";
 
 /** Params - used for initializing default parameter for clp at genesis */
 export interface Params {
   minCreatePoolThreshold: Long;
+  enableRemovalQueue: boolean;
 }
 
 export interface RewardParams {
@@ -72,7 +73,7 @@ export interface ProviderDistributionParams {
 }
 
 function createBaseParams(): Params {
-  return { minCreatePoolThreshold: Long.UZERO };
+  return { minCreatePoolThreshold: Long.UZERO, enableRemovalQueue: false };
 }
 
 export const Params = {
@@ -82,6 +83,9 @@ export const Params = {
   ): _m0.Writer {
     if (!message.minCreatePoolThreshold.isZero()) {
       writer.uint32(8).uint64(message.minCreatePoolThreshold);
+    }
+    if (message.enableRemovalQueue === true) {
+      writer.uint32(16).bool(message.enableRemovalQueue);
     }
     return writer;
   },
@@ -96,6 +100,9 @@ export const Params = {
         case 1:
           message.minCreatePoolThreshold = reader.uint64() as Long;
           break;
+        case 2:
+          message.enableRemovalQueue = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -109,6 +116,9 @@ export const Params = {
       minCreatePoolThreshold: isSet(object.minCreatePoolThreshold)
         ? Long.fromValue(object.minCreatePoolThreshold)
         : Long.UZERO,
+      enableRemovalQueue: isSet(object.enableRemovalQueue)
+        ? Boolean(object.enableRemovalQueue)
+        : false,
     };
   },
 
@@ -118,6 +128,8 @@ export const Params = {
       (obj.minCreatePoolThreshold = (
         message.minCreatePoolThreshold || Long.UZERO
       ).toString());
+    message.enableRemovalQueue !== undefined &&
+      (obj.enableRemovalQueue = message.enableRemovalQueue);
     return obj;
   },
 
@@ -128,6 +140,7 @@ export const Params = {
       object.minCreatePoolThreshold !== null
         ? Long.fromValue(object.minCreatePoolThreshold)
         : Long.UZERO;
+    message.enableRemovalQueue = object.enableRemovalQueue ?? false;
     return message;
   },
 };
@@ -1086,10 +1099,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
