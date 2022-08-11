@@ -22,8 +22,8 @@ export const SORT_BY = {
   DESC: "desc",
 };
 export const QS_DEFAULTS = {
-  page: "1",
   limit: "30",
+  offset: "0",
   orderBy: "",
   sortBy: SORT_BY.DESC,
 };

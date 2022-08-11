@@ -53,8 +53,8 @@ export type HistoryTableProps = {
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const queryParams = {
-    page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
     limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
+    offset: pathOr(QS_DEFAULTS.offset, ["offset"], router.query),
     orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
     sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
   };
@@ -63,6 +63,9 @@ const HistoryTable = (props: HistoryTableProps) => {
 
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
+    const pages = Math.ceil(
+      Number(pagination.total) / Number(pagination.limit),
+    );
 
     return (
       <>
@@ -75,20 +78,23 @@ const HistoryTable = (props: HistoryTableProps) => {
           {historyQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
-            page={Number(pagination.page)}
+            offset={Number(pagination.offset)}
             total={Number(pagination.total)}
           />
           <PaginationButtons
-            pages={Number(pagination.pages)}
+            pages={pages}
             render={(page) => {
+              const offset = String(
+                Number(pagination.limit) * page - Number(pagination.limit),
+              );
               return (
                 <Link
-                  href={{ query: { ...router.query, page } }}
+                  href={{ query: { ...router.query, offset } }}
                   scroll={false}
                 >
                   <a
                     className={clsx("px-2 py-1 rounded", {
-                      "bg-gray-400": Number(pagination.page) === page,
+                      "bg-gray-400": pagination.offset === offset,
                     })}
                   >
                     {page}
