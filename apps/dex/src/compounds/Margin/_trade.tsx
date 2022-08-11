@@ -139,17 +139,19 @@ export function inputValidatorPosition(
  *
  * ********************************************************************************************
  */
-export const LEVERAGE_MIN_VALUE = 0;
-export const LEVERAGE_MAX_VALUE = 2;
+export const LEVERAGE_MIN_VALUE = "1";
 
 /** @TODO Validate error message states with PM */
 const LEVERAGE_ERRORS = {
-  INVALID_NUMBER: "Leverage amount must be between 0 and 2",
-  INVALID_RANGE: "Leverage amount must be between 0 and 2",
+  INVALID_NUMBER: (min: string, max: string) =>
+    `Leverage amount must be greater than ${min} and up to ${max}`,
+  INVALID_RANGE: (min: string, max: string) =>
+    `Leverage amount must be greater than ${min} and up to ${max}`,
 };
 export function inputValidatorLeverage(
   $input: HTMLInputElement,
   event: "blur" | "change",
+  leverageMax: string,
 ) {
   const value = Number($input.value);
   const payload = {
@@ -158,18 +160,27 @@ export function inputValidatorLeverage(
   };
 
   if ($input.value !== "" && Number.isNaN(value)) {
-    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
+    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER(
+      LEVERAGE_MIN_VALUE,
+      leverageMax,
+    );
   }
 
   if (
     $input.value !== "" &&
-    (value > LEVERAGE_MAX_VALUE || value < LEVERAGE_MIN_VALUE)
+    (value > Number(leverageMax) || value <= Number(LEVERAGE_MIN_VALUE))
   ) {
-    payload.error = LEVERAGE_ERRORS.INVALID_RANGE;
+    payload.error = LEVERAGE_ERRORS.INVALID_RANGE(
+      LEVERAGE_MIN_VALUE,
+      leverageMax,
+    );
   }
 
   if (event === "blur" && $input.value === "") {
-    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER;
+    payload.error = LEVERAGE_ERRORS.INVALID_NUMBER(
+      LEVERAGE_MIN_VALUE,
+      leverageMax,
+    );
   }
 
   return payload;

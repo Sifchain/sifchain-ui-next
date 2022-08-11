@@ -21,6 +21,7 @@ import {
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
+import { useMarginParamsQuery } from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
@@ -40,7 +41,6 @@ import {
   HtmlUnicode,
   COLLATERAL_MAX_VALUE,
   POSITION_MAX_VALUE,
-  LEVERAGE_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
   POSITION_MIN_VALUE,
   LEVERAGE_MIN_VALUE,
@@ -74,20 +74,32 @@ const TradeCompound: NextPage = () => {
   const enhancedPools = useEnhancedPoolsQuery();
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
+  const govParams = useMarginParamsQuery();
 
   if (
     enhancedPools.isSuccess &&
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
+    govParams.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
-    rowanPrice.data
+    rowanPrice.data &&
+    govParams.data &&
+    govParams.data.params
   ) {
+    const { params } = govParams.data;
+    const allowedPools = params.pools;
+    const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
+      allowedPools.includes(pool.asset.symbol.toLowerCase()),
+    );
     enhancedRowan.data.priceUsd = rowanPrice.data;
     return (
       <Trade
-        enhancedPools={enhancedPools.data}
+        enhancedPools={filteredEnhancedPools}
         enhancedRowan={enhancedRowan.data}
+        govParams={{
+          leverageMax: params.leverageMax,
+        }}
       />
     );
   }
@@ -119,6 +131,9 @@ type TradeProps = {
     ReturnType<typeof useEnhancedTokenQuery>["data"],
     undefined
   >;
+  govParams: {
+    leverageMax: string;
+  };
 };
 
 const ROWAN_DENOM = "rowan";
@@ -233,7 +248,7 @@ const Trade = (props: TradeProps) => {
   });
 
   const [inputLeverage, setInputLeverage] = useState({
-    value: `${LEVERAGE_MAX_VALUE}`,
+    value: `${props.govParams.leverageMax}`,
     error: "",
   });
 
@@ -435,7 +450,11 @@ const Trade = (props: TradeProps) => {
    */
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "change");
+    const payload = inputValidatorLeverage(
+      $input,
+      "change",
+      props.govParams.leverageMax,
+    );
 
     if (!payload.error) {
       const positionTokenPrice =
@@ -466,7 +485,11 @@ const Trade = (props: TradeProps) => {
 
   const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur");
+    const payload = inputValidatorLeverage(
+      $input,
+      "blur",
+      props.govParams.leverageMax,
+    );
     setInputLeverage(payload);
   };
 
@@ -488,7 +511,7 @@ const Trade = (props: TradeProps) => {
       error: "",
     });
     setInputLeverage({
-      value: String(LEVERAGE_MAX_VALUE),
+      value: String(props.govParams.leverageMax),
       error: "",
     });
   };
@@ -689,14 +712,21 @@ const Trade = (props: TradeProps) => {
               <div className="col-span-3 flex flex-col">
                 <span className="text-xs text-gray-300 mb-1">
                   <span className="mr-1">Leverage</span>
-                  <span className="text-gray-400">Up to 2x</span>
+                  <span className="text-gray-400">
+                    <span>Up to </span>
+                    {formatNumberAsDecimal(
+                      Number(props.govParams.leverageMax),
+                      2,
+                    )}
+                    x
+                  </span>
                 </span>
                 <input
                   type="number"
                   placeholder="Leverage amount"
                   step="0.01"
                   min={LEVERAGE_MIN_VALUE}
-                  max={LEVERAGE_MAX_VALUE}
+                  max={props.govParams.leverageMax}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
