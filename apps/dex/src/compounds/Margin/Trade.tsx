@@ -53,7 +53,6 @@ import { PoolOverview } from "./_components";
 import { useMutationConfirmOpenPosition } from "./_mockdata";
 
 const FEE_USDC = 0.5;
-const INTEREST_RATE = 0.25;
 const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
 
 /**
