@@ -62,6 +62,9 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     this.#walletConnect.on("disconnect", () => {
       this.emit("disconnect");
     });
+    this.#walletConnect.on("session_update", (error) => {
+      if (error === undefined) this.emit("accountchange");
+    });
   }
 
   get connected() {
