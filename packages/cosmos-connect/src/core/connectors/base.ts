@@ -5,7 +5,7 @@ import EventEmitter from "eventemitter3";
 export type ConnectorEvents = {
   connect(): void;
   disconnect(): void;
-  accountchange(): void;
+  change(): void;
 };
 
 export abstract class BaseCosmConnector<

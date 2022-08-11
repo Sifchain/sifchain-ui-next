@@ -40,10 +40,10 @@ export const useSigner = (
   );
 
   useEffect(() => {
-    activeConnector?.addListener("accountchange", fetch);
+    activeConnector?.addListener("change", fetch);
 
     return () => {
-      activeConnector?.removeListener("accountchange", fetch);
+      activeConnector?.removeListener("change", fetch);
     };
   }, [activeConnector, fetch]);
 

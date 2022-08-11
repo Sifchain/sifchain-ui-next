@@ -17,10 +17,10 @@ const useReloadOnAccountChangeEffect = () => {
   }, [activeCosmConnector, activeEvmConnector?.connector, onAccountChange]);
 
   useEffect(() => {
-    activeCosmConnector?.addListener("accountchange", onAccountChange);
+    activeCosmConnector?.addListener("change", onAccountChange);
 
     return () => {
-      activeCosmConnector?.removeListener("accountchange", onAccountChange);
+      activeCosmConnector?.removeListener("change", onAccountChange);
     };
   }, [activeCosmConnector, onAccountChange]);
 };

@@ -97,6 +97,6 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
   }
 
   #keystoreChangeListener() {
-    this.emit("accountchange");
+    this.emit("change");
   }
 }
