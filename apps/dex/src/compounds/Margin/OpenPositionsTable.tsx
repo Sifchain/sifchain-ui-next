@@ -60,20 +60,20 @@ import { HtmlUnicode } from "./_trade";
  * ********************************************************************************************
  */
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  "Pool",
-  "Side",
-  "Position", // Maps to "amount" field
-  "Asset",
-  "Base Leverage",
-  "Unrealized P&L",
-  "Interest Rate",
-  "Unsettled Interest",
-  "Next Payment",
-  "Paid Interest",
-  "Health",
-  "Date Opened",
-  "Time Open",
-  "Close Position", // We don't display this text
+  { title: "Pool", slug: "pool" },
+  { title: "Side", slug: "position" },
+  { title: "Position", slug: "custody_amount" }, // Maps to "custody_amount" field
+  { title: "Asset", slug: "custody_asset" },
+  { title: "Base Leverage", slug: "leverage" },
+  { title: "Unrealized P&L", slug: "unrealized_pnl" },
+  { title: "Interest Rate", slug: "interest_rate" },
+  { title: "Unsettled Interest", slug: "unsettled_interest" },
+  { title: "Next Payment", slug: "next_payment" },
+  { title: "Paid Interest", slug: "paid_interest" },
+  { title: "Health", slug: "health" },
+  { title: "Date Opened", slug: "date_opened" },
+  { title: "Time Open", slug: "time_open" },
+  { title: "Close Position", slug: "close_position" }, // We don't display this text
 ] as const;
 
 type HideColsUnion =
@@ -100,16 +100,17 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
   const router = useRouter();
   const queryParams = {
-    limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
-    offset: pathOr(QS_DEFAULTS.offset, ["offset"], router.query),
-    orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
-    sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
+    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
+    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
+    orderBy: (router.query["orderBy"] as string) || QS_DEFAULTS.orderBy,
+    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
+  console.log(queryParams, router.query);
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
     address: props.queryId,
   });
-  console.log(openPositionsQuery);
+
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
     id: string;
@@ -165,22 +166,23 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
-                {headers.map((title) => {
-                  const itemKey = fromColNameToItemKey(title);
-                  const itemActive = pagination.orderBy === itemKey;
+                {headers.map((header) => {
+                  const itemActive = pagination.order_by === header.slug;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
-                    itemKey,
+                    itemKey: header.slug,
                     itemActive,
-                    currentSortBy: pagination.sortBy,
+                    currentSortBy: pagination.sort_by,
                   });
                   return (
                     <th
-                      key={itemKey}
-                      data-item-key={itemKey}
+                      key={header.slug}
+                      data-item-key={header.slug}
                       className="font-normal px-4 py-3"
-                      hidden={hideColumns?.includes(itemKey as HideColsUnion)}
+                      hidden={hideColumns?.includes(
+                        header.slug as HideColsUnion,
+                      )}
                     >
-                      {itemKey === "closePosition" ? null : (
+                      {header.slug === "close_position" ? null : (
                         <Link
                           href={{
                             query: {
@@ -196,12 +198,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                               "text-white font-semibold": itemActive,
                             })}
                           >
-                            {title}
+                            {header.title}
                             {itemActive && (
                               <ChevronDownIcon
                                 className={clsx("ml-1 transition-transform", {
                                   "-rotate-180":
-                                    pagination.sortBy === SORT_BY.ASC,
+                                    pagination.sort_by === SORT_BY.ASC,
                                 })}
                               />
                             )}
@@ -231,7 +233,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("pool")}
                     >
-                      {item.pool}
+                      {item.pool ? item.pool : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -369,6 +371,14 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           }}
         />
       </>
+    );
+  }
+
+  if (openPositionsQuery.isError) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Try again later.
+      </div>
     );
   }
 
