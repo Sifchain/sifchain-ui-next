@@ -63,7 +63,8 @@ export default function useSifApiQuery<
 
       const result = await method(...args);
 
-      return result.body;
+      // TODO: sifApi should return a standardized response type
+      return "body" in result ? result.body : result;
     },
     {
       enabled:
