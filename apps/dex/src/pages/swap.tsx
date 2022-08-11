@@ -7,6 +7,7 @@ import {
   RacetrackSpinnerIcon,
   SwapIcon,
 } from "@sifchain/ui";
+import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -27,7 +28,6 @@ import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhitespace } from "@sifchain/utils";
 
 const FlipButton = tw.button<{
   $flipped: boolean;
