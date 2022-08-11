@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
-export function useOpenPositionsQuery(params: {
+export function useHistoryQuery(params: {
   address: string;
   offset: string;
   limit: string;
@@ -11,7 +11,7 @@ export function useOpenPositionsQuery(params: {
   sortBy: string;
 }) {
   const { data, ...query } = useSifApiQuery(
-    "margin.getMarginOpenPosition",
+    "margin.getMarginHistory",
     [
       params.address,
       Number(params.offset),
@@ -26,12 +26,12 @@ export function useOpenPositionsQuery(params: {
   );
 
   const dependentQuery = useQuery(
-    ["margin.getMarginOpenPosition", { ...params }],
+    ["margin.getMarginHistory", { ...params }],
     () => {
       invariant(data !== undefined, "Sif api client is not defined");
-
+      console.log({ data });
       if ("error" in data) {
-        throw new Error("client.margin.getMarginOpenPosition");
+        throw new Error("client.margin.getMarginHistory");
       }
 
       return Promise.resolve(data);
@@ -40,6 +40,7 @@ export function useOpenPositionsQuery(params: {
       enabled: data !== undefined,
     },
   );
+
   return {
     ...query,
     data: dependentQuery.data as any, // TODO: fix query result type

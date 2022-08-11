@@ -29,8 +29,8 @@ import {
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
-  PositionKind,
 } from "./_tables";
+import { HtmlUnicode } from "./_trade";
 
 /**
  * ********************************************************************************************
@@ -161,30 +161,41 @@ const HistoryTable = (props: HistoryTableProps) => {
                   message="History not available. Try again later."
                 />
               )}
-              {results.map((item) => {
-                const position = MARGIN_POSITION[item.side as PositionKind];
+              {results.map((item: any) => {
+                const position = item.side;
                 const amountSign = Math.sign(Number(item.amount));
                 const realizedPLSign = Math.sign(Number(item.realizedPL));
 
                 return (
                   <tr key={item.id}>
                     <td className="px-4 py-3">
-                      {formatDateRelative(item.dateClosed)}
+                      {item.dateClosed ? (
+                        formatDateRelative(item.dateClosed)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateDistance(item.timeOpen)}
+                      {item.timeOpen ? (
+                        formatDateDistance(item.timeOpen)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
-                    <td className="px-4 py-3">{item.pool}</td>
+                    <td className="px-4 py-3">
+                      {item.pool ? item.pool : <HtmlUnicode name="EmDash" />}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
-                          "text-cyan-400": position === MARGIN_POSITION.LONG,
-                          "text-green-400": position === MARGIN_POSITION.SHORT,
-                          "text-red-400":
-                            position === MARGIN_POSITION.UNSPECIFIED,
+                          "text-cyan-400": position === "0",
+                          "text-green-400": position === "1",
+                          "text-red-400": position === "2",
                         })}
                       >
-                        {position}
+                        {position === "0" && MARGIN_POSITION.UNSPECIFIED}
+                        {position === "1" && MARGIN_POSITION.LONG}
+                        {position === "2" && MARGIN_POSITION.SHORT}
                       </span>
                     </td>
                     <td className="px-4 py-3">{item.asset}</td>
@@ -206,7 +217,11 @@ const HistoryTable = (props: HistoryTableProps) => {
                             "text-red-400": realizedPLSign === -1,
                           })}
                         >
-                          {formatNumberAsCurrency(Number(item.realizedPL), 2)}
+                          {item.realizedPL ? (
+                            formatNumberAsCurrency(Number(item.realizedPL), 2)
+                          ) : (
+                            <HtmlUnicode name="EmDash" />
+                          )}
                         </span>
                       </span>
                     </td>
