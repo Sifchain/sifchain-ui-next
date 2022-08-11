@@ -41,7 +41,10 @@ export function useEnhancedPoolsQuery() {
 
           return {
             ...pool,
-            stats: stats as GetTokenStatsResponsePools,
+            stats: stats as GetTokenStatsResponsePools & {
+              health: number;
+              interestRate: number;
+            },
             asset: asset as IAsset,
           };
         })
