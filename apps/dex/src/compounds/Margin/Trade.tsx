@@ -895,10 +895,10 @@ const Trade = (props: TradeProps) => {
             queryId={HARD_CODED_ADDRES_DS}
             openPositions={{
               hideColumns: [
-                "pool",
-                "unsettled_interest",
-                "next_payment",
-                "paid_interest",
+                "Pool",
+                "Unsettled Interest",
+                "Next Payment",
+                "Paid Interest",
               ],
             }}
           />

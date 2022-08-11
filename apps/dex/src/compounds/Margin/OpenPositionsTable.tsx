@@ -56,45 +56,24 @@ import { HtmlUnicode } from "./_trade";
  *
  * ********************************************************************************************
  */
-const HEADER_SLUGS = {
-  // they match sifApi response object
-  pool: "pool", // sifApi breaks if you send column that doesn't exist
-  position: "position",
-  custody_amount: "custody_amount",
-  custody_asset: "custody_asset",
-  leverage: "leverage",
-  unrealized_pnl: "unrealized_pnl",
-  interest_rate: "interest_rate",
-  unsettled_interest: "unsettled_interest",
-  next_payment: "next_payment",
-  paid_interest: "paid_interest",
-  health: "health",
-  date_opened: "date_opened",
-  time_open: "time_open",
-  close_position: "close_position",
-};
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  { title: "Pool", slug: HEADER_SLUGS.pool, sortBy: false },
-  { title: "Side", slug: HEADER_SLUGS.position, sortBy: true },
-  { title: "Position", slug: HEADER_SLUGS.custody_amount, sortBy: true }, // Maps to "custody_amount" field
-  { title: "Asset", slug: HEADER_SLUGS.custody_asset, sortBy: true },
-  { title: "Base Leverage", slug: HEADER_SLUGS.leverage, sortBy: true },
-  { title: "Unrealized P&L", slug: HEADER_SLUGS.unrealized_pnl, sortBy: true },
-  { title: "Interest Rate", slug: HEADER_SLUGS.interest_rate, sortBy: true },
-  {
-    title: "Unsettled Interest",
-    slug: HEADER_SLUGS.unsettled_interest,
-    sortBy: true,
-  },
-  { title: "Next Payment", slug: HEADER_SLUGS.next_payment, sortBy: true },
-  { title: "Paid Interest", slug: HEADER_SLUGS.paid_interest, sortBy: true },
-  { title: "Health", slug: HEADER_SLUGS.health, sortBy: true },
-  { title: "Date Opened", slug: HEADER_SLUGS.date_opened, sortBy: true },
-  { title: "Time Open", slug: HEADER_SLUGS.time_open, sortBy: true },
-  { title: "Close Position", slug: HEADER_SLUGS.close_position, sortBy: false }, // We don't display this text
+  { title: "Pool", order_by: "" },
+  { title: "Side", order_by: "position" },
+  { title: "Position", order_by: "custody_amount" },
+  { title: "Asset", order_by: "custody_asset" },
+  { title: "Base Leverage", order_by: "leverage" },
+  { title: "Unrealized P&L", order_by: "unrealized_pnl" },
+  { title: "Interest Rate", order_by: "interest_rate" },
+  { title: "Unsettled Interest", order_by: "unsettled_interest" },
+  { title: "Next Payment", order_by: "next_payment" },
+  { title: "Paid Interest", order_by: "paid_interest" },
+  { title: "Health", order_by: "health" },
+  { title: "Date Opened", order_by: "date_opened" },
+  { title: "Time Open", order_by: "time_open" },
+  { title: "Close Position", order_by: "" }, // We don't display this text
 ] as const;
 
-type HideColsUnion = keyof typeof HEADER_SLUGS;
+type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
   queryId: string;
@@ -172,22 +151,22 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
-                  const itemActive = pagination.order_by === header.slug;
+                  const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
-                    itemKey: header.slug,
+                    itemKey: header.order_by,
                     itemActive,
                     currentSortBy: pagination.sort_by,
                   });
                   return (
                     <th
-                      key={header.slug}
-                      data-item-key={header.slug}
+                      key={header.order_by}
+                      data-item-key={header.order_by}
                       className="font-normal px-4 py-3"
                       hidden={hideColumns?.includes(
-                        header.slug as HideColsUnion,
+                        header.order_by as HideColsUnion,
                       )}
                     >
-                      {header.slug === "close_position" ? null : (
+                      {header.title === "Close Position" ? null : (
                         <Link
                           href={{
                             query: {
@@ -236,7 +215,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   <tr key={item.id}>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("pool")}
+                      hidden={hideColumns?.includes("Pool")}
                     >
                       {item.pool ? item.pool : <HtmlUnicode name="EmDash" />}
                     </td>
@@ -292,7 +271,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("unsettled_interest")}
+                      hidden={hideColumns?.includes("Unsettled Interest")}
                     >
                       {item.unsettled_interest ? (
                         formatNumberAsCurrency(Number(item.unsettled_interest))
@@ -302,7 +281,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("next_payment")}
+                      hidden={hideColumns?.includes("Next Payment")}
                     >
                       {item.next_payment ? (
                         formatDateRelative(item.next_payment)
@@ -312,7 +291,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("paid_interest")}
+                      hidden={hideColumns?.includes("Paid Interest")}
                     >
                       {item.paid_interest ? (
                         formatNumberAsCurrency(Number(item.paid_interest))
