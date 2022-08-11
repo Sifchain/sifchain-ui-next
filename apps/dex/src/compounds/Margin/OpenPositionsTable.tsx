@@ -56,37 +56,45 @@ import { HtmlUnicode } from "./_trade";
  *
  * ********************************************************************************************
  */
+const HEADER_SLUGS = {
+  // they match sifApi response object
+  pool: "pool", // sifApi breaks if you send column that doesn't exist
+  position: "position",
+  custody_amount: "custody_amount",
+  custody_asset: "custody_asset",
+  leverage: "leverage",
+  unrealized_pnl: "unrealized_pnl",
+  interest_rate: "interest_rate",
+  unsettled_interest: "unsettled_interest",
+  next_payment: "next_payment",
+  paid_interest: "paid_interest",
+  health: "health",
+  date_opened: "date_opened",
+  time_open: "time_open",
+  close_position: "close_position",
+};
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  { title: "Pool", slug: "pool" },
-  { title: "Side", slug: "position" },
-  { title: "Position", slug: "custody_amount" }, // Maps to "custody_amount" field
-  { title: "Asset", slug: "custody_asset" },
-  { title: "Base Leverage", slug: "leverage" },
-  { title: "Unrealized P&L", slug: "unrealized_pnl" },
-  { title: "Interest Rate", slug: "interest_rate" },
-  { title: "Unsettled Interest", slug: "unsettled_interest" },
-  { title: "Next Payment", slug: "next_payment" },
-  { title: "Paid Interest", slug: "paid_interest" },
-  { title: "Health", slug: "health" },
-  { title: "Date Opened", slug: "date_opened" },
-  { title: "Time Open", slug: "time_open" },
-  { title: "Close Position", slug: "close_position" }, // We don't display this text
+  { title: "Pool", slug: HEADER_SLUGS.pool, sortBy: false },
+  { title: "Side", slug: HEADER_SLUGS.position, sortBy: true },
+  { title: "Position", slug: HEADER_SLUGS.custody_amount, sortBy: true }, // Maps to "custody_amount" field
+  { title: "Asset", slug: HEADER_SLUGS.custody_asset, sortBy: true },
+  { title: "Base Leverage", slug: HEADER_SLUGS.leverage, sortBy: true },
+  { title: "Unrealized P&L", slug: HEADER_SLUGS.unrealized_pnl, sortBy: true },
+  { title: "Interest Rate", slug: HEADER_SLUGS.interest_rate, sortBy: true },
+  {
+    title: "Unsettled Interest",
+    slug: HEADER_SLUGS.unsettled_interest,
+    sortBy: true,
+  },
+  { title: "Next Payment", slug: HEADER_SLUGS.next_payment, sortBy: true },
+  { title: "Paid Interest", slug: HEADER_SLUGS.paid_interest, sortBy: true },
+  { title: "Health", slug: HEADER_SLUGS.health, sortBy: true },
+  { title: "Date Opened", slug: HEADER_SLUGS.date_opened, sortBy: true },
+  { title: "Time Open", slug: HEADER_SLUGS.time_open, sortBy: true },
+  { title: "Close Position", slug: HEADER_SLUGS.close_position, sortBy: false }, // We don't display this text
 ] as const;
 
-type HideColsUnion =
-  | "pool"
-  | "side"
-  | "amount"
-  | "asset"
-  | "baseLeverage"
-  | "unrealizedPL"
-  | "interestRate"
-  | "unsettledInterest"
-  | "nextPayment"
-  | "paidInterest"
-  | "health"
-  | "dateOpened"
-  | "timeOpen";
+type HideColsUnion = keyof typeof HEADER_SLUGS;
 export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
   queryId: string;
@@ -284,7 +292,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("unsettledInterest")}
+                      hidden={hideColumns?.includes("unsettled_interest")}
                     >
                       {item.unsettled_interest ? (
                         formatNumberAsCurrency(Number(item.unsettled_interest))
@@ -294,7 +302,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("nextPayment")}
+                      hidden={hideColumns?.includes("next_payment")}
                     >
                       {item.next_payment ? (
                         formatDateRelative(item.next_payment)
@@ -304,7 +312,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("paidInterest")}
+                      hidden={hideColumns?.includes("paid_interest")}
                     >
                       {item.paid_interest ? (
                         formatNumberAsCurrency(Number(item.paid_interest))

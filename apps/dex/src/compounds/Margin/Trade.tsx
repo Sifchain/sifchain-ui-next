@@ -896,9 +896,9 @@ const Trade = (props: TradeProps) => {
             openPositions={{
               hideColumns: [
                 "pool",
-                "unsettledInterest",
-                "nextPayment",
-                "paidInterest",
+                "unsettled_interest",
+                "next_payment",
+                "paid_interest",
               ],
             }}
           />
