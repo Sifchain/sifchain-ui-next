@@ -31,7 +31,9 @@ export const MARGIN_POSITION = {
   UNSPECIFIED: "UNSPECIFIED",
   LONG: "LONG",
   SHORT: "SHORT",
-};
+} as const;
+
+export type PositionKind = keyof typeof MARGIN_POSITION;
 
 type FindNextOrderAndSortByProps = {
   itemActive: boolean;

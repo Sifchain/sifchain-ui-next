@@ -1,7 +1,7 @@
+import { invariant } from "@sifchain/ui";
 import { useQuery } from "react-query";
 
-import useSifApiClient from "~/hooks/useSifApiClient";
-// import useSifApiQuery from "~/hooks/useSifApiQuery";
+import useSifApiQuery from "~/hooks/useSifApiQuery";
 
 export function useOpenPositionsQuery(params: {
   address: string;
@@ -10,44 +10,37 @@ export function useOpenPositionsQuery(params: {
   orderBy: string;
   sortBy: string;
 }) {
-  /** 
-  [
-      address: string, 
-      offset?: number | undefined, 
-      limit?: number | undefined, 
-      orderBy?: string | undefined, 
-      sortBy?: string | undefined, 
-      options?: any]
-  */
-  const { data: client } = useSifApiClient();
-  // const { data, ...query } = useSifApiQuery(
-  //   "stats.getMarginOpenPosition",
-  //   queryParams,
-  // );
-  return useQuery(
+  const { data, ...query } = useSifApiQuery("margin.getMarginOpenPosition", [
+    params.address,
+    Number(params.offset),
+    Number(params.limit),
+    params.orderBy,
+    params.sortBy,
+  ]);
+
+  const dependentQuery = useQuery(
     ["margin.getMarginOpenPosition", { ...params }],
     async () => {
-      if (!client) {
-        throw new Error("[useSifApiQuery] No client available");
-      }
+      invariant(data !== undefined, "Sif api client is not defined");
 
-      const res = await client.margin.getMarginOpenPosition(
-        params.address,
-        Number(params.offset),
-        Number(params.limit),
-        params.orderBy,
-        params.sortBy,
-      );
-
-      if (res.error) {
+      if ("error" in data) {
         throw new Error("client.margin.getMarginOpenPosition");
       }
 
-      return res;
+      return data;
     },
     {
       keepPreviousData: true,
       retry: false,
+      enabled: data !== undefined,
     },
   );
+  return {
+    ...query,
+    data: dependentQuery.data as any, // TODO: fix query result type
+    isSuccess: dependentQuery.isSuccess,
+    isLoading: dependentQuery.isLoading || query.isLoading,
+    isError: dependentQuery.isError || query.isError,
+    error: dependentQuery.error || query.error,
+  };
 }

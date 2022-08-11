@@ -1,4 +1,3 @@
-import { pathOr } from "ramda";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
@@ -33,7 +32,6 @@ import {
   PillUpdating,
 } from "./_components";
 import {
-  useQueryOpenPositions,
   useQueryPositionToClose,
   useMutationPositionToClose,
 } from "./_mockdata";
@@ -44,7 +42,6 @@ import {
   formatDateDistance,
 } from "./_intl";
 import {
-  fromColNameToItemKey,
   findNextOrderAndSortBy,
   SORT_BY,
   MARGIN_POSITION,
@@ -222,7 +219,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   message="You have no open positions."
                 />
               )}
-              {results.map((item) => {
+              {results.map((item: any) => {
                 const position = item.position;
                 const amountSign = Math.sign(Number(item.custody_amount));
                 const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
