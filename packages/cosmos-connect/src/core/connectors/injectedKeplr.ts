@@ -30,11 +30,21 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
 
     this.#keplr = windowKeplr;
     this.emit("connect");
+
+    window.addEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async disconnect() {
     this.#keplr = undefined;
     this.emit("disconnect");
+
+    window.removeEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
@@ -79,5 +89,9 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
 
       document.addEventListener("readystatechange", documentStateChange);
     });
+  }
+
+  #keystoreChangeListener() {
+    this.emit("accountchange");
   }
 }
