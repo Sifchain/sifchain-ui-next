@@ -105,7 +105,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     orderBy: (router.query["orderBy"] as string) || QS_DEFAULTS.orderBy,
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-  console.log(queryParams, router.query);
+
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
     address: props.queryId,
