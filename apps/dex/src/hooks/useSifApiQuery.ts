@@ -9,7 +9,7 @@ export type VanirClient = Awaited<ReturnType<typeof createClient>>;
 
 export type VanirPublicClient = Pick<
   VanirClient,
-  "assets" | "network" | "pools" | "stats" | "trades" | "validators"
+  "assets" | "network" | "pools" | "stats" | "trades" | "validators" | "margin"
 >;
 
 type PublicModuleKey = keyof VanirPublicClient;

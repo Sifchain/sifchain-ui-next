@@ -29,6 +29,7 @@ import {
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
+  PositionKind,
 } from "./_tables";
 
 /**
@@ -161,7 +162,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 />
               )}
               {results.map((item) => {
-                const position = MARGIN_POSITION[item.side];
+                const position = MARGIN_POSITION[item.side as PositionKind];
                 const amountSign = Math.sign(Number(item.amount));
                 const realizedPLSign = Math.sign(Number(item.realizedPL));
 
@@ -177,9 +178,10 @@ const HistoryTable = (props: HistoryTableProps) => {
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
-                          "text-cyan-400": position === MARGIN_POSITION[0],
-                          "text-green-400": position === MARGIN_POSITION[1],
-                          "text-red-400": position === MARGIN_POSITION[2],
+                          "text-cyan-400": position === MARGIN_POSITION.LONG,
+                          "text-green-400": position === MARGIN_POSITION.SHORT,
+                          "text-red-400":
+                            position === MARGIN_POSITION.UNSPECIFIED,
                         })}
                       >
                         {position}
