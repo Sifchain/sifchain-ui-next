@@ -1,7 +1,6 @@
-import { invariant } from "@sifchain/ui";
 import { useQuery } from "react-query";
 
-import useSifApiQuery from "~/hooks/useSifApiQuery";
+import useSifApiClient from "~/hooks/useSifApiClient";
 
 export function useOpenPositionsQuery(params: {
   address: string;
@@ -10,42 +9,32 @@ export function useOpenPositionsQuery(params: {
   orderBy: string;
   sortBy: string;
 }) {
-  const { data, ...query } = useSifApiQuery(
-    "margin.getMarginOpenPosition",
-    [
-      params.address,
-      Number(params.offset),
-      Number(params.limit),
-      params.orderBy,
-      params.sortBy,
-    ],
+  const { data: client } = useSifApiClient();
+
+  return useQuery(
+    ["margin.getMarginOpenPosition", { ...params }],
+    async () => {
+      if (!client) {
+        throw new Error("[useSifApiQuery] No client available");
+      }
+
+      const res = (await client.margin.getMarginOpenPosition(
+        params.address,
+        Number(params.offset),
+        Number(params.limit),
+        params.orderBy,
+        params.sortBy,
+      )) as any;
+
+      if (res.error) {
+        throw new Error("client.margin.getMarginOpenPosition");
+      }
+
+      return res;
+    },
     {
       keepPreviousData: true,
       retry: false,
     },
   );
-
-  const dependentQuery = useQuery(
-    ["margin.getMarginOpenPosition", { ...params }],
-    () => {
-      invariant(data !== undefined, "Sif api client is not defined");
-
-      if ("error" in data) {
-        throw new Error("client.margin.getMarginOpenPosition");
-      }
-
-      return data;
-    },
-    {
-      enabled: data !== undefined,
-    },
-  );
-  return {
-    ...query,
-    data: dependentQuery.data as any, // TODO: fix query result type
-    isSuccess: dependentQuery.isSuccess,
-    isLoading: dependentQuery.isLoading || query.isLoading,
-    isError: dependentQuery.isError || query.isError,
-    error: dependentQuery.error || query.error,
-  };
 }

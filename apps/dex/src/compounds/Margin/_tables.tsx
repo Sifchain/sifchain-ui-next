@@ -24,7 +24,6 @@ export const SORT_BY = {
 export const QS_DEFAULTS = {
   limit: "30",
   offset: "0",
-  orderBy: "custody_amount",
   sortBy: SORT_BY.DESC,
 };
 export const MARGIN_POSITION = {
