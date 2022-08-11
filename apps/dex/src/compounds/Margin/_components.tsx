@@ -27,19 +27,19 @@ export function NoResultsRow(props: NoResultsTrProps) {
 
 type PaginationShowItemsProps = {
   limit: number;
-  page: number;
+  offset: number;
   total: number;
 };
 export function PaginationShowItems({
   limit,
-  page,
+  offset,
   total,
 }: PaginationShowItemsProps) {
-  const initial = limit * page;
+  const initial = offset + limit;
   return (
     <p className="text-sm mx-4 py-3">
       <span>Showing</span>
-      <span className="mx-1">{initial > total ? total : limit * page}</span>
+      <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
       <span className="mx-1">{total}</span>
       <span>items</span>
