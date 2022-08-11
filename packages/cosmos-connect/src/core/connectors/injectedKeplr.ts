@@ -4,9 +4,11 @@ import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo, Keplr } from "@keplr-wallet/types";
 import { BaseCosmConnector } from "./base";
 
-export class InjectedKeplrConnector extends BaseCosmConnector<{
+export type InjectedKeplrConnectorOptions = {
   chainInfos: ChainInfo[];
-}> {
+};
+
+export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConnectorOptions> {
   readonly id = "keplr";
   readonly name = "Keplr";
 
@@ -21,6 +23,14 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
     return this.#keplr !== undefined;
   }
 
+  constructor(options: InjectedKeplrConnectorOptions) {
+    super(options);
+    window.addEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
+  }
+
   async connect() {
     const windowKeplr = await this.#getKeplr();
 
@@ -30,11 +40,6 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
 
     this.#keplr = windowKeplr;
     this.emit("connect");
-
-    window.addEventListener(
-      "keplr_keystorechange",
-      this.#keystoreChangeListener,
-    );
   }
 
   async disconnect() {
