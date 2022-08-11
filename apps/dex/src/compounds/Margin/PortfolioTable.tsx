@@ -30,6 +30,7 @@ const OPTIONS_ITEMS = {
 
 type PortfolioTableProps = {
   queryId: string;
+  extraQuerystring: ReturnType<typeof useRouter>["query"];
   openPositions?: {
     hideColumns: OpenPositionsTableProps["hideColumns"];
   };
@@ -53,6 +54,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
 
   const TabContent = currentTab.content;
   const slugProps = props[currentTab.slug];
+  const qs = props.extraQuerystring || {};
 
   return (
     <div className="relative">
@@ -63,7 +65,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
           return (
             <li key={slug}>
               <Link
-                href={{ query: { ...router.query, tab: qsTab, option: slug } }}
+                href={{ query: { ...qs, tab: qsTab, option: slug } }}
                 scroll={false}
               >
                 <a
