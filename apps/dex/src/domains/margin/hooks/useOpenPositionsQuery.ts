@@ -20,14 +20,14 @@ export function useOpenPositionsQuery(params: {
 
   const dependentQuery = useQuery(
     ["margin.getMarginOpenPosition", { ...params }],
-    async () => {
+    () => {
       invariant(data !== undefined, "Sif api client is not defined");
 
       if ("error" in data) {
         throw new Error("client.margin.getMarginOpenPosition");
       }
 
-      return data;
+      return Promise.resolve(data);
     },
     {
       keepPreviousData: true,
