@@ -40,7 +40,7 @@ import { HtmlUnicode } from "./_trade";
  */
 const HISTORY_HEADER_ITEMS = [
   { title: "Date Closed", order_by: "" },
-  { title: "Time Open", order_by: "" },
+  { title: "Time Open", order_by: "open_date_time" },
   { title: "Pool", order_by: "" },
   { title: "Side", order_by: "position" },
   { title: "Asset", order_by: "open_custody_asset" },
