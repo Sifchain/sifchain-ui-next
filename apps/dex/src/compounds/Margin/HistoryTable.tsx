@@ -55,7 +55,7 @@ const HistoryTable = (props: HistoryTableProps) => {
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "custody_amount",
+    orderBy: (router.query["orderBy"] as string) || "address",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
   const historyQuery = useHistoryQuery({
