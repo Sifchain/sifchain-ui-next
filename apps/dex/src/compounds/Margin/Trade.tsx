@@ -923,6 +923,7 @@ const Trade = (props: TradeProps) => {
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
             queryId={HARD_CODED_ADDRES_DS}
+            extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
               hideColumns: [
                 "Pool",
