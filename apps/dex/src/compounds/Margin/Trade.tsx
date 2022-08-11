@@ -54,6 +54,7 @@ import { useMutationConfirmOpenPosition } from "./_mockdata";
 
 const FEE_USDC = 0.5;
 const INTEREST_RATE = 0.25;
+const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
 
 /**
  * ********************************************************************************************
@@ -891,7 +892,7 @@ const Trade = (props: TradeProps) => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
-            queryId="SomePoolIdOrAddress"
+            queryId={HARD_CODED_ADDRES_DS}
             openPositions={{
               hideColumns: [
                 "pool",

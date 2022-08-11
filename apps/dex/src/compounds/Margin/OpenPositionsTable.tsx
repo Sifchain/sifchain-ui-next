@@ -12,7 +12,9 @@ import {
   ArrowDownIcon,
   toast,
 } from "@sifchain/ui";
+
 import AssetIcon from "~/compounds/AssetIcon";
+import { useOpenPositionsQuery } from "~/domains/margin/hooks/useOpenPositionsQuery";
 
 /**
  * ********************************************************************************************
@@ -48,6 +50,7 @@ import {
   MARGIN_POSITION,
   QS_DEFAULTS,
 } from "./_tables";
+import { HtmlUnicode } from "./_trade";
 
 /**
  * ********************************************************************************************
@@ -102,7 +105,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
     sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
   };
-  const openPositionsQuery = useQueryOpenPositions(queryParams);
+  const openPositionsQuery = useOpenPositionsQuery({
+    ...queryParams,
+    address: props.queryId,
+  });
+  console.log(openPositionsQuery);
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
     id: string;
@@ -214,9 +221,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 />
               )}
               {results.map((item) => {
-                const position = MARGIN_POSITION[item.side];
-                const amountSign = Math.sign(Number(item.amount));
-                const unrealizedPLSign = Math.sign(Number(item.unrealizedPL));
+                const position = item.position;
+                const amountSign = Math.sign(Number(item.custody_amount));
+                const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
 
                 return (
                   <tr key={item.id}>
@@ -229,9 +236,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
-                          "text-cyan-400": position === MARGIN_POSITION[0],
-                          "text-green-400": position === MARGIN_POSITION[1],
-                          "text-red-400": position === MARGIN_POSITION[2],
+                          "text-cyan-400":
+                            position === MARGIN_POSITION.UNSPECIFIED,
+                          "text-green-400": position === MARGIN_POSITION.LONG,
+                          "text-red-400": position === MARGIN_POSITION.SHORT,
                         })}
                       >
                         {position}
@@ -245,12 +253,14 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": amountSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.amount), 4)}
+                        {formatNumberAsCurrency(Number(item.custody_amount), 4)}
                       </span>
                     </td>
-                    <td className="px-4 py-3">{item.asset}</td>
                     <td className="px-4 py-3">
-                      {formatNumberAsDecimal(Number(item.baseLeverage))}x
+                      {item.custody_asset.toUpperCase()}
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatNumberAsDecimal(Number(item.leverage))}x
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -259,38 +269,62 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": unrealizedPLSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.unrealizedPL), 2)}
+                        {item.unrealized_pnl ? (
+                          formatNumberAsCurrency(Number(item.unrealized_pnl), 2)
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {formatNumberAsPercent(Number(item.interestRate))}
+                      {item.interest_rate ? (
+                        formatNumberAsPercent(Number(item.interest_rate))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("unsettledInterest")}
                     >
-                      {formatNumberAsCurrency(Number(item.unsettledInterest))}
+                      {item.unsettled_interest ? (
+                        formatNumberAsCurrency(Number(item.unsettled_interest))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("nextPayment")}
                     >
-                      {formatDateRelative(item.nextPayment)}
+                      {item.next_payment ? (
+                        formatDateRelative(item.next_payment)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("paidInterest")}
                     >
-                      {formatNumberAsCurrency(Number(item.paidInterest))}
+                      {item.paid_interest ? (
+                        formatNumberAsCurrency(Number(item.paid_interest))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {formatNumberAsDecimal(Number(item.health))}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateRelative(item.dateOpened)}
+                      {formatDateRelative(new Date(item.date_opened))}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateDistance(item.timeOpen)}
+                      {item.time_open ? (
+                        formatDateDistance(item.time_open)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4">
                       <Button
@@ -301,7 +335,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         onClick={() =>
                           setPositionToClose({
                             isOpen: true,
-                            id: item.id,
+                            id: item.address,
                           })
                         }
                       >

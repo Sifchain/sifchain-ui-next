@@ -24,13 +24,13 @@ export const SORT_BY = {
 export const QS_DEFAULTS = {
   limit: "30",
   offset: "0",
-  orderBy: "",
+  orderBy: "custody_amount",
   sortBy: SORT_BY.DESC,
 };
-export const MARGIN_POSITION: Record<string, string> = {
-  "0": "Unspecified",
-  "1": "Long",
-  "2": "Short",
+export const MARGIN_POSITION = {
+  UNSPECIFIED: "UNSPECIFIED",
+  LONG: "LONG",
+  SHORT: "SHORT",
 };
 
 type FindNextOrderAndSortByProps = {

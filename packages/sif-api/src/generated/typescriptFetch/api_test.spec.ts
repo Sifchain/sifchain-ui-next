@@ -36,6 +36,41 @@ describe("AssetsApi", () => {
   });
 });
 
+describe("MarginApi", () => {
+  let instance: api.MarginApi;
+  beforeEach(function () {
+    instance = new api.MarginApi(config);
+  });
+
+  test("getMarginHistory", () => {
+    const address: string = "address_example";
+    const offset: number = 1.2;
+    const limit: number = 1.2;
+    const orderBy: string = "orderBy_example";
+    const sortBy: string = "sortBy_example";
+    return expect(
+      instance.getMarginHistory(address, offset, limit, orderBy, sortBy, {}),
+    ).resolves.toBe(null);
+  });
+  test("getMarginOpenPosition", () => {
+    const address: string = "address_example";
+    const offset: number = 1.2;
+    const limit: number = 1.2;
+    const orderBy: string = "orderBy_example";
+    const sortBy: string = "sortBy_example";
+    return expect(
+      instance.getMarginOpenPosition(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        {},
+      ),
+    ).resolves.toBe(null);
+  });
+});
+
 describe("NetworkApi", () => {
   let instance: api.NetworkApi;
   beforeEach(function () {
@@ -139,33 +174,6 @@ describe("StatsApi", () => {
   });
   test("getCirculatingSupply", () => {
     return expect(instance.getCirculatingSupply({})).resolves.toBe(null);
-  });
-  test("getMarginHistory", () => {
-    const address: string = "address_example";
-    const offset: number = 56;
-    const limit: number = 56;
-    const orderBy: string = "orderBy_example";
-    const sortBy: string = "sortBy_example";
-    return expect(
-      instance.getMarginHistory(address, offset, limit, orderBy, sortBy, {}),
-    ).resolves.toBe(null);
-  });
-  test("getMarginOpenPosition", () => {
-    const address: string = "address_example";
-    const offset: number = 56;
-    const limit: number = 56;
-    const orderBy: string = "orderBy_example";
-    const sortBy: string = "sortBy_example";
-    return expect(
-      instance.getMarginOpenPosition(
-        address,
-        offset,
-        limit,
-        orderBy,
-        sortBy,
-        {},
-      ),
-    ).resolves.toBe(null);
   });
   test("getStakingRewards", () => {
     return expect(instance.getStakingRewards({})).resolves.toBe(null);

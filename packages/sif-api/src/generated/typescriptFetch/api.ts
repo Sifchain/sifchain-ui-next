@@ -375,6 +375,69 @@ export interface GetLiquidityProvidersResponse {
 /**
  *
  * @export
+ * @interface GetMarginHistoryResponse
+ */
+export interface GetMarginHistoryResponse {
+  /**
+   *
+   * @type {GetMarginHistoryResponsePagination}
+   * @memberof GetMarginHistoryResponse
+   */
+  pagination?: GetMarginHistoryResponsePagination;
+}
+/**
+ *
+ * @export
+ * @interface GetMarginHistoryResponsePagination
+ */
+export interface GetMarginHistoryResponsePagination {
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  total?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  limit?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  offset?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  orderBy?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  sortBy?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetMarginOpenPositionResponse
+ */
+export interface GetMarginOpenPositionResponse {
+  /**
+   *
+   * @type {GetMarginHistoryResponsePagination}
+   * @memberof GetMarginOpenPositionResponse
+   */
+  pagination?: GetMarginHistoryResponsePagination;
+}
+/**
+ *
+ * @export
  * @interface GetNetworkResponse
  */
 export interface GetNetworkResponse {
@@ -1424,6 +1487,384 @@ export class AssetsApi extends BaseAPI {
       this.fetch,
       this.basePath,
     );
+  }
+}
+/**
+ * MarginApi - fetch parameter creator
+ * @export
+ */
+export const MarginApiFetchParamCreator = function (
+  configuration?: Configuration,
+) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getMarginHistory.",
+        );
+      }
+      const localVarPath = `/margin/history/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter["offset"] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter["limit"] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter["orderBy"] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter["sortBy"] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {},
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          "address",
+          "Required parameter address was null or undefined when calling getMarginOpenPosition.",
+        );
+      }
+      const localVarPath = `/margin/openposition/{address}`.replace(
+        `{${"address"}}`,
+        encodeURIComponent(String(address)),
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter["offset"] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter["limit"] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter["orderBy"] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter["sortBy"] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query,
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers,
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
+};
+
+/**
+ * MarginApi - functional programming interface
+ * @export
+ */
+export const MarginApiFp = function (configuration?: Configuration) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetMarginHistoryResponse>> {
+      const localVarFetchArgs = MarginApiFetchParamCreator(
+        configuration,
+      ).getMarginHistory(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string,
+    ) => Promise<Array<GetMarginOpenPositionResponse>> {
+      const localVarFetchArgs = MarginApiFetchParamCreator(
+        configuration,
+      ).getMarginOpenPosition(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH,
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options,
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+  };
+};
+
+/**
+ * MarginApi - factory interface
+ * @export
+ */
+export const MarginApiFactory = function (
+  configuration?: Configuration,
+  fetch?: FetchAPI,
+  basePath?: string,
+) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ) {
+      return MarginApiFp(configuration).getMarginHistory(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options,
+      )(fetch, basePath);
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any,
+    ) {
+      return MarginApiFp(configuration).getMarginOpenPosition(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options,
+      )(fetch, basePath);
+    },
+  };
+};
+
+/**
+ * MarginApi - object-oriented interface
+ * @export
+ * @class MarginApi
+ * @extends {BaseAPI}
+ */
+export class MarginApi extends BaseAPI {
+  /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin trade history filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MarginApi
+   */
+  public getMarginHistory(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any,
+  ) {
+    return MarginApiFp(this.configuration).getMarginHistory(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options,
+    )(this.fetch, this.basePath);
+  }
+
+  /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin open position filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MarginApi
+   */
+  public getMarginOpenPosition(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any,
+  ) {
+    return MarginApiFp(this.configuration).getMarginOpenPosition(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options,
+    )(this.fetch, this.basePath);
   }
 }
 /**
@@ -3196,146 +3637,6 @@ export const StatsApiFetchParamCreator = function (
       };
     },
     /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options: any = {},
-    ): FetchArgs {
-      // verify required parameter 'address' is not null or undefined
-      if (address === null || address === undefined) {
-        throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getMarginHistory.",
-        );
-      }
-      const localVarPath = `/margin/history/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
-      );
-      const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (offset !== undefined) {
-        localVarQueryParameter["offset"] = offset;
-      }
-
-      if (limit !== undefined) {
-        localVarQueryParameter["limit"] = limit;
-      }
-
-      if (orderBy !== undefined) {
-        localVarQueryParameter["orderBy"] = orderBy;
-      }
-
-      if (sortBy !== undefined) {
-        localVarQueryParameter["sortBy"] = sortBy;
-      }
-
-      localVarUrlObj.query = Object.assign(
-        {},
-        localVarUrlObj.query,
-        localVarQueryParameter,
-        options.query,
-      );
-      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
-      localVarRequestOptions.headers = Object.assign(
-        {},
-        localVarHeaderParameter,
-        options.headers,
-      );
-
-      return {
-        url: url.format(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options: any = {},
-    ): FetchArgs {
-      // verify required parameter 'address' is not null or undefined
-      if (address === null || address === undefined) {
-        throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getMarginOpenPosition.",
-        );
-      }
-      const localVarPath = `/margin/openPosition/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
-      );
-      const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (offset !== undefined) {
-        localVarQueryParameter["offset"] = offset;
-      }
-
-      if (limit !== undefined) {
-        localVarQueryParameter["limit"] = limit;
-      }
-
-      if (orderBy !== undefined) {
-        localVarQueryParameter["orderBy"] = orderBy;
-      }
-
-      if (sortBy !== undefined) {
-        localVarQueryParameter["sortBy"] = sortBy;
-      }
-
-      localVarUrlObj.query = Object.assign(
-        {},
-        localVarUrlObj.query,
-        localVarQueryParameter,
-        options.query,
-      );
-      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
-      localVarRequestOptions.headers = Object.assign(
-        {},
-        localVarHeaderParameter,
-        options.headers,
-      );
-
-      return {
-        url: url.format(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3488,88 +3789,6 @@ export const StatsApiFp = function (configuration?: Configuration) {
       };
     },
     /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ): (
-      fetch?: FetchAPI,
-      basePath?: string,
-    ) => Promise<Array<GetPoolResponse>> {
-      const localVarFetchArgs = StatsApiFetchParamCreator(
-        configuration,
-      ).getMarginHistory(address, offset, limit, orderBy, sortBy, options);
-      return (
-        fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
-      ) => {
-        return fetch(
-          basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
-        ).then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            return response.json();
-          } else {
-            throw response;
-          }
-        });
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ): (
-      fetch?: FetchAPI,
-      basePath?: string,
-    ) => Promise<Array<GetPoolResponse>> {
-      const localVarFetchArgs = StatsApiFetchParamCreator(
-        configuration,
-      ).getMarginOpenPosition(address, offset, limit, orderBy, sortBy, options);
-      return (
-        fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
-      ) => {
-        return fetch(
-          basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
-        ).then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            return response.json();
-          } else {
-            throw response;
-          }
-        });
-      };
-    },
-    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3668,62 +3887,6 @@ export const StatsApiFactory = function (
       );
     },
     /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ) {
-      return StatsApiFp(configuration).getMarginHistory(
-        address,
-        offset,
-        limit,
-        orderBy,
-        sortBy,
-        options,
-      )(fetch, basePath);
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ) {
-      return StatsApiFp(configuration).getMarginOpenPosition(
-        address,
-        offset,
-        limit,
-        orderBy,
-        sortBy,
-        options,
-      )(fetch, basePath);
-    },
-    /**
      *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3789,66 +3952,6 @@ export class StatsApi extends BaseAPI {
       this.fetch,
       this.basePath,
     );
-  }
-
-  /**
-   * This endpoint returns open position history filtered per user address
-   * @summary Get margin trade history filtered by user
-   * @param {string} address Wallet address
-   * @param {number} [offset] The number of items to skip before starting to collect the result set
-   * @param {number} [limit] The number of items to return
-   * @param {string} [orderBy] column to sort by
-   * @param {string} [sortBy] direction to sort
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof StatsApi
-   */
-  public getMarginHistory(
-    address: string,
-    offset?: number,
-    limit?: number,
-    orderBy?: string,
-    sortBy?: string,
-    options?: any,
-  ) {
-    return StatsApiFp(this.configuration).getMarginHistory(
-      address,
-      offset,
-      limit,
-      orderBy,
-      sortBy,
-      options,
-    )(this.fetch, this.basePath);
-  }
-
-  /**
-   * This endpoint returns open position history filtered per user address
-   * @summary Get margin open position filtered by user
-   * @param {string} address Wallet address
-   * @param {number} [offset] The number of items to skip before starting to collect the result set
-   * @param {number} [limit] The number of items to return
-   * @param {string} [orderBy] column to sort by
-   * @param {string} [sortBy] direction to sort
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof StatsApi
-   */
-  public getMarginOpenPosition(
-    address: string,
-    offset?: number,
-    limit?: number,
-    orderBy?: string,
-    sortBy?: string,
-    options?: any,
-  ) {
-    return StatsApiFp(this.configuration).getMarginOpenPosition(
-      address,
-      offset,
-      limit,
-      orderBy,
-      sortBy,
-      options,
-    )(this.fetch, this.basePath);
   }
 
   /**
