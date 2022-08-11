@@ -1,6 +1,6 @@
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { FC, PropsWithChildren, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -27,7 +27,12 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   );
 
   return (
-    <ComposeProviders providers={[CosmConnectProvider, WagmiProvider]}>
+    <ComposeProviders
+      providers={[
+        typeof window !== "undefined" ? CosmConnectProvider : Fragment,
+        WagmiProvider,
+      ]}
+    >
       <WalletsWatcher />
       <CookiesProvider>
         <QueryClientProvider client={queryClient}>
