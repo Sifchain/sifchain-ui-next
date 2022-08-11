@@ -1,6 +1,6 @@
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { FC, useState } from "react";
+import { FC, PropsWithChildren, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -10,6 +10,11 @@ import MainLayout from "~/layouts/MainLayout";
 import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
 import "~/styles/globals.css";
+
+const WalletsWatcher = () => {
+  useReloadOnAccountChangeEffect();
+  return null;
+};
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   const [queryClient] = useState(
@@ -21,10 +26,9 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
       }),
   );
 
-  useReloadOnAccountChangeEffect();
-
   return (
     <ComposeProviders providers={[CosmConnectProvider, WagmiProvider]}>
+      <WalletsWatcher />
       <CookiesProvider>
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
