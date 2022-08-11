@@ -59,10 +59,11 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
       <ul className="flex flex-row text-sm bg-gray-800">
         {Object.values(OPTIONS_ITEMS).map(({ slug, title }) => {
           const isTabActive = currentTab.slug === slug;
+
           return (
             <li key={slug}>
               <Link
-                href={{ query: { tab: qsTab, option: slug } }}
+                href={{ query: { ...router.query, tab: qsTab, option: slug } }}
                 scroll={false}
               >
                 <a
