@@ -1,11 +1,10 @@
-import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { useConnect as useEvmConnect } from "wagmi";
+import useReloadOnAccountChangeEffect from "~/hooks/useReloadOnAccountChangeEffect";
 
 import MainLayout from "~/layouts/MainLayout";
 import { CosmConnectProvider } from "~/lib/cosmConnect";
@@ -22,26 +21,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
       }),
   );
 
-  const { activeConnector: activeCosmConnector } = useCosmConnect();
-  const { data: activeEvmConnector } = useEvmConnect();
-
-  const onAccountChange = useCallback(() => window.location.reload(), []);
-
-  useEffect(() => {
-    activeEvmConnector?.connector?.addListener("change", onAccountChange);
-
-    return () => {
-      activeEvmConnector?.connector?.removeListener("change", onAccountChange);
-    };
-  }, [activeCosmConnector, activeEvmConnector?.connector, onAccountChange]);
-
-  useEffect(() => {
-    activeCosmConnector?.addListener("accountchange", onAccountChange);
-
-    return () => {
-      activeCosmConnector?.removeListener("accountchange", onAccountChange);
-    };
-  }, [activeCosmConnector, onAccountChange]);
+  useReloadOnAccountChangeEffect();
 
   return (
     <ComposeProviders providers={[CosmConnectProvider, WagmiProvider]}>
