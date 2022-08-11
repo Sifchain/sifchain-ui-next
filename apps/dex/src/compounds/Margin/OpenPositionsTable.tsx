@@ -71,7 +71,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Date Opened", order_by: "date_opened" },
   { title: "Time Open", order_by: "time_open" },
   { title: "Close Position", order_by: "" }, // We don't display this text
-] as const;
+];
 
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
@@ -162,9 +162,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       key={header.order_by}
                       data-item-key={header.order_by}
                       className="font-normal px-4 py-3"
-                      hidden={hideColumns?.includes(
-                        header.order_by as HideColsUnion,
-                      )}
+                      hidden={hideColumns?.includes(header.title)}
                     >
                       {header.title === "Close Position" ? null : (
                         <Link
