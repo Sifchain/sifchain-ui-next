@@ -40,6 +40,11 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
     this.#keplr = windowKeplr;
     this.emit("connect");
+
+    window.addEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async disconnect() {
