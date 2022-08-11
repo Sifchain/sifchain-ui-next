@@ -319,9 +319,17 @@ const Trade = (props: TradeProps) => {
     return (
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
-      Boolean(inputLeverage.error)
+      Boolean(inputLeverage.error) ||
+      inputCollateral.value === "0" ||
+      inputPosition.value === "0"
     );
-  }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
+  }, [
+    inputCollateral.error,
+    inputPosition.error,
+    inputLeverage.error,
+    inputCollateral.value,
+    inputPosition.value,
+  ]);
 
   /**
    * ********************************************************************************************
@@ -882,14 +890,21 @@ const Trade = (props: TradeProps) => {
                       </div>
                     </div>
                   </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">
-                        Current interest rate
-                      </span>
-                      <span>{INTEREST_RATE * 100}%</span>
-                    </div>
-                  </li>
+                  {poolActive ? (
+                    <li className="px-4">
+                      <div className="flex flex-row items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">
+                          Current interest rate
+                        </span>
+                        <span>
+                          {formatNumberAsDecimal(
+                            Number(poolActive.stats.interestRate),
+                          )}
+                          %
+                        </span>
+                      </div>
+                    </li>
+                  ) : null}
                 </ul>
               </div>
               <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
@@ -993,7 +1008,14 @@ const Trade = (props: TradeProps) => {
                   <span className="mr-auto min-w-fit text-gray-300">
                     Current interest rate
                   </span>
-                  <span>{INTEREST_RATE * 100}%</span>
+                  {poolActive ? (
+                    <span>
+                      {formatNumberAsDecimal(
+                        Number(poolActive.stats.interestRate),
+                      )}
+                      %
+                    </span>
+                  ) : null}
                 </div>
               </li>
             </ul>

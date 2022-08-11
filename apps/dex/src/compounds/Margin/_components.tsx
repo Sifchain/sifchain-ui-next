@@ -81,8 +81,10 @@ type PoolOverviewProps = {
   onChangePoolSelector: (token: TokenEntry) => void;
 };
 export function PoolOverview(props: PoolOverviewProps) {
-  const poolTVL = pathOr(0, ["stats", "poolTVL"], props.pool);
-  const volume = pathOr(0, ["stats", "volume"], props.pool);
+  const poolTVL = props.pool.stats.poolTVL || 0;
+  const volume = props.pool.stats.volume || 0;
+  const health = props.pool.stats.health || "";
+
   return (
     <ul className="grid grid-cols-7 gap-5">
       <li className="col-span-2 pl-4 py-4">
@@ -141,9 +143,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="font-semibold text-sm">
-            {formatNumberAsDecimal(Number(Math.random()))}
-          </span>
+          <span className="font-semibold text-sm">{health.slice(0, 4)}</span>
         </div>
       </li>
     </ul>
