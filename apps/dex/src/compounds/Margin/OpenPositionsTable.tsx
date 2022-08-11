@@ -13,7 +13,7 @@ import {
 } from "@sifchain/ui";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { useOpenPositionsQuery } from "~/domains/margin/hooks/useOpenPositionsQuery";
+import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 
 /**
  * ********************************************************************************************
