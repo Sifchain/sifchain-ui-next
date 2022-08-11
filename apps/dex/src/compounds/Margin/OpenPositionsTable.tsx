@@ -69,8 +69,8 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Paid Interest", order_by: "paid_interest" },
   { title: "Health", order_by: "health" },
   { title: "Date Opened", order_by: "date_opened" },
-  { title: "Time Open", order_by: "time_open" },
-  { title: "Close Position", order_by: "" }, // We don't display this text
+  { title: "Time Open", order_by: "" },
+  { title: "Close Position", order_by: "" },
 ];
 
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
@@ -159,8 +159,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   });
                   return (
                     <th
-                      key={header.order_by}
-                      data-item-key={header.order_by}
+                      key={header.title}
                       className="font-normal px-4 py-3"
                       hidden={hideColumns?.includes(header.title)}
                     >
@@ -178,6 +177,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           <a
                             className={clsx("flex flex-row items-center", {
                               "text-white font-semibold": itemActive,
+                              "cursor-not-allowed": header.order_by === "",
                             })}
                           >
                             {header.title}

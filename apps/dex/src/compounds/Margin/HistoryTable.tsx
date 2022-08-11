@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
+import { isNil } from "rambda";
 import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
@@ -42,8 +43,8 @@ const HISTORY_HEADER_ITEMS = [
   { title: "Time Open", order_by: "" },
   { title: "Pool", order_by: "" },
   { title: "Side", order_by: "position" },
-  { title: "Asset", order_by: "custody_asset" },
-  { title: "Amount", order_by: "custody_amount" },
+  { title: "Asset", order_by: "open_custody_asset" },
+  { title: "Amount", order_by: "open_custody_amount" },
   { title: "Realized P&L", order_by: "" },
 ];
 export type HistoryTableProps = {
@@ -119,11 +120,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   return (
-                    <th
-                      key={header.order_by}
-                      data-item-key={header.order_by}
-                      className="font-normal px-4 py-3"
-                    >
+                    <th key={header.title} className="font-normal px-4 py-3">
                       <Link
                         href={{
                           query: {
@@ -137,6 +134,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         <a
                           className={clsx("flex flex-row items-center", {
                             "text-white font-semibold": itemActive,
+                            "cursor-not-allowed": header.order_by === "",
                           })}
                         >
                           {header.title}
@@ -163,43 +161,56 @@ const HistoryTable = (props: HistoryTableProps) => {
                 />
               )}
               {results.map((item: any) => {
-                const position = item.position;
-                const amountSign = Math.sign(Number(item.custody_amount));
+                const amountSign = Math.sign(Number(item.open_custody_amount));
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
                 return (
                   <tr key={item.id}>
                     <td className="px-4 py-3">
-                      {item.date_closed ? (
-                        formatDateRelative(item.date_closed)
-                      ) : (
+                      {isNil(item.closed_date_time) ? (
                         <HtmlUnicode name="EmDash" />
+                      ) : (
+                        formatDateRelative(item.closed_date_time)
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {item.date_opened ? (
-                        formatDateDistance(new Date(item.date_opened))
-                      ) : (
+                      {isNil(item.open_date_time) ? (
                         <HtmlUnicode name="EmDash" />
+                      ) : (
+                        formatDateDistance(new Date(item.open_date_time))
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {item.pool ? item.pool : <HtmlUnicode name="EmDash" />}
+                      {isNil(item.pool) ? (
+                        <HtmlUnicode name="EmDash" />
+                      ) : (
+                        item.pool
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
                           "text-cyan-400":
-                            position === MARGIN_POSITION.UNSPECIFIED,
-                          "text-green-400": position === MARGIN_POSITION.LONG,
-                          "text-red-400": position === MARGIN_POSITION.SHORT,
+                            item.position === MARGIN_POSITION.UNSPECIFIED,
+                          "text-green-400":
+                            item.position === MARGIN_POSITION.LONG,
+                          "text-red-400":
+                            item.position === MARGIN_POSITION.SHORT,
                         })}
                       >
-                        {position}
+                        {isNil(item.position) ? (
+                          <HtmlUnicode name="EmDash" />
+                        ) : (
+                          item.position
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {item.custody_asset.toUpperCase()}
+                      {isNil(item.open_custody_asset) ? (
+                        <HtmlUnicode name="EmDash" />
+                      ) : (
+                        item.open_custody_asset.toUpperCase()
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -208,7 +219,14 @@ const HistoryTable = (props: HistoryTableProps) => {
                           "text-red-400": amountSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.custody_amount), 4)}
+                        {isNil(item.open_custody_amount) ? (
+                          <HtmlUnicode name="EmDash" />
+                        ) : (
+                          formatNumberAsCurrency(
+                            Number(item.open_custody_amount),
+                            4,
+                          )
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -219,10 +237,10 @@ const HistoryTable = (props: HistoryTableProps) => {
                             "text-red-400": realizedPLSign === -1,
                           })}
                         >
-                          {item.realized_pnl ? (
-                            formatNumberAsCurrency(Number(item.realized_pnl), 2)
-                          ) : (
+                          {isNil(item.realized_pnl) ? (
                             <HtmlUnicode name="EmDash" />
+                          ) : (
+                            formatNumberAsCurrency(Number(item.realized_pnl), 2)
                           )}
                         </span>
                       </span>
