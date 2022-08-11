@@ -2,9 +2,11 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { isNil } from "rambda";
 import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
 import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
+
+import { isNil } from "rambda";
+const isTruthy = (target: any) => !isNil(target);
 
 /**
  * ********************************************************************************************
@@ -167,83 +169,86 @@ const HistoryTable = (props: HistoryTableProps) => {
                 return (
                   <tr key={item.id}>
                     <td className="px-4 py-3">
-                      {isNil(item.closed_date_time) ? (
-                        <HtmlUnicode name="EmDash" />
+                      {isTruthy(item.closed_date_time) ? (
+                        formatDateRelative(new Date(item.closed_date_time))
                       ) : (
-                        formatDateRelative(item.closed_date_time)
+                        <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isNil(item.open_date_time) ? (
-                        <HtmlUnicode name="EmDash" />
-                      ) : (
+                      {isTruthy(item.open_date_time) ? (
                         formatDateDistance(new Date(item.open_date_time))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isNil(item.pool) ? (
-                        <HtmlUnicode name="EmDash" />
-                      ) : (
-                        item.pool
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-cyan-400":
-                            item.position === MARGIN_POSITION.UNSPECIFIED,
-                          "text-green-400":
-                            item.position === MARGIN_POSITION.LONG,
-                          "text-red-400":
-                            item.position === MARGIN_POSITION.SHORT,
-                        })}
-                      >
-                        {isNil(item.position) ? (
-                          <HtmlUnicode name="EmDash" />
-                        ) : (
-                          item.position
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {isNil(item.open_custody_asset) ? (
-                        <HtmlUnicode name="EmDash" />
-                      ) : (
+                      {isTruthy(item.open_custody_asset) ? (
                         item.open_custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-green-400": amountSign === 1,
-                          "text-red-400": amountSign === -1,
-                        })}
-                      >
-                        {isNil(item.open_custody_amount) ? (
-                          <HtmlUnicode name="EmDash" />
-                        ) : (
-                          formatNumberAsCurrency(
-                            Number(item.open_custody_amount),
-                            4,
-                          )
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-green-400">
+                      {isTruthy(item.position) ? (
                         <span
                           className={clsx({
-                            "text-green-400": realizedPLSign === 1,
-                            "text-red-400": realizedPLSign === -1,
+                            "text-cyan-400":
+                              item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400":
+                              item.position === MARGIN_POSITION.LONG,
+                            "text-red-400":
+                              item.position === MARGIN_POSITION.SHORT,
                           })}
                         >
-                          {isNil(item.realized_pnl) ? (
-                            <HtmlUnicode name="EmDash" />
-                          ) : (
-                            formatNumberAsCurrency(Number(item.realized_pnl), 2)
+                          {item.position}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_custody_asset) ? (
+                        item.open_custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_custody_amount) ? (
+                        <span
+                          className={clsx({
+                            "text-green-400": amountSign === 1,
+                            "text-red-400": amountSign === -1,
+                          })}
+                        >
+                          {formatNumberAsCurrency(
+                            Number(item.open_custody_amount),
+                            4,
                           )}
                         </span>
-                      </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.realized_pnl) ? (
+                        <span className="text-green-400">
+                          <span
+                            className={clsx({
+                              "text-green-400": realizedPLSign === 1,
+                              "text-red-400": realizedPLSign === -1,
+                            })}
+                          >
+                            {formatNumberAsCurrency(
+                              Number(item.realized_pnl),
+                              2,
+                            )}
+                          </span>
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                   </tr>
                 );

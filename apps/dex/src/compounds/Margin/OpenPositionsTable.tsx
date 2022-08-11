@@ -15,6 +15,9 @@ import {
 import AssetIcon from "~/compounds/AssetIcon";
 import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 
+import { isNil } from "rambda";
+const isTruthy = (target: any) => !isNil(target);
+
 /**
  * ********************************************************************************************
  *
@@ -205,7 +208,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 />
               )}
               {results.map((item: any) => {
-                const position = item.position;
                 const amountSign = Math.sign(Number(item.custody_amount));
                 const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
 
@@ -215,21 +217,30 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("Pool")}
                     >
-                      {item.pool ? item.pool : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? (
+                        item.pool
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-cyan-400":
-                            position === MARGIN_POSITION.UNSPECIFIED,
-                          "text-green-400": position === MARGIN_POSITION.LONG,
-                          "text-red-400": position === MARGIN_POSITION.SHORT,
-                        })}
-                      >
-                        {position}
-                      </span>
+                      {isTruthy(item.position) ? (
+                        <span
+                          className={clsx({
+                            "text-cyan-400":
+                              item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400":
+                              item.position === MARGIN_POSITION.LONG,
+                            "text-red-400":
+                              item.position === MARGIN_POSITION.SHORT,
+                          })}
+                        >
+                          {item.position}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
-
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
@@ -237,14 +248,26 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": amountSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.custody_amount), 4)}
+                        {isTruthy(item.custody_amount) ? (
+                          formatNumberAsCurrency(Number(item.custody_amount), 4)
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {item.custody_asset.toUpperCase()}
+                      {isTruthy(item.custody_asset) ? (
+                        item.custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatNumberAsDecimal(Number(item.leverage))}x
+                      {isTruthy(item.leverage) ? (
+                        `${formatNumberAsDecimal(Number(item.leverage))}x`
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -253,7 +276,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": unrealizedPLSign === -1,
                         })}
                       >
-                        {item.unrealized_pnl ? (
+                        {isTruthy(item.unrealized_pnl) ? (
                           formatNumberAsCurrency(Number(item.unrealized_pnl), 2)
                         ) : (
                           <HtmlUnicode name="EmDash" />
@@ -261,7 +284,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {item.interest_rate ? (
+                      {isTruthy(item.interest_rate) ? (
                         formatNumberAsPercent(Number(item.interest_rate))
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -271,7 +294,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("Unsettled Interest")}
                     >
-                      {item.unsettled_interest ? (
+                      {isTruthy(item.unsettled_interest) ? (
                         formatNumberAsCurrency(Number(item.unsettled_interest))
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -281,7 +304,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("Next Payment")}
                     >
-                      {item.next_payment ? (
+                      {isTruthy(item.next_payment) ? (
                         formatDateRelative(item.next_payment)
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -291,20 +314,28 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3"
                       hidden={hideColumns?.includes("Paid Interest")}
                     >
-                      {item.paid_interest ? (
+                      {isTruthy(item.paid_interest) ? (
                         formatNumberAsCurrency(Number(item.paid_interest))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatNumberAsDecimal(Number(item.health))}
+                      {isTruthy(item.health) ? (
+                        formatNumberAsDecimal(Number(item.health))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateRelative(new Date(item.date_opened))}
+                      {isTruthy(item.date_opened) ? (
+                        formatDateRelative(new Date(item.date_opened))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {item.time_open ? (
+                      {isTruthy(item.time_open) ? (
                         formatDateDistance(item.time_open)
                       ) : (
                         <HtmlUnicode name="EmDash" />
