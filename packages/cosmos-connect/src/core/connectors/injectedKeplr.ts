@@ -4,21 +4,28 @@ import { ChainStore } from "@keplr-wallet/stores";
 import type { ChainInfo, Keplr } from "@keplr-wallet/types";
 import { BaseCosmConnector } from "./base";
 
-export class InjectedKeplrConnector extends BaseCosmConnector<{
+export type InjectedKeplrConnectorOptions = {
   chainInfos: ChainInfo[];
-}> {
+};
+
+export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConnectorOptions> {
   readonly id = "keplr";
   readonly name = "Keplr";
 
   readonly #chainStore = new ChainStore(this.options.chainInfos);
 
-  // Need this check to support next.js
-  // https://nextjs.org/docs/migrating/from-create-react-app#safely-accessing-web-apis
-  #keplr: Keplr | undefined =
-    typeof window !== "undefined" ? window.keplr : undefined;
+  #keplr: Keplr | undefined = window.keplr;
 
   get connected() {
     return this.#keplr !== undefined;
+  }
+
+  constructor(options: InjectedKeplrConnectorOptions) {
+    super(options);
+    window.addEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async connect() {
@@ -30,19 +37,33 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
 
     this.#keplr = windowKeplr;
     this.emit("connect");
+
+    window.addEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async disconnect() {
     this.#keplr = undefined;
     this.emit("disconnect");
+
+    window.removeEventListener(
+      "keplr_keystorechange",
+      this.#keystoreChangeListener,
+    );
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
-    await this.#keplr!.experimentalSuggestChain(
+    if (this.#keplr === undefined) {
+      throw new Error("Keplr instance is undefined");
+    }
+
+    await this.#keplr.experimentalSuggestChain(
       this.#chainStore.getChain(chainId).raw,
     );
-    await this.#keplr!.enable(chainId);
-    return this.#keplr!.getOfflineSignerAuto(chainId);
+    await this.#keplr.enable(chainId);
+    return this.#keplr.getOfflineSignerAuto(chainId);
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
@@ -80,4 +101,8 @@ export class InjectedKeplrConnector extends BaseCosmConnector<{
       document.addEventListener("readystatechange", documentStateChange);
     });
   }
+
+  #keystoreChangeListener = () => {
+    this.emit("change");
+  };
 }

@@ -40,6 +40,14 @@ export const useSigner = (
   );
 
   useEffect(() => {
+    activeConnector?.addListener("change", fetch);
+
+    return () => {
+      activeConnector?.removeListener("change", fetch);
+    };
+  }, [activeConnector, fetch]);
+
+  useEffect(() => {
     if (options.enabled) {
       fetch();
     }

@@ -44,18 +44,7 @@ export const CosmConnectProvider = (props: PropsWithChildren<unknown>) => {
   const keplrConnectors = useKeplrConnectors();
 
   return (
-    <BaseCosmConnectProvider
-      connectors={keplrConnectors}
-      persistOptions={{
-        // can't provide window.localStorage directly because of next.js pre-rendering
-        storage: {
-          getItem: (key) => window.localStorage.getItem(key),
-          setItem: (key, value) => window.localStorage.setItem(key, value),
-          removeItem: (key) => window.localStorage.removeItem(key),
-        },
-      }}
-      autoConnect
-    >
+    <BaseCosmConnectProvider connectors={keplrConnectors} autoConnect>
       {props.children}
     </BaseCosmConnectProvider>
   );

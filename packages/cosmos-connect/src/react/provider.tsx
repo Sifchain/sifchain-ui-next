@@ -50,13 +50,22 @@ export const CosmConnectProvider = (
   );
 
   useEffect(() => {
-    props.connectors.forEach((x) => {
-      x.addListener("disconnect", () =>
-        setActiveConnectorId((y) => (y === x.id ? undefined : y)),
-      );
-    });
+    const connectorAndListenerPairs = props.connectors.map(
+      (x) =>
+        [
+          x,
+          () => setActiveConnectorId((y) => (y === x.id ? undefined : y)),
+        ] as const,
+    );
 
-    return () => props.connectors.forEach((x) => x.removeAllListeners());
+    connectorAndListenerPairs.forEach(([connector, listener]) =>
+      connector.addListener("disconnect", listener),
+    );
+
+    return () =>
+      connectorAndListenerPairs.forEach(([connector, listener]) =>
+        connector.removeListener("disconnect", listener),
+      );
   }, [props.connectors, setActiveConnectorId]);
 
   // get active connector from storage on first mount then try to connect it
