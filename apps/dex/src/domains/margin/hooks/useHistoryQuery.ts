@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 
 import useSifApiClient from "~/hooks/useSifApiClient";
 
-export function useOpenPositionsQuery(params: {
+export function useHistoryQuery(params: {
   address: string;
   offset: string;
   limit: string;
