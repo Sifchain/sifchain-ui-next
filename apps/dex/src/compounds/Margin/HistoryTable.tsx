@@ -1,4 +1,3 @@
-import { pathOr } from "ramda";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
@@ -54,10 +53,10 @@ export type HistoryTableProps = {
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const queryParams = {
-    limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
-    offset: pathOr(QS_DEFAULTS.offset, ["offset"], router.query),
-    orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
-    sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
+    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
+    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
+    orderBy: (router.query["orderBy"] as string) || "amount",
+    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
   const historyQuery = useQueryHistory(queryParams);
   const headers = HISTORY_HEADER_ITEMS;

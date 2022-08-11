@@ -99,7 +99,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || QS_DEFAULTS.orderBy,
+    orderBy: (router.query["orderBy"] as string) || "custody_amount",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
 
