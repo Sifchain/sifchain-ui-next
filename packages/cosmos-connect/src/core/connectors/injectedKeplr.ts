@@ -58,11 +58,15 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
-    await this.#keplr!.experimentalSuggestChain(
+    if (this.#keplr === undefined) {
+      throw new Error("Keplr instance is undefined");
+    }
+
+    await this.#keplr.experimentalSuggestChain(
       this.#chainStore.getChain(chainId).raw,
     );
-    await this.#keplr!.enable(chainId);
-    return this.#keplr!.getOfflineSignerAuto(chainId);
+    await this.#keplr.enable(chainId);
+    return this.#keplr.getOfflineSignerAuto(chainId);
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
