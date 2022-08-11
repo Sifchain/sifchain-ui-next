@@ -23,7 +23,6 @@ import {
 } from "./_components";
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import {
-  fromColNameToItemKey,
   findNextOrderAndSortBy,
   SORT_BY,
   MARGIN_POSITION,
@@ -38,30 +37,14 @@ import { HtmlUnicode } from "./_trade";
  *
  * ********************************************************************************************
  */
-const HEADER_SLUGS = {
-  // they match sifApi response object
-  address: "address",
-  custody_amount: "custody_amount",
-  custody_asset: "custody_asset",
-  date_opened: "date_opened",
-  health: "health",
-  id: "id",
-  interest_rate: "interest_rate",
-  leverage: "leverage",
-  next_payment: "next_payment",
-  paid_interest: "paid_interest",
-  position: "position",
-  realized_pnl: "realized_pnl",
-  unsettled_interest: "unsettled_interest",
-};
 const HISTORY_HEADER_ITEMS = [
-  { title: "Date Closed", slug: null },
-  { title: "Time Open", slug: null },
-  { title: "Pool", slug: null },
-  { title: "Side", slug: HEADER_SLUGS.position },
-  { title: "Asset", slug: HEADER_SLUGS.custody_asset },
-  { title: "Amount", slug: HEADER_SLUGS.custody_amount },
-  { title: "Realized P&L", slug: HEADER_SLUGS.realized_pnl },
+  { title: "Date Closed", order_by: "" },
+  { title: "Time Open", order_by: "" },
+  { title: "Pool", order_by: "" },
+  { title: "Side", order_by: "position" },
+  { title: "Asset", order_by: "custody_asset" },
+  { title: "Amount", order_by: "custody_amount" },
+  { title: "Realized P&L", order_by: "" },
 ];
 export type HistoryTableProps = {
   queryId: string;
@@ -129,16 +112,16 @@ const HistoryTable = (props: HistoryTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
-                  const itemActive = pagination.order_by === header.slug;
+                  const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
-                    itemKey: header.slug,
+                    itemKey: header.order_by,
                     itemActive,
                     currentSortBy: pagination.sort_by,
                   });
                   return (
                     <th
-                      key={header.slug}
-                      data-item-key={header.slug}
+                      key={header.order_by}
+                      data-item-key={header.order_by}
                       className="font-normal px-4 py-3"
                     >
                       <Link
@@ -161,7 +144,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                             <ChevronDownIcon
                               className={clsx("ml-1 transition-transform", {
                                 "-rotate-180":
-                                  pagination.sortBy === SORT_BY.ASC,
+                                  pagination.sort_by === SORT_BY.ASC,
                               })}
                             />
                           )}
