@@ -96,7 +96,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     });
   }
 
-  #keystoreChangeListener() {
+  #keystoreChangeListener = () => {
     this.emit("change");
-  }
+  };
 }
