@@ -24,32 +24,30 @@ export function useOpenPositionsQuery(params: {
   //   "stats.getMarginOpenPosition",
   //   queryParams,
   // );
-  return useQuery("margin.getMarginOpenPosition", async () => {
-    if (!client) {
-      throw new Error("[useSifApiQuery] No client available");
-    }
+  return useQuery(
+    ["margin.getMarginOpenPosition", { ...params }],
+    async () => {
+      if (!client) {
+        throw new Error("[useSifApiQuery] No client available");
+      }
 
-    const { results, pagination } = await client.margin.getMarginOpenPosition(
-      params.address,
-      Number(params.offset),
-      Number(params.limit),
-      params.orderBy,
-      params.sortBy,
-    );
+      const res = await client.margin.getMarginOpenPosition(
+        params.address,
+        Number(params.offset),
+        Number(params.limit),
+        params.orderBy,
+        params.sortBy,
+      );
 
-    results.length = 100;
-    pagination.limit = 20;
-    pagination.offset = 0;
-    // 0 = page 1
-    // 20 = page 2
-    // 40 = page 3
+      if (res.error) {
+        throw new Error("client.margin.getMarginOpenPosition");
+      }
 
-    const pages = Math.ceil(Number(results.length) / Number(pagination.limit));
-    const page = Number(pagination.limit) / Number(pagination.offset) + 1;
-
-    pagination.pages = pages;
-    pagination.page = page > pages ? pages : page;
-
-    return { results, pagination };
-  });
+      return res;
+    },
+    {
+      keepPreviousData: true,
+      retry: false,
+    },
+  );
 }
