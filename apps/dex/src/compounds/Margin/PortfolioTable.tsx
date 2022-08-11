@@ -30,7 +30,7 @@ const OPTIONS_ITEMS = {
 
 type PortfolioTableProps = {
   queryId: string;
-  extraQuerystring: ReturnType<typeof useRouter>["query"];
+  extraQuerystring?: ReturnType<typeof useRouter>["query"];
   openPositions?: {
     hideColumns: OpenPositionsTableProps["hideColumns"];
   };
