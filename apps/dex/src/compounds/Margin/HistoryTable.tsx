@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Link from "next/link";
 
 import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
-import { useHistoryQuery } from "~/domains/margin/hooks/useHistoryQuery";
+import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
 /**
  * ********************************************************************************************
