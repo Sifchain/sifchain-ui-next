@@ -34,7 +34,7 @@ export function useHistoryQuery(params: {
         throw new Error("client.margin.getMarginHistory");
       }
 
-      return Promise.resolve(data);
+      return data;
     },
     {
       enabled: data !== undefined,

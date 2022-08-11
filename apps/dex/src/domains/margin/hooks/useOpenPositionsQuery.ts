@@ -34,7 +34,7 @@ export function useOpenPositionsQuery(params: {
         throw new Error("client.margin.getMarginOpenPosition");
       }
 
-      return Promise.resolve(data);
+      return data;
     },
     {
       enabled: data !== undefined,
