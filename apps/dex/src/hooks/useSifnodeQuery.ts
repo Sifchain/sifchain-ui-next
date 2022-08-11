@@ -9,7 +9,13 @@ export type SifnodeClient = Awaited<ReturnType<typeof createQueryClient>>;
 
 export type PublicSifnodeClient = Pick<
   SifnodeClient,
-  "clp" | "ethBridge" | "bank" | "dispensation" | "staking" | "tokenRegistry"
+  | "clp"
+  | "ethBridge"
+  | "bank"
+  | "dispensation"
+  | "staking"
+  | "tokenRegistry"
+  | "margin"
 >;
 
 type PublicModuleKey = keyof PublicSifnodeClient;

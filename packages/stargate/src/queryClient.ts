@@ -11,6 +11,7 @@ import { QueryClientImpl as ClpQueryClient } from "@sifchain/proto-types/sifnode
 import { QueryClientImpl as DispensationQueryClient } from "@sifchain/proto-types/sifnode/dispensation/v1/query";
 import { QueryClientImpl as EthBridgeQueryClient } from "@sifchain/proto-types/sifnode/ethbridge/v1/query";
 import { QueryClientImpl as TokenRegistryQueryClient } from "@sifchain/proto-types/sifnode/tokenregistry/v1/query";
+import { QueryClientImpl as MarginQueryClient } from "@sifchain/proto-types/sifnode/margin/v1/query";
 import type { Rpc, StringLiteral } from "./types";
 
 const setupBareExtension =
@@ -54,6 +55,7 @@ const createQueryClientFromTmClient = (tmClient: Tendermint34Client) =>
     setupBareExtension("dispensation", DispensationQueryClient),
     setupBareExtension("ethBridge", EthBridgeQueryClient),
     setupBareExtension("tokenRegistry", TokenRegistryQueryClient),
+    setupBareExtension("margin", MarginQueryClient),
   );
 
 const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>

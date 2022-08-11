@@ -6,6 +6,7 @@ const UNICODE_CHARS = {
   EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
   MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
   MinusSign: "&minus;", // https://www.compart.com/en/unicode/U+2212
+  EmDash: "&mdash;", // https://www.compart.com/en/unicode/U+2014
 };
 
 /**

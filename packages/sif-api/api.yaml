@@ -754,16 +754,16 @@ paths:
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
-  /margin/openPosition/{address}:
+  /margin/openposition/{address}:
     get:
       tags:
-        - Stats
+        - Margin
       summary: Get margin open position filtered by user
       description: This endpoint returns open position history filtered per user address
       operationId: getMarginOpenPosition
       parameters:
-        - name: address
-          in: path
+        - in: path
+          name: address
           description: Wallet address
           required: true
           style: simple
@@ -773,12 +773,12 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
+            type: number
           description: The number of items to skip before starting to collect the result set
         - in: query
           name: limit
           schema:
-            type: integer
+            type: number
           description: The number of items to return
         - in: query
           name: orderBy
@@ -799,14 +799,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: "#/components/schemas/getMarginOpenPositionResponse"
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
   /margin/history/{address}:
     get:
       tags:
-        - Stats
+        - Margin
       summary: Get margin trade history filtered by user
       description: This endpoint returns open position history filtered per user address
       operationId: getMarginHistory
@@ -822,12 +822,12 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
+            type: number
           description: The number of items to skip before starting to collect the result set
         - in: query
           name: limit
           schema:
-            type: integer
+            type: number
           description: The number of items to return
         - in: query
           name: orderBy
@@ -848,12 +848,44 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: "#/components/schemas/getMarginHistoryResponse"
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
 components:
   schemas:
+    getMarginHistoryResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: string
+            limit:
+              type: string
+            offset:
+              type: string
+            order_by:
+              type: string
+            sort_by:
+              type: string
+    getMarginOpenPositionResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: string
+            limit:
+              type: string
+            offset:
+              type: string
+            order_by:
+              type: string
+            sort_by:
+              type: string
     getTokenStatsResponse:
       type: object
       properties:
