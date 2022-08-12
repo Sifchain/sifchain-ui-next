@@ -2,4 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 pnpm compile
+pnpm lint-staged
 pnpm pretty-quick --staged
