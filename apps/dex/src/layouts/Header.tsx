@@ -7,7 +7,7 @@ import {
   DotsVerticalIcon,
   formatNumberAsCurrency,
   LockIcon,
-  SifchainLogoRound,
+  SifchainLogo,
   PlusIcon,
   PoolsIcon,
   RowanIcon,
@@ -72,7 +72,7 @@ const Header = () => {
               <section className="flex justify-between items-center md:grid md:place-items-center shadow-inset-border md:shadow-none">
                 <Link href={isMarginStandaloneOn ? "/margin" : "/"}>
                   <a className="md:p-1 p-2 flex items-center gap-4">
-                    <SifchainLogoRound className="inline-block text-[44px]" />
+                    <SifchainLogo className="inline-block text-[44px]" />
                     {isMarginStandaloneOn && (
                       <h1 className="text-2xl font-semibold pl-3">Margin</h1>
                     )}
