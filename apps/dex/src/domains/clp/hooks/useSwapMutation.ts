@@ -8,7 +8,7 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
-export const useSwapMutation = () => {
+export function useSwapMutation() {
   const { signer } = useSifSigner();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const { indexedByDenom } = useTokenRegistryQuery();
@@ -67,4 +67,4 @@ export const useSwapMutation = () => {
       },
     },
   );
-};
+}
