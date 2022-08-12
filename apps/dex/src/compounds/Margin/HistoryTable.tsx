@@ -41,6 +41,7 @@ import { HtmlUnicode } from "./_trade";
  * ********************************************************************************************
  */
 const HISTORY_HEADER_ITEMS = [
+  { title: "Status", order_by: "" },
   { title: "Date Closed", order_by: "" },
   { title: "Time Open", order_by: "open_date_time" },
   { title: "Pool", order_by: "" },
@@ -49,6 +50,12 @@ const HISTORY_HEADER_ITEMS = [
   { title: "Amount", order_by: "open_custody_amount" },
   { title: "Realized P&L", order_by: "" },
 ];
+const MTP_STATUS = {
+  "margin/mtp_open": "OPEN",
+  "margin/mtp_close": "CLOSE",
+  OPEN: "margin/mtp_open",
+  CLOSE: "margin/mtp_close",
+} as Record<string, string>;
 export type HistoryTableProps = {
   queryId: string;
   classNamePaginationContainer?: string;
@@ -168,6 +175,22 @@ const HistoryTable = (props: HistoryTableProps) => {
 
                 return (
                   <tr key={item.id}>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.type) ? (
+                        <span
+                          className={clsx({
+                            "text-green-400":
+                              item.position === MTP_STATUS["OPEN"],
+                            "text-red-400":
+                              item.position === MTP_STATUS["CLOSE"],
+                          })}
+                        >
+                          {MTP_STATUS[item.type]}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
                         formatDateRelative(new Date(item.closed_date_time))
