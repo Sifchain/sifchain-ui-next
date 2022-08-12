@@ -1,12 +1,12 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
-import type { NextPage } from "next";
+import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
-
-import { pathOr } from "ramda";
-import { useMemo, useState } from "react";
-import { useRouter } from "next/router";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { pathOr } from "ramda";
+import type { ChangeEvent, SyntheticEvent } from "react";
+import { useMemo, useState } from "react";
 
 import {
   Button,
@@ -17,16 +17,18 @@ import {
   toast,
   TokenEntry,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useMarginParamsQuery } from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
+  useSwapSimulation,
 } from "~/domains/clp";
+import { useMarginParamsQuery } from "~/domains/margin/hooks";
 
 /**
  * ********************************************************************************************
@@ -37,20 +39,21 @@ import {
  *
  * ********************************************************************************************
  */
+import { ROWAN } from "~/domains/assets";
+import { PoolOverview } from "./_components";
+import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { useMutationConfirmOpenPosition } from "./_mockdata";
 import {
-  HtmlUnicode,
   COLLATERAL_MAX_VALUE,
-  POSITION_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
-  POSITION_MIN_VALUE,
-  LEVERAGE_MIN_VALUE,
+  HtmlUnicode,
+  inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
-  inputValidatorCollateral,
+  LEVERAGE_MIN_VALUE,
+  POSITION_MAX_VALUE,
+  POSITION_MIN_VALUE,
 } from "./_trade";
-import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
-import { PoolOverview } from "./_components";
-import { useMutationConfirmOpenPosition } from "./_mockdata";
 
 const FEE_USDC = 0.5;
 const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
@@ -229,6 +232,11 @@ const Trade = (props: TradeProps) => {
     priceUsd: number;
   };
 
+  const maxLeverageDecimals = Decimal.fromAtomics(
+    props.govParams.leverageMax,
+    ROWAN.decimals,
+  );
+
   /**
    * ********************************************************************************************
    *
@@ -247,7 +255,7 @@ const Trade = (props: TradeProps) => {
   });
 
   const [inputLeverage, setInputLeverage] = useState({
-    value: `${props.govParams.leverageMax}`,
+    value: maxLeverageDecimals.toString(),
     error: "",
   });
 
@@ -365,6 +373,18 @@ const Trade = (props: TradeProps) => {
     }
   };
 
+  const { recompute: calculateSwap } = useSwapSimulation(
+    selectedCollateral.denom ?? selectedCollateral.symbol,
+    selectedPosition.denom ?? selectedPosition.symbol,
+    inputCollateral.value,
+  );
+
+  const { recompute: calculateReverseSwap } = useSwapSimulation(
+    selectedPosition.denom ?? selectedPosition.symbol,
+    selectedCollateral.denom ?? selectedCollateral.symbol,
+    inputPosition.value,
+  );
+
   /**
    * ********************************************************************************************
    *
@@ -376,23 +396,12 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
 
-    const positionTokenPrice =
-      selectedPosition.denom === ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralTokenPrice =
-      selectedPosition.denom !== ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralDollarValue =
-      (collateralTokenPrice ?? 0) * Number(payload.value);
-
-    // colleteral dollar value * leverage / position token price
-    const positionInputAmount =
-      (collateralDollarValue * Number(inputLeverage.value)) /
-      positionTokenPrice;
+    const positionInputAmount = BigNumber(
+      Decimal.fromAtomics(
+        calculateSwap(payload.value)?.rawReceiving ?? "0",
+        selectedPosition.decimals,
+      ).toString(),
+    ).multipliedBy(inputLeverage.value);
 
     setInputCollateral(payload);
     setInputPosition({
@@ -418,22 +427,12 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "change");
 
-    const positionTokenPrice =
-      selectedPosition.denom === ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralTokenPrice =
-      selectedPosition.denom !== ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const positionDollarValue =
-      (positionTokenPrice ?? 0) * Number(payload.value);
-
-    // position dollar value / leverage / collateral token price
-    const collateralInputAmount =
-      positionDollarValue / Number(inputLeverage.value) / collateralTokenPrice;
+    const collateralInputAmount = BigNumber(
+      Decimal.fromAtomics(
+        calculateReverseSwap(payload.value)?.rawReceiving ?? "0",
+        selectedCollateral.decimals,
+      ).toString(),
+    ).dividedBy(inputLeverage.value);
 
     setInputPosition(payload);
     setInputCollateral({
@@ -460,29 +459,19 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "change",
-      props.govParams.leverageMax,
+      maxLeverageDecimals.toString(),
     );
 
     if (!payload.error) {
-      const positionTokenPrice =
-        selectedPosition.denom === ROWAN_DENOM
-          ? enhancedRowan.priceUsd
-          : poolActive?.stats.priceToken ?? 0;
-
-      const collateralTokenPrice =
-        selectedPosition.denom !== ROWAN_DENOM
-          ? enhancedRowan.priceUsd
-          : poolActive?.stats.priceToken ?? 0;
-
-      const collateralDollarValue =
-        (collateralTokenPrice ?? 0) * Number(inputCollateral.value);
-
-      // colleteral dollar value * leverage / position token price
-      const positionInputAmount =
-        (collateralDollarValue * Number(payload.value)) / positionTokenPrice;
+      const positionInputAmount = BigNumber(
+        Decimal.fromAtomics(
+          calculateSwap(inputCollateral.value)?.rawReceiving ?? "0",
+          selectedPosition.decimals,
+        ).toString(),
+      ).multipliedBy(payload.value);
 
       setInputPosition({
-        value: String(positionInputAmount),
+        value: positionInputAmount.toString(),
         error: "",
       });
     }
@@ -495,7 +484,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "blur",
-      props.govParams.leverageMax,
+      maxLeverageDecimals.toString(),
     );
     setInputLeverage(payload);
   };
@@ -722,7 +711,7 @@ const Trade = (props: TradeProps) => {
                   <span className="text-gray-400">
                     <span>Up to </span>
                     {formatNumberAsDecimal(
-                      Number(props.govParams.leverageMax),
+                      maxLeverageDecimals.toFloatApproximation(),
                       2,
                     )}
                     x
@@ -733,7 +722,7 @@ const Trade = (props: TradeProps) => {
                   placeholder="Leverage amount"
                   step="0.01"
                   min={LEVERAGE_MIN_VALUE}
-                  max={props.govParams.leverageMax}
+                  max={maxLeverageDecimals.toString()}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
