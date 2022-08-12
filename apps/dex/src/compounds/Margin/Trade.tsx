@@ -58,6 +58,15 @@ import {
 const FEE_USDC = 0.5;
 const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
 
+const withLeverage = (
+  rawReceiving: string,
+  decimals: number,
+  leverage: string,
+) =>
+  BigNumber(
+    Decimal.fromAtomics(rawReceiving, decimals).toString(),
+  ).multipliedBy(leverage);
+
 /**
  * ********************************************************************************************
  *
@@ -385,6 +394,26 @@ const Trade = (props: TradeProps) => {
     inputPosition.value,
   );
 
+  const calculatePosition = (
+    inputAmount: string,
+    leverage = inputLeverage.value,
+  ) =>
+    withLeverage(
+      calculateSwap(inputAmount)?.rawReceiving || "0",
+      selectedPosition.decimals,
+      leverage,
+    );
+
+  const calculateCollateral = (
+    inputAmount: string,
+    leverage = inputLeverage.value,
+  ) =>
+    withLeverage(
+      calculateReverseSwap(inputAmount)?.rawReceiving || "0",
+      selectedCollateral.decimals,
+      leverage,
+    );
+
   /**
    * ********************************************************************************************
    *
@@ -396,12 +425,7 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
 
-    const positionInputAmount = BigNumber(
-      Decimal.fromAtomics(
-        calculateSwap(payload.value)?.rawReceiving ?? "0",
-        selectedPosition.decimals,
-      ).toString(),
-    ).multipliedBy(inputLeverage.value);
+    const positionInputAmount = calculatePosition(payload.value);
 
     setInputCollateral(payload);
     setInputPosition({
@@ -427,12 +451,7 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "change");
 
-    const collateralInputAmount = BigNumber(
-      Decimal.fromAtomics(
-        calculateReverseSwap(payload.value)?.rawReceiving ?? "0",
-        selectedCollateral.decimals,
-      ).toString(),
-    ).dividedBy(inputLeverage.value);
+    const collateralInputAmount = calculateCollateral(payload.value);
 
     setInputPosition(payload);
     setInputCollateral({
@@ -463,12 +482,10 @@ const Trade = (props: TradeProps) => {
     );
 
     if (!payload.error) {
-      const positionInputAmount = BigNumber(
-        Decimal.fromAtomics(
-          calculateSwap(inputCollateral.value)?.rawReceiving ?? "0",
-          selectedPosition.decimals,
-        ).toString(),
-      ).multipliedBy(payload.value);
+      const positionInputAmount = calculatePosition(
+        inputCollateral.value,
+        payload.value,
+      );
 
       setInputPosition({
         value: positionInputAmount.toString(),
