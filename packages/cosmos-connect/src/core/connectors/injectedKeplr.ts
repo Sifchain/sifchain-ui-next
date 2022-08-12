@@ -44,7 +44,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     );
   }
 
-  async disconnect() {
+  disconnect() {
     this.#keplr = undefined;
     this.emit("disconnect");
 
@@ -52,6 +52,8 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
       "keplr_keystorechange",
       this.#keystoreChangeListener,
     );
+
+    return Promise.resolve();
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {

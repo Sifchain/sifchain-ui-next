@@ -40,7 +40,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
       const result = await fetch(url.toString(), {
         method: "post",
-      }).then((x) => x.json());
+      }).then((x) => x.json() as Promise<{ txhash: string }>);
 
       return Buffer.from(result.txhash, "hex");
     },
@@ -82,8 +82,8 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
     await this.#walletConnect.connect();
   }
 
-  async disconnect() {
-    await this.#walletConnect.killSession();
+  disconnect() {
+    return this.#walletConnect.killSession();
   }
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
