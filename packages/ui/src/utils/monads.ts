@@ -17,7 +17,7 @@ export class Maybe<T> {
   }
 
   static ofFalsy<T>(value?: T) {
-    return new Maybe(Boolean(value) ? value : undefined);
+    return new Maybe(value ? value : undefined);
   }
 
   get isSome() {

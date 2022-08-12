@@ -40,16 +40,18 @@ export const useSigner = (
   );
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     activeConnector?.addListener("change", fetch);
 
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       activeConnector?.removeListener("change", fetch);
     };
   }, [activeConnector, fetch]);
 
   useEffect(() => {
     if (options.enabled) {
-      fetch();
+      void fetch();
     }
   }, [activeConnector, fetch, options.enabled]);
 
@@ -73,7 +75,7 @@ export const useStargateClient = (
 
   useEffect(() => {
     if (options.enabled) {
-      fetch();
+      void fetch();
     }
   }, [activeConnector, fetch, options.enabled]);
 
@@ -97,7 +99,7 @@ export const useSigningStargateClient = (
 
   useEffect(() => {
     if (options.enabled) {
-      fetch();
+      void fetch();
     }
   }, [activeConnector, fetch, options.enabled]);
 
@@ -118,7 +120,7 @@ export const useAccounts = (
 
   useEffect(() => {
     if (options.enabled) {
-      fetch();
+      void fetch();
     }
   }, [fetch, options.enabled]);
 

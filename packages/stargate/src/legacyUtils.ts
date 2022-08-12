@@ -51,7 +51,7 @@ export const convertToSnakeCaseDeep = (obj: any): any => {
     return obj.map((item) => convertToSnakeCaseDeep(item));
   }
   const newObj: any = {};
-  for (let prop in obj) {
+  for (const prop in obj) {
     newObj[inflection.underscore(prop)] = convertToSnakeCaseDeep(obj[prop]);
   }
   return newObj;
@@ -65,7 +65,7 @@ export const convertToCamelCaseDeep = (obj: any): any => {
     return obj.map((item) => convertToCamelCaseDeep(item));
   }
   const newObj: any = {};
-  for (let prop in obj) {
+  for (const prop in obj) {
     newObj[inflection.camelize(prop, true)] = convertToCamelCaseDeep(obj[prop]);
   }
   return newObj;
