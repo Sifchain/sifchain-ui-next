@@ -1,8 +1,6 @@
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
-import { pathOr } from "ramda";
-
 import {
   formatNumberAsCurrency,
   TokenEntry,
@@ -83,7 +81,7 @@ type PoolOverviewProps = {
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
   const volume = props.pool.stats.volume || 0;
-  const health = props.pool.stats.health || "";
+  const health = props.pool.stats.health || 0;
 
   return (
     <ul className="grid grid-cols-7 gap-5">
@@ -143,7 +141,9 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="font-semibold text-sm">{health.slice(0, 4)}</span>
+          <span className="font-semibold text-sm">
+            {formatNumberAsDecimal(Number(health))}
+          </span>
         </div>
       </li>
     </ul>
