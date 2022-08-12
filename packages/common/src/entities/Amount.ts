@@ -67,7 +67,7 @@ export function Amount(
       return getQuotientWithBankersRounding(fraction);
     },
 
-    toString(detailed: boolean = true) {
+    toString(detailed = true) {
       return fraction.toFixed(detailed ? 18 : 0);
     },
 

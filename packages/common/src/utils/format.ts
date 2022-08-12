@@ -196,7 +196,7 @@ export function format<T extends IAmount>(
     : amount.toString();
 
   let postfix = options.prefix ?? "";
-  let prefix = options.postfix ?? "";
+  const prefix = options.postfix ?? "";
   let space = "";
 
   if (options.zeroFormat && amount.equalTo("0")) {

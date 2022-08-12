@@ -6,8 +6,7 @@ export interface TypedEvent<
 > extends Event {
   args: TArgsArray & TArgsObject;
 }
-export interface TypedEventFilter<_TEvent extends TypedEvent>
-  extends EventFilter {}
+export type TypedEventFilter<_TEvent extends TypedEvent> = EventFilter;
 export interface TypedListener<TEvent extends TypedEvent> {
   (...listenerArg: [...__TypechainArgsArray<TEvent>, TEvent]): void;
 }
