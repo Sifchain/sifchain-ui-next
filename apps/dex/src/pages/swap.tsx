@@ -23,8 +23,11 @@ import tw from "tailwind-styled-components";
 import { SwapConfirmationModal } from "~/compounds/Swap";
 import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useEnhancedTokenQuery, useSwapMutation } from "~/domains/clp";
-import useSifnodeQuery from "~/hooks/useSifnodeQuery";
+import {
+  useEnhancedTokenQuery,
+  useSwapMutation,
+  useSwapSimulation,
+} from "~/domains/clp";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
@@ -60,8 +63,7 @@ const SwapPage: NextPage = () => {
 
   const swapMutation = useSwapMutation();
   const allBalancesQuery = useAllBalancesQuery();
-  const { data: stargateClient, isSuccess: isSifStargateClientQuerySuccess } =
-    useSifStargateClient();
+  const { isSuccess: isSifStargateClientQuerySuccess } = useSifStargateClient();
   const { signer, status: signerStatus } = useSifSigner();
 
   const isReady = useMemo(
@@ -96,7 +98,7 @@ const SwapPage: NextPage = () => {
   const slippage = new BigNumber(slippageInput).div(100).toNumber() || 0;
   const slippageOptions = [
     { label: "0.5%", value: 0.005 },
-    { label: "1%", value: 0.01 },
+    { label: "1%", value: 0.001 },
     { label: "1.5%", value: 0.015 },
   ];
   const selectedSlippageIndex = slippageOptions.findIndex(
@@ -113,45 +115,16 @@ const SwapPage: NextPage = () => {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, commonOptions);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, commonOptions);
 
-  const pmtpParamsQuery = useSifnodeQuery(
-    "clp.getPmtpParams",
-    [{}],
-    commonOptions,
+  const [_, fromAmountDecimal] = runCatching(() =>
+    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
   );
 
-  const fromAmountDecimal = runCatching(() =>
-    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
-  )[1];
-
-  const swapSimulationResult = useMemo(() => {
-    const fromPool = fromToken?.pool ?? toToken?.pool;
-    const toPool = toToken?.pool ?? fromToken?.pool;
-
-    return runCatching(() =>
-      stargateClient?.simulateSwapSync(
-        {
-          denom: fromToken?.denom ?? fromToken?.symbol ?? "",
-          amount: fromAmountDecimal?.atomics ?? "0",
-          poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
-        },
-        {
-          denom: toToken?.denom ?? toToken?.symbol ?? "",
-          poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
-        },
-        pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
-        slippage,
-      ),
-    )[1];
-  }, [
-    fromToken,
-    toToken,
-    stargateClient,
-    fromAmountDecimal?.atomics,
-    pmtpParamsQuery.data?.pmtpRateParams?.pmtpPeriodBlockRate,
+  const { data: swapSimulationResult } = useSwapSimulation(
+    fromDenom,
+    toDenom,
+    fromAmount,
     slippage,
-  ]);
+  );
 
   const parsedSwapResult = useMemo(
     () => ({
