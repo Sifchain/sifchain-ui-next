@@ -5,4 +5,5 @@ export * from "./usePools";
 export * from "./usePoolStats";
 export * from "./useRowanPrice";
 export * from "./useSwapMutation";
+export * from "./useSwapSimulation";
 export * from "./useTVL";
