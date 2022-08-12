@@ -48,7 +48,7 @@ import {
   inputValidatorPosition,
   inputValidatorCollateral,
 } from "./_trade";
-import { formatNumberAsDecimal } from "./_intl";
+import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import { PoolOverview } from "./_components";
 import { useMutationConfirmOpenPosition } from "./_mockdata";
 
@@ -896,10 +896,9 @@ const Trade = (props: TradeProps) => {
                           Current interest rate
                         </span>
                         <span>
-                          {formatNumberAsDecimal(
+                          {formatNumberAsPercent(
                             Number(poolActive.stats.interestRate),
                           )}
-                          %
                         </span>
                       </div>
                     </li>
@@ -1009,10 +1008,9 @@ const Trade = (props: TradeProps) => {
                   </span>
                   {poolActive ? (
                     <span>
-                      {formatNumberAsDecimal(
+                      {formatNumberAsPercent(
                         Number(poolActive.stats.interestRate),
                       )}
-                      %
                     </span>
                   ) : null}
                 </div>
