@@ -7,7 +7,7 @@ import {
   TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
 
-import { formatNumberAsDecimal } from "./_intl";
+import { formatNumberAsPercent } from "./_intl";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -142,7 +142,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
           <span className="font-semibold text-sm">
-            {formatNumberAsDecimal(Number(health))}
+            {formatNumberAsPercent(health)}
           </span>
         </div>
       </li>
