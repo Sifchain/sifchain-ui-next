@@ -179,10 +179,8 @@ const HistoryTable = (props: HistoryTableProps) => {
                       {isTruthy(item.type) ? (
                         <span
                           className={clsx({
-                            "text-green-400":
-                              item.position === MTP_STATUS["OPEN"],
-                            "text-red-400":
-                              item.position === MTP_STATUS["CLOSE"],
+                            "text-green-400": item.type === MTP_STATUS["OPEN"],
+                            "text-red-400": item.type === MTP_STATUS["CLOSE"],
                           })}
                         >
                           {MTP_STATUS[item.type]}
