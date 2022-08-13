@@ -28,7 +28,10 @@ import {
   useRowanPriceQuery,
   useSwapSimulation,
 } from "~/domains/clp";
-import { useMarginParamsQuery } from "~/domains/margin/hooks";
+import {
+  useMarginParamsQuery,
+  useMarginAllowedAddressList,
+} from "~/domains/margin/hooks";
 
 /**
  * ********************************************************************************************
@@ -86,16 +89,31 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
+  const addressList = useMarginAllowedAddressList();
+
+  if (
+    [enhancedPools, enhancedRowan, rowanPrice, govParams, addressList].some(
+      (query) => query.isError,
+    )
+  ) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Try again later.
+      </div>
+    );
+  }
 
   if (
     enhancedPools.isSuccess &&
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
+    addressList.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
+    addressList.data &&
     govParams.data.params
   ) {
     const { params } = govParams.data;
@@ -104,6 +122,7 @@ const TradeCompound: NextPage = () => {
       allowedPools.includes(pool.asset.symbol.toLowerCase()),
     );
     enhancedRowan.data.priceUsd = rowanPrice.data;
+    console.log(addressList);
     return (
       <Trade
         enhancedPools={filteredEnhancedPools}
