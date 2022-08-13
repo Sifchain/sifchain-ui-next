@@ -302,10 +302,7 @@ const PoolsPage: NextPage = () => {
       <ManageLiquidityModal
         isOpen={!isNilOrWhitespace(selectedDenom)}
         denom={selectedDenom ?? ""}
-        onClose={useCallback(
-          () => router.replace({ query: {} }, undefined, { shallow: true }),
-          [router],
-        )}
+        onClose={useCallback(() => router.replace({ query: {} }), [router])}
         action={getFirstQueryValue<any>(router.query["action"])}
         onChangeDenom={useCallback(
           (denom) =>
