@@ -1,6 +1,7 @@
 import {
   Button,
   ChevronDownIcon,
+  Maybe,
   PoolsIcon,
   RacetrackSpinnerIcon,
   SearchInput,
@@ -122,7 +123,9 @@ const PoolsPage: NextPage = () => {
   const removeLiquidityMutation = useRemoveLiquidityMutation();
   const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
 
-  const selectedDenom = getFirstQueryValue(router.query["denom"]);
+  const selectedDenom = Maybe.of(
+    getFirstQueryValue(router.query["denom"]),
+  ).mapOrUndefined(decodeURIComponent);
 
   return (
     <>
