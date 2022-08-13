@@ -6,14 +6,19 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 export function usePoolQuery(denom: string) {
-  const { data: tokenRegistryRes, indexedByDenom } = useTokenRegistryQuery();
+  const { indexedByDenom } = useTokenRegistryQuery();
   const { data: poolRes } = useSifnodeQuery("clp.getPool", [{ symbol: denom }]);
   const { data: env } = useDexEnvironment();
+
+  const externalToken =
+    indexedByDenom[poolRes?.pool?.externalAsset?.symbol ?? ""];
 
   return useQuery(
     ["pool", denom],
     () => {
       invariant(poolRes !== undefined, "poolsRes is undefined");
+      invariant(externalToken !== undefined, "externalToken is undefined");
+      invariant(env !== undefined, "env is undefined");
 
       return {
         ...poolRes,
@@ -24,19 +29,18 @@ export function usePoolQuery(denom: string) {
                 ...poolRes.pool,
                 externalAssetBalance: Decimal.fromAtomics(
                   poolRes.pool.externalAssetBalance,
-                  indexedByDenom[poolRes.pool.externalAsset?.symbol ?? ""]
-                    ?.decimals ?? 0,
+                  externalToken.decimals,
                 ),
                 nativeAssetBalance: Decimal.fromAtomics(
                   poolRes.pool.nativeAssetBalance,
-                  env?.nativeAsset.decimals ?? 0,
+                  env.nativeAsset.decimals,
                 ),
               },
       };
     },
     {
       enabled:
-        tokenRegistryRes !== undefined &&
+        externalToken !== undefined &&
         poolRes !== undefined &&
         env !== undefined,
     },
