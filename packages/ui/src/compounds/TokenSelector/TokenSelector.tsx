@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import clsx from "clsx";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
 import {
@@ -78,7 +78,7 @@ const SORT_KEYS: SortOptions<TokenEntry>[] = [
 
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<TokenEntry | undefined>(
+  const [selectedToken, _setSelectedToken] = useState<TokenEntry | undefined>(
     props.value ?? props.tokens[0],
   );
   const [query, setQuery] = useState("");
@@ -91,9 +91,16 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     },
   );
 
+  const setSelectedToken = useCallback((token: TokenEntry | undefined) => {
+    _setSelectedToken(token);
+    if (token !== undefined) {
+      props.onChange?.(token);
+    }
+  }, []);
+
   useEffect(() => {
     if (props.value) {
-      setSelectedToken(props.value);
+      _setSelectedToken(props.value);
     }
   }, [props.value]);
 
@@ -108,13 +115,6 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
           ),
         );
   }, [sorted, sanitizedQuery]);
-
-  useEffect(() => {
-    if (!selectedToken) return;
-    if (props.onChange && selectedToken?.symbol !== props.value?.symbol) {
-      props.onChange(selectedToken);
-    }
-  }, [selectedToken]);
 
   return (
     <>
