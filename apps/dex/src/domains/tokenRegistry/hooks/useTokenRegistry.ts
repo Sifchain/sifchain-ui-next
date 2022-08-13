@@ -25,9 +25,9 @@ export default function useTokenRegistryQuery(
 
   const { indexedBySymbol, ...assetsQuery } = useAssetsQuery(networkKind);
 
-  const entries = useMemo<EnhancedRegistryAsset[]>(() => {
+  const entries = useMemo<EnhancedRegistryAsset[] | undefined>(() => {
     if (!data?.registry?.entries || !indexedBySymbol) {
-      return [] as EnhancedRegistryAsset[];
+      return undefined;
     }
 
     return (

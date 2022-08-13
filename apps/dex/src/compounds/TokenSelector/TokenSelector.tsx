@@ -49,7 +49,7 @@ export function useTokenEntriesWithBalance() {
   );
 
   return useMemo(
-    () => registry.map(pipe(toTokenEntry, toTokenEntryWithBalance)),
+    () => registry?.map(pipe(toTokenEntry, toTokenEntryWithBalance)),
     [registry, toTokenEntryWithBalance],
   );
 }
@@ -72,7 +72,7 @@ const TokenSelector = (props: TokenSelectorProps) => {
     <BaseTokenSelector
       {...props}
       value={value}
-      tokens={tokens}
+      tokens={tokens ?? []}
       onChange={handleChange}
     />
   );
