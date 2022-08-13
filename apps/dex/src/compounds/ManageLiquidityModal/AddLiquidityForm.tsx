@@ -110,7 +110,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         denom={props.denom}
         amount={externalAmount}
         balance={externalBalance?.amount}
-        onChangeDenom={() => {}}
+        onChangeDenom={props.onChangeDenom}
         onChangeAmount={setExternalAmount}
         responsive={false}
         tokenSelectionDisabled={inputsDisabled}
@@ -126,7 +126,6 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         denom={env?.nativeAsset.symbol.toLowerCase() ?? "rowan"}
         amount={nativeAmount}
         balance={nativeBalance?.amount}
-        onChangeDenom={() => {}}
         onChangeAmount={setNativeAmount}
         responsive={false}
         tokenSelectionDisabled
