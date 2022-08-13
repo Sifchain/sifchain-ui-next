@@ -47,15 +47,6 @@ export default function useSifnodeQuery<
 ) {
   const { data: client } = useQueryClient();
 
-  if (!client) {
-    console.error("[useSifnodeQuery] No client available");
-    return {
-      data: null,
-      isError: true,
-      isSuccess: false,
-    };
-  }
-
   return useQuery(
     [query, ...args],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -80,10 +71,6 @@ export default function useSifnodeQuery<
       return await method(...args);
     },
     {
-      enabled:
-        "enabled" in options
-          ? options.enabled && Boolean(client)
-          : Boolean(client),
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
     },
