@@ -19,6 +19,7 @@ export interface Pool {
   nativeCustody: string;
   health: string;
   interestRate: string;
+  lastHeightInterestRateComputed: Long;
 }
 
 function createBasePool(): Pool {
@@ -36,6 +37,7 @@ function createBasePool(): Pool {
     nativeCustody: "",
     health: "",
     interestRate: "",
+    lastHeightInterestRateComputed: Long.ZERO,
   };
 }
 
@@ -79,6 +81,9 @@ export const Pool = {
     }
     if (message.interestRate !== "") {
       writer.uint32(106).string(message.interestRate);
+    }
+    if (!message.lastHeightInterestRateComputed.isZero()) {
+      writer.uint32(112).int64(message.lastHeightInterestRateComputed);
     }
     return writer;
   },
@@ -129,6 +134,9 @@ export const Pool = {
         case 13:
           message.interestRate = reader.string();
           break;
+        case 14:
+          message.lastHeightInterestRateComputed = reader.int64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -174,6 +182,11 @@ export const Pool = {
       interestRate: isSet(object.interestRate)
         ? String(object.interestRate)
         : "",
+      lastHeightInterestRateComputed: isSet(
+        object.lastHeightInterestRateComputed,
+      )
+        ? Long.fromValue(object.lastHeightInterestRateComputed)
+        : Long.ZERO,
     };
   },
 
@@ -206,6 +219,10 @@ export const Pool = {
     message.health !== undefined && (obj.health = message.health);
     message.interestRate !== undefined &&
       (obj.interestRate = message.interestRate);
+    message.lastHeightInterestRateComputed !== undefined &&
+      (obj.lastHeightInterestRateComputed = (
+        message.lastHeightInterestRateComputed || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -228,6 +245,11 @@ export const Pool = {
     message.nativeCustody = object.nativeCustody ?? "";
     message.health = object.health ?? "";
     message.interestRate = object.interestRate ?? "";
+    message.lastHeightInterestRateComputed =
+      object.lastHeightInterestRateComputed !== undefined &&
+      object.lastHeightInterestRateComputed !== null
+        ? Long.fromValue(object.lastHeightInterestRateComputed)
+        : Long.ZERO;
     return message;
   },
 };

@@ -2,6 +2,18 @@
 
 JS and TS types relating to Protocol Buffers used by [SifNode](https://github.com/Sifchain/sifnode) and other related projects
 
+## Dependencies
+
+To generate JS/TS code from protocol buufers, you need to install:
+
+- https://formulae.brew.sh/formula/protobuf#default
+
+You can use Brew on macOS:
+
+```
+brew install protobuf
+```
+
 ## Rebuilding types
 
 ```sh
