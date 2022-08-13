@@ -43,7 +43,7 @@ export default function useSifApiQuery<
   const { data: client } = useSifApiClient();
 
   return useQuery(
-    [query],
+    [query, client],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {

@@ -89,12 +89,16 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
-  const addressList = useMarginAllowedAddressList();
+  // const addressList = useMarginAllowedAddressList();
 
   if (
-    [enhancedPools, enhancedRowan, rowanPrice, govParams, addressList].some(
-      (query) => query.isError,
-    )
+    [
+      enhancedPools,
+      enhancedRowan,
+      rowanPrice,
+      govParams,
+      // addressList
+    ].some((query) => query.isError)
   ) {
     return (
       <div className="bg-gray-850 p-10 text-center text-gray-100">
@@ -108,12 +112,12 @@ const TradeCompound: NextPage = () => {
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
-    addressList.isSuccess &&
+    // addressList.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
-    addressList.data &&
+    // addressList.data &&
     govParams.data.params
   ) {
     const { params } = govParams.data;
@@ -122,7 +126,7 @@ const TradeCompound: NextPage = () => {
       allowedPools.includes(pool.asset.symbol.toLowerCase()),
     );
     enhancedRowan.data.priceUsd = rowanPrice.data;
-    console.log(addressList);
+    // console.log(addressList);
     return (
       <Trade
         enhancedPools={filteredEnhancedPools}
