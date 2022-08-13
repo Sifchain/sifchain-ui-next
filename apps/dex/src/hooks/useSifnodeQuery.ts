@@ -50,7 +50,9 @@ export default function useSifnodeQuery<
   if (!client) {
     console.error("[useSifnodeQuery] No client available");
     return {
+      data: null,
       isError: true,
+      isSuccess: false,
     };
   }
 
