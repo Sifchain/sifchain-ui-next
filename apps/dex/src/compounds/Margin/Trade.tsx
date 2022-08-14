@@ -31,6 +31,7 @@ import {
 import {
   useMarginParamsQuery,
   useMarginAllowedAddressList,
+  useOpenMTPMutation,
 } from "~/domains/margin/hooks";
 
 /**
@@ -61,10 +62,16 @@ import {
 const FEE_USDC = 0.5;
 const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
 const calculateOpenPosition = (
-  inputPositionTokenAmount: number,
-  selectedPositionPriceUsd: number,
+  positionTokenAmount: number,
+  positionPriceUsd: number,
 ) => {
-  return inputPositionTokenAmount - FEE_USDC / selectedPositionPriceUsd;
+  return positionTokenAmount - FEE_USDC / positionPriceUsd;
+};
+const calculateBorrowAmount = (
+  collateralTokenAmount: number,
+  leverage: number,
+) => {
+  return collateralTokenAmount * leverage - collateralTokenAmount;
 };
 const withLeverage = (
   rawReceiving: string,
@@ -384,8 +391,14 @@ const Trade = (props: TradeProps) => {
    */
   const [checkbox01, setCheckbox01] = useState(false);
   const [checkbox02, setCheckbox02] = useState(false);
+  const computedBorrowAmount = useMemo(() => {
+    return calculateBorrowAmount(
+      Number(inputCollateral.value),
+      Number(inputLeverage.value),
+    );
+  }, [inputCollateral.value, inputLeverage.value]);
 
-  const confirmOpenPositionMutation = useMutationConfirmOpenPosition();
+  const confirmOpenPositionMutation = useOpenMTPMutation();
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
@@ -400,11 +413,15 @@ const Trade = (props: TradeProps) => {
     event.preventDefault();
     try {
       const req = await confirmOpenPositionMutation.mutateAsync({
-        id: "1234",
+        collateralAsset: selectedCollateral.symbol.toLowerCase(),
+        collateralAmount: inputCollateral.value,
+        borrowAsset: String(computedBorrowAmount),
+        position: 1, // LONG
+        leverage: inputLeverage.value,
       });
-      const json = req as { id: string };
-      setModalConfirmOpenPosition({ isOpen: false });
-      toast.success(`Position created successfully! Position ID: ${json.id}`);
+      if (req && req.data) {
+        setModalConfirmOpenPosition({ isOpen: false });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -833,12 +850,7 @@ const Trade = (props: TradeProps) => {
                       </span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">
-                          {formatNumberAsDecimal(
-                            Number(inputCollateral.value) *
-                              Number(inputLeverage.value) -
-                              Number(inputCollateral.value),
-                            4,
-                          )}
+                          {formatNumberAsDecimal(computedBorrowAmount, 4)}
                         </span>
                         <AssetIcon
                           symbol={selectedCollateral.denom}
