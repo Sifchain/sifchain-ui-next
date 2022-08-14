@@ -14,7 +14,6 @@ import {
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
-  toast,
   TokenEntry,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
@@ -46,17 +45,16 @@ import {
 import { ROWAN } from "~/domains/assets";
 import { PoolOverview } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
-import { useMutationConfirmOpenPosition } from "./_mockdata";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
+  LEVERAGE_MIN_VALUE,
+  POSITION_MAX_VALUE,
+  POSITION_MIN_VALUE,
   HtmlUnicode,
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
-  LEVERAGE_MIN_VALUE,
-  POSITION_MAX_VALUE,
-  POSITION_MIN_VALUE,
 } from "./_trade";
 
 const FEE_USDC = 0.5;
@@ -289,12 +287,12 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [inputCollateral, setInputCollateral] = useState({
-    value: `0`,
+    value: String(COLLATERAL_MIN_VALUE),
     error: "",
   });
 
   const [inputPosition, setInputPosition] = useState({
-    value: `0`,
+    value: String(POSITION_MIN_VALUE),
     error: "",
   });
 
