@@ -60,7 +60,12 @@ import {
 
 const FEE_USDC = 0.5;
 const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
-
+const calculateOpenPosition = (
+  inputPositionTokenAmount: number,
+  selectedPositionPriceUsd: number,
+) => {
+  return inputPositionTokenAmount - FEE_USDC / selectedPositionPriceUsd;
+};
 const withLeverage = (
   rawReceiving: string,
   decimals: number,
@@ -905,8 +910,10 @@ const Trade = (props: TradeProps) => {
                         <span className="mr-1">
                           {formatNumberAsDecimal(
                             Number(inputPosition.value) > 0
-                              ? Number(inputPosition.value) -
-                                  FEE_USDC / Number(selectedPosition.priceUsd)
+                              ? calculateOpenPosition(
+                                  Number(inputPosition.value),
+                                  Number(selectedPosition.priceUsd),
+                                )
                               : 0,
                           )}
                         </span>
@@ -1005,8 +1012,10 @@ const Trade = (props: TradeProps) => {
                     <span className="mr-1">
                       {formatNumberAsDecimal(
                         Number(inputPosition.value) > 0
-                          ? Number(inputPosition.value) -
-                              FEE_USDC / Number(selectedPosition.priceUsd)
+                          ? calculateOpenPosition(
+                              Number(inputPosition.value),
+                              Number(selectedPosition.priceUsd),
+                            )
                           : 0,
                       )}
                     </span>
