@@ -1,6 +1,7 @@
 import {
   Button,
   ChevronDownIcon,
+  Maybe,
   PoolsIcon,
   RacetrackSpinnerIcon,
   SearchInput,
@@ -122,7 +123,9 @@ const PoolsPage: NextPage = () => {
   const removeLiquidityMutation = useRemoveLiquidityMutation();
   const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
 
-  const selectedDenom = getFirstQueryValue(router.query["denom"]);
+  const selectedDenom = Maybe.of(
+    getFirstQueryValue(router.query["denom"]),
+  ).mapOrUndefined(decodeURIComponent);
 
   return (
     <>
@@ -302,10 +305,7 @@ const PoolsPage: NextPage = () => {
       <ManageLiquidityModal
         isOpen={!isNilOrWhitespace(selectedDenom)}
         denom={selectedDenom ?? ""}
-        onClose={useCallback(
-          () => router.replace({ query: {} }, undefined, { shallow: true }),
-          [router],
-        )}
+        onClose={useCallback(() => router.replace({ query: {} }), [router])}
         action={getFirstQueryValue<any>(router.query["action"])}
         onChangeDenom={useCallback(
           (denom) =>
