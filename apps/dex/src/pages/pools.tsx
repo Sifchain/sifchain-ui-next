@@ -147,194 +147,165 @@ const PoolsPage: NextPage = () => {
   return (
     <>
       <section className="w-full flex-1 bg-black p-6 md:py-12 md:px-24">
-        <header className="mb-10 md:mb-12">
-          <div className="flex items-center justify-between pb-6 md:pb-8">
-            <h2 className="text-2xl font-bold text-white">Pools</h2>
-            <SearchInput
-              placeholder="Search token"
-              value={searchQuery}
-              onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
-                (event) => {
-                  const { q: _q, ...queryWithoutQ } = router.query;
-                  router.replace(
-                    {
-                      query: isNilOrWhitespace(event.target.value)
-                        ? queryWithoutQ
-                        : {
-                            ...queryWithoutQ,
-                            q: isNilOrWhitespace(event.target.value)
-                              ? undefined
-                              : encodeURIComponent(event.target.value),
-                          },
-                    },
-                    undefined,
-                    { shallow: true },
-                  );
-                },
-                [router],
-              )}
-            />
-          </div>
-          <div className="flex flex-col gap-4">
-            {filteredAndSortedPools?.map((x, index) => (
-              <details
-                key={index}
-                className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
-              >
-                <summary className="flex flex-col bg-gray-800 p-3 md:flex-row">
-                  <header className="mb-2 flex items-center justify-between md:mb-0 md:flex-1">
-                    <div className="flex items-center gap-2">
-                      <div className="[&>*:first-child]:-mr-4 flex items-center">
-                        <AssetIcon network="sifchain" symbol={env?.nativeAsset.symbol ?? ""} size="md" />
-                        <AssetIcon network="sifchain" symbol={x.symbol ?? ""} size="md" />
-                      </div>
-                      <span className="font-bold">{x.symbol?.toUpperCase()}</span>
+        <header className="flex items-center justify-between pb-6 md:pb-8">
+          <h2 className="text-2xl font-bold text-white">Pools</h2>
+          <SearchInput
+            placeholder="Search token"
+            value={searchQuery}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
+              (event) => {
+                const { q: _q, ...queryWithoutQ } = router.query;
+                router.replace(
+                  {
+                    query: isNilOrWhitespace(event.target.value)
+                      ? queryWithoutQ
+                      : {
+                          ...queryWithoutQ,
+                          q: isNilOrWhitespace(event.target.value) ? undefined : encodeURIComponent(event.target.value),
+                        },
+                  },
+                  undefined,
+                  { shallow: true },
+                );
+              },
+              [router],
+            )}
+          />
+        </header>
+        <div className="flex flex-col gap-4">
+          {filteredAndSortedPools?.map((x, index) => (
+            <details
+              key={index}
+              className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
+            >
+              <summary className="flex flex-col bg-gray-800 p-3 md:flex-row">
+                <header className="mb-2 flex items-center justify-between md:mb-0 md:flex-1">
+                  <div className="flex items-center gap-2">
+                    <div className="[&>*:first-child]:-mr-4 flex items-center">
+                      <AssetIcon network="sifchain" symbol={env?.nativeAsset.symbol ?? ""} size="md" />
+                      <AssetIcon network="sifchain" symbol={x.symbol ?? ""} size="md" />
                     </div>
-                    <button className="marker pointer-events-none md:hidden">
+                    <span className="font-bold">{x.symbol?.toUpperCase()}</span>
+                  </div>
+                  <button className="marker pointer-events-none md:hidden">
+                    <ChevronDownIcon />
+                  </button>
+                </header>
+                <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
+                  <dt className="hidden md:inline">TVL</dt>
+                  <dd className="hidden md:inline">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
+                  <dt className="hidden md:inline">APR</dt>
+                  <dd className="hidden md:inline">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                  <dt>My pool value</dt>
+                  <dd>{Maybe.of(x.liquidityProviderPoolValue).mapOr("...", currencyFormat.format)}</dd>
+                  <dt>My pool share</dt>
+                  <dd>{Maybe.of(x.liquidityProviderPoolShare).mapOr("...", percentFormat.format)}</dd>
+                  <dt className="hidden md:inline">Actions</dt>
+                  <dd className="hidden items-center justify-end gap-12 md:flex">
+                    <Button variant="secondary" onClick={() => onPressPoolButton(x.denom)}>
+                      <PoolsIcon /> Pool
+                    </Button>
+                    <button className="marker pointer-events-none">
                       <ChevronDownIcon />
                     </button>
-                  </header>
-                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
-                    <dt className="hidden md:inline">TVL</dt>
-                    <dd className="hidden md:inline">
-                      {Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}
+                  </dd>
+                </dl>
+              </summary>
+              <div className="p-3 md:py-6 md:px-28">
+                <div className="md:flex md:gap-28">
+                  <DetailDataList>
+                    <dt className="md:hidden">TVL</dt>
+                    <dd className="md:hidden">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
+                    <dt className="md:hidden">APR</dt>
+                    <dd className="md:hidden">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                    <dt className="hidden md:inline">Your liquidity</dt>
+                    <dd className="hidden items-center justify-end gap-1 md:flex">
+                      {x.externalAssetBalance.toLocaleString()}
+                      <AssetIcon size="sm" symbol={x.denom ?? ""} />
                     </dd>
-                    <dt className="hidden md:inline">APR</dt>
-                    <dd className="hidden md:inline">
-                      {Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}
+                    <dt className="hidden md:inline">Pool liquidity</dt>
+                    <dd className="hidden items-center justify-end gap-1 md:flex">
+                      {x.poolExternalAssetBalance.toLocaleString()}
+                      <AssetIcon size="sm" symbol={x.denom ?? ""} />
                     </dd>
-                    <dt>My pool value</dt>
+                    <dt>24hr trading volume</dt>
+                    <dd>{Maybe.of(x.volume).mapOr("...", currencyFormat.format)}</dd>
+                    <dt>Arb opportunity</dt>
+                    <dd
+                      className={clsx({
+                        "text-emerald-600": (x.arb ?? 0) > 0,
+                        "text-rose-700": (x.arb ?? 0) < 0,
+                      })}
+                    >
+                      {Maybe.of(x.arb).mapOr("...", (arb) => percentFormat.format(arb / 100))}
+                    </dd>
+                  </DetailDataList>
+                  <DetailDataList className="hidden md:grid">
+                    <dt>Your liquidity</dt>
+                    <dd className="flex items-center justify-end gap-1">
+                      {x.nativeAssetBalance.toLocaleString()}
+                      <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
+                    </dd>
+                    <dt>Pool liquidity</dt>
+                    <dd className="flex items-center justify-end gap-1">
+                      {x.poolNativeAssetBalance.toLocaleString()}
+                      <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
+                    </dd>
+                    <dt>Rewards paid to the pool</dt>
+                    <dd>{x.rewardPeriodNativeDistributed?.toLocaleString()}</dd>
+                    <dt>Rewards time remaining</dt>
                     <dd>
-                      {Maybe.of(x.liquidityProviderPoolValue).mapOr(
-                        "...",
-                        currencyFormat.format,
-                      )}
+                      {currentRewardPeriod && formatDistanceToNow(currentRewardPeriod.estimatedRewardPeriodEndDate)}
                     </dd>
-                    <dt>My pool share</dt>
-                    <dd>
-                      {Maybe.of(x.liquidityProviderPoolShare).mapOr(
-                        "...",
-                        percentFormat.format,
-                      )}
-                    </dd>
-                    <dt className="hidden md:inline">Actions</dt>
-                    <dd className="hidden items-center justify-end gap-12 md:flex">
-                      <Button variant="secondary" onClick={() => onPressPoolButton(x.denom)}>
-                        <PoolsIcon /> Pool
-                      </Button>
-                      <button className="marker pointer-events-none">
-                        <ChevronDownIcon />
-                      </button>
-                    </dd>
-                  </dl>
-                </summary>
-                <div className="p-3 md:py-6 md:px-28">
-                  <div className="md:flex md:gap-28">
-                    <DetailDataList>
-                      <dt className="md:hidden">TVL</dt>
-                      <dd className="md:hidden">
-                        {Maybe.of(x.poolTVL).mapOr(
-                          "...",
-                          currencyFormat.format,
-                        )}
-                      </dd>
-                      <dt className="md:hidden">APR</dt>
-                      <dd className="md:hidden">
-                        {Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}
-                      </dd>
-                      <dt className="hidden md:inline">Your liquidity</dt>
-                      <dd className="hidden items-center justify-end gap-1 md:flex">
-                        {x.externalAssetBalance.toLocaleString()}
-                        <AssetIcon size="sm" symbol={x.denom ?? ""} />
-                      </dd>
-                      <dt className="hidden md:inline">Pool liquidity</dt>
-                      <dd className="hidden items-center justify-end gap-1 md:flex">
-                        {x.poolExternalAssetBalance.toLocaleString()}
-                        <AssetIcon size="sm" symbol={x.denom ?? ""} />
-                      </dd>
-                      <dt>24hr trading volume</dt>
-                      <dd>
-                        {Maybe.of(x.volume).mapOr("...", currencyFormat.format)}
-                      </dd>
-                      <dt>Arb opportunity</dt>
-                      <dd
-                        className={clsx({
-                          "text-emerald-600": (x.arb ?? 0) > 0,
-                          "text-rose-700": (x.arb ?? 0) < 0,
-                        })}
-                      >
-                        {Maybe.of(x.arb).mapOr("...", (arb) =>
-                          percentFormat.format(arb / 100),
-                        )}
-                      </dd>
-                    </DetailDataList>
-                    <DetailDataList className="hidden md:grid">
-                      <dt>Your liquidity</dt>
-                      <dd className="flex items-center justify-end gap-1">
-                        {x.nativeAssetBalance.toLocaleString()}
-                        <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
-                      </dd>
-                      <dt>Pool liquidity</dt>
-                      <dd className="flex items-center justify-end gap-1">
-                        {x.poolNativeAssetBalance.toLocaleString()}
-                        <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
-                      </dd>
-                      <dt>Rewards paid to the pool</dt>
-                      <dd>{x.rewardPeriodNativeDistributed?.toLocaleString()}</dd>
-                      <dt>Rewards time remaining</dt>
-                      <dd>
-                        {currentRewardPeriod && formatDistanceToNow(currentRewardPeriod.estimatedRewardPeriodEndDate)}
-                      </dd>
-                    </DetailDataList>
-                  </div>
-                  <Button
-                    className="mt-2 w-full md:hidden"
-                    variant="secondary"
-                    onClick={() => onPressPoolButton(x.denom)}
-                  >
-                    <PoolsIcon /> Pool
-                  </Button>
-                  {x.unlock && (
-                    <div className="mt-2 flex gap-3">
-                      <Button
-                        className="flex-1"
-                        variant="outline"
-                        onClick={() =>
-                          cancelUnlockMutation.mutate({
-                            denom: x.denom ?? "",
-                            units: x.unlock?.units ?? "0",
-                          })
-                        }
-                        disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
-                      >
-                        {cancelUnlockMutation.isLoading && cancelUnlockMutation.variables?.denom === x.denom && (
-                          <RacetrackSpinnerIcon />
-                        )}
-                        Cancel request
-                      </Button>
-                      <Button
-                        className="flex-1"
-                        variant="outline"
-                        onClick={() =>
-                          removeLiquidityMutation.mutate({
-                            denom: x.denom ?? "",
-                            units: x.unlock?.units ?? "0",
-                          })
-                        }
-                        disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
-                      >
-                        {removeLiquidityMutation.isLoading && removeLiquidityMutation.variables?.denom === x.denom && (
-                          <RacetrackSpinnerIcon />
-                        )}
-                        Claim liquidity
-                      </Button>
-                    </div>
-                  )}
+                  </DetailDataList>
                 </div>
-              </details>
-            ))}
-          </div>
-        </header>
+                <Button
+                  className="mt-2 w-full md:hidden"
+                  variant="secondary"
+                  onClick={() => onPressPoolButton(x.denom)}
+                >
+                  <PoolsIcon /> Pool
+                </Button>
+                {x.unlock && (
+                  <div className="mt-2 flex gap-3">
+                    <Button
+                      className="flex-1"
+                      variant="outline"
+                      onClick={() =>
+                        cancelUnlockMutation.mutate({
+                          denom: x.denom ?? "",
+                          units: x.unlock?.units ?? "0",
+                        })
+                      }
+                      disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
+                    >
+                      {cancelUnlockMutation.isLoading && cancelUnlockMutation.variables?.denom === x.denom && (
+                        <RacetrackSpinnerIcon />
+                      )}
+                      Cancel request
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      variant="outline"
+                      onClick={() =>
+                        removeLiquidityMutation.mutate({
+                          denom: x.denom ?? "",
+                          units: x.unlock?.units ?? "0",
+                        })
+                      }
+                      disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
+                    >
+                      {removeLiquidityMutation.isLoading && removeLiquidityMutation.variables?.denom === x.denom && (
+                        <RacetrackSpinnerIcon />
+                      )}
+                      Claim liquidity
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
       <ManageLiquidityModal
         isOpen={!isNilOrWhitespace(selectedDenom)}
