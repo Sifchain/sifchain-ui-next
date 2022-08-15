@@ -18,6 +18,24 @@ type OpenPositionsQueryParams = {
   sortBy: string;
 };
 
+export type OpenPositionsQueryData = {
+  id: string;
+  address: string;
+  pool: string;
+  position: string;
+  custody_amount: string;
+  unrealized_pnl: string;
+  custody_asset: string;
+  unsettled_interest: string;
+  next_payment: string;
+  date_opened: string;
+  time_open: string;
+  interest_rate: string;
+  paid_interest: string;
+  health: string;
+  leverage: string;
+};
+
 export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
   return useSifApiQuery(
     "margin.getMarginOpenPosition",
@@ -36,22 +54,6 @@ export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
     }
   ) as UseQueryResult<{
     pagination: Pagination;
-    results: {
-      id: string;
-      address: string;
-      pool: string;
-      position: string;
-      custody_amount: string;
-      unrealized_pnl: string;
-      custody_asset: string;
-      unsettled_interest: string;
-      next_payment: string;
-      date_opened: string;
-      time_open: string;
-      interest_rate: string;
-      paid_interest: string;
-      health: string;
-      leverage: string;
-    }[];
+    results: OpenPositionsQueryData[];
   }>;
 }
