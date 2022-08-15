@@ -30,6 +30,7 @@ export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
     ],
     {
       enabled: Boolean(params.walletAddress),
+      refetchInterval: 6000,
       keepPreviousData: true,
       retry: false,
     }

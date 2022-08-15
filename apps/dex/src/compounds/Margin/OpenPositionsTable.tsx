@@ -338,16 +338,14 @@ type PositionToCloseModalProps = {
   onMutationError?: (error: Error) => void;
 };
 function PositionToCloseModal(props: PositionToCloseModalProps) {
-  console.log(props.id);
   const positionToCloseQuery = useQueryPositionToClose({ id: props.id });
   const positionToCloseMutation = useCloseMTPMutation();
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      const position = await positionToCloseMutation.mutateAsync({
+      await positionToCloseMutation.mutateAsync({
         id: Long.fromNumber(Number(props.id)),
       });
-      position?.data;
       props.onMutationSuccess();
     } catch (err) {
       if (props.onMutationError) {

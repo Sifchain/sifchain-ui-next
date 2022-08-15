@@ -1,12 +1,13 @@
-import { Decimal } from "@cosmjs/math";
-import type { IAsset } from "@sifchain/common";
-import clsx from "clsx";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { pathOr } from "ramda";
 import type { ChangeEvent, SyntheticEvent } from "react";
+import type { IAsset } from "@sifchain/common";
+import type { NextPage } from "next";
+
+import { Decimal } from "@cosmjs/math";
+import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import clsx from "clsx";
+import Head from "next/head";
 
 import {
   Button,
@@ -419,14 +420,14 @@ const Trade = (props: TradeProps) => {
         ROWAN.decimals
       );
 
-      const req = await confirmOpenPositionMutation.mutateAsync({
+      await confirmOpenPositionMutation.mutateAsync({
         collateralAsset: selectedCollateral.symbol.toLowerCase(),
         borrowAsset: selectedPosition.symbol.toLowerCase(),
         position: 1, // LONG
         collateralAmount,
         leverage: leverage,
       });
-      if (req && req.data) {
+      if (modalConfirmOpenPosition.isOpen) {
         setModalConfirmOpenPosition({ isOpen: false });
       }
     } catch (err) {
