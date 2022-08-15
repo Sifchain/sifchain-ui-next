@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useState, SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
-import { Button, formatNumberAsCurrency, ChevronDownIcon, Modal, ArrowDownIcon, toast } from "@sifchain/ui";
+import { Button, formatNumberAsCurrency, ChevronDownIcon, Modal, ArrowDownIcon } from "@sifchain/ui";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { OpenPositionsQueryData, useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { useCloseMTPMutation } from "~/domains/margin/hooks";
 
 import { isNil } from "rambda";
@@ -24,7 +24,6 @@ const isTruthy = (target: any) => !isNil(target);
  * ********************************************************************************************
  */
 import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
-import { useQueryPositionToClose, useMutationPositionToClose } from "./_mockdata";
 import { formatNumberAsDecimal, formatNumberAsPercent, formatDateRelative, formatDateDistance } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
@@ -75,10 +74,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
-    id: string;
+    value: OpenPositionsQueryData | null;
   }>({
     isOpen: false,
-    id: "",
+    value: null,
   });
 
   if (openPositionsQuery.isSuccess) {
@@ -270,7 +269,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         onClick={() =>
                           setPositionToClose({
                             isOpen: true,
-                            id: item.id,
+                            value: item,
                           })
                         }
                       >
@@ -283,23 +282,25 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </tbody>
           </table>
         </div>
-        <PositionToCloseModal
-          id={positionToClose.id}
-          isOpen={positionToClose.isOpen}
-          onTransitionEnd={() => {
-            if (positionToClose.id !== "") {
-              setPositionToClose((prev) => ({ ...prev, id: "" }));
-            }
-          }}
-          onClose={() => {
-            if (positionToClose.isOpen) {
-              setPositionToClose((prev) => ({ ...prev, isOpen: false }));
-            }
-          }}
-          onMutationSuccess={() => {
-            setPositionToClose({ id: "", isOpen: false });
-          }}
-        />
+        {positionToClose.value && (
+          <PositionToCloseModal
+            openPosition={positionToClose.value}
+            isOpen={positionToClose.isOpen}
+            onTransitionEnd={() => {
+              if (positionToClose.value !== null) {
+                setPositionToClose((prev) => ({ ...prev, value: null }));
+              }
+            }}
+            onClose={() => {
+              if (positionToClose.isOpen) {
+                setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+              }
+            }}
+            onMutationSuccess={() => {
+              setPositionToClose({ isOpen: false, value: null });
+            }}
+          />
+        )}
       </>
     );
   }
@@ -314,21 +315,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 export default OpenPositionsTable;
 
 type PositionToCloseModalProps = {
-  id: string;
   isOpen: boolean;
-  onTransitionEnd: () => void;
   onClose: () => void;
+  onMutationError?: (_error: Error) => void;
   onMutationSuccess: () => void;
-  onMutationError?: (error: Error) => void;
+  onTransitionEnd: () => void;
+  openPosition: OpenPositionsQueryData;
 };
 function PositionToCloseModal(props: PositionToCloseModalProps) {
-  const positionToCloseQuery = useQueryPositionToClose({ id: props.id });
   const positionToCloseMutation = useCloseMTPMutation();
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
       await positionToCloseMutation.mutateAsync({
-        id: Long.fromNumber(Number(props.id)),
+        id: Long.fromNumber(Number(props.openPosition.id)),
       });
       props.onMutationSuccess();
     } catch (err) {
@@ -342,141 +342,132 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
     positionToCloseMutation.reset();
   }, [positionToCloseMutation, props]);
 
-  let content = null;
-
-  if (positionToCloseQuery.isLoading) {
-    content = <p className="rounded bg-slate-200 p-4 text-center text-slate-800">Loading...</p>;
-  }
-
-  if (positionToCloseQuery.isError) {
-    const error = positionToCloseQuery.error as Error;
-    content = <p className="rounded bg-red-200 p-4 text-center text-red-800">Error: {error.message}</p>;
-  }
-
-  if (positionToCloseQuery.isSuccess) {
-    content = (
-      <>
-        <h1 className="text-center text-lg font-bold">Review closing trade</h1>
-        <ul className="mt-4 flex flex-col gap-3">
-          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-            <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-            <span className="ml-1">USDC</span>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-              <span>$.005</span>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">$399,999</span>
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span>$1,999.50</span>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">$399,999</span>
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current position</span>
-              <span>299,900 ROWAN</span>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>$.05</span>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>$14,995</span>
-            </div>
-          </li>
-        </ul>
-        <div className="relative my-[-1em] flex items-center justify-center">
-          <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
-            <ArrowDownIcon className="text-lg" />
+  let content = (
+    <>
+      <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">
+        <span className="font-medium">Warning:</span> The data used below are mocked values, but the action to close a
+        position is functional.
+      </div>
+      <h1 className="text-center text-lg font-bold">Review closing trade</h1>
+      <ul className="mt-4 flex flex-col gap-3">
+        <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+          <AssetIcon symbol={props.openPosition.custody_asset} network="sifchain" size="sm" />
+          <span className="ml-1">{props.openPosition.custody_asset.toUpperCase()}</span>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
+            <span>$.005</span>
           </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
+            <div className="flex flex-row items-center">
+              <span className="mr-1">$399,999</span>
+              <AssetIcon symbol={props.openPosition.custody_asset} network="sifchain" size="sm" />
+            </div>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
+            <span>$1,999.50</span>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
+            <div className="flex flex-row items-center">
+              <span className="mr-1">$399,999</span>
+              <AssetIcon symbol={props.openPosition.custody_asset} network="sifchain" size="sm" />
+            </div>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Current position</span>
+            <span>299,900 ROWAN</span>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Current price</span>
+            <span>$.05</span>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Current value</span>
+            <span>$14,995</span>
+          </div>
+        </li>
+      </ul>
+      <div className="relative my-[-1em] flex items-center justify-center">
+        <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
+          <ArrowDownIcon className="text-lg" />
         </div>
-        <ul className="flex flex-col gap-3">
-          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-            <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-            <span className="ml-1">ROWAN</span>
-          </li>
-          <li className="px-4">
+      </div>
+      <ul className="flex flex-col gap-3">
+        <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+          <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+          <span className="ml-1">ROWAN</span>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">$14,995</span>
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-              </div>
+              <span className="mr-1">$14,995</span>
+              <AssetIcon symbol="rowan" network="sifchain" size="sm" />
             </div>
-          </li>
-          <li className="px-4">
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Fees</span>
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">$5,00</span>
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-              </div>
+              <span className="mr-1">$5,00</span>
+              <AssetIcon symbol="rowan" network="sifchain" size="sm" />
             </div>
-          </li>
-          <li className="px-4">
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
+            <span>10%</span>
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              <span>10%</span>
+              <span className="mr-1">$14,990</span>
+              <AssetIcon symbol="rowan" network="sifchain" size="sm" />
             </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">$14,990</span>
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">PnL</span>
-              <span>$12,990.50</span>
-            </div>
-          </li>
-        </ul>
-        {positionToCloseMutation.isLoading ? (
-          <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
-        ) : (
-          <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
-            Confirm close
-          </Button>
-        )}
-        {positionToCloseMutation.isError ? (
-          <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to open margin position:</b>
-            <span>{(positionToCloseMutation.error as Error).message}</span>
-          </p>
-        ) : null}
-      </>
-    );
-  }
+          </div>
+        </li>
+        <li className="px-4">
+          <div className="flex flex-row items-center">
+            <span className="mr-auto min-w-fit text-gray-300">PnL</span>
+            <span>$12,990.50</span>
+          </div>
+        </li>
+      </ul>
+      {positionToCloseMutation.isLoading ? (
+        <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
+      ) : (
+        <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
+          Confirm close
+        </Button>
+      )}
+      {positionToCloseMutation.isError ? (
+        <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
+          <b className="mr-1">Failed to open margin position:</b>
+          <span>{(positionToCloseMutation.error as Error).message}</span>
+        </p>
+      ) : null}
+    </>
+  );
 
   return (
     <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
