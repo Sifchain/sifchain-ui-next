@@ -68,6 +68,7 @@ importers:
       ethers: ^5.6.9
       immer: ^9.0.15
       ky: ^0.30.0
+      long: ^5.2.0
       next: 12.2.2
       next-transpile-modules: 9.0.0
       postcss: ^8.4.16
@@ -114,6 +115,7 @@ importers:
       ethers: 5.6.9_22kvxa7zeyivx4jp72v2w3pkvy
       immer: 9.0.15
       ky: 0.30.0
+      long: 5.2.0
       next: 12.2.2_ef5jwxihqo6n7gxfmzogljlgcm
       rambda: 7.2.1
       ramda: 0.28.0
@@ -13903,7 +13905,7 @@ packages:
     peerDependencies:
       ws: '*'
     dependencies:
-      ws: 7.5.9
+      ws: 7.5.9_22kvxa7zeyivx4jp72v2w3pkvy
     dev: false
 
   /isstream/0.1.2:
