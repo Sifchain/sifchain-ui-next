@@ -56,9 +56,9 @@ import {
   inputValidatorLeverage,
   inputValidatorPosition,
 } from "./_trade";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 const FEE_USDC = 0.5;
-const HARD_CODED_ADDRES_DS = "sif19z5atv2m8rz970l09th0vhhxjmnq0zrrfe4650";
 const calculateOpenPosition = (
   positionTokenAmount: number,
   positionPriceUsd: number,
@@ -99,6 +99,7 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
+  const walletAddress = useSifSignerAddress();
   // const addressList = useMarginAllowedAddressList();
 
   if (
@@ -108,6 +109,7 @@ const TradeCompound: NextPage = () => {
       rowanPrice,
       govParams,
       // addressList
+      walletAddress,
     ].some((query) => query.isError)
   ) {
     return (
@@ -123,11 +125,13 @@ const TradeCompound: NextPage = () => {
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
     // addressList.isSuccess &&
+    walletAddress.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
     // addressList.data &&
+    walletAddress.data &&
     govParams.data.params
   ) {
     const { params } = govParams.data;
@@ -139,6 +143,7 @@ const TradeCompound: NextPage = () => {
     // console.log(addressList);
     return (
       <Trade
+        walletAddress={walletAddress.data}
         enhancedPools={filteredEnhancedPools}
         enhancedRowan={enhancedRowan.data}
         govParams={{
@@ -167,6 +172,7 @@ export default TradeCompound;
  * ********************************************************************************************
  */
 type TradeProps = {
+  walletAddress: string;
   enhancedPools: Exclude<
     ReturnType<typeof useEnhancedPoolsQuery>["data"],
     undefined
@@ -186,7 +192,7 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const { enhancedPools, enhancedRowan } = props;
+  const { enhancedPools, enhancedRowan, walletAddress } = props;
 
   /**
    * ********************************************************************************************
@@ -990,7 +996,7 @@ const Trade = (props: TradeProps) => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
-            queryId={HARD_CODED_ADDRES_DS}
+            queryId={walletAddress}
             extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
               hideColumns: [
