@@ -43,6 +43,10 @@ const usePoolsPageData = () => {
           return {
             ...x,
             denom: token?.denom,
+            nativeAssetBalance: 0,
+            externalAssetBalance: 0,
+            poolNativeAssetBalance: pool?.nativeAssetBalance.toFloatApproximation() ?? 0,
+            poolExternalAssetBalance: pool?.externalAssetBalance.toFloatApproximation() ?? 0,
             liquidityProviderPoolShare: 0,
             liquidityProviderPoolValue: 0,
             unlock: undefined,
@@ -58,12 +62,20 @@ const usePoolsPageData = () => {
 
         const currentUnlockRequest = liquidityProvider.liquidityProvider.unlocks[0];
 
+        const poolShare = new BigNumber(liquidityProvider.liquidityProvider.liquidityProviderUnits).div(pool.poolUnits);
+
+        const nativeAssetBalance = new BigNumber(pool.nativeAssetBalance.toString()).times(poolShare).toNumber();
+
+        const externalAssetBalance = new BigNumber(pool.externalAssetBalance.toString()).times(poolShare).toNumber();
+
         return {
           ...x,
           denom: token?.denom,
-          liquidityProviderPoolShare: new BigNumber(liquidityProvider.liquidityProvider.liquidityProviderUnits)
-            .div(pool.poolUnits)
-            .toNumber(),
+          nativeAssetBalance,
+          externalAssetBalance,
+          poolNativeAssetBalance: pool.nativeAssetBalance.toFloatApproximation(),
+          poolExternalAssetBalance: pool.externalAssetBalance.toFloatApproximation(),
+          liquidityProviderPoolShare: poolShare.toNumber(),
           liquidityProviderPoolValue: rowanPoolValue.plus(externalAssetPoolValue).toNumber(),
           unlock: currentUnlockRequest?.expired ? undefined : currentUnlockRequest,
         };
@@ -194,12 +206,12 @@ const PoolsPage: NextPage = () => {
                       </dd>
                       <dt className="hidden md:inline">Your liquidity</dt>
                       <dd className="hidden items-center justify-end gap-1 md:flex">
-                        {(1000).toLocaleString()}
+                        {x.externalAssetBalance.toLocaleString()}
                         <AssetIcon size="sm" symbol={x.denom ?? ""} />
                       </dd>
                       <dt className="hidden md:inline">Pool liquidity</dt>
                       <dd className="hidden items-center justify-end gap-1 md:flex">
-                        {(1000).toLocaleString()}
+                        {x.poolExternalAssetBalance.toLocaleString()}
                         <AssetIcon size="sm" symbol={x.denom ?? ""} />
                       </dd>
                       <dt>24hr trading volume</dt>
@@ -222,12 +234,12 @@ const PoolsPage: NextPage = () => {
                     <DetailDataList className="hidden md:grid">
                       <dt>Your liquidity</dt>
                       <dd className="flex items-center justify-end gap-1">
-                        {(1000).toLocaleString()}
+                        {x.nativeAssetBalance.toLocaleString()}
                         <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
                       </dd>
                       <dt>Pool liquidity</dt>
                       <dd className="flex items-center justify-end gap-1">
-                        {(1000).toLocaleString()}
+                        {x.poolNativeAssetBalance.toLocaleString()}
                         <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
                       </dd>
                       <dt>Rewards paid to the pool</dt>
