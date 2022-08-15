@@ -39,11 +39,11 @@ import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/t
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
 import * as marginTx from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
-
 import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
+
 import { DEFAULT_GAS_PRICE } from "./fees";
 import {
   convertToCamelCaseDeep,
