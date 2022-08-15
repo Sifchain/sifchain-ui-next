@@ -1,4 +1,4 @@
-import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, SearchInput } from "@sifchain/ui";
+import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, SearchInput, SortIcon } from "@sifchain/ui";
 import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
@@ -6,8 +6,8 @@ import { formatDistanceToNow } from "date-fns";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { sort } from "rambda";
-import { descend } from "ramda";
-import { ChangeEventHandler, useCallback, useMemo } from "react";
+import { ascend, descend } from "ramda";
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
@@ -36,6 +36,8 @@ const DetailDataList = tw.dl`
   [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dt]:text-gray-300 [&>dd]:font-semibold [&>dd]:text-right md:flex-1
 `;
 
+const COLUMNS = ["token", "tvl", "apr", "my value", "my share"] as const;
+
 const usePoolsPageData = () => {
   const tokenRegistryQuery = useTokenRegistryQuery();
   const tokenStatsQuery = useSifApiQuery("assets.getTokenStats", []);
@@ -57,6 +59,7 @@ const usePoolsPageData = () => {
           return {
             ...x,
             denom: token?.denom,
+            displaySymbol: token?.displaySymbol,
             nativeAssetBalance: 0,
             externalAssetBalance: 0,
             poolNativeAssetBalance: pool?.nativeAssetBalance.toFloatApproximation() ?? 0,
@@ -85,6 +88,7 @@ const usePoolsPageData = () => {
         return {
           ...x,
           denom: token?.denom,
+          displaySymbol: token?.displaySymbol,
           nativeAssetBalance,
           externalAssetBalance,
           poolNativeAssetBalance: pool.nativeAssetBalance.toFloatApproximation(),
@@ -113,6 +117,11 @@ const PoolsPage: NextPage = () => {
   const { data } = usePoolsPageData();
   const { data: currentRewardPeriod } = useCurrentRewardPeriodQuery();
 
+  const [[sortByOrder, sortByProperty], setSortBy] = useState<["asc" | "desc", typeof COLUMNS[number] | undefined]>([
+    "asc",
+    undefined,
+  ]);
+
   const searchQuery = decodeURIComponent(getFirstQueryValue(router.query["q"]) ?? "");
 
   const filteredPools = useMemo(
@@ -121,14 +130,41 @@ const PoolsPage: NextPage = () => {
     [data, searchQuery],
   );
 
-  const filteredAndSortedPools = useMemo(
-    () =>
-      sort(
-        descend((x) => x.liquidityProviderPoolValue),
-        filteredPools ?? [],
-      ),
-    [filteredPools],
-  );
+  const filteredAndSortedPools = useMemo(() => {
+    const sortFunc = sortByOrder === "asc" ? ascend : descend;
+    switch (sortByProperty) {
+      case "token":
+        return sort(
+          sortFunc((x) => x.displaySymbol ?? ""),
+          filteredPools ?? [],
+        );
+      case "tvl":
+        return sort(
+          sortFunc((x) => x.poolTVL ?? 0),
+          filteredPools ?? [],
+        );
+      case "apr":
+        return sort(
+          sortFunc((x) => x.poolApr ?? 0),
+          filteredPools ?? [],
+        );
+      case "my value":
+        return sort(
+          sortFunc((x) => x.liquidityProviderPoolValue ?? 0),
+          filteredPools ?? [],
+        );
+      case "my share":
+        return sort(
+          sortFunc((x) => x.liquidityProviderPoolShare ?? 0),
+          filteredPools ?? [],
+        );
+      default:
+        return sort(
+          descend((x) => x.liquidityProviderPoolValue),
+          filteredPools ?? [],
+        );
+    }
+  }, [filteredPools, sortByOrder, sortByProperty]);
 
   const removeLiquidityMutation = useRemoveLiquidityMutation();
   const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
@@ -172,24 +208,24 @@ const PoolsPage: NextPage = () => {
             )}
           />
         </header>
-        <header className="flex text-left uppercase text-xs opacity-80 pb-6 px-3">
+        <header className="flex px-3 pb-6 text-left text-xs uppercase opacity-80">
           {[
-            "token",
-            "tvl",
-            "apr",
-            "my value",
-            "my share",
+            ...COLUMNS,
             // dummy column for flex alignment
             "",
           ].map((x, index) => (
             <div
               key={index}
-              className={clsx({
-                "flex-1 text-start": index === 0,
-                "flex-[1.6] text-end": index > 0,
+              className={clsx("flex cursor-pointer items-center gap-1", {
+                "flex-1 justify-start": index === 0,
+                "flex-[1.6] justify-end": index > 0,
               })}
+              onClick={() =>
+                setSortBy((y) => [y[1] !== x ? "asc" : y[0] === "asc" ? "desc" : "asc", x as typeof COLUMNS[number]])
+              }
             >
               {x}
+              {!isNilOrWhitespace(x) && <SortIcon active={sortByProperty === x} sortDirection={sortByOrder} />}
             </div>
           ))}
         </header>
