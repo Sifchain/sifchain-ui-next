@@ -77,6 +77,15 @@ export interface GetSQParamsResponse {
   beginBlock: Long;
 }
 
+export interface IsWhitelistedRequest {
+  address: string;
+}
+
+export interface IsWhitelistedResponse {
+  address: string;
+  isWhitelisted: boolean;
+}
+
 function createBaseMTPRequest(): MTPRequest {
   return { address: "", id: Long.UZERO };
 }
@@ -1137,6 +1146,132 @@ export const GetSQParamsResponse = {
   },
 };
 
+function createBaseIsWhitelistedRequest(): IsWhitelistedRequest {
+  return { address: "" };
+}
+
+export const IsWhitelistedRequest = {
+  encode(
+    message: IsWhitelistedRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): IsWhitelistedRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsWhitelistedRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsWhitelistedRequest {
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+    };
+  },
+
+  toJSON(message: IsWhitelistedRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IsWhitelistedRequest>, I>>(
+    object: I,
+  ): IsWhitelistedRequest {
+    const message = createBaseIsWhitelistedRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseIsWhitelistedResponse(): IsWhitelistedResponse {
+  return { address: "", isWhitelisted: false };
+}
+
+export const IsWhitelistedResponse = {
+  encode(
+    message: IsWhitelistedResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.isWhitelisted === true) {
+      writer.uint32(16).bool(message.isWhitelisted);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): IsWhitelistedResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsWhitelistedResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.isWhitelisted = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsWhitelistedResponse {
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      isWhitelisted: isSet(object.isWhitelisted)
+        ? Boolean(object.isWhitelisted)
+        : false,
+    };
+  },
+
+  toJSON(message: IsWhitelistedResponse): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.isWhitelisted !== undefined &&
+      (obj.isWhitelisted = message.isWhitelisted);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IsWhitelistedResponse>, I>>(
+    object: I,
+  ): IsWhitelistedResponse {
+    const message = createBaseIsWhitelistedResponse();
+    message.address = object.address ?? "";
+    message.isWhitelisted = object.isWhitelisted ?? false;
+    return message;
+  },
+};
+
 export interface Query {
   GetMTP(request: MTPRequest): Promise<MTPResponse>;
   GetPositions(request: PositionsRequest): Promise<PositionsResponse>;
@@ -1150,6 +1285,7 @@ export interface Query {
   GetStatus(request: StatusRequest): Promise<StatusResponse>;
   GetSQParams(request: GetSQParamsRequest): Promise<GetSQParamsResponse>;
   GetWhitelist(request: WhitelistRequest): Promise<WhitelistResponse>;
+  IsWhitelisted(request: IsWhitelistedRequest): Promise<IsWhitelistedResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1164,6 +1300,7 @@ export class QueryClientImpl implements Query {
     this.GetStatus = this.GetStatus.bind(this);
     this.GetSQParams = this.GetSQParams.bind(this);
     this.GetWhitelist = this.GetWhitelist.bind(this);
+    this.IsWhitelisted = this.IsWhitelisted.bind(this);
   }
   GetMTP(request: MTPRequest): Promise<MTPResponse> {
     const data = MTPRequest.encode(request).finish();
@@ -1252,6 +1389,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       WhitelistResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  IsWhitelisted(request: IsWhitelistedRequest): Promise<IsWhitelistedResponse> {
+    const data = IsWhitelistedRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.margin.v1.Query",
+      "IsWhitelisted",
+      data,
+    );
+    return promise.then((data) =>
+      IsWhitelistedResponse.decode(new _m0.Reader(data)),
     );
   }
 }

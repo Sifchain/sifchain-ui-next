@@ -68,6 +68,7 @@ export interface Params {
   safetyFactor: string;
   closedPools: string[];
   incrementalInterestPaymentEnabled: boolean;
+  whitelistingEnabled: boolean;
 }
 
 export interface MTP {
@@ -165,6 +166,7 @@ function createBaseParams(): Params {
     safetyFactor: "",
     closedPools: [],
     incrementalInterestPaymentEnabled: false,
+    whitelistingEnabled: false,
   };
 }
 
@@ -237,6 +239,9 @@ export const Params = {
     if (message.incrementalInterestPaymentEnabled === true) {
       writer.uint32(160).bool(message.incrementalInterestPaymentEnabled);
     }
+    if (message.whitelistingEnabled === true) {
+      writer.uint32(168).bool(message.whitelistingEnabled);
+    }
     return writer;
   },
 
@@ -307,6 +312,9 @@ export const Params = {
           break;
         case 20:
           message.incrementalInterestPaymentEnabled = reader.bool();
+          break;
+        case 21:
+          message.whitelistingEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -382,6 +390,9 @@ export const Params = {
       )
         ? Boolean(object.incrementalInterestPaymentEnabled)
         : false,
+      whitelistingEnabled: isSet(object.whitelistingEnabled)
+        ? Boolean(object.whitelistingEnabled)
+        : false,
     };
   },
 
@@ -438,6 +449,8 @@ export const Params = {
     message.incrementalInterestPaymentEnabled !== undefined &&
       (obj.incrementalInterestPaymentEnabled =
         message.incrementalInterestPaymentEnabled);
+    message.whitelistingEnabled !== undefined &&
+      (obj.whitelistingEnabled = message.whitelistingEnabled);
     return obj;
   },
 
@@ -473,6 +486,7 @@ export const Params = {
     message.closedPools = object.closedPools?.map((e) => e) || [];
     message.incrementalInterestPaymentEnabled =
       object.incrementalInterestPaymentEnabled ?? false;
+    message.whitelistingEnabled = object.whitelistingEnabled ?? false;
     return message;
   },
 };

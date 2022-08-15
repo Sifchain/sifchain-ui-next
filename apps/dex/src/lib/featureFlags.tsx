@@ -49,7 +49,7 @@ export function withRedirectOnMount<T>(
   InnerComponent: FC<T>,
   options: {
     redirectTo: string;
-    redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
+    redirectIf: (_ctx: { flags: Set<FeatureFlags> }) => boolean;
     fallback?: ReactNode;
   }
 ) {
