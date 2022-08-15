@@ -85,33 +85,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <>
-        <div className={clsx("flex flex-row items-center bg-gray-800", classNamePaginationContainer)}>
-          {openPositionsQuery.isRefetching && <PillUpdating />}
-          <PaginationShowItems
-            limit={Number(pagination.limit)}
-            offset={Number(pagination.offset)}
-            total={Number(pagination.total)}
-          />
-          <PaginationButtons
-            pages={pages}
-            render={(page) => {
-              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
-              return (
-                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
-                  <a
-                    className={clsx("rounded px-2 py-1", {
-                      "bg-gray-400": pagination.offset === offset,
-                    })}
-                  >
-                    {page}
-                  </a>
-                </Link>
-              );
-            }}
-          />
-        </div>
-        <div className="overflow-x-auto">
+      <section className="flex h-full flex-col">
+        <div className="flex-1 overflow-x-auto">
           <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
@@ -282,6 +257,33 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </tbody>
           </table>
         </div>
+        <div
+          className={clsx("mt-auto flex flex-row items-center justify-end bg-gray-800", classNamePaginationContainer)}
+        >
+          {openPositionsQuery.isRefetching && <PillUpdating />}
+          <PaginationShowItems
+            limit={Number(pagination.limit)}
+            offset={Number(pagination.offset)}
+            total={Number(pagination.total)}
+          />
+          <PaginationButtons
+            pages={pages}
+            render={(page) => {
+              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
+              return (
+                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
+                  <a
+                    className={clsx("rounded px-2 py-1", {
+                      "bg-gray-400": pagination.offset === offset,
+                    })}
+                  >
+                    {page}
+                  </a>
+                </Link>
+              );
+            }}
+          />
+        </div>
         {positionToClose.value && (
           <PositionToCloseModal
             openPosition={positionToClose.value}
@@ -301,7 +303,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             }}
           />
         )}
-      </>
+      </section>
     );
   }
 

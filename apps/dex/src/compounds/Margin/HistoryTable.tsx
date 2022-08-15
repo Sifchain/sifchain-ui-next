@@ -18,19 +18,9 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import {
-  NoResultsRow,
-  PaginationShowItems,
-  PaginationButtons,
-  PillUpdating,
-} from "./_components";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 import { formatDateRelative, formatDateDistance } from "./_intl";
-import {
-  findNextOrderAndSortBy,
-  SORT_BY,
-  MARGIN_POSITION,
-  QS_DEFAULTS,
-} from "./_tables";
+import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
 
 /**
@@ -76,48 +66,11 @@ const HistoryTable = (props: HistoryTableProps) => {
 
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
-    const pages = Math.ceil(
-      Number(pagination.total) / Number(pagination.limit)
-    );
+    const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <>
-        <div
-          className={clsx(
-            "flex flex-row items-center bg-gray-800",
-            props.classNamePaginationContainer
-          )}
-        >
-          {historyQuery.isRefetching && <PillUpdating />}
-          <PaginationShowItems
-            limit={Number(pagination.limit)}
-            offset={Number(pagination.offset)}
-            total={Number(pagination.total)}
-          />
-          <PaginationButtons
-            pages={pages}
-            render={(page) => {
-              const offset = String(
-                Number(pagination.limit) * page - Number(pagination.limit)
-              );
-              return (
-                <Link
-                  href={{ query: { ...router.query, offset } }}
-                  scroll={false}
-                >
-                  <a
-                    className={clsx("rounded px-2 py-1", {
-                      "bg-gray-400": pagination.offset === offset,
-                    })}
-                  >
-                    {page}
-                  </a>
-                </Link>
-              );
-            }}
-          />
-        </div>
-        <div className="overflow-x-auto">
+      <section className="flex h-full flex-col">
+        <div className="flex-1 overflow-x-auto">
           <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
@@ -150,8 +103,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                           {itemActive && (
                             <ChevronDownIcon
                               className={clsx("ml-1 transition-transform", {
-                                "-rotate-180":
-                                  pagination.sort_by === SORT_BY.ASC,
+                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
                               })}
                             />
                           )}
@@ -164,10 +116,7 @@ const HistoryTable = (props: HistoryTableProps) => {
             </thead>
             <tbody className="bg-gray-850">
               {results.length <= 0 && (
-                <NoResultsRow
-                  colSpan={headers.length}
-                  message="History not available. Try again later."
-                />
+                <NoResultsRow colSpan={headers.length} message="History not available. Try again later." />
               )}
               {results.map((item) => {
                 const amountSign = Math.sign(Number(item.open_custody_amount));
@@ -214,12 +163,9 @@ const HistoryTable = (props: HistoryTableProps) => {
                       {isTruthy(item.position) ? (
                         <span
                           className={clsx({
-                            "text-cyan-400":
-                              item.position === MARGIN_POSITION.UNSPECIFIED,
-                            "text-green-400":
-                              item.position === MARGIN_POSITION.LONG,
-                            "text-red-400":
-                              item.position === MARGIN_POSITION.SHORT,
+                            "text-cyan-400": item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400": item.position === MARGIN_POSITION.LONG,
+                            "text-red-400": item.position === MARGIN_POSITION.SHORT,
                           })}
                         >
                           {item.position}
@@ -243,10 +189,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                             "text-red-400": amountSign === -1,
                           })}
                         >
-                          {formatNumberAsCurrency(
-                            Number(item.open_custody_amount),
-                            4
-                          )}
+                          {formatNumberAsCurrency(Number(item.open_custody_amount), 4)}
                         </span>
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -261,10 +204,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                               "text-red-400": realizedPLSign === -1,
                             })}
                           >
-                            {formatNumberAsCurrency(
-                              Number(item.realized_pnl),
-                              2
-                            )}
+                            {formatNumberAsCurrency(Number(item.realized_pnl), 2)}
                           </span>
                         </span>
                       ) : (
@@ -277,21 +217,45 @@ const HistoryTable = (props: HistoryTableProps) => {
             </tbody>
           </table>
         </div>
-      </>
+        <div
+          className={clsx(
+            "mt-auto flex flex-row items-center justify-end bg-gray-800",
+            props.classNamePaginationContainer,
+          )}
+        >
+          {historyQuery.isRefetching && <PillUpdating />}
+          <PaginationShowItems
+            limit={Number(pagination.limit)}
+            offset={Number(pagination.offset)}
+            total={Number(pagination.total)}
+          />
+          <PaginationButtons
+            pages={pages}
+            render={(page) => {
+              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
+              return (
+                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
+                  <a
+                    className={clsx("rounded px-2 py-1", {
+                      "bg-gray-400": pagination.offset === offset,
+                    })}
+                  >
+                    {page}
+                  </a>
+                </Link>
+              );
+            }}
+          />
+        </div>
+      </section>
     );
   }
 
   if (historyQuery.isError) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        Try again later.
-      </div>
-    );
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
   }
 
-  return (
-    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
-  );
+  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
 };
 
 export default HistoryTable;

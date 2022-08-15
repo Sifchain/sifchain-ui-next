@@ -22,7 +22,7 @@ export const SORT_BY = {
   DESC: "desc",
 };
 export const QS_DEFAULTS = {
-  limit: "30",
+  limit: "16",
   offset: "0",
   sortBy: SORT_BY.DESC,
 };
