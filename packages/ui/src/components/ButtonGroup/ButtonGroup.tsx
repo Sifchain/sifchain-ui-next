@@ -94,8 +94,12 @@ export function ButtonGroup<T = unknown>(props: ButtonGroupProps<T>) {
             key={index}
             type="button"
             className={clsx(
-              "flex-1 rounded-xl py-2.5 font-semibold",
-              index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
+              "flex-1 py-2.5 rounded-xl font-semibold disabled:cursor-not-allowed",
+              index === props.selectedIndex
+                ? "text-gray-50"
+                : item.disabled
+                ? "text-gray-750"
+                : "text-gray-300",
               typeof props.itemClassName === "function"
                 ? props.itemClassName(index)
                 : props.itemClassName,
