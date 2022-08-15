@@ -4,6 +4,7 @@ import { type FC, useState } from "react";
 export type Option<T> = {
   label: string;
   value: T;
+  disabled?: boolean;
 };
 
 export type ButtonGroupProps<T> = {
@@ -50,7 +51,7 @@ const Indicator: FC<IndicatorProps> = (props) => {
   );
 };
 
-export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
+export function ButtonGroup<T = unknown>(props: ButtonGroupProps<T>) {
   const [containerWidth, setContainerWidth] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
 
@@ -106,6 +107,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
             onClick={props.onChange.bind(null, index)}
             onMouseOver={setHoverIndex.bind(null, index)}
             onMouseLeave={setHoverIndex.bind(null, -1)}
+            disabled={item.disabled}
           >
             {item.label}
           </button>
