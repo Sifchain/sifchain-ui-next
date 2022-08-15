@@ -15,8 +15,7 @@
     "storybook": "pnpm -C ./packages/ui run storybook ",
     "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
-    "e2e": "pnpm -C ./packages/e2e run test",
-    "pretty-quick": "pretty-quick"
+    "e2e": "pnpm -C ./packages/e2e run test"
   },
   "keywords": [],
   "license": "Apache-2.0",
@@ -31,7 +30,6 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
-    "pretty-quick": "^3.1.3",
     "rimraf": "^3.0.2",
     "turbo": "^1.4.3",
     "typescript": "4.7.4"
