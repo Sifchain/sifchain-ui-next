@@ -165,7 +165,7 @@ const PoolsPage: NextPage = () => {
                   <header className="mb-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="[&>*:first-child]:-mr-4 flex items-center">
-                        <AssetIcon network="sifchain" symbol={env?.nativeAsset.denom ?? ""} size="md" />
+                        <AssetIcon network="sifchain" symbol={env?.nativeAsset.symbol ?? ""} size="md" />
                         <AssetIcon network="sifchain" symbol={x.symbol ?? ""} size="md" />
                       </div>
                       <span className="font-bold">{x.symbol?.toUpperCase()}</span>
