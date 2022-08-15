@@ -99,7 +99,6 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
-  const walletAddress = useSifSignerAddress();
   // const addressList = useMarginAllowedAddressList();
 
   if (
@@ -109,7 +108,6 @@ const TradeCompound: NextPage = () => {
       rowanPrice,
       govParams,
       // addressList
-      walletAddress,
     ].some((query) => query.isError)
   ) {
     return (
@@ -125,13 +123,11 @@ const TradeCompound: NextPage = () => {
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
     // addressList.isSuccess &&
-    walletAddress.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
     // addressList.data &&
-    walletAddress.data &&
     govParams.data.params
   ) {
     const { params } = govParams.data;
@@ -143,7 +139,6 @@ const TradeCompound: NextPage = () => {
     // console.log(addressList);
     return (
       <Trade
-        walletAddress={walletAddress.data}
         enhancedPools={filteredEnhancedPools}
         enhancedRowan={enhancedRowan.data}
         govParams={{
@@ -172,7 +167,6 @@ export default TradeCompound;
  * ********************************************************************************************
  */
 type TradeProps = {
-  walletAddress: string;
   enhancedPools: Exclude<
     ReturnType<typeof useEnhancedPoolsQuery>["data"],
     undefined
@@ -192,7 +186,8 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const { enhancedPools, enhancedRowan, walletAddress } = props;
+  const walletAddress = useSifSignerAddress({ enabled: true });
+  const { enhancedPools, enhancedRowan } = props;
 
   /**
    * ********************************************************************************************
@@ -996,7 +991,7 @@ const Trade = (props: TradeProps) => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
-            queryId={walletAddress}
+            walletAddress={walletAddress.data}
             extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
               hideColumns: [

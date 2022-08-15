@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import useSifApiClient from "~/hooks/useSifApiClient";
 
 export function useOpenPositionsQuery(params: {
-  address: string;
+  walletAddress: string | undefined;
   offset: string;
   limit: string;
   orderBy: string;
@@ -19,7 +19,7 @@ export function useOpenPositionsQuery(params: {
       }
 
       const res = (await client.margin.getMarginOpenPosition(
-        params.address,
+        params.walletAddress,
         Number(params.offset),
         Number(params.limit),
         params.orderBy,
@@ -33,6 +33,7 @@ export function useOpenPositionsQuery(params: {
       return res;
     },
     {
+      enabled: params.walletAddress,
       keepPreviousData: true,
       retry: false,
     },

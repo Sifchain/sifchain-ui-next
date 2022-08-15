@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import useSifApiClient from "~/hooks/useSifApiClient";
 
 export function useHistoryQuery(params: {
-  address: string;
+  walletAddress: string | undefined;
   offset: string;
   limit: string;
   orderBy: string;
@@ -19,7 +19,7 @@ export function useHistoryQuery(params: {
       }
 
       const res = (await client.margin.getMarginHistory(
-        params.address,
+        params.walletAddress,
         Number(params.offset),
         Number(params.limit),
         params.orderBy,
@@ -33,6 +33,7 @@ export function useHistoryQuery(params: {
       return res;
     },
     {
+      enabled: params.walletAddress,
       keepPreviousData: true,
       retry: false,
     },

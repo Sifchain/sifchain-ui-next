@@ -29,7 +29,7 @@ const OPTIONS_ITEMS = {
 } as const;
 
 type PortfolioTableProps = {
-  queryId: string;
+  walletAddress: string | undefined;
   extraQuerystring?: ReturnType<typeof useRouter>["query"];
   openPositions?: {
     hideColumns: OpenPositionsTableProps["hideColumns"];
@@ -89,11 +89,17 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
             </div>
           }
         >
-          <TabContent
-            {...slugProps}
-            classNamePaginationContainer="absolute right-0 top-0"
-            queryId={props.queryId}
-          />
+          {props.walletAddress ? (
+            <TabContent
+              {...slugProps}
+              classNamePaginationContainer="absolute right-0 top-0"
+              walletAddress={props.walletAddress}
+            />
+          ) : (
+            <div className="bg-gray-850 p-10 text-center text-gray-100">
+              Connect your Sifchain wallet.
+            </div>
+          )}
         </Suspense>
       )}
     </div>
