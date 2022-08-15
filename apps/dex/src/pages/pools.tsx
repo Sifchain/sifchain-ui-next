@@ -2,6 +2,7 @@ import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, Search
 import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import { formatDistanceToNow } from "date-fns";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { sort } from "rambda";
@@ -11,6 +12,7 @@ import tw from "tailwind-styled-components";
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
+import { useCurrentRewardPeriodQuery } from "~/domains/clp/hooks/rewardPeriod";
 import useCancelLiquidityUnlockMutation from "~/domains/clp/hooks/useCancelLiquidityUnlockMutation";
 import useRemoveLiquidityMutation from "~/domains/clp/hooks/useRemoveLiquidityMutation";
 import { useDexEnvironment } from "~/domains/core/envs";
@@ -95,9 +97,11 @@ const usePoolsPageData = () => {
 };
 
 const PoolsPage: NextPage = () => {
-  const { data: env } = useDexEnvironment();
   const router = useRouter();
+  const { data: env } = useDexEnvironment();
   const { data } = usePoolsPageData();
+  const { data: currentRewardPeriod } = useCurrentRewardPeriodQuery();
+
   const searchQuery = decodeURIComponent(getFirstQueryValue(router.query["q"]) ?? "");
 
   const filteredPools = useMemo(
@@ -251,7 +255,9 @@ const PoolsPage: NextPage = () => {
                       <dt>Rewards paid to the pool</dt>
                       <dd>{x.rewardPeriodNativeDistributed?.toLocaleString()}</dd>
                       <dt>Rewards time remaining</dt>
-                      <dd>45 days</dd>
+                      <dd>
+                        {currentRewardPeriod && formatDistanceToNow(currentRewardPeriod.estimatedRewardPeriodEndDate)}
+                      </dd>
                     </DetailDataList>
                   </div>
                   <Button
