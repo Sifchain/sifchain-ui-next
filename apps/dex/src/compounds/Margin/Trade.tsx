@@ -924,7 +924,6 @@ const Trade = (props: TradeProps) => {
                         Fees
                       </span>
                       <div className="flex flex-row items-center gap-1">
-                        <HtmlUnicode name="MinusSign" />
                         <span>
                           {formatNumberAsCurrency(
                             openPositionFee * selectedPosition.priceUsd
@@ -1031,6 +1030,7 @@ const Trade = (props: TradeProps) => {
         onClose={() => {
           if (modalConfirmOpenPosition.isOpen) {
             setModalConfirmOpenPosition({ isOpen: false });
+            confirmOpenPositionMutation.reset();
           }
         }}
       >
@@ -1159,8 +1159,8 @@ const Trade = (props: TradeProps) => {
             </Button>
           )}
           {confirmOpenPositionMutation.isError ? (
-            <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-              <span className="mr-1">An error occurred:</span>
+            <p className="text-center p-4 mt-6 rounded bg-red-200 text-red-800">
+              <b className="mr-1">Failed to open margin position:</b>
               <span>
                 {(confirmOpenPositionMutation.error as Error).message}
               </span>

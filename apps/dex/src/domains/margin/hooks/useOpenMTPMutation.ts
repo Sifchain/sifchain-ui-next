@@ -9,6 +9,10 @@ import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
+const OPEN_MTP_ERRORS = {
+  NOT_ENOUGH_BALANCE: "You dont have enough balance of the required coin",
+};
+
 export function useOpenMTPMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
@@ -16,7 +20,7 @@ export function useOpenMTPMutation() {
   async function mutation(variables: OpenMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
 
-    return signingStargateClient?.signAndBroadcast(
+    const req = await signingStargateClient?.signAndBroadcast(
       signerAddress,
       [
         {
@@ -29,6 +33,16 @@ export function useOpenMTPMutation() {
       ],
       DEFAULT_FEE,
     );
+
+    if (
+      req?.rawLog?.includes(
+        "user does not have enough balance of the required coin",
+      )
+    ) {
+      throw new Error(OPEN_MTP_ERRORS.NOT_ENOUGH_BALANCE);
+    }
+
+    return req;
   }
 
   let toastId: string | number;

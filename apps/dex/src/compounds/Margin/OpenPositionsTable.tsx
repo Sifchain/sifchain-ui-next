@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
-import { useState, SyntheticEvent } from "react";
+import { useState, SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
 import { Button, formatNumberAsCurrency, ChevronDownIcon, Modal, ArrowDownIcon, toast } from "@sifchain/ui";
@@ -258,7 +258,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.health) ? (
-                        formatNumberAsDecimal(Number(item.health))
+                        formatNumberAsPercent(Number(item.health))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -353,6 +353,10 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
       }
     }
   };
+  const onTransitionEnd = useCallback(() => {
+    props.onTransitionEnd();
+    positionToCloseMutation.reset();
+  }, [positionToCloseMutation, props]);
 
   let content = null;
 
@@ -370,9 +374,9 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
       <>
         <h1 className="text-center text-lg font-bold">Review closing trade</h1>
         <ul className="mt-4 flex flex-col gap-3">
-          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
-            <AssetIcon symbol="rowan" network="sifchain" size="sm" />
-            <span className="ml-1">ROWAN</span>
+          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+            <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+            <span className="ml-1">USDC</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
@@ -385,7 +389,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$399,999</span>
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -400,7 +404,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$399,999</span>
-                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -429,16 +433,16 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </div>
         </div>
         <ul className="flex flex-col gap-3">
-          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
-            <AssetIcon symbol="usdc" network="sifchain" size="sm" />
-            <span className="ml-1">USDC</span>
+          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+            <AssetIcon symbol="rowan" network="sifchain" size="sm" />
+            <span className="ml-1">ROWAN</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$14,995</span>
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -447,7 +451,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$5,00</span>
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -462,7 +466,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$14,990</span>
-                <AssetIcon symbol="usdc" network="sifchain" size="sm" />
+                <AssetIcon symbol="rowan" network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -482,7 +486,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
         )}
         {positionToCloseMutation.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <span className="mr-1">An error occurred:</span>
+            <b className="mr-1">Failed to open margin position:</b>
             <span>{(positionToCloseMutation.error as Error).message}</span>
           </p>
         ) : null}
@@ -491,7 +495,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
   }
 
   return (
-    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={props.onTransitionEnd} onClose={props.onClose}>
+    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
       {content}
     </Modal>
   );
