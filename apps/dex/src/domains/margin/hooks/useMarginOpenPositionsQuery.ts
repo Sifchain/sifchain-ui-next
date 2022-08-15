@@ -1,4 +1,3 @@
-import type { GetMarginOpenPositionResponse } from "@sifchain/sif-api";
 import type { UseQueryResult } from "react-query";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 

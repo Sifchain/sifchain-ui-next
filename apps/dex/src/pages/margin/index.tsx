@@ -11,6 +11,8 @@ import { useFeatureFlag } from "~/lib/featureFlags";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
+  positions: { title: "Positions", slug: "positions" },
+  history: { title: "History", slug: "history" },
   portfolio: { title: "Portfolio", slug: "portfolio" },
 } as const;
 const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
@@ -18,6 +20,20 @@ const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
     title: TABS.trade.title,
     slug: TABS.trade.slug,
     content: dynamic(() => import("~/compounds/Margin/Trade"), {
+      suspense: true,
+    }),
+  },
+  {
+    title: TABS.positions.title,
+    slug: TABS.positions.slug,
+    content: dynamic(() => import("~/compounds/Margin/Positions"), {
+      suspense: true,
+    }),
+  },
+  {
+    title: TABS.history.title,
+    slug: TABS.history.slug,
+    content: dynamic(() => import("~/compounds/Margin/History"), {
       suspense: true,
     }),
   },
