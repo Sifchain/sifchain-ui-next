@@ -161,8 +161,8 @@ const PoolsPage: NextPage = () => {
                 key={index}
                 className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
               >
-                <summary className="flex flex-col bg-gray-800 p-3">
-                  <header className="mb-2 flex items-center justify-between">
+                <summary className="flex flex-col bg-gray-800 p-3 md:flex-row md:py-4">
+                  <header className="mb-2 flex items-center justify-between md:mb-0 md:flex-1">
                     <div className="flex items-center gap-2">
                       <div className="[&>*:first-child]:-mr-4 flex items-center">
                         <AssetIcon network="sifchain" symbol={env?.nativeAsset.symbol ?? ""} size="md" />
@@ -170,11 +170,25 @@ const PoolsPage: NextPage = () => {
                       </div>
                       <span className="font-bold">{x.symbol?.toUpperCase()}</span>
                     </div>
-                    <button className="marker pointer-events-none">
+                    <button className="marker pointer-events-none md:hidden">
                       <ChevronDownIcon />
                     </button>
                   </header>
-                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold grid auto-cols-auto gap-y-1">
+                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8]">
+                    <dt>TVL</dt>
+                    <dd>
+                      {x.poolTVL?.toLocaleString(undefined, {
+                        style: "currency",
+                        currency: "USD",
+                        maximumFractionDigits: 2,
+                      })}
+                    </dd>
+                    <dt>APR</dt>
+                    <dd>
+                      {x.poolApr?.toLocaleString(undefined, {
+                        style: "percent",
+                      })}
+                    </dd>
                     <dt>My pool value</dt>
                     <dd>
                       {x.liquidityProviderPoolValue?.toLocaleString(undefined, {
