@@ -74,7 +74,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     ...queryParams,
     walletAddress: props.walletAddress,
   });
-  console.log({ openPositionsQuery });
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
