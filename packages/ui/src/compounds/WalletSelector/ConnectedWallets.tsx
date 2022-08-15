@@ -28,12 +28,12 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       <Popover.Button
         disabled={props.isModalOpen}
         as={Button}
-        className="flex justify-between flex-1 items-center whitespace-nowrap w-full md:w-auto"
+        className="flex w-full flex-1 items-center justify-between whitespace-nowrap md:w-auto"
         variant="outline"
       >
         <span className="text-white">Connected wallets</span>
         <div className="flex items-center gap-2">
-          <span className="h-5 w-5 bg-gray-600 text-gray-50 rounded-full grid place-items-center">
+          <span className="grid h-5 w-5 place-items-center rounded-full bg-gray-600 text-gray-50">
             {props.accounts.length}
           </span>
           <ChevronDownIcon aria-hidden />
@@ -42,12 +42,12 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
       <AppearTransition>
         <Popover.Panel
           as={SurfaceA}
-          className="absolute z-10 top-[74px] w-[350px] right-2.5 min-w-max grid gap-4"
+          className="absolute top-[74px] right-2.5 z-10 grid w-[350px] min-w-max gap-4"
         >
           <ul className="grid gap-1">
             {props.accounts.map(([chainId, accounts]) => {
               const chain = props.chains.find(
-                (x) => x.id === chainId || x.chainId === chainId,
+                (x) => x.id === chainId || x.chainId === chainId
               );
 
               const connectedAccountProps: ConnectedAccountProps = {

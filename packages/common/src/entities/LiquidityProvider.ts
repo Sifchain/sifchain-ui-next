@@ -13,7 +13,7 @@ export class LiquidityProvider {
     units: IAmount,
     address: string,
     nativeAmount: IAmount,
-    externalAmount: IAmount,
+    externalAmount: IAmount
   ) {
     this.asset = asset;
     this.units = units;

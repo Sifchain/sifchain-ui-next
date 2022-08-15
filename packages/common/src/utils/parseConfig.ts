@@ -107,19 +107,19 @@ export function parseConfig(
   config: CoreConfig,
   assets: IAsset[],
   chainConfigsByNetwork: NetworkChainConfigLookup,
-  peggyCompatibleCosmosBaseDenoms: Set<string>,
+  peggyCompatibleCosmosBaseDenoms: Set<string>
 ) {
   const nativeAsset = assets.find(
-    (a) => a.symbol.toLowerCase() === config.nativeAsset.toLowerCase(),
+    (a) => a.symbol.toLowerCase() === config.nativeAsset.toLowerCase()
   );
 
   if (!nativeAsset)
     throw new Error(
-      "No nativeAsset defined for chain config:" + JSON.stringify(config),
+      "No nativeAsset defined for chain config:" + JSON.stringify(config)
     );
 
   const bridgetokenContractAddress = assets.find(
-    (token) => token.symbol === "erowan",
+    (token) => token.symbol === "erowan"
   )?.address;
 
   const sifAssets = assets

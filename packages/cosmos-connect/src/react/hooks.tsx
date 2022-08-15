@@ -26,7 +26,7 @@ export const useConnect = () => {
 
 export const useSigner = (
   chainId: string,
-  options: HookOptions = { enabled: true },
+  options: HookOptions = { enabled: true }
 ) => {
   const { activeConnector } = useConnect();
 
@@ -36,7 +36,7 @@ export const useSigner = (
     status,
   } = useAsyncFunc(
     async () => activeConnector?.getSigner(chainId),
-    [activeConnector, chainId],
+    [activeConnector, chainId]
   );
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const useSigner = (
 
 export const useStargateClient = (
   chainId: string,
-  options: HookOptions = { enabled: true },
+  options: HookOptions = { enabled: true }
 ) => {
   const { activeConnector } = useConnect();
 
@@ -70,7 +70,7 @@ export const useStargateClient = (
     status,
   } = useAsyncFunc(
     async () => activeConnector?.getStargateClient(chainId),
-    [activeConnector, chainId],
+    [activeConnector, chainId]
   );
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export const useStargateClient = (
 
 export const useSigningStargateClient = (
   chainId: string,
-  options: HookOptions = { enabled: true },
+  options: HookOptions = { enabled: true }
 ) => {
   const { activeConnector } = useConnect();
 
@@ -94,7 +94,7 @@ export const useSigningStargateClient = (
     status,
   } = useAsyncFunc(
     async () => activeConnector?.getSigningStargateClient(chainId),
-    [activeConnector, chainId],
+    [activeConnector, chainId]
   );
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export const useSigningStargateClient = (
 
 export const useAccounts = (
   chainId: string,
-  options: HookOptions = { enabled: true },
+  options: HookOptions = { enabled: true }
 ) => {
   const { signer } = useSigner(chainId, options);
 

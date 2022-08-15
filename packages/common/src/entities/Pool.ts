@@ -27,7 +27,7 @@ export function getNormalizedSwapPrice(swapAsset: IAsset, pool: IPool) {
 
 export function calculateSwapResultPmtp(
   inputAmount: IAssetAmount,
-  pool: IPool,
+  pool: IPool
 ): IAmount {
   if (!pool.swapPrices) {
     throw new Error("Pool.swapPrices is required for PMTP swaps");
@@ -51,7 +51,7 @@ export class Pool extends Pair {
     a: IAssetAmount,
     b: IAssetAmount,
     poolUnits?: IAmount,
-    swapPrices?: SwapPrices,
+    swapPrices?: SwapPrices
   ) {
     super(a, b);
     this.swapPrices = swapPrices;
@@ -62,7 +62,7 @@ export class Pool extends Pair {
         Amount(b),
         Amount("0"),
         Amount("0"),
-        Amount("0"),
+        Amount("0")
       );
   }
 
@@ -76,7 +76,7 @@ export class Pool extends Pair {
 
   get externalAmount() {
     const amount = this.amounts.find(
-      (amount) => amount.symbol.toLowerCase() !== "rowan",
+      (amount) => amount.symbol.toLowerCase() !== "rowan"
     );
 
     if (!amount) {
@@ -88,7 +88,7 @@ export class Pool extends Pair {
 
   get nativeAmount() {
     const amount = this.amounts.find(
-      (amount) => amount.symbol.toLowerCase() === "rowan",
+      (amount) => amount.symbol.toLowerCase() === "rowan"
     );
     if (!amount) {
       throw new Error("Pool does not have rowan");
@@ -102,7 +102,7 @@ export class Pool extends Pair {
       throw new Error(
         `Sent amount with symbol ${
           x.symbol
-        } does not exist in this pair: ${this.toString()}`,
+        } does not exist in this pair: ${this.toString()}`
       );
     }
     const Y = this.amounts.find((a) => a.symbol !== x.symbol);
@@ -117,7 +117,7 @@ export class Pool extends Pair {
       throw new Error(
         `Sent amount with symbol ${
           x.symbol
-        } does not exist in this pair: ${this.toString()}`,
+        } does not exist in this pair: ${this.toString()}`
       );
     }
     return calculatePriceImpact(x, X).multiply("100");
@@ -130,7 +130,7 @@ export class Pool extends Pair {
       throw new Error(
         `Sent amount with symbol ${
           x.symbol
-        } does not exist in this pair: ${this.toString()}`,
+        } does not exist in this pair: ${this.toString()}`
       );
     }
 
@@ -158,7 +158,7 @@ export class Pool extends Pair {
       throw new Error(
         `Sent amount with symbol ${
           Sa.symbol
-        } does not exist in this pair: ${this.toString()}`,
+        } does not exist in this pair: ${this.toString()}`
       );
     }
 
@@ -187,7 +187,7 @@ export class Pool extends Pair {
 
   calculatePoolUnits(
     nativeAssetAmount: IAssetAmount,
-    externalAssetAmount: IAssetAmount,
+    externalAssetAmount: IAssetAmount
   ) {
     const [nativeBalanceBefore, externalBalanceBefore] = this.amounts;
 
@@ -197,7 +197,7 @@ export class Pool extends Pair {
       externalAssetAmount,
       nativeBalanceBefore,
       externalBalanceBefore,
-      this.poolUnits,
+      this.poolUnits
     );
     const newTotalPoolUnits = lpUnits.add(this.poolUnits);
 
@@ -213,7 +213,7 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
 
   if (!nativeSymbol) {
     throw new Error(
-      "Cannot create composite pair because pairs do not share a common symbol",
+      "Cannot create composite pair because pairs do not share a common symbol"
     );
   }
 
@@ -224,7 +224,7 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
 
   if (amounts.length !== 2) {
     throw new Error(
-      "Cannot create composite pair because pairs do not share a common symbol",
+      "Cannot create composite pair because pairs do not share a common symbol"
     );
   }
 
@@ -258,7 +258,7 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
     },
     otherAsset(asset: IAsset) {
       const otherAsset = amounts.find(
-        (amount) => amount.symbol !== asset.symbol,
+        (amount) => amount.symbol !== asset.symbol
       );
       if (!otherAsset) {
         throw new Error("Asset doesnt exist in pair");
@@ -287,7 +287,7 @@ export function CompositePool(pair1: IPool, pair2: IPool): IPool {
 
       return AssetAmount(
         second.otherAsset(firstSwapFee),
-        firstSwapFeeInOutputAsset.add(secondSwapFee),
+        firstSwapFeeInOutputAsset.add(secondSwapFee)
       );
     },
     calcPriceImpact(x: IAssetAmount) {

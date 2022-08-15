@@ -34,7 +34,7 @@ const useRemoveLiquidityMutation = () => {
             },
           },
         ],
-        DEFAULT_FEE,
+        DEFAULT_FEE
       );
     },
     {
@@ -62,7 +62,7 @@ const useRemoveLiquidityMutation = () => {
           toast.success(`Successfully claimed unlocked liquidity`);
         }
       },
-    },
+    }
   );
 
   return {

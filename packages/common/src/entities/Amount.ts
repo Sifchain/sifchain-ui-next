@@ -25,7 +25,7 @@ export type IAmount = {
 };
 
 export function Amount(
-  source: JSBI | bigint | string | IAmount | number,
+  source: JSBI | bigint | string | IAmount | number
 ): Readonly<IAmount> {
   type _IAmount = _ExposeInternal<IAmount>;
 
@@ -115,7 +115,7 @@ export function Amount(
       // TODO: test against rounding errors
       const big = toBig(fraction);
       const string = toFraction(
-        big.sqrt().times("100000000000000000000000").toFixed(0),
+        big.sqrt().times("100000000000000000000000").toFixed(0)
       ) as string;
       return Amount(string).divide("100000000000000000000000");
     },
@@ -187,7 +187,7 @@ function getQuotientWithBankersRounding(fraction: IFraction): JSBI {
 
 function getAmountFromDecimal(decimal: string): IAmount {
   return Amount(floorDecimal(decimalShift(decimal, 18))).divide(
-    "1000000000000000000",
+    "1000000000000000000"
   );
 }
 

@@ -26,7 +26,7 @@ export function useCosmosNativeBalance(
     networkId: NetworkKind;
     address: string | undefined;
   },
-  options: { enabled?: boolean } = { enabled: true },
+  options: { enabled?: boolean } = { enabled: true }
 ) {
   const { chainId, networkId, address } = context;
 
@@ -54,13 +54,13 @@ export function useCosmosNativeBalance(
     const nativeSymbol = chain.nativeAssetSymbol.toLowerCase();
 
     const stat = tokenStats.pools.find(
-      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol,
+      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol
     );
 
     const asset = dexEnv.assets.find(
       ({ symbol }) =>
         symbol.toLowerCase() === nativeSymbol ||
-        `u${symbol.toLowerCase()}` === nativeSymbol,
+        `u${symbol.toLowerCase()}` === nativeSymbol
     );
 
     const autoAddress =
@@ -72,7 +72,7 @@ export function useCosmosNativeBalance(
 
     const result = await client.getBalance(
       autoAddress,
-      chain.nativeAssetSymbol.toLowerCase(),
+      chain.nativeAssetSymbol.toLowerCase()
     );
 
     if (!result || !asset) {
@@ -80,12 +80,12 @@ export function useCosmosNativeBalance(
     }
 
     const tokenPrice = Number(
-      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0,
+      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0
     );
 
     const normalizedBalance = Decimal.fromAtomics(
       result.amount,
-      asset.decimals,
+      asset.decimals
     );
 
     const dollarValue = normalizedBalance.toFloatApproximation() * tokenPrice;
@@ -108,7 +108,7 @@ export function useCosmosNativeBalance(
 
 export function useEthNativeBalance(
   context: { chainId: string | number },
-  address: string,
+  address: string
 ) {
   const { data: dexEnv } = useDexEnvironment();
   const { data: tokenStats } = usePoolStatsQuery();
@@ -136,13 +136,13 @@ export function useEthNativeBalance(
     const nativeSymbol = chain.nativeAssetSymbol.toLowerCase();
 
     const stat = tokenStats.pools.find(
-      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol,
+      ({ symbol }) => symbol === nativeSymbol || `u${symbol}` === nativeSymbol
     );
 
     const asset = dexEnv.assets.find(
       ({ symbol }) =>
         symbol.toLowerCase() === nativeSymbol ||
-        `u${symbol.toLowerCase()}` === nativeSymbol,
+        `u${symbol.toLowerCase()}` === nativeSymbol
     );
 
     const result = balanceQuery.data;
@@ -152,11 +152,11 @@ export function useEthNativeBalance(
     }
 
     const tokenPrice = Number(
-      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0,
+      asset.symbol === "ROWAN" ? tokenStats.rowanUSD : stat?.priceToken ?? 0
     );
 
     const normalizedBalance = new BigNumber(result.value.toString()).shiftedBy(
-      -result.decimals,
+      -result.decimals
     );
 
     const dollarValue = normalizedBalance.multipliedBy(tokenPrice);

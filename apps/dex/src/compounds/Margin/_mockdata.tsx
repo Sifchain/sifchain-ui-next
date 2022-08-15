@@ -48,7 +48,7 @@ export function useQueryPositionToClose(params: { id: string }) {
           }
         }, 1000);
       }),
-    { enabled: Boolean(params.id), retry: false },
+    { enabled: Boolean(params.id), retry: false }
   );
 }
 
@@ -72,7 +72,7 @@ export function useQueryOpenPositions(queryParams: {
 
   const paginatedResults = results.slice(
     Number(queryParams.offset),
-    Number(queryParams.offset) + Number(queryParams.limit),
+    Number(queryParams.offset) + Number(queryParams.limit)
   );
 
   const query = () =>
@@ -124,7 +124,7 @@ export function useQueryHistory(queryParams: {
 
   const paginatedResults = results.slice(
     Number(queryParams.offset),
-    Number(queryParams.offset) + Number(queryParams.limit),
+    Number(queryParams.offset) + Number(queryParams.limit)
   );
 
   const query = () =>
@@ -164,7 +164,7 @@ function createFakeOpenPositions({
   multi?: number;
 }) {
   return Array.from({ length: Number(limit) * multi }, (_, index) =>
-    createOpenPositionsRow(index++),
+    createOpenPositionsRow(index++)
   );
 }
 function createFakeHistory({
@@ -175,7 +175,7 @@ function createFakeHistory({
   multi?: number;
 }) {
   return Array.from({ length: Number(limit) * multi }, (_, index) =>
-    createHistoryRow(index++),
+    createHistoryRow(index++)
   );
 }
 

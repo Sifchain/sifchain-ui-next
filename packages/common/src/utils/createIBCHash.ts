@@ -1,7 +1,7 @@
 export const createIBCHash = async (
   port: string,
   channelId: string,
-  denom: string,
+  denom: string
 ) => {
   const msgUint8 = new TextEncoder().encode(`${port}/${channelId}/${denom}`); // encode as (utf-8) Uint8Array
 

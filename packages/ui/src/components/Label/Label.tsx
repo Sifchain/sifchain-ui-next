@@ -28,7 +28,7 @@ export const Label = forwardRef<HTMLButtonElement, LabelProps>(
     >
       {props.children}
     </StyledLabel>
-  ),
+  )
 );
 
 Label.defaultProps = {

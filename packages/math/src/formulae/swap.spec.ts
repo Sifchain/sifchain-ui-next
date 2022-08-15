@@ -19,12 +19,12 @@ describe("swap", () => {
       const output = calculateSwapResult(
         fromAmount,
         fromCoinPoolAmount,
-        toCoinPoolAmount,
+        toCoinPoolAmount
       );
       expect(output.toPrecision(18)).toEqual(
-        new BigNumber(expected).toPrecision(18),
+        new BigNumber(expected).toPrecision(18)
       );
-    },
+    }
   );
 });
 
@@ -36,18 +36,18 @@ describe("swap with PMTP", () => {
       fromCoinPoolAmount,
       toCoinPoolAmount,
       adjustment,
-      expected,
+      expected
     ) => {
       const output = calculateSwapResult(
         fromAmount,
         fromCoinPoolAmount,
         toCoinPoolAmount,
-        adjustment,
+        adjustment
       );
       expect(output.toPrecision(18)).toEqual(
-        new BigNumber(expected).toPrecision(18),
+        new BigNumber(expected).toPrecision(18)
       );
-    },
+    }
   );
 });
 
@@ -58,12 +58,12 @@ describe("reverse swap", () => {
       const x = calculateSwapAmountNeeded(
         targetAmount,
         targetCoinPoolAmount,
-        fromCoinPoolAmount,
+        fromCoinPoolAmount
       );
       expect(x.toPrecision(18)).toEqual(
-        new BigNumber(expected).toPrecision(18),
+        new BigNumber(expected).toPrecision(18)
       );
-    },
+    }
   );
 });
 
@@ -74,12 +74,12 @@ describe("provider's fee", () => {
       const output = calculateLiquidityProviderFee(
         fromAmount,
         fromCoinPoolAmount,
-        toCoinPoolAmount,
+        toCoinPoolAmount
       );
       expect(output.toPrecision(18)).toEqual(
-        new BigNumber(expected).toPrecision(18),
+        new BigNumber(expected).toPrecision(18)
       );
-    },
+    }
   );
 });
 
@@ -89,8 +89,8 @@ describe("price impact", () => {
     (fromAmount, fromCoinPoolAmount, expected) => {
       const output = calculatePriceImpact(fromAmount, fromCoinPoolAmount);
       return expect(output.toPrecision(18)).toEqual(
-        new BigNumber(expected).toPrecision(18),
+        new BigNumber(expected).toPrecision(18)
       );
-    },
+    }
   );
 });

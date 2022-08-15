@@ -10,7 +10,7 @@ import BigNumber from "bignumber.js";
 const _calculateSwapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
+  toCoinPoolAmount: BigNumber.Value
 ) => {
   const f = new BigNumber(fromAmount);
   const fp = new BigNumber(fromCoinPoolAmount);
@@ -35,7 +35,7 @@ export const calculateSwapResult = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
   toCoinPoolAmount: BigNumber.Value,
-  adjustment?: BigNumber.Value,
+  adjustment?: BigNumber.Value
 ) => {
   const f = new BigNumber(fromAmount);
   const fp = new BigNumber(fromCoinPoolAmount);
@@ -68,7 +68,7 @@ export const calculateSwapResult = (
 export const calculateSwapAmountNeeded = (
   targetAmount: BigNumber.Value,
   targetCoinPoolAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
+  fromCoinPoolAmount: BigNumber.Value
 ) => {
   const t = new BigNumber(targetAmount);
   const tp = new BigNumber(targetCoinPoolAmount);
@@ -98,7 +98,7 @@ export const calculateSwapAmountNeeded = (
 export const calculateLiquidityProviderFee = (
   fromAmount: BigNumber.Value,
   fromCoinPoolAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
+  toCoinPoolAmount: BigNumber.Value
 ) => {
   const f = new BigNumber(fromAmount);
   const fp = new BigNumber(fromCoinPoolAmount);
@@ -120,7 +120,7 @@ export const calculateLiquidityProviderFee = (
  */
 export const calculatePriceImpact = (
   fromAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
+  fromCoinPoolAmount: BigNumber.Value
 ) => {
   const f = new BigNumber(fromAmount);
 

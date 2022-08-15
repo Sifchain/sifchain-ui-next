@@ -77,15 +77,15 @@ const HistoryTable = (props: HistoryTableProps) => {
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
     const pages = Math.ceil(
-      Number(pagination.total) / Number(pagination.limit),
+      Number(pagination.total) / Number(pagination.limit)
     );
 
     return (
       <>
         <div
           className={clsx(
-            "flex flex-row bg-gray-800 items-center",
-            props.classNamePaginationContainer,
+            "flex flex-row items-center bg-gray-800",
+            props.classNamePaginationContainer
           )}
         >
           {historyQuery.isRefetching && <PillUpdating />}
@@ -98,7 +98,7 @@ const HistoryTable = (props: HistoryTableProps) => {
             pages={pages}
             render={(page) => {
               const offset = String(
-                Number(pagination.limit) * page - Number(pagination.limit),
+                Number(pagination.limit) * page - Number(pagination.limit)
               );
               return (
                 <Link
@@ -106,7 +106,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                   scroll={false}
                 >
                   <a
-                    className={clsx("px-2 py-1 rounded", {
+                    className={clsx("rounded px-2 py-1", {
                       "bg-gray-400": pagination.offset === offset,
                     })}
                   >
@@ -118,7 +118,7 @@ const HistoryTable = (props: HistoryTableProps) => {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
+          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
@@ -129,7 +129,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   return (
-                    <th key={header.title} className="font-normal px-4 py-3">
+                    <th key={header.title} className="px-4 py-3 font-normal">
                       <Link
                         href={{
                           query: {
@@ -142,7 +142,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                       >
                         <a
                           className={clsx("flex flex-row items-center", {
-                            "text-white font-semibold": itemActive,
+                            "font-semibold text-white": itemActive,
                             "cursor-not-allowed": header.order_by === "",
                           })}
                         >
@@ -245,7 +245,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         >
                           {formatNumberAsCurrency(
                             Number(item.open_custody_amount),
-                            4,
+                            4
                           )}
                         </span>
                       ) : (
@@ -263,7 +263,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                           >
                             {formatNumberAsCurrency(
                               Number(item.realized_pnl),
-                              2,
+                              2
                             )}
                           </span>
                         </span>

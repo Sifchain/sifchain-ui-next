@@ -102,7 +102,7 @@ describe("decimalShift", () => {
       tester(`${[decimal, shift].join("\t")}\t=> ${expected}`, () => {
         expect(decimalShift(decimal, shift)).toBe(expected);
       });
-    },
+    }
   );
 });
 

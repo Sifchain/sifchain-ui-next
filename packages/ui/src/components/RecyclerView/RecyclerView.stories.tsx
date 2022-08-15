@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof RecyclerView> = (args) => {
   return (
     <RecyclerView
       as="ul"
-      className="bg-slate-900/40 text-white ring-1 divide-y-2 divide-gray-500"
+      className="divide-y-2 divide-gray-500 bg-slate-900/40 text-white ring-1"
       data={ITEMS}
       visibleRows={20}
       rowHeight={50}
@@ -27,13 +27,13 @@ const Template: ComponentStory<typeof RecyclerView> = (args) => {
       renderItem={React.memo(({ item, style }) => (
         <li
           role="button"
-          className="flex items-center justify-center hover:opacity-80 hover:bg-blue-300/60 transition-all"
+          className="flex items-center justify-center transition-all hover:bg-blue-300/60 hover:opacity-80"
           style={style}
         >
           {[
             new Array(10).fill(0).map((_, i) => (
               <div
-                className={clsx("flex-1 grid place-items-center h-full", {
+                className={clsx("grid h-full flex-1 place-items-center", {
                   "bg-indigo-900/40": (item.value + i) % 2 === 0,
                 })}
               >

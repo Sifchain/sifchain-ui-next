@@ -65,23 +65,23 @@ export type ChainConfigByNetworkEnv = Record<
 function getChainConfigWithFallbackOrThrow(
   env: NetworkEnv,
   networkKind: NetworkKind,
-  networkLookup: NetEnvChainConfigLookup,
+  networkLookup: NetEnvChainConfigLookup
 ) {
   const config = networkLookup[env];
 
   if (!config) {
     const envMatch = (["testnet", "mainnet"] as NetworkEnv[]).find(
-      (env) => networkLookup[env] !== undefined,
+      (env) => networkLookup[env] !== undefined
     );
 
     if (!envMatch) {
       throw new Error(
-        `No config found for network "${networkKind}" on env "${env}"`,
+        `No config found for network "${networkKind}" on env "${env}"`
       );
     }
 
     console.warn(
-      `[network] ${env} config fallback to ${envMatch} for ${networkKind}`,
+      `[network] ${env} config fallback to ${envMatch} for ${networkKind}`
     );
     return networkLookup[envMatch] as ChainConfig;
   }
@@ -98,7 +98,7 @@ function buildChainConfigIndex() {
           const config = getChainConfigWithFallbackOrThrow(
             env,
             networkKind as NetworkKind,
-            networkLookup,
+            networkLookup
           );
 
           return {
@@ -106,9 +106,9 @@ function buildChainConfigIndex() {
             [networkKind]: config,
           };
         },
-        {},
+        {}
       ),
-    ]),
+    ])
   ) as ChainConfigByNetworkEnv;
 }
 

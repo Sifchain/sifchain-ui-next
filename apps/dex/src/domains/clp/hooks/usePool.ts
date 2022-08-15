@@ -29,11 +29,11 @@ export function usePoolQuery(denom: string) {
                 ...poolRes.pool,
                 externalAssetBalance: Decimal.fromAtomics(
                   poolRes.pool.externalAssetBalance,
-                  externalToken.decimals,
+                  externalToken.decimals
                 ),
                 nativeAssetBalance: Decimal.fromAtomics(
                   poolRes.pool.nativeAssetBalance,
-                  env.nativeAsset.decimals,
+                  env.nativeAsset.decimals
                 ),
               },
       };
@@ -43,6 +43,6 @@ export function usePoolQuery(denom: string) {
         externalToken !== undefined &&
         poolRes !== undefined &&
         env !== undefined,
-    },
+    }
   );
 }

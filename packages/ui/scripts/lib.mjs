@@ -9,7 +9,7 @@ import { createInterface } from "readline";
 export async function prompt(
   message = "",
   options = ["y", "n"],
-  defaultAnswer = "y",
+  defaultAnswer = "y"
 ) {
   const rl = createInterface({
     input: process.stdin,

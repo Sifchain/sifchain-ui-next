@@ -53,9 +53,9 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       runCatching(() =>
         token === undefined
           ? undefined
-          : Decimal.fromUserInput(amount, token?.decimals),
+          : Decimal.fromUserInput(amount, token?.decimals)
       )[1],
-    [amount, token],
+    [amount, token]
   );
 
   const error = useMemo(() => {
@@ -69,7 +69,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
 
     if (
       amountDecimal?.isGreaterThan(
-        balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits),
+        balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits)
       )
     ) {
       return new Error("Insufficient fund");
@@ -146,7 +146,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       props,
       recipientAddress,
       sifAccounts,
-    ],
+    ]
   );
 
   useEffect(() => {
@@ -162,18 +162,20 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       onTransitionEnd={() => exportTokensMutation.reset()}
     >
       <form onSubmit={onSubmit}>
-        <fieldset className="p-4 mb-4 bg-black rounded-lg">
+        <fieldset className="mb-4 rounded-lg bg-black p-4">
           <Input
             inputClassName="text-right"
             type="number"
             label="Amount"
             secondaryLabel={`Balance: ${(
               balance?.amount?.toFloatApproximation() ?? 0
-            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            ).toLocaleString(undefined, {
+              maximumFractionDigits: 6,
+            })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),
-              [],
+              []
             )}
             leadingIcon={
               <div className="flex gap-1.5">
@@ -189,7 +191,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                           maximumFractionDigits:
                             balance.amount.fractionalDigits,
                           useGrouping: false,
-                        }),
+                        })
                       );
                     }
                   }, [balance?.amount])}
@@ -200,7 +202,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                   type="button"
                   onClick={useCallback(
                     () => setAmount((x) => balance?.amount?.toString() ?? x),
-                    [balance?.amount],
+                    [balance?.amount]
                   )}
                 >
                   Max
@@ -215,7 +217,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
           value={recipientAddress}
           disabled
         />
-        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
+        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2 [&_dd]:font-semibold">
           <div>
             <dt>Destination</dt>
             <dd>Ethereum</dd>
@@ -237,7 +239,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                 ? balance.amount
                     .minus(
                       amountDecimal ??
-                        Decimal.zero(balance.amount.fractionalDigits),
+                        Decimal.zero(balance.amount.fractionalDigits)
                     )
                     .toFloatApproximation()
                 : 0
@@ -246,7 +248,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
             </dd>
           </div>
         </dl>
-        <Button className="w-full mt-6" disabled={disabled}>
+        <Button className="mt-6 w-full" disabled={disabled}>
           {buttonMessage}
         </Button>
       </form>

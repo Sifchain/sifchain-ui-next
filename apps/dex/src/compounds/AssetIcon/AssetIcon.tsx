@@ -34,7 +34,7 @@ const AssetIcon: FC<Props> = memo((props) => {
       indexedBySymbol[props.symbol.toLowerCase()] ||
       indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
       indexedByDisplaySymbol[props.symbol.toLowerCase()],
-    [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol],
+    [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol]
   );
 
   if (!asset) {
@@ -45,22 +45,22 @@ const AssetIcon: FC<Props> = memo((props) => {
     () => (
       <RacetrackSpinnerIcon
         className={
-          (clsx(CLASS_MAP[props.size]), "place-self-center h-full w-full")
+          (clsx(CLASS_MAP[props.size]), "h-full w-full place-self-center")
         }
       />
     ),
-    [props.size],
+    [props.size]
   );
 
   return (
     <Tooltip content={asset ? `${asset.name}` : "Loading..."}>
       <figure
         className={clsx(
-          "relative grid place-items-center rounded-full bg-contain overflow-hidden bg-black ring ring-gray-900 bg-center shadow-xs shadow-black",
+          "shadow-xs relative grid place-items-center overflow-hidden rounded-full bg-black bg-contain bg-center shadow-black ring ring-gray-900",
           CLASS_MAP[props.size],
           {
             "!bg-white": asset?.hasDarkIcon,
-          },
+          }
         )}
       >
         {isLoadingAsset ? (
@@ -69,7 +69,7 @@ const AssetIcon: FC<Props> = memo((props) => {
           <AsyncImage
             src={asset?.imageUrl ?? ""}
             placeholder={placeholder}
-            className="z-10 absolute inset-0 h-full w-full"
+            className="absolute inset-0 z-10 h-full w-full"
           />
         )}
       </figure>

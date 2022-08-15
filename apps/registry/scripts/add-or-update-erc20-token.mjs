@@ -26,7 +26,7 @@ const args = arg(
 Usage: 
 
   npm run add-or-update-token [--address|-a <address>] [--envs <envs>]
-`,
+`
 );
 
 const VALID_ENVS = [
@@ -40,8 +40,8 @@ const VALID_ENVS = [
 
 const { eth } = new Web3(
   new Web3.providers.HttpProvider(
-    "https://mainnet.infura.io/v3/93cd052103fd44bd9cf855654e5804ac",
-  ),
+    "https://mainnet.infura.io/v3/93cd052103fd44bd9cf855654e5804ac"
+  )
 );
 
 async function getERC20Info(address = "") {
@@ -99,16 +99,16 @@ async function updateAssetByNetwork(network, env, assetConfig) {
   const { assets } = JSON.parse(assetRaw);
 
   const existingAsset = assets.find(
-    (asset) => asset.address === assetConfig.address,
+    (asset) => asset.address === assetConfig.address
   );
 
   if (existingAsset) {
     const answer = await prompt(
       chalk.red(
-        `asset already exists for (${network}, ${env}). \r\n Would you like to replace the config?`,
+        `asset already exists for (${network}, ${env}). \r\n Would you like to replace the config?`
       ),
       ["y", "n"],
-      "y",
+      "y"
     );
     if (answer === "n") {
       console.log("skipping asset update");
@@ -127,7 +127,7 @@ async function updateAssetByNetwork(network, env, assetConfig) {
     {
       network,
       env,
-    },
+    }
   );
 
   process.exit(0);
@@ -198,10 +198,10 @@ async function addOrUpdateToken({ address = "", envs = [] }) {
 
     const answer = await prompt(
       chalk.blue(
-        `Add "${name}" (${symbol.toUpperCase()}) to envs (${envs.join(", ")})?`,
+        `Add "${name}" (${symbol.toUpperCase()}) to envs (${envs.join(", ")})?`
       ),
       ["y", "n"],
-      "y",
+      "y"
     );
 
     if (answer !== "y") {
@@ -230,6 +230,6 @@ await addOrUpdateToken({
      * @param {string} env
      * @returns
      */
-    (env) => VALID_ENVS.includes(env),
+    (env) => VALID_ENVS.includes(env)
   ),
 });

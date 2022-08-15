@@ -34,7 +34,7 @@ const useCancelLiquidityUnlockMutation = () => {
             },
           },
         ],
-        DEFAULT_FEE,
+        DEFAULT_FEE
       );
     },
     {
@@ -62,7 +62,7 @@ const useCancelLiquidityUnlockMutation = () => {
           toast.success("Successfully cancelled unbonding request");
         }
       },
-    },
+    }
   );
 
   return {

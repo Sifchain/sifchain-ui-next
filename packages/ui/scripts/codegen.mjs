@@ -16,7 +16,7 @@ program
 program
   .command("component")
   .description(
-    "Scaffold a new component under src/components with a stories file",
+    "Scaffold a new component under src/components with a stories file"
   )
   .argument("<componentName>", "component name")
   .action(codegenComponent);
@@ -72,17 +72,17 @@ Do you want to continue?
             storiesContent,
           })
             .filter((x) => !x)
-            .join(", ")})`,
+            .join(", ")})`
         );
       }
 
       await $`mkdir ${targetDir}`;
       await $`echo ${replaceName(indexContent)} > ${targetDir}/index.ts`;
       await $`echo ${replaceName(
-        componentContent,
+        componentContent
       )} > ${targetDir}/${component}.tsx`;
       await $`echo ${replaceName(
-        storiesContent,
+        storiesContent
       )} > ${targetDir}/${component}.stories.tsx`;
 
       process.exit(0);

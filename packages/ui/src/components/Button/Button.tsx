@@ -28,17 +28,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "bg-gray-600 text-white hover:bg-gray-500 active:bg-gray-400":
             variant === "secondary",
           "ring-2 ring-white": variant === "outline",
-          "text-xs py-1 px-1.5": size === "xs",
-          "text-sm py-1.5 px-2.5": size === "sm",
-          "text-sm py-3 px-4": size === "md",
+          "py-1 px-1.5 text-xs": size === "xs",
+          "py-1.5 px-2.5 text-sm": size === "sm",
+          "py-3 px-4 text-sm": size === "md",
           "text-md py-4 px-5": size === "lg",
         },
-        className,
+        className
       )}
     >
       {props.children}
     </StyledButton>
-  ),
+  )
 );
 
 Button.defaultProps = {

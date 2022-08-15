@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         defaultOptions: {
           queries: { refetchOnWindowFocus: false },
         },
-      }),
+      })
   );
 
   return (
@@ -40,25 +40,25 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Sifchain Registry</title>
       </Head>
       <QueryClientProvider client={queryClient}>
-        <div className="antialiased bg-gradient-to-b from-gray-900 to-gray-850 min-h-screen text-gray-50 flex flex-col gap-8">
-          <header className="p-6 bg-black/90">
-            <div className="flex items-center gap-8 max-w-6xl mx-auto">
+        <div className="flex min-h-screen flex-col gap-8 bg-gradient-to-b from-gray-900 to-gray-850 text-gray-50 antialiased">
+          <header className="bg-black/90 p-6">
+            <div className="mx-auto flex max-w-6xl items-center gap-8">
               <Link href="/">
                 <div className="flex items-center gap-2" role="button">
                   <SifchainLogoSmall className="text-4xl" /> Registry
                 </div>
               </Link>
-              <div className="flex-1 flex justify-center gap-2">
+              <div className="flex flex-1 justify-center gap-2">
                 {NAV_LINKS.map(({ href, label }) => (
                   <Link key={href} href={href}>
                     <Button
                       variant="secondary"
                       size="sm"
                       className={clsx(
-                        "bg-gray-900 hover:opacity-80 transition-all duration-300",
+                        "bg-gray-900 transition-all duration-300 hover:opacity-80",
                         {
                           "bg-gray-700": currentPath === href,
-                        },
+                        }
                       )}
                     >
                       {label}
@@ -68,10 +68,10 @@ function MyApp({ Component, pageProps }: AppProps) {
               </div>
             </div>
           </header>
-          <section className="p-2 md:p-0 max-w-screen md:max-w-6xl w-full mx-auto flex-1">
+          <section className="max-w-screen mx-auto w-full flex-1 p-2 md:max-w-6xl md:p-0">
             <Component {...pageProps} />
           </section>
-          <footer className="max-w-6xl w-full mx-auto grid place-items-center p-4">
+          <footer className="mx-auto grid w-full max-w-6xl place-items-center p-4">
             © {new Date().getFullYear()} - sifchain core
           </footer>
         </div>

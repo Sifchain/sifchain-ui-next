@@ -4,14 +4,7 @@ import Link from "next/link";
 import { useState, SyntheticEvent } from "react";
 import Long from "long";
 
-import {
-  Button,
-  formatNumberAsCurrency,
-  ChevronDownIcon,
-  Modal,
-  ArrowDownIcon,
-  toast,
-} from "@sifchain/ui";
+import { Button, formatNumberAsCurrency, ChevronDownIcon, Modal, ArrowDownIcon, toast } from "@sifchain/ui";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
@@ -30,28 +23,10 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import {
-  NoResultsRow,
-  PaginationShowItems,
-  PaginationButtons,
-  PillUpdating,
-} from "./_components";
-import {
-  useQueryPositionToClose,
-  useMutationPositionToClose,
-} from "./_mockdata";
-import {
-  formatNumberAsDecimal,
-  formatNumberAsPercent,
-  formatDateRelative,
-  formatDateDistance,
-} from "./_intl";
-import {
-  findNextOrderAndSortBy,
-  SORT_BY,
-  MARGIN_POSITION,
-  QS_DEFAULTS,
-} from "./_tables";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
+import { useQueryPositionToClose, useMutationPositionToClose } from "./_mockdata";
+import { formatNumberAsDecimal, formatNumberAsPercent, formatDateRelative, formatDateDistance } from "./_intl";
+import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
 
 /**
@@ -110,18 +85,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   if (openPositionsQuery.isSuccess) {
     const { results, pagination } = openPositionsQuery.data;
-    const pages = Math.ceil(
-      Number(pagination.total) / Number(pagination.limit),
-    );
+    const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
       <>
-        <div
-          className={clsx(
-            "flex flex-row bg-gray-800 items-center",
-            classNamePaginationContainer,
-          )}
-        >
+        <div className={clsx("flex flex-row items-center bg-gray-800", classNamePaginationContainer)}>
           {openPositionsQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
@@ -131,16 +99,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <PaginationButtons
             pages={pages}
             render={(page) => {
-              const offset = String(
-                Number(pagination.limit) * page - Number(pagination.limit),
-              );
+              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
               return (
-                <Link
-                  href={{ query: { ...router.query, offset } }}
-                  scroll={false}
-                >
+                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
                   <a
-                    className={clsx("px-2 py-1 rounded", {
+                    className={clsx("rounded px-2 py-1", {
                       "bg-gray-400": pagination.offset === offset,
                     })}
                   >
@@ -152,7 +115,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
+          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
@@ -165,7 +128,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   return (
                     <th
                       key={header.title}
-                      className="font-normal px-4 py-3"
+                      className="px-4 py-3 font-normal"
                       hidden={hideColumns?.includes(header.title)}
                     >
                       {header.title === "Close Position" ? null : (
@@ -181,7 +144,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         >
                           <a
                             className={clsx("flex flex-row items-center", {
-                              "text-white font-semibold": itemActive,
+                              "font-semibold text-white": itemActive,
                               "cursor-not-allowed": header.order_by === "",
                             })}
                           >
@@ -189,8 +152,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                             {itemActive && (
                               <ChevronDownIcon
                                 className={clsx("ml-1 transition-transform", {
-                                  "-rotate-180":
-                                    pagination.sort_by === SORT_BY.ASC,
+                                  "-rotate-180": pagination.sort_by === SORT_BY.ASC,
                                 })}
                               />
                             )}
@@ -203,38 +165,23 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               </tr>
             </thead>
             <tbody className="bg-gray-850">
-              {results.length <= 0 && (
-                <NoResultsRow
-                  colSpan={headers.length}
-                  message="You have no open positions."
-                />
-              )}
+              {results.length <= 0 && <NoResultsRow colSpan={headers.length} message="You have no open positions." />}
               {results.map((item) => {
                 const amountSign = Math.sign(Number(item.custody_amount));
                 const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
 
                 return (
                   <tr key={item.id}>
-                    <td
-                      className="px-4 py-3"
-                      hidden={hideColumns?.includes("Pool")}
-                    >
-                      {isTruthy(item.pool) ? (
-                        item.pool
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
+                      {isTruthy(item.pool) ? item.pool : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? (
                         <span
                           className={clsx({
-                            "text-cyan-400":
-                              item.position === MARGIN_POSITION.UNSPECIFIED,
-                            "text-green-400":
-                              item.position === MARGIN_POSITION.LONG,
-                            "text-red-400":
-                              item.position === MARGIN_POSITION.SHORT,
+                            "text-cyan-400": item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400": item.position === MARGIN_POSITION.LONG,
+                            "text-red-400": item.position === MARGIN_POSITION.SHORT,
                           })}
                         >
                           {item.position}
@@ -258,11 +205,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.custody_asset) ? (
-                        item.custody_asset.toUpperCase()
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.custody_asset) ? item.custody_asset.toUpperCase() : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.leverage) ? (
@@ -292,30 +235,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td
-                      className="px-4 py-3"
-                      hidden={hideColumns?.includes("Unsettled Interest")}
-                    >
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Unsettled Interest")}>
                       {isTruthy(item.unsettled_interest) ? (
                         formatNumberAsCurrency(Number(item.unsettled_interest))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td
-                      className="px-4 py-3"
-                      hidden={hideColumns?.includes("Next Payment")}
-                    >
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Next Payment")}>
                       {isTruthy(item.next_payment) ? (
                         formatDateRelative(new Date(item.next_payment))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td
-                      className="px-4 py-3"
-                      hidden={hideColumns?.includes("Paid Interest")}
-                    >
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Paid Interest")}>
                       {isTruthy(item.paid_interest) ? (
                         formatNumberAsCurrency(Number(item.paid_interest))
                       ) : (
@@ -348,7 +282,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         variant="secondary"
                         as="button"
                         size="xs"
-                        className="font-normal rounded"
+                        className="rounded font-normal"
                         onClick={() =>
                           setPositionToClose({
                             isOpen: true,
@@ -387,16 +321,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   }
 
   if (openPositionsQuery.isError) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        Try again later.
-      </div>
-    );
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
   }
 
-  return (
-    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
-  );
+  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
 };
 
 export default OpenPositionsTable;
@@ -413,9 +341,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
   console.log(props.id);
   const positionToCloseQuery = useQueryPositionToClose({ id: props.id });
   const positionToCloseMutation = useCloseMTPMutation();
-  const onClickConfirmClose = async (
-    event: SyntheticEvent<HTMLButtonElement>,
-  ) => {
+  const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
       const position = await positionToCloseMutation.mutateAsync({
@@ -433,44 +359,32 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
   let content = null;
 
   if (positionToCloseQuery.isLoading) {
-    content = (
-      <p className="text-center p-4 rounded bg-slate-200 text-slate-800">
-        Loading...
-      </p>
-    );
+    content = <p className="rounded bg-slate-200 p-4 text-center text-slate-800">Loading...</p>;
   }
 
   if (positionToCloseQuery.isError) {
     const error = positionToCloseQuery.error as Error;
-    content = (
-      <p className="text-center p-4 rounded bg-red-200 text-red-800">
-        Error: {error.message}
-      </p>
-    );
+    content = <p className="rounded bg-red-200 p-4 text-center text-red-800">Error: {error.message}</p>;
   }
 
   if (positionToCloseQuery.isSuccess) {
     content = (
       <>
-        <h1 className="text-lg font-bold text-center">Review closing trade</h1>
-        <ul className="flex flex-col gap-3 mt-4">
-          <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+        <h1 className="text-center text-lg font-bold">Review closing trade</h1>
+        <ul className="mt-4 flex flex-col gap-3">
+          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
             <AssetIcon symbol="rowan" network="sifchain" size="sm" />
             <span className="ml-1">ROWAN</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Entry price
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
               <span>$.005</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Opening position
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$399,999</span>
                 <AssetIcon symbol="rowan" network="sifchain" size="sm" />
@@ -479,17 +393,13 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Opening value
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
               <span>$1,999.50</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Total interest paid
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$399,999</span>
                 <AssetIcon symbol="rowan" network="sifchain" size="sm" />
@@ -498,44 +408,36 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Current position
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <span>299,900 ROWAN</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Current price
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Current price</span>
               <span>$.05</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Current value
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Current value</span>
               <span>$14,995</span>
             </div>
           </li>
         </ul>
-        <div className="flex justify-center items-center my-[-1em] relative">
-          <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800">
+        <div className="relative my-[-1em] flex items-center justify-center">
+          <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
             <ArrowDownIcon className="text-lg" />
           </div>
         </div>
         <ul className="flex flex-col gap-3">
-          <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
             <AssetIcon symbol="usdc" network="sifchain" size="sm" />
             <span className="ml-1">USDC</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Closing position
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$14,995</span>
                 <AssetIcon symbol="usdc" network="sifchain" size="sm" />
@@ -553,17 +455,13 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Price Impact
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
               <span>10%</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                Resulting amount
-              </span>
+              <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">$14,990</span>
                 <AssetIcon symbol="usdc" network="sifchain" size="sm" />
@@ -578,22 +476,14 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </li>
         </ul>
         {positionToCloseMutation.isLoading ? (
-          <p className="text-center rounded py-3 px-4 mt-4 bg-indigo-200 text-indigo-800">
-            Closing position...
-          </p>
+          <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
-          <Button
-            variant="primary"
-            as="button"
-            size="md"
-            className="rounded w-full mt-4"
-            onClick={onClickConfirmClose}
-          >
+          <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
             Confirm close
           </Button>
         )}
         {positionToCloseMutation.isError ? (
-          <p className="text-center p-4 mt-4 rounded bg-red-200 text-red-800">
+          <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
             <span className="mr-1">An error occurred:</span>
             <span>{(positionToCloseMutation.error as Error).message}</span>
           </p>
@@ -603,12 +493,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
   }
 
   return (
-    <Modal
-      className="text-sm"
-      isOpen={props.isOpen}
-      onTransitionEnd={props.onTransitionEnd}
-      onClose={props.onClose}
-    >
+    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={props.onTransitionEnd} onClose={props.onClose}>
       {content}
     </Modal>
   );

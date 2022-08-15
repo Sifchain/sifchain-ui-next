@@ -80,7 +80,7 @@ export async function getInputValue(selector) {
 export async function assertWaitedValue(
   selector,
   expectedValue,
-  timeout = 30000,
+  timeout = 30000
 ) {
   const value = await retry()
     .fn(() => getInputValue(selector))

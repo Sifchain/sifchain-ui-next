@@ -27,12 +27,12 @@ export type SwapConfirmationModalProps = {
 };
 
 export const ConfirmationLineItem = (
-  props: PropsWithChildren<{ className?: string }>,
+  props: PropsWithChildren<{ className?: string }>
 ) => (
   <li
     className={clsx(
-      "flex justify-between align-middle px-4 py-3 rounded-lg",
-      props.className,
+      "flex justify-between rounded-lg px-4 py-3 align-middle",
+      props.className
     )}
   >
     {props.children}
@@ -44,7 +44,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
     <Modal title={props.title} isOpen={props.show} onClose={props.onClose}>
       <ul>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
-          <div className="flex align-middle gap-1">
+          <div className="flex gap-1 align-middle">
             <AssetIcon
               network="sifchain"
               symbol={props.fromCoin.denom}
@@ -54,8 +54,8 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           </div>
           <span>{props.fromCoin.amount}</span>
         </ConfirmationLineItem>
-        <div className="flex justify-center my-[-1.25em]">
-          <div className="bg-gray-900 rounded-full p-3 border-2 border-gray-800">
+        <div className="my-[-1.25em] flex justify-center">
+          <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
             <ArrowDownIcon width="1em" height="1em" />
           </div>
         </div>
@@ -68,7 +68,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           >
             <ConfirmationLineItem>
               <span>Swap result</span>
-              <div className="flex align-middle gap-1 font-bold">
+              <div className="flex gap-1 align-middle font-bold">
                 {props.toCoin.amount}
                 <AssetIcon
                   network="sifchain"
@@ -88,7 +88,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           </Transition>
         </div>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
-          <div className="flex align-middle gap-1">
+          <div className="flex gap-1 align-middle">
             <AssetIcon
               network="sifchain"
               symbol={props.toCoin.denom}
@@ -104,7 +104,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
         </ConfirmationLineItem>
         <ConfirmationLineItem>
           <span>Minimum received</span>
-          <div className="flex align-middle gap-1 font-bold">
+          <div className="flex gap-1 align-middle font-bold">
             {props.toCoin.minimumAmount}
             <AssetIcon
               network="sifchain"
@@ -116,7 +116,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
       </ul>
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
-      <Button className="w-full mt-8" {...props.confirmationButtonProps} />
+      <Button className="mt-8 w-full" {...props.confirmationButtonProps} />
     </Modal>
   );
 };

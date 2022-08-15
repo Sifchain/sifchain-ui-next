@@ -41,11 +41,11 @@ export const useLiquidityProviderQuery = (denom: string) => {
             ...lpRes,
             externalAssetBalance: Decimal.fromAtomics(
               lpRes.externalAssetBalance,
-              indexedByDenom[denom]?.decimals ?? 0,
+              indexedByDenom[denom]?.decimals ?? 0
             ),
             nativeAssetBalance: Decimal.fromAtomics(
               lpRes.nativeAssetBalance,
-              env?.nativeAsset.decimals ?? 0,
+              env?.nativeAsset.decimals ?? 0
             ),
             liquidityProvider:
               lpRes.liquidityProvider === undefined
@@ -63,7 +63,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
                           rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
                             0,
                           blockHeight ?? 0,
-                          blockTime ?? 0,
+                          blockTime ?? 0
                         ),
                       })),
                   },
@@ -78,7 +78,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
         rewardParamsRes !== undefined &&
         blockTime !== undefined &&
         blockHeight !== undefined,
-    },
+    }
   );
 };
 
@@ -113,11 +113,11 @@ export const useLiquidityProvidersQuery = () => {
               externalAssetBalance: Decimal.fromAtomics(
                 x.externalAssetBalance,
                 indexedByDenom[x.liquidityProvider?.asset?.symbol ?? ""]
-                  ?.decimals ?? 0,
+                  ?.decimals ?? 0
               ),
               nativeAssetBalance: Decimal.fromAtomics(
                 x.nativeAssetBalance,
-                env?.nativeAsset.decimals ?? 0,
+                env?.nativeAsset.decimals ?? 0
               ),
               liquidityProvider:
                 x.liquidityProvider === undefined
@@ -135,7 +135,7 @@ export const useLiquidityProvidersQuery = () => {
                             rewardParamsRes?.params?.liquidityRemovalCancelPeriod.toNumber() ??
                               0,
                             blockHeight ?? 0,
-                            blockTime ?? 0,
+                            blockTime ?? 0
                           ),
                         })),
                     },
@@ -151,6 +151,6 @@ export const useLiquidityProvidersQuery = () => {
         rewardParamsRes !== undefined &&
         blockTime !== undefined &&
         blockHeight !== undefined,
-    },
+    }
   );
 };

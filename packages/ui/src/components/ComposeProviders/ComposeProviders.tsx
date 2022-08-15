@@ -13,7 +13,7 @@ export const ComposeProviders: FC<ComposeProvidersProps> = ({
       (acc, Provider) => (
         <Provider>{acc}</Provider>
       ),
-      children,
+      children
     )}
   </>
 );

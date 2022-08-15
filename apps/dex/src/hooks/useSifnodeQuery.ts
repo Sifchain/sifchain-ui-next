@@ -34,16 +34,13 @@ export default function useSifnodeQuery<
   P extends keyof PublicSifnodeClient[T],
   M = PublicSifnodeClient[T][P],
   F = M extends () => any ? ReturnType<M> : never,
-  Res = Awaited<F>,
+  Res = Awaited<F>
 >(
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<PublicSifnodeClient[T][P]>,
-  options: Omit<
-    UseQueryOptions<Res, unknown, Res>,
-    "queryKey" | "queryFn"
-  > = {},
+  options: Omit<UseQueryOptions<Res, unknown, Res>, "queryKey" | "queryFn"> = {}
 ) {
   const { data: client } = useQueryClient();
 
@@ -64,7 +61,7 @@ export default function useSifnodeQuery<
 
       if (typeof method !== "function") {
         throw new Error(
-          `[useSifnodeQuery] Method ${String(methodName)} is not a function`,
+          `[useSifnodeQuery] Method ${String(methodName)} is not a function`
         );
       }
 
@@ -77,6 +74,6 @@ export default function useSifnodeQuery<
           : Boolean(client),
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
-    },
+    }
   );
 }

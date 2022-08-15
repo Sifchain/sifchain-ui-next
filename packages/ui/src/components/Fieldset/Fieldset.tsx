@@ -14,12 +14,12 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
     return (
       <StyledWrapper {...props} ref={ref}>
         {label && (
-          <legend className="font-semibold text-gray-200 block translate-y-10 pb-6">
+          <legend className="block translate-y-10 pb-6 font-semibold text-gray-200">
             {label}
           </legend>
         )}
         {children}
       </StyledWrapper>
     );
-  },
+  }
 );

@@ -23,7 +23,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
         defaultOptions: {
           queries: { refetchOnWindowFocus: false },
         },
-      }),
+      })
   );
 
   return (

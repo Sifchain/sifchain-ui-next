@@ -34,7 +34,7 @@ const useUnlockLiquidityMutation = () => {
             },
           },
         ],
-        DEFAULT_FEE,
+        DEFAULT_FEE
       );
     },
     {
@@ -61,7 +61,7 @@ const useUnlockLiquidityMutation = () => {
           queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
-    },
+    }
   );
 
   return {

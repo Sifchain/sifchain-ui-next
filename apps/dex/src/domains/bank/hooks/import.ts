@@ -46,19 +46,19 @@ export const useImportTokensMutation = () => {
         const contract = new ethers.Contract(
           variables.tokenAddress,
           erc20Abi,
-          signer,
+          signer
         );
 
         await contract["approve"](
           env?.bridgebankContractAddress,
-          variables.amount.amount,
+          variables.amount.amount
         ).then((x: ContractTransaction) => x.wait());
 
         return evmSdk.peggy
           .sendTokensToCosmos(
             ethers.utils.toUtf8Bytes(variables.recipientAddress),
             variables.tokenAddress,
-            variables.amount.amount,
+            variables.amount.amount
           )
           .then((x) => x.wait());
       } else {
@@ -73,7 +73,7 @@ export const useImportTokensMutation = () => {
 
         if (counterPartySigningStargateClient === undefined) {
           throw new Error(
-            `Could not get wallet connection for ${variables.chainId}`,
+            `Could not get wallet connection for ${variables.chainId}`
           );
         }
 
@@ -90,7 +90,7 @@ export const useImportTokensMutation = () => {
           undefined,
           getUnixTime(addMinutes(new Date(), 15)),
           DEFAULT_FEE,
-          variables.memo,
+          variables.memo
         );
       }
     },
@@ -126,6 +126,6 @@ export const useImportTokensMutation = () => {
           }
         }
       },
-    },
+    }
   );
 };

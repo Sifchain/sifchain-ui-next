@@ -21,7 +21,7 @@ Default.args = {
 export const Inline: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
-      <ol className="list-decimal pl-4 mb-4">
+      <ol className="mb-4 list-decimal pl-4">
         <li>TokenSelctor respects the parent width</li>
         <li>Adds text ellipsis when overflow</li>
         <li>Do not break text in new line</li>
@@ -39,11 +39,11 @@ Inline.args = {
 };
 
 export const WithConstrainedParent: ComponentStory<typeof TokenSelector> = (
-  args,
+  args
 ) => {
   return (
     <div className="text-gray-200">
-      <ol className="list-decimal pl-4 mb-4">
+      <ol className="mb-4 list-decimal pl-4">
         <li>TokenSelctor respects the parent width</li>
         <li>Adds text ellipsis when overflow</li>
         <li>Do not break text in new line</li>
@@ -64,7 +64,7 @@ WithConstrainedParent.args = {
 export const WithMaxWidth: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
-      <ol className="list-decimal pl-4 mb-4">
+      <ol className="mb-4 list-decimal pl-4">
         <li>TokenSelctor respects the parent width</li>
         <li>Adds text ellipsis when overflow</li>
         <li>Do not break text in new line</li>
@@ -86,7 +86,7 @@ export const SizeAndButtonCustomization: ComponentStory<
 > = (args) => {
   return (
     <div className="text-gray-200">
-      <ol className="list-decimal pl-4 mb-4">
+      <ol className="mb-4 list-decimal pl-4">
         <li>You can add extra classes to style the button container</li>
         <li>Change the size of icons and text via `size` property</li>
       </ol>
@@ -105,7 +105,7 @@ SizeAndButtonCustomization.args = {
 export const Readonly: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
-      <ol className="list-decimal pl-4 mb-4">
+      <ol className="mb-4 list-decimal pl-4">
         <li>You use `readonly` option to disable interactivity</li>
         <li>The icon will change to a lock, indicating you can't change it</li>
       </ol>

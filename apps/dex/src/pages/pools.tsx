@@ -36,10 +36,10 @@ const usePoolsPageData = () => {
 
         const liquidityProvider =
           liquidityProviderQuery.data?.liquidityProviderData.find(
-            (y) => y.liquidityProvider?.asset?.symbol === token?.denom,
+            (y) => y.liquidityProvider?.asset?.symbol === token?.denom
           );
         const pool = poolsQuery.data?.pools.find(
-          (y) => y.externalAsset?.symbol === token?.denom,
+          (y) => y.externalAsset?.symbol === token?.denom
         );
 
         if (
@@ -55,11 +55,11 @@ const usePoolsPageData = () => {
           };
 
         const rowanPoolValue = new BigNumber(
-          tokenStatsQuery.data.rowanUSD ?? 0,
+          tokenStatsQuery.data.rowanUSD ?? 0
         ).times(liquidityProvider.nativeAssetBalance.toString());
 
         const externalAssetPoolValue = new BigNumber(x.priceToken ?? 0).times(
-          liquidityProvider.externalAssetBalance.toString(),
+          liquidityProvider.externalAssetBalance.toString()
         );
 
         const currentUnlockRequest =
@@ -69,7 +69,7 @@ const usePoolsPageData = () => {
           ...x,
           denom: token?.denom,
           liquidityProviderPoolShare: new BigNumber(
-            liquidityProvider.liquidityProvider.liquidityProviderUnits,
+            liquidityProvider.liquidityProvider.liquidityProviderUnits
           )
             .div(pool.poolUnits)
             .toNumber(),
@@ -90,7 +90,7 @@ const usePoolsPageData = () => {
       tokenStatsQuery.data?.pools,
       tokenStatsQuery.data?.rowanUSD,
       tokenStatsQuery.isLoading,
-    ],
+    ]
   );
 };
 
@@ -98,7 +98,7 @@ const PoolsPage: NextPage = () => {
   const router = useRouter();
   const { data } = usePoolsPageData();
   const searchQuery = decodeURIComponent(
-    getFirstQueryValue(router.query["q"]) ?? "",
+    getFirstQueryValue(router.query["q"]) ?? ""
   );
 
   const filteredPools = useMemo(
@@ -106,30 +106,30 @@ const PoolsPage: NextPage = () => {
       !searchQuery
         ? data
         : data?.filter((x) =>
-            x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+            x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase())
           ),
-    [data, searchQuery],
+    [data, searchQuery]
   );
 
   const filteredAndSortedPools = useMemo(
     () =>
       sort(
         descend((x) => x.liquidityProviderPoolValue),
-        filteredPools ?? [],
+        filteredPools ?? []
       ),
-    [filteredPools],
+    [filteredPools]
   );
 
   const removeLiquidityMutation = useRemoveLiquidityMutation();
   const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
 
   const selectedDenom = Maybe.of(
-    getFirstQueryValue(router.query["denom"]),
+    getFirstQueryValue(router.query["denom"])
   ).mapOrUndefined(decodeURIComponent);
 
   return (
     <>
-      <section className="flex-1 w-full bg-black p-6 md:py-12 md:px-24">
+      <section className="w-full flex-1 bg-black p-6 md:py-12 md:px-24">
         <header className="mb-10 md:mb-12">
           <div className="flex items-center justify-between pb-6 md:pb-8">
             <h2 className="text-2xl font-bold text-white">Pools</h2>
@@ -151,10 +151,10 @@ const PoolsPage: NextPage = () => {
                           },
                     },
                     undefined,
-                    { shallow: true },
+                    { shallow: true }
                   );
                 },
-                [router],
+                [router]
               )}
             />
           </div>
@@ -162,10 +162,10 @@ const PoolsPage: NextPage = () => {
             {filteredAndSortedPools?.map((x, index) => (
               <details
                 key={index}
-                className="border-2 border-stone-800 rounded-md overflow-hidden [&[open]_.marker]:rotate-180"
+                className="overflow-hidden rounded-md border-2 border-stone-800 [&[open]_.marker]:rotate-180"
               >
-                <summary className="flex flex-col p-3 bg-gray-800">
-                  <header className="flex justify-between items-center mb-2">
+                <summary className="flex flex-col bg-gray-800 p-3">
+                  <header className="mb-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="flex items-center [&>*:first-child]:-mr-4">
                         <AssetIcon
@@ -187,7 +187,7 @@ const PoolsPage: NextPage = () => {
                       <ChevronDownIcon />
                     </button>
                   </header>
-                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right">
+                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold">
                     <dt>My pool value</dt>
                     <dd>
                       {x.liquidityProviderPoolValue?.toLocaleString(undefined, {
@@ -206,7 +206,7 @@ const PoolsPage: NextPage = () => {
                   </dl>
                 </summary>
                 <div className="p-3">
-                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dt]:text-gray-300 [&>dd]:font-semibold [&>dd]:text-right">
+                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dt]:text-gray-300 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold">
                     <dt>TVL</dt>
                     <dd>
                       {x.poolTVL?.toLocaleString(undefined, {
@@ -245,8 +245,8 @@ const PoolsPage: NextPage = () => {
                       if (!isNilOrWhitespace(x.denom)) {
                         router.push(
                           `/pools?action=add&denom=${encodeURIComponent(
-                            x.denom,
-                          )}`,
+                            x.denom
+                          )}`
                         );
                       }
                     }}
@@ -254,7 +254,7 @@ const PoolsPage: NextPage = () => {
                     <PoolsIcon /> Pool
                   </Button>
                   {x.unlock && (
-                    <div className="flex gap-3 mt-2">
+                    <div className="mt-2 flex gap-3">
                       <Button
                         className="flex-1"
                         variant="outline"
@@ -314,16 +314,16 @@ const PoolsPage: NextPage = () => {
                 query: { ...router.query, denom: encodeURIComponent(denom) },
               },
               undefined,
-              { shallow: true },
+              { shallow: true }
             ),
-          [router],
+          [router]
         )}
         onChangeAction={useCallback(
           (action) =>
             router.replace({ query: { ...router.query, action } }, undefined, {
               shallow: true,
             }),
-          [router],
+          [router]
         )}
       />
     </>

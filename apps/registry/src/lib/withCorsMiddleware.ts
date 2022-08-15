@@ -16,7 +16,7 @@ export const DEFAULT_CORS_OPTIONS: CorsOptions = {
  */
 export default function withCorsMiddleware(
   handler: NextApiHandler,
-  options = DEFAULT_CORS_OPTIONS,
+  options = DEFAULT_CORS_OPTIONS
 ): NextApiHandler {
   const corsMiddleware = initMiddleware(Cors(options));
 

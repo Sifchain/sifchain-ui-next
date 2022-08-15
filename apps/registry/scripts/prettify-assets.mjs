@@ -15,13 +15,13 @@ const args = arg(
 Usage: 
 
   npm run prettify-assets [--network|-n <"ethereum" | "sifchain">] [--env|-e <"devnet" | "testnet" | "mainnet">]
-`,
+`
 );
 
 async function readAssetsFile(env = "mainnet", network = "ethereum") {
   const file = await fs.readFile(
     `./public/config/networks/${network}/assets.${network}.${env}.json`,
-    "utf-8",
+    "utf-8"
   );
   return JSON.parse(file);
 }
@@ -29,7 +29,7 @@ async function readAssetsFile(env = "mainnet", network = "ethereum") {
 async function writeAssetsFile(
   assets = [],
   env = "mainnet",
-  network = "ethereum",
+  network = "ethereum"
 ) {
   const currentAssets = await readAssetsFile(env, network);
 
@@ -37,7 +37,7 @@ async function writeAssetsFile(
 
   await fs.writeFile(
     `./public/config/networks/${network}/assets.${network}.${env}.json`,
-    fileContent,
+    fileContent
   );
 }
 
@@ -56,7 +56,7 @@ async function prettify({ env, network }) {
   const answer = await prompt(
     chalk.blue(`Would you like to prettify ${assets.length} asset configs?`),
     ["y", "n"],
-    "y",
+    "y"
   );
 
   if (answer !== "y") {
@@ -72,14 +72,14 @@ async function prettify({ env, network }) {
         ...acc,
         [key]: transform(key, asset[key]),
       }),
-      {},
+      {}
     );
   });
 
   console.log(
     chalk.blue(
-      `Prettifying assets file ${network}/assets.${network}.${env}.json`,
-    ),
+      `Prettifying assets file ${network}/assets.${network}.${env}.json`
+    )
   );
 
   await writeAssetsFile(nextAssets, env, network);

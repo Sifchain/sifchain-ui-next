@@ -60,23 +60,23 @@ import {
 
 const calculateOpenPosition = (
   positionTokenAmount: number,
-  positionPriceUsd: number,
+  positionPriceUsd: number
 ) => {
   return positionTokenAmount / positionPriceUsd;
 };
 const calculateBorrowAmount = (
   collateralTokenAmount: number,
-  leverage: number,
+  leverage: number
 ) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
 };
 const withLeverage = (
   rawReceiving: string,
   decimals: number,
-  leverage: string,
+  leverage: string
 ) =>
   BigNumber(
-    Decimal.fromAtomics(rawReceiving, decimals).toString(),
+    Decimal.fromAtomics(rawReceiving, decimals).toString()
   ).multipliedBy(leverage);
 
 /**
@@ -132,7 +132,7 @@ const TradeCompound: NextPage = () => {
     const { params } = govParams.data;
     const allowedPools = params.pools;
     const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
-      allowedPools.includes(pool.asset.symbol.toLowerCase()),
+      allowedPools.includes(pool.asset.symbol.toLowerCase())
     );
     enhancedRowan.data.priceUsd = rowanPrice.data;
     // console.log(addressList);
@@ -276,7 +276,7 @@ const Trade = (props: TradeProps) => {
 
   const maxLeverageDecimal = Decimal.fromAtomics(
     props.govParams.leverageMax,
-    ROWAN.decimals,
+    ROWAN.decimals
   );
 
   /**
@@ -308,10 +308,10 @@ const Trade = (props: TradeProps) => {
     () =>
       selectedPosition
         ? findBalanceBySymbolOrDenom(
-            selectedPosition.denom ?? selectedPosition.symbol,
+            selectedPosition.denom ?? selectedPosition.symbol
           )
         : undefined,
-    [findBalanceBySymbolOrDenom, selectedPosition],
+    [findBalanceBySymbolOrDenom, selectedPosition]
   );
 
   const positionDollarValue = useMemo(() => {
@@ -336,10 +336,10 @@ const Trade = (props: TradeProps) => {
     () =>
       selectedCollateral
         ? findBalanceBySymbolOrDenom(
-            selectedCollateral.denom ?? selectedCollateral.symbol,
+            selectedCollateral.denom ?? selectedCollateral.symbol
           )
         : undefined,
-    [findBalanceBySymbolOrDenom, selectedCollateral],
+    [findBalanceBySymbolOrDenom, selectedCollateral]
   );
 
   const collateralDollarValue = useMemo(() => {
@@ -392,7 +392,7 @@ const Trade = (props: TradeProps) => {
   const computedBorrowAmount = useMemo(() => {
     return calculateBorrowAmount(
       Number(inputCollateral.value),
-      Number(inputLeverage.value),
+      Number(inputLeverage.value)
     );
   }, [inputCollateral.value, inputLeverage.value]);
 
@@ -406,17 +406,17 @@ const Trade = (props: TradeProps) => {
   }, [checkbox01, checkbox02]);
 
   const onClickConfirmOpenPosition = async (
-    event: SyntheticEvent<HTMLButtonElement>,
+    event: SyntheticEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     try {
       const { atomics: collateralAmount } = Decimal.fromUserInput(
         inputCollateral.value,
-        selectedCollateral.decimals,
+        selectedCollateral.decimals
       );
       const { atomics: leverage } = Decimal.fromUserInput(
         inputLeverage.value,
-        ROWAN.decimals,
+        ROWAN.decimals
       );
 
       const req = await confirmOpenPositionMutation.mutateAsync({
@@ -437,41 +437,41 @@ const Trade = (props: TradeProps) => {
   const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
-    inputCollateral.value,
+    inputCollateral.value
   );
 
   const openPositionFee = useMemo(
     () =>
       Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation(),
+        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation()
       ),
-    [swapSimulation],
+    [swapSimulation]
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
     selectedPosition.denom ?? selectedPosition.symbol,
     selectedCollateral.denom ?? selectedCollateral.symbol,
-    inputPosition.value,
+    inputPosition.value
   );
 
   const calculatePosition = (
     inputAmount: string,
-    leverage = inputLeverage.value,
+    leverage = inputLeverage.value
   ) =>
     withLeverage(
       calculateSwap(inputAmount)?.rawReceiving || "0",
       selectedPosition.decimals,
-      leverage,
+      leverage
     );
 
   const calculateCollateral = (
     inputAmount: string,
-    leverage = inputLeverage.value,
+    leverage = inputLeverage.value
   ) =>
     withLeverage(
       calculateReverseSwap(inputAmount)?.rawReceiving || "0",
       selectedCollateral.decimals,
-      leverage,
+      leverage
     );
 
   /**
@@ -538,13 +538,13 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "change",
-      maxLeverageDecimal.toString(),
+      maxLeverageDecimal.toString()
     );
 
     if (!payload.error) {
       const positionInputAmount = calculatePosition(
         inputCollateral.value,
-        payload.value,
+        payload.value
       );
 
       setInputPosition({
@@ -561,7 +561,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "blur",
-      maxLeverageDecimal.toString(),
+      maxLeverageDecimal.toString()
     );
     setInputLeverage(payload);
   };
@@ -612,7 +612,7 @@ const Trade = (props: TradeProps) => {
       undefined,
       {
         scroll: false,
-      },
+      }
     );
   };
 
@@ -634,7 +634,7 @@ const Trade = (props: TradeProps) => {
       <Head>
         <title>Sichain Dex - Margin - Trade</title>
       </Head>
-      <section className="bg-gray-800 border border-gold-800 rounded mt-4 text-xs">
+      <section className="mt-4 rounded border border-gold-800 bg-gray-800 text-xs">
         {poolActive ? (
           <PoolOverview
             pool={poolActive}
@@ -643,28 +643,28 @@ const Trade = (props: TradeProps) => {
             onChangePoolSelector={onChangePoolSelector}
           />
         ) : (
-          <div className="text-4xl flex items-center justify-center p-4 rounded">
+          <div className="flex items-center justify-center rounded p-4 text-4xl">
             <RacetrackSpinnerIcon />
           </div>
         )}
       </section>
-      <section className="mt-4 text-xs grid grid-cols-7 gap-x-5">
-        <aside className="bg-gray-800 border border-gold-800 rounded col-span-2 flex flex-col">
-          <ul className="border-b border-gold-800 flex flex-col gap-0 p-4">
+      <section className="mt-4 grid grid-cols-7 gap-x-5 text-xs">
+        <aside className="col-span-2 flex flex-col rounded border border-gold-800 bg-gray-800">
+          <ul className="flex flex-col gap-0 border-b border-gold-800 p-4">
             <li className="flex flex-col">
-              <div className="text-xs mb-1 flex flex-row">
+              <div className="mb-1 flex flex-row text-xs">
                 <span className="mr-auto">Collateral</span>
                 <span className="text-gray-300">
                   Balance:
                   <span className="ml-1">
                     {formatNumberAsDecimal(
-                      collateralBalance?.amount?.toFloatApproximation() ?? 0,
+                      collateralBalance?.amount?.toFloatApproximation() ?? 0
                     )}
                   </span>
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
                   {selectedCollateral && selectedCollateral.denom ? (
                     <>
                       <AssetIcon
@@ -688,20 +688,20 @@ const Trade = (props: TradeProps) => {
                   onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    "rounded border-0 bg-gray-700 text-right text-sm font-semibold",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputCollateral.error,
-                    },
+                    }
                   )}
                 />
               </div>
               {inputCollateral.error ? (
-                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded my-2">
+                <span className="radious col-span-6 my-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
                   {inputCollateral.error}
                 </span>
               ) : (
-                <span className="text-gray-300 text-right mt-1">
+                <span className="mt-1 text-right text-gray-300">
                   <HtmlUnicode name="EqualsSign" />
                   <span className="ml-1">
                     {formatNumberAsCurrency(collateralDollarValue, 4)}
@@ -709,33 +709,33 @@ const Trade = (props: TradeProps) => {
                 </span>
               )}
             </li>
-            <li className="flex justify-center items-center py-5 relative">
+            <li className="relative flex items-center justify-center py-5">
               <div className="h-[2px] w-full bg-gray-900" />
               <button
                 type="button"
                 onClick={onClickSwitch}
                 className={clsx(
-                  "bg-gray-900 rounded-full p-3 border-2 border-gray-800 absolute text-lg transition-transform hover:scale-125",
-                  switchCollateralAndPosition ? "rotate-180" : "rotate-0",
+                  "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
+                  switchCollateralAndPosition ? "rotate-180" : "rotate-0"
                 )}
               >
                 <SwapIcon />
               </button>
             </li>
             <li className="flex flex-col">
-              <div className="text-xs mb-1 flex flex-row">
+              <div className="mb-1 flex flex-row text-xs">
                 <span className="mr-auto">Position</span>
                 <span className="text-gray-300">
                   Balance:
                   <span className="ml-1">
                     {formatNumberAsDecimal(
-                      positionBalance?.amount?.toFloatApproximation() ?? 0,
+                      positionBalance?.amount?.toFloatApproximation() ?? 0
                     )}
                   </span>
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row gap-2.5 items-center text-sm font-semibold p-2 bg-gray-700 text-white rounded">
+                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
                   {selectedPosition && selectedPosition.denom ? (
                     <>
                       <AssetIcon
@@ -757,20 +757,20 @@ const Trade = (props: TradeProps) => {
                   onBlur={onBlurPosition}
                   onChange={onChangePosition}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0 font-semibold",
+                    "rounded border-0 bg-gray-700 text-right text-sm font-semibold",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputPosition.error,
-                    },
+                    }
                   )}
                 />
               </div>
               {inputPosition.error ? (
-                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded mt-2">
+                <span className="radious col-span-6 mt-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
                   {inputPosition.error}
                 </span>
               ) : (
-                <span className="text-gray-300 text-right mt-1">
+                <span className="mt-1 text-right text-gray-300">
                   <HtmlUnicode name="EqualsSign" />
                   <span className="ml-1">
                     {formatNumberAsCurrency(positionDollarValue, 4)}
@@ -779,17 +779,17 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="mt-2 grid grid-cols-6 gap-2">
-              <p className="col-span-3 self-end text-sm font-semibold p-2 text-center bg-gray-500 text-gray-200 rounded">
+              <p className="col-span-3 self-end rounded bg-gray-500 p-2 text-center text-sm font-semibold text-gray-200">
                 Long
               </p>
               <div className="col-span-3 flex flex-col">
-                <span className="text-xs text-gray-300 mb-1">
+                <span className="mb-1 text-xs text-gray-300">
                   <span className="mr-1">Leverage</span>
                   <span className="text-gray-400">
                     <span>Up to </span>
                     {formatNumberAsDecimal(
                       maxLeverageDecimal.toFloatApproximation(),
-                      2,
+                      2
                     )}
                     x
                   </span>
@@ -804,16 +804,16 @@ const Trade = (props: TradeProps) => {
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
                   className={clsx(
-                    "text-right text-sm bg-gray-700 rounded border-0",
+                    "rounded border-0 bg-gray-700 text-right text-sm",
                     {
                       "ring ring-red-600 focus:ring focus:ring-red-600":
                         inputLeverage.error,
-                    },
+                    }
                   )}
                 />
               </div>
               {Boolean(inputLeverage.error) && (
-                <span className="bg-red-200 radious border-red-700 border text-red-700 col-span-6 text-right p-2 rounded">
+                <span className="radious col-span-6 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
                   {inputLeverage.error}
                 </span>
               )}
@@ -827,8 +827,8 @@ const Trade = (props: TradeProps) => {
             <>
               <div className="p-4">
                 <p className="text-center text-base">Review trade</p>
-                <ul className="flex flex-col gap-3 mt-4">
-                  <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+                <ul className="mt-4 flex flex-col gap-3">
+                  <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
                     <AssetIcon
                       symbol={selectedCollateral.denom}
                       network="sifchain"
@@ -847,7 +847,7 @@ const Trade = (props: TradeProps) => {
                         <span className="mr-1">
                           {formatNumberAsDecimal(
                             Number(inputCollateral.value),
-                            4,
+                            4
                           )}
                         </span>
                         <AssetIcon
@@ -876,8 +876,8 @@ const Trade = (props: TradeProps) => {
                     </div>
                   </li>
                 </ul>
-                <ul className="flex flex-col gap-3 mt-8">
-                  <li className="bg-gray-850 text-base font-semibold py-2 px-4 rounded-lg flex flex-row items-center">
+                <ul className="mt-8 flex flex-col gap-3">
+                  <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
                     <AssetIcon
                       symbol={selectedPosition.denom}
                       network="sifchain"
@@ -906,7 +906,7 @@ const Trade = (props: TradeProps) => {
                         <span className="mr-1">
                           {formatNumberAsDecimal(
                             Number(inputPosition.value),
-                            4,
+                            4
                           )}
                         </span>
                         <AssetIcon
@@ -926,7 +926,7 @@ const Trade = (props: TradeProps) => {
                         <HtmlUnicode name="MinusSign" />
                         <span>
                           {formatNumberAsCurrency(
-                            openPositionFee * selectedPosition.priceUsd,
+                            openPositionFee * selectedPosition.priceUsd
                           )}
                         </span>
                       </div>
@@ -943,10 +943,10 @@ const Trade = (props: TradeProps) => {
                             Number(inputPosition.value) > 0
                               ? calculateOpenPosition(
                                   Number(inputPosition.value),
-                                  Number(selectedPosition.priceUsd),
+                                  Number(selectedPosition.priceUsd)
                                 ) -
                                   openPositionFee * selectedPosition.priceUsd
-                              : 0,
+                              : 0
                           )}
                         </span>
                         <AssetIcon
@@ -967,9 +967,9 @@ const Trade = (props: TradeProps) => {
                           {formatNumberAsPercent(
                             Decimal.fromAtomics(
                               poolActive.interestRate,
-                              ROWAN.decimals,
+                              ROWAN.decimals
                             ).toFloatApproximation() * 100,
-                            8,
+                            8
                           )}
                         </span>
                       </div>
@@ -977,12 +977,12 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
-              <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
+              <div className="mt-4 grid grid-cols-4 gap-2 px-4 pb-4">
                 <Button
                   variant="tertiary"
                   as="button"
                   size="xs"
-                  className="text-gray-300 font-normal self-center"
+                  className="self-center font-normal text-gray-300"
                   onClick={onClickReset}
                 >
                   Reset
@@ -1000,7 +1000,7 @@ const Trade = (props: TradeProps) => {
               </div>
             </>
           ) : (
-            <div className="text-4xl flex items-center justify-center p-2 m-4 rounded bg-gray-850">
+            <div className="m-4 flex items-center justify-center rounded bg-gray-850 p-2 text-4xl">
               <RacetrackSpinnerIcon />
             </div>
           )}
@@ -1034,11 +1034,11 @@ const Trade = (props: TradeProps) => {
         }}
       >
         <>
-          <h1 className="text-lg font-bold text-center">
+          <h1 className="text-center text-lg font-bold">
             Review opening trade
           </h1>
           {selectedPosition ? (
-            <ul className="flex flex-col gap-3 mt-6">
+            <ul className="mt-6 flex flex-col gap-3">
               <li>
                 <div className="flex flex-row items-center">
                   <span className="mr-auto min-w-fit text-gray-300">
@@ -1050,9 +1050,9 @@ const Trade = (props: TradeProps) => {
                         Number(inputPosition.value) > 0
                           ? calculateOpenPosition(
                               Number(inputPosition.value),
-                              Number(selectedPosition.priceUsd),
+                              Number(selectedPosition.priceUsd)
                             )
-                          : 0,
+                          : 0
                       )}
                     </span>
                     {selectedPosition.denom ? (
@@ -1083,7 +1083,7 @@ const Trade = (props: TradeProps) => {
                   {poolActive ? (
                     <span>
                       {formatNumberAsPercent(
-                        Number(poolActive.stats.interestRate),
+                        Number(poolActive.stats.interestRate)
                       )}
                     </span>
                   ) : null}
@@ -1091,7 +1091,7 @@ const Trade = (props: TradeProps) => {
               </li>
             </ul>
           ) : (
-            <div className="text-4xl flex items-center justify-center p-2 mt-6 rounded bg-gray-850">
+            <div className="mt-6 flex items-center justify-center rounded bg-gray-850 p-2 text-4xl">
               <RacetrackSpinnerIcon />
             </div>
           )}
@@ -1099,7 +1099,7 @@ const Trade = (props: TradeProps) => {
             <li>
               <label
                 htmlFor="checkbox01"
-                className="bg-gray-700 p-4 flex flex-row items-start gap-2 rounded"
+                className="flex flex-row items-start gap-2 rounded bg-gray-700 p-4"
               >
                 <input
                   id="checkbox01"
@@ -1121,7 +1121,7 @@ const Trade = (props: TradeProps) => {
             <li>
               <label
                 htmlFor="checkbox02"
-                className="bg-gray-700 p-4 flex flex-row items-start gap-2 rounded mt-4"
+                className="mt-4 flex flex-row items-start gap-2 rounded bg-gray-700 p-4"
               >
                 <input
                   id="checkbox02"
@@ -1142,7 +1142,7 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           {confirmOpenPositionMutation.isLoading ? (
-            <p className="text-center rounded py-3 px-4 mt-6 bg-indigo-200 text-indigo-800">
+            <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">
               Opening trade...
             </p>
           ) : (
@@ -1150,7 +1150,7 @@ const Trade = (props: TradeProps) => {
               variant="primary"
               as="button"
               size="md"
-              className="w-full mt-6"
+              className="mt-6 w-full"
               disabled={isDisabledConfirmOpenPosition}
               onClick={onClickConfirmOpenPosition}
             >
@@ -1158,7 +1158,7 @@ const Trade = (props: TradeProps) => {
             </Button>
           )}
           {confirmOpenPositionMutation.isError ? (
-            <p className="text-center p-4 mt-6 rounded bg-red-200 text-red-800">
+            <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
               <span className="mr-1">An error occurred:</span>
               <span>
                 {(confirmOpenPositionMutation.error as Error).message}

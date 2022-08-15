@@ -50,7 +50,7 @@ function isAsset(val: any): val is IAsset {
  */
 export function getMantissaFromDynamicMantissa(
   amount: IAmount,
-  hash: DynamicMantissa,
+  hash: DynamicMantissa
 ) {
   const { infinity, ...numHash } = hash;
 
@@ -81,18 +81,18 @@ export function round(decimal: string, places: number) {
       .multiply(Amount(decimalShift("1", places)))
       .toBigInt() // apply rounding
       .toString(),
-    -1 * places,
+    -1 * places
   );
 }
 
 function isDynamicMantissa(
-  value: undefined | number | DynamicMantissa,
+  value: undefined | number | DynamicMantissa
 ): value is DynamicMantissa {
   return typeof value !== "number";
 }
 
 function isOptionsWithFixedMantissa(
-  options: IFormatOptionsFixedMantissa | IFormatOptions,
+  options: IFormatOptionsFixedMantissa | IFormatOptions
 ): options is IFormatOptionsFixedMantissa {
   return options.shorthand || !isDynamicMantissa(options["mantissa"]);
 }
@@ -105,7 +105,7 @@ function isOptionsWithFixedMantissa(
  */
 function convertDynamicMantissaToFixedMantissa(
   amount: IAmount,
-  options: IFormatOptions,
+  options: IFormatOptions
 ): IFormatOptionsFixedMantissa {
   if (
     !isOptionsWithFixedMantissa(options) &&
@@ -132,25 +132,25 @@ export function formatAssetAmount(value: IAssetAmount) {
 }
 
 export function format<T extends IAmount>(
+  amount: AmountNotAssetAmount<T>
+): string;
+export function format<T extends IAmount>(
   amount: AmountNotAssetAmount<T>,
+  asset: Exclude<IAsset, IAssetAmount>
+): string;
+export function format<T extends IAmount>(
+  amount: AmountNotAssetAmount<T>,
+  options: IFormatOptions
 ): string;
 export function format<T extends IAmount>(
   amount: AmountNotAssetAmount<T>,
   asset: Exclude<IAsset, IAssetAmount>,
-): string;
-export function format<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>,
-  options: IFormatOptions,
-): string;
-export function format<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>,
-  asset: Exclude<IAsset, IAssetAmount>,
-  options: IFormatOptions,
+  options: IFormatOptions
 ): string;
 export function format<T extends IAmount>(
   _amount: AmountNotAssetAmount<T>,
   _asset?: Exclude<IAsset, IAssetAmount> | IFormatOptions,
-  _options?: IFormatOptions,
+  _options?: IFormatOptions
 ): string {
   const amount = _amount;
   const _optionsWithDynamicMantissa =
@@ -159,7 +159,7 @@ export function format<T extends IAmount>(
 
   const options = convertDynamicMantissaToFixedMantissa(
     amount,
-    _optionsWithDynamicMantissa,
+    _optionsWithDynamicMantissa
   );
 
   // This should not happen in typed parts of the codebase
@@ -179,7 +179,7 @@ export function format<T extends IAmount>(
     //
     // Once JSX is used throughout the codebase it might be time to revisit this
     throw new Error(
-      "Amount can only take an IAmount and must NOT be a string. If you have a string and need to format it you should first convert it to an IAmount. Eg. format(Amount('100'), myformat)",
+      "Amount can only take an IAmount and must NOT be a string. If you have a string and need to format it you should first convert it to an IAmount. Eg. format(Amount('100'), myformat)"
     );
   }
 
@@ -248,7 +248,7 @@ function applyMantissa(decimal: string, mantissa: number) {
 }
 
 function isShorthandWithTotalLength(
-  val: any,
+  val: any
 ): val is IFormatOptionsShorthandTotalLength {
   return val?.shorthand && val?.totalLength;
 }

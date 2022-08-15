@@ -30,10 +30,10 @@ const AssetIcon: FC<{
   <figure
     className={clsx(
       props.size === "xs" ? "h-4 w-4" : "h-6 w-6",
-      "rounded-full grid place-items-center overflow-hidden bg-black ring-4 ring-black/60",
+      "grid place-items-center overflow-hidden rounded-full bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
-      },
+      }
     )}
   >
     {props.imageUrl ? (
@@ -79,7 +79,7 @@ const SORT_KEYS: SortOptions<TokenEntry>[] = [
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, _setSelectedToken] = useState<TokenEntry | undefined>(
-    props.value ?? props.tokens[0],
+    props.value ?? props.tokens[0]
   );
   const [query, setQuery] = useState("");
   const { sorted, sort, sortKey, sortDirection } = useSortedArray(
@@ -88,7 +88,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       sortKey: "balance",
       sortAs: "number",
       sortDirection: "desc",
-    },
+    }
   );
 
   const setSelectedToken = useCallback((token: TokenEntry | undefined) => {
@@ -111,8 +111,8 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
       ? sorted
       : sorted.filter((token) =>
           [token.name, token.symbol, token.displaySymbol].some((value) =>
-            value.toLowerCase().includes(sanitizedQuery),
-          ),
+            value.toLowerCase().includes(sanitizedQuery)
+          )
         );
   }, [sorted, sanitizedQuery]);
 
@@ -124,14 +124,14 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
           props.inline ? "inline-grid" : "grid",
           {
             "text-xs": props.size === "xs",
-          },
+          }
         )}
       >
         {props.label && <span className="input-label">{props.label}</span>}
         <button
           className={clsx(
-            "h-12 bg-gray-700 text-lg font-semibold rounded flex items-center px-2.5 gap-2.5 overflow-hidden",
-            props.buttonClassName,
+            "flex h-12 items-center gap-2.5 overflow-hidden rounded bg-gray-700 px-2.5 text-lg font-semibold",
+            props.buttonClassName
           )}
           onClick={(e) => {
             e.preventDefault();
@@ -146,7 +146,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 hasDarkIcon={Boolean(selectedToken.hasDarkIcon)}
                 size={props.size}
               />
-              <span className="uppercase block text-white overflow-hidden text-ellipsis whitespace-nowrap">
+              <span className="block overflow-hidden text-ellipsis whitespace-nowrap uppercase text-white">
                 {selectedToken.displaySymbol}
               </span>
             </>
@@ -160,14 +160,14 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
             <LockIcon
               className={clsx(
                 "ml-auto text-white",
-                props.size === "xs" ? "h-3 w-3" : "h-4 w-4",
+                props.size === "xs" ? "h-3 w-3" : "h-4 w-4"
               )}
             />
           ) : (
             <ChevronDownIcon
               className={clsx(
                 "ml-auto text-gray-400",
-                props.size === "xs" ? "h-3 w-3" : "h-4 w-4",
+                props.size === "xs" ? "h-3 w-3" : "h-4 w-4"
               )}
             />
           )}
@@ -197,16 +197,16 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                   sanitizedQuery || token.displaySymbol || token.symbol
                 }
               />
-              <Button variant="secondary" className="h-11 w-11 !p-0 hidden">
+              <Button variant="secondary" className="hidden h-11 w-11 !p-0">
                 <PencilIcon className="text-lg" />
               </Button>
             </div>
-            <div className="flex items-center py-1 px-4 justify-between transition-colors">
+            <div className="flex items-center justify-between py-1 px-4 transition-colors">
               {SORT_KEYS.map((options) =>
                 props.hideColumns?.includes(options.sortKey) ? null : (
                   <button
                     key={options.sortKey}
-                    className="uppercase text-gray-300 flex gap-2 items-center"
+                    className="flex items-center gap-2 uppercase text-gray-300"
                     onClick={sort.bind(null, options)}
                   >
                     {options.sortKey}{" "}
@@ -215,13 +215,13 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                       sortDirection={sortDirection}
                     />
                   </button>
-                ),
+                )
               )}
             </div>
 
             <Combobox.Options as={ListContainer} static>
               {filtered.length === 0 ? (
-                <p className="text-center p-4">No matching results.</p>
+                <p className="p-4 text-center">No matching results.</p>
               ) : (
                 filtered.map((token) => {
                   const ItemComponent = props.renderTokenItem ?? TokenItem;

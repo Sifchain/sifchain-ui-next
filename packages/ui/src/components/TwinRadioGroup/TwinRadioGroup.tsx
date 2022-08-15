@@ -30,7 +30,7 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
 
   return (
     <RadioGroup
-      className={clsx("grid grid-cols-2 w-full font-semibold", props.className)}
+      className={clsx("grid w-full grid-cols-2 font-semibold", props.className)}
       value={value}
       onChange={(option: string) => {
         if (props.onChange) {
@@ -50,13 +50,13 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
             value={item.value}
             className={({ checked, active }) =>
               clsx(
-                "p-2 text-center cursor-pointer",
+                "cursor-pointer p-2 text-center",
                 rounded,
                 checked
-                  ? "bg-gray-500 text-gray-200 z-10"
+                  ? "z-10 bg-gray-500 text-gray-200"
                   : "bg-gray-850 text-gray-700",
                 active ? "ring-1 ring-indigo-500" : "",
-                "hover:ring-1 hover:ring-indigo-300 hover:z-20",
+                "hover:z-20 hover:ring-1 hover:ring-indigo-300"
               )
             }
           >

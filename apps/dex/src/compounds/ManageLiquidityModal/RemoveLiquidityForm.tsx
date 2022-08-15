@@ -58,7 +58,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
         unlockLiquidityMutation.mutate({ denom: props.denom, units });
       }
     },
-    [props, units, unlockLiquidityMutation],
+    [props, units, unlockLiquidityMutation]
   );
 
   const onChangePercentageInput = useCallback<
@@ -70,7 +70,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
 
       setUnlockPercentage(new BigNumber(parsedValue).div(100).toString());
     },
-    [setUnlockPercentage],
+    [setUnlockPercentage]
   );
 
   const inputDisabled =
@@ -90,7 +90,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
           value={unlockPercentage}
           onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
             (event) => setUnlockPercentage(event.target.value),
-            [setUnlockPercentage],
+            [setUnlockPercentage]
           )}
           disabled={inputDisabled}
         />
@@ -109,7 +109,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
       </Fieldset>
       <section className="p-4">
         <header className="mb-2">Est. amount you will receive:</header>
-        <dl className="flex flex-col gap-2 [&_dt]:font-semibold [&_dt]:uppercase [&>div]:flex [&>div]:justify-between">
+        <dl className="flex flex-col gap-2 [&>div]:flex [&>div]:justify-between [&_dt]:font-semibold [&_dt]:uppercase">
           <div>
             <dt>{externalToken?.displaySymbol}</dt>
             <dd>

@@ -15,7 +15,7 @@ import { usePoolStatsQuery } from ".";
  */
 export function useEnhancedTokenQuery(
   denom: string,
-  options?: { refetchInterval: number; enabled: boolean },
+  options?: { refetchInterval: number; enabled: boolean }
 ) {
   const registryQuery = useTokenRegistryQuery();
   const allBalancesQuery = useAllBalancesQuery();
@@ -25,10 +25,9 @@ export function useEnhancedTokenQuery(
   const balanceEntry = useMemo(
     () =>
       allBalancesQuery.data?.find(
-        (entry) =>
-          entry.denom === denom || entry.denom === registryEntry?.denom,
+        (entry) => entry.denom === denom || entry.denom === registryEntry?.denom
       ),
-    [allBalancesQuery.data, registryEntry?.denom, denom],
+    [allBalancesQuery.data, registryEntry?.denom, denom]
   );
 
   const poolQuery = useSifnodeQuery(
@@ -38,7 +37,7 @@ export function useEnhancedTokenQuery(
         symbol: denom,
       },
     ],
-    options,
+    options
   );
 
   const derivedQuery = useQuery(
@@ -50,7 +49,7 @@ export function useEnhancedTokenQuery(
       }
 
       const stat = poolStatsQuery.data?.pools?.find(
-        (entry) => entry.symbol === denom || entry.symbol === denom.slice(1),
+        (entry) => entry.symbol === denom || entry.symbol === denom.slice(1)
       );
 
       return {
@@ -68,7 +67,7 @@ export function useEnhancedTokenQuery(
         Boolean(denom) &&
         registryQuery.isSuccess &&
         (denom === "rowan" || poolQuery.isSuccess),
-    },
+    }
   );
 
   return {

@@ -82,7 +82,7 @@ const AssetsSection: FC<
       <CardsGrid>
         {assets
           ?.filter((asset) =>
-            asset.name.toLowerCase().includes(props.search.toLowerCase()),
+            asset.name.toLowerCase().includes(props.search.toLowerCase())
           )
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((asset) => (
@@ -92,17 +92,17 @@ const AssetsSection: FC<
                   {asset.imageUrl && (
                     <figure
                       className={clsx(
-                        "h-8 w-8 ring-2 ring-gray-750 rounded-full overflow-hidden",
-                        asset.hasDarkIcon ? "bg-gray-500" : "bg-gray-200",
+                        "h-8 w-8 overflow-hidden rounded-full ring-2 ring-gray-750",
+                        asset.hasDarkIcon ? "bg-gray-500" : "bg-gray-200"
                       )}
                     >
                       <AsyncImage
                         alt={`${asset.name} logo`}
                         className={clsx(
-                          "p-0.5 rounded-full overflow-hidden h-8 w-8",
+                          "h-8 w-8 overflow-hidden rounded-full p-0.5",
                           {
-                            "invert ring-blue-300": asset.hasDarkIcon,
-                          },
+                            "ring-blue-300 invert": asset.hasDarkIcon,
+                          }
                         )}
                         src={asset.imageUrl}
                       />
@@ -112,7 +112,7 @@ const AssetsSection: FC<
                 </div>
                 {asset.address && (
                   <button
-                    className="text-xs text-gray-300 flex gap-1 items-center"
+                    className="flex items-center gap-1 text-xs text-gray-300"
                     onClick={copy.bind(null, asset.address)}
                   >
                     {copied === asset.address && copiedConfirmed ? (

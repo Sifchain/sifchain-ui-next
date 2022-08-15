@@ -21,14 +21,16 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
   const { data: nativeBalance } = useBalanceQuery(
     env?.sifChainId ?? "",
     env?.nativeAsset.symbol.toLowerCase() ?? "",
-    { enabled: env !== undefined },
+    {
+      enabled: env !== undefined,
+    }
   );
   const { data: externalBalance } = useBalanceQuery(
     env?.sifChainId ?? "",
     props.denom,
     {
       enabled: env !== undefined,
-    },
+    }
   );
 
   const validationError = useMemo(() => {
@@ -95,7 +97,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         });
       }
     },
-    [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props],
+    [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props]
   );
 
   const inputsDisabled =
@@ -116,8 +118,8 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         tokenSelectionDisabled={inputsDisabled}
         disabled={inputsDisabled}
       />
-      <div className="flex justify-center items-center my-[-1em]">
-        <div className="bg-black rounded-full p-3 border-2 border-gray-800">
+      <div className="my-[-1em] flex items-center justify-center">
+        <div className="rounded-full border-2 border-gray-800 bg-black p-3">
           <PlusIcon />
         </div>
       </div>

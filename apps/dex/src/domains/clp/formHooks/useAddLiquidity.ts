@@ -30,10 +30,10 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
           ? undefined
           : Decimal.fromUserInput(
               nativeAmount,
-              pool.nativeAssetBalance.fractionalDigits,
-            ),
+              pool.nativeAssetBalance.fractionalDigits
+            )
       )[1],
-    [nativeAmount, pool],
+    [nativeAmount, pool]
   );
   const externalAmountDecimal = useMemo(
     () =>
@@ -42,10 +42,10 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
           ? undefined
           : Decimal.fromUserInput(
               externalAmount,
-              pool.externalAssetBalance.fractionalDigits,
-            ),
+              pool.externalAssetBalance.fractionalDigits
+            )
       )[1],
-    [externalAmount, pool],
+    [externalAmount, pool]
   );
 
   const [poolUnits, poolShare] = useMemo(() => {
@@ -53,14 +53,14 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
 
     const expectedPoolUnits = calculatePoolUnits(
       new BigNumber(nativeAmount).shiftedBy(
-        pool.nativeAssetBalance.fractionalDigits,
+        pool.nativeAssetBalance.fractionalDigits
       ),
       new BigNumber(externalAmount).shiftedBy(
-        pool.externalAssetBalance.fractionalDigits,
+        pool.externalAssetBalance.fractionalDigits
       ),
       pool.nativeAssetBalance.atomics,
       pool.externalAssetBalance.atomics,
-      pool.poolUnits,
+      pool.poolUnits
     );
 
     return [
@@ -74,7 +74,7 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
       setActiveInput("native");
       _setNativeAmount(value);
     },
-    [],
+    []
   );
 
   const setExternalAmount = useCallback<Dispatch<SetStateAction<string>>>(
@@ -82,7 +82,7 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
       setActiveInput("external");
       _setExternalAmount(value);
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
             .times(pool.externalAssetBalance.toString())
             .div(pool.nativeAssetBalance.toString())
             .decimalPlaces(5)
-            .toString(),
+            .toString()
         );
         break;
 
@@ -105,7 +105,7 @@ const useAddLiquidity = (denom: string, symmetric = true) => {
             .times(pool.nativeAssetBalance.toString())
             .div(pool.externalAssetBalance.toString())
             .decimalPlaces(5)
-            .toString(),
+            .toString()
         );
     }
   }, [

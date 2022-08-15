@@ -36,7 +36,7 @@ export const ThemeSwitcher: FC = () => {
         <Icon className="animate-appear h-5 w-5" />
       </Slider>
       <Slider
-        className={clsx("grid place-items-center tanslate-x-0", {
+        className={clsx("tanslate-x-0 grid place-items-center", {
           "translate-x-6": theme.mode === "dark",
         })}
       >
