@@ -1,10 +1,10 @@
-import { ButtonGroup, Maybe, Modal } from "@sifchain/ui";
+import { ButtonGroup, ButtonGroupOption, Modal } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
-import { usePoolStatsQuery } from "~/domains/clp";
+import { useLiquidityProviderQuery, usePoolStatsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import AddLiquidityForm from "./AddLiquidityForm";
 import UnlockLiquidityForm from "./RemoveLiquidityForm";
-import type { Action, ManageLiquidityModalProps } from "./types";
+import type { ManageLiquidityAction, ManageLiquidityModalProps } from "./types";
 
 const percentageFormat = Intl.NumberFormat(undefined, {
   style: "percent",
@@ -12,12 +12,21 @@ const percentageFormat = Intl.NumberFormat(undefined, {
 });
 
 const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
-  const tabOptions = useMemo<Array<{ label: string; value: Action }>>(
+  const liquidityProviderQuery = useLiquidityProviderQuery(props.denom);
+  const liquidityProvider = liquidityProviderQuery.data?.liquidityProvider;
+
+  const tabOptions = useMemo<ButtonGroupOption<ManageLiquidityAction>[]>(
     () => [
       { label: "Add liquidity", value: "add" },
-      { label: "Remove liquidity", value: "unlock" },
+      {
+        label: "Remove liquidity",
+        value: "unlock",
+        disabled:
+          liquidityProvider === undefined ||
+          (liquidityProvider?.unlocks.length ?? 0) > 0,
+      },
     ],
-    []
+    [liquidityProvider]
   );
 
   const selectedTabIndex = useMemo(
@@ -32,9 +41,9 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
   const poolStats = useMemo(
     () =>
       poolStatsQuery.data?.pools?.find(
-        (x) => x.symbol?.toLowerCase() === token?.displaySymbol.toLowerCase(),
+        (x) => x.symbol?.toLowerCase() === token?.displaySymbol.toLowerCase()
       ),
-    [poolStatsQuery.data?.pools, token?.displaySymbol],
+    [poolStatsQuery.data?.pools, token?.displaySymbol]
   );
 
   const [nativeRatio, externalRatio] = useMemo(() => {
