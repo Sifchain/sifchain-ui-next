@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import { Decimal } from "@cosmjs/math";
 import {
   Coin,
@@ -33,7 +37,9 @@ import {
 import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
+import * as marginTx from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
+
 import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
@@ -47,7 +53,8 @@ import {
 import type { CosmosEncodeObject, SifEncodeObject } from "./messages";
 import { createQueryClient, SifQueryClient } from "./queryClient";
 
-const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx];
+// Must be updated whenever a new module is added to sifnode
+const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx, marginTx];
 
 const generateTypeUrlAndTypeRecords = (
   proto: Record<string, GeneratedType | any> & {
@@ -55,10 +62,10 @@ const generateTypeUrlAndTypeRecords = (
   },
 ) =>
   Object.entries(proto)
-    .filter(([_, value]) => isTsProtoGeneratedType(value))
+    .filter(([_, value]) => isTsProtoGeneratedType(value as GeneratedType))
     .map(([key, value]) => ({
       typeUrl: `/${proto.protobufPackage}.${key}`,
-      type: value,
+      type: value as GeneratedType,
     }));
 
 const createSifchainAminoConverters = (): AminoConverters =>

@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // TODO: copied from old sdk lib
 // need to clean this up
 import inflection from "inflection";
@@ -47,13 +53,17 @@ export const convertToSnakeCaseDeep = (obj: any): any => {
   if (typeof obj !== "object") {
     return obj;
   }
+
   if (Array.isArray(obj)) {
     return obj.map((item) => convertToSnakeCaseDeep(item));
   }
-  const newObj: any = {};
+
+  const newObj: Record<string, any> = {};
+
   for (const prop in obj) {
     newObj[inflection.underscore(prop)] = convertToSnakeCaseDeep(obj[prop]);
   }
+
   return newObj;
 };
 
