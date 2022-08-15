@@ -274,7 +274,7 @@ const Trade = (props: TradeProps) => {
     priceUsd: number;
   };
 
-  const maxLeverageDecimals = Decimal.fromAtomics(
+  const maxLeverageDecimal = Decimal.fromAtomics(
     props.govParams.leverageMax,
     ROWAN.decimals,
   );
@@ -297,7 +297,7 @@ const Trade = (props: TradeProps) => {
   });
 
   const [inputLeverage, setInputLeverage] = useState({
-    value: maxLeverageDecimals.toString(),
+    value: maxLeverageDecimal.toString(),
     error: "",
   });
 
@@ -410,12 +410,21 @@ const Trade = (props: TradeProps) => {
   ) => {
     event.preventDefault();
     try {
+      const { atomics: collateralAmount } = Decimal.fromUserInput(
+        inputCollateral.value,
+        selectedCollateral.decimals,
+      );
+      const { atomics: leverage } = Decimal.fromUserInput(
+        inputLeverage.value,
+        ROWAN.decimals,
+      );
+
       const req = await confirmOpenPositionMutation.mutateAsync({
         collateralAsset: selectedCollateral.symbol.toLowerCase(),
-        collateralAmount: inputCollateral.value,
-        borrowAsset: String(computedBorrowAmount),
+        borrowAsset: selectedPosition.symbol.toLowerCase(),
         position: 1, // LONG
-        leverage: inputLeverage.value,
+        collateralAmount,
+        leverage: leverage,
       });
       if (req && req.data) {
         setModalConfirmOpenPosition({ isOpen: false });
@@ -521,7 +530,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "change",
-      maxLeverageDecimals.toString(),
+      maxLeverageDecimal.toString(),
     );
 
     if (!payload.error) {
@@ -544,7 +553,7 @@ const Trade = (props: TradeProps) => {
     const payload = inputValidatorLeverage(
       $input,
       "blur",
-      maxLeverageDecimals.toString(),
+      maxLeverageDecimal.toString(),
     );
     setInputLeverage(payload);
   };
@@ -567,7 +576,7 @@ const Trade = (props: TradeProps) => {
       error: "",
     });
     setInputLeverage({
-      value: String(props.govParams.leverageMax),
+      value: maxLeverageDecimal.toString(),
       error: "",
     });
   };
@@ -771,7 +780,7 @@ const Trade = (props: TradeProps) => {
                   <span className="text-gray-400">
                     <span>Up to </span>
                     {formatNumberAsDecimal(
-                      maxLeverageDecimals.toFloatApproximation(),
+                      maxLeverageDecimal.toFloatApproximation(),
                       2,
                     )}
                     x
@@ -782,7 +791,7 @@ const Trade = (props: TradeProps) => {
                   placeholder="Leverage amount"
                   step="0.01"
                   min={LEVERAGE_MIN_VALUE}
-                  max={maxLeverageDecimals.toString()}
+                  max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
