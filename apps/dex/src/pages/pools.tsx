@@ -172,6 +172,27 @@ const PoolsPage: NextPage = () => {
             )}
           />
         </header>
+        <header className="flex text-left uppercase text-xs opacity-80 pb-6 px-3">
+          {[
+            "token",
+            "tvl",
+            "apr",
+            "my value",
+            "my share",
+            // dummy column for flex alignment
+            "",
+          ].map((x, index) => (
+            <div
+              key={index}
+              className={clsx({
+                "flex-1 text-start": index === 0,
+                "flex-[1.6] text-end": index > 0,
+              })}
+            >
+              {x}
+            </div>
+          ))}
+        </header>
         <div className="flex flex-col gap-4">
           {filteredAndSortedPools?.map((x, index) => (
             <details
