@@ -20,6 +20,17 @@ import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
 
+const currencyFormat = Intl.NumberFormat(undefined, {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2,
+});
+
+const percentFormat = Intl.NumberFormat(undefined, {
+  style: "percent",
+  maximumFractionDigits: 2,
+});
+
 const DetailDataList = tw.dl`
   grid auto-cols-auto gap-y-1
   [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dt]:text-gray-300 [&>dd]:font-semibold [&>dd]:text-right md:flex-1
@@ -186,32 +197,25 @@ const PoolsPage: NextPage = () => {
                   <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
                     <dt className="hidden md:inline">TVL</dt>
                     <dd className="hidden md:inline">
-                      {x.poolTVL?.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 2,
-                      })}
+                      {Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}
                     </dd>
                     <dt className="hidden md:inline">APR</dt>
                     <dd className="hidden md:inline">
-                      {x.poolApr?.toLocaleString(undefined, {
-                        style: "percent",
-                      })}
+                      {Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}
                     </dd>
                     <dt>My pool value</dt>
                     <dd>
-                      {x.liquidityProviderPoolValue?.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 2,
-                      })}
+                      {Maybe.of(x.liquidityProviderPoolValue).mapOr(
+                        "...",
+                        currencyFormat.format,
+                      )}
                     </dd>
                     <dt>My pool share</dt>
                     <dd>
-                      {x.liquidityProviderPoolShare?.toLocaleString(undefined, {
-                        style: "percent",
-                        maximumFractionDigits: 2,
-                      })}
+                      {Maybe.of(x.liquidityProviderPoolShare).mapOr(
+                        "...",
+                        percentFormat.format,
+                      )}
                     </dd>
                     <dt className="hidden md:inline">Actions</dt>
                     <dd className="hidden items-center justify-end gap-12 md:flex">
@@ -229,17 +233,14 @@ const PoolsPage: NextPage = () => {
                     <DetailDataList>
                       <dt className="md:hidden">TVL</dt>
                       <dd className="md:hidden">
-                        {x.poolTVL?.toLocaleString(undefined, {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 2,
-                        })}
+                        {Maybe.of(x.poolTVL).mapOr(
+                          "...",
+                          currencyFormat.format,
+                        )}
                       </dd>
                       <dt className="md:hidden">APR</dt>
                       <dd className="md:hidden">
-                        {x.poolApr?.toLocaleString(undefined, {
-                          style: "percent",
-                        })}
+                        {Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}
                       </dd>
                       <dt className="hidden md:inline">Your liquidity</dt>
                       <dd className="hidden items-center justify-end gap-1 md:flex">
@@ -253,11 +254,7 @@ const PoolsPage: NextPage = () => {
                       </dd>
                       <dt>24hr trading volume</dt>
                       <dd>
-                        {x.volume?.toLocaleString(undefined, {
-                          style: "currency",
-                          currency: "USD",
-                          maximumFractionDigits: 2,
-                        })}
+                        {Maybe.of(x.volume).mapOr("...", currencyFormat.format)}
                       </dd>
                       <dt>Arb opportunity</dt>
                       <dd
@@ -266,11 +263,9 @@ const PoolsPage: NextPage = () => {
                           "text-rose-700": (x.arb ?? 0) < 0,
                         })}
                       >
-                        {x.arb &&
-                          (x.arb / 100).toLocaleString(undefined, {
-                            style: "percent",
-                            maximumFractionDigits: 2,
-                          })}
+                        {Maybe.of(x.arb).mapOr("...", (arb) =>
+                          percentFormat.format(arb / 100),
+                        )}
                       </dd>
                     </DetailDataList>
                     <DetailDataList className="hidden md:grid">
