@@ -7,12 +7,15 @@ import {
   useCallback,
   useMemo,
 } from "react";
+import { useLiquidityProviderQuery } from "~/domains/clp";
 import useUnlockLiquidity from "~/domains/clp/formHooks/useUnlockLiquidity";
 import useUnlockLiquidityMutation from "~/domains/clp/hooks/useUnlockLiquidityMutation";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { ManageLiquidityModalProps } from "./types";
 
 const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const liquidityProviderQuery = useLiquidityProviderQuery(props.denom);
+
   const { indexedByDenom } = useTokenRegistryQuery();
   const externalToken = indexedByDenom[props.denom];
 
@@ -55,10 +58,23 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
       ) {
         props.onClose(false);
       } else {
+        // TODO: this is a temporary solution
+        // should be prevented on sifnode side
+        const latestUnlockRequest =
+          liquidityProviderQuery.data?.liquidityProvider?.unlocks[0];
+        if (latestUnlockRequest !== undefined && !latestUnlockRequest.expired) {
+          throw new Error("Only 1 active unlock request allowed");
+        }
+
         unlockLiquidityMutation.mutate({ denom: props.denom, units });
       }
     },
-    [props, units, unlockLiquidityMutation]
+    [
+      liquidityProviderQuery.data?.liquidityProvider?.unlocks,
+      props,
+      units,
+      unlockLiquidityMutation,
+    ]
   );
 
   const onChangePercentageInput = useCallback<
