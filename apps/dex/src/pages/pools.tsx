@@ -184,16 +184,16 @@ const PoolsPage: NextPage = () => {
                     </button>
                   </header>
                   <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
-                    <dt>TVL</dt>
-                    <dd>
+                    <dt className="hidden md:inline">TVL</dt>
+                    <dd className="hidden md:inline">
                       {x.poolTVL?.toLocaleString(undefined, {
                         style: "currency",
                         currency: "USD",
                         maximumFractionDigits: 2,
                       })}
                     </dd>
-                    <dt>APR</dt>
-                    <dd>
+                    <dt className="hidden md:inline">APR</dt>
+                    <dd className="hidden md:inline">
                       {x.poolApr?.toLocaleString(undefined, {
                         style: "percent",
                       })}
@@ -213,8 +213,8 @@ const PoolsPage: NextPage = () => {
                         maximumFractionDigits: 2,
                       })}
                     </dd>
-                    <dt>Actions</dt>
-                    <dd className="flex justify-end">
+                    <dt className="hidden md:inline">Actions</dt>
+                    <dd className="hidden justify-end md:flex">
                       <Button variant="secondary" onClick={() => onPressPoolButton(x.denom)}>
                         <PoolsIcon /> Pool
                       </Button>
