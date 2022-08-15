@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 import { useState, SyntheticEvent } from "react";
+import Long from "long";
 
 import {
   Button,
@@ -14,6 +15,7 @@ import {
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { useCloseMTPMutation } from "~/domains/margin/hooks";
 
 import { isNil } from "rambda";
 const isTruthy = (target: any) => !isNil(target);
@@ -350,7 +352,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         onClick={() =>
                           setPositionToClose({
                             isOpen: true,
-                            id: item.address,
+                            id: item.id,
                           })
                         }
                       >
@@ -376,10 +378,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               setPositionToClose((prev) => ({ ...prev, isOpen: false }));
             }
           }}
-          onMutationSuccess={(position) => {
-            toast.success(
-              `Position closed successfully! Position ID: ${position.id}`,
-            );
+          onMutationSuccess={() => {
             setPositionToClose({ id: "", isOpen: false });
           }}
         />
@@ -407,21 +406,23 @@ type PositionToCloseModalProps = {
   isOpen: boolean;
   onTransitionEnd: () => void;
   onClose: () => void;
-  onMutationSuccess: (position: { id: string }) => void;
+  onMutationSuccess: () => void;
   onMutationError?: (error: Error) => void;
 };
 function PositionToCloseModal(props: PositionToCloseModalProps) {
+  console.log(props.id);
   const positionToCloseQuery = useQueryPositionToClose({ id: props.id });
-  const positionToCloseMutation = useMutationPositionToClose();
+  const positionToCloseMutation = useCloseMTPMutation();
   const onClickConfirmClose = async (
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     try {
       const position = await positionToCloseMutation.mutateAsync({
-        id: props.id,
+        id: Long.fromNumber(Number(props.id)),
       });
-      props.onMutationSuccess(position as { id: string });
+      position?.data;
+      props.onMutationSuccess();
     } catch (err) {
       if (props.onMutationError) {
         props.onMutationError(err as Error);

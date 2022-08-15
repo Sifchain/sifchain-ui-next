@@ -32,6 +32,7 @@ import {
   useMarginAllowedAddressList,
   useOpenMTPMutation,
 } from "~/domains/margin/hooks";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 /**
  * ********************************************************************************************
@@ -56,7 +57,6 @@ import {
   inputValidatorLeverage,
   inputValidatorPosition,
 } from "./_trade";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 const FEE_USDC = 0.5;
 const calculateOpenPosition = (
