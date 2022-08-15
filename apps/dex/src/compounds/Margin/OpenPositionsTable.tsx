@@ -27,6 +27,7 @@ import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } fr
 import { formatNumberAsDecimal, formatNumberAsPercent, formatDateRelative, formatDateDistance } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 /**
  * ********************************************************************************************
@@ -53,13 +54,14 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
-  walletAddress: string;
   hideColumns?: HideColsUnion[];
 };
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
+  const router = useRouter();
+  const walletAddress = useSifSignerAddress();
+
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
-  const router = useRouter();
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
@@ -69,7 +71,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
-    walletAddress: props.walletAddress,
+    walletAddress: walletAddress.data ?? "",
   });
 
   const [positionToClose, setPositionToClose] = useState<{
@@ -79,6 +81,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     isOpen: false,
     value: null,
   });
+
+  if (walletAddress.isIdle) {
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Connect your Sifchain wallet</div>;
+  }
+  if (walletAddress.isError) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Unable to connect your Sifchain wallet. Try again later.
+      </div>
+    );
+  }
+  if (walletAddress.isLoading) {
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading your Sifchain wallet...</div>;
+  }
 
   if (openPositionsQuery.isSuccess) {
     const { results, pagination } = openPositionsQuery.data;
@@ -311,7 +327,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
   }
 
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading positions...</div>;
 };
 
 export default OpenPositionsTable;

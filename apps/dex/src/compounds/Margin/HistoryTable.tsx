@@ -22,6 +22,7 @@ import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } fr
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 /**
  * ********************************************************************************************
@@ -47,11 +48,11 @@ const MTP_STATUS = {
   CLOSE: "margin/mtp_close",
 } as Record<string, string>;
 export type HistoryTableProps = {
-  walletAddress: string;
   classNamePaginationContainer?: string;
 };
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
+  const walletAddress = useSifSignerAddress();
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
@@ -60,9 +61,31 @@ const HistoryTable = (props: HistoryTableProps) => {
   };
   const historyQuery = useHistoryQuery({
     ...queryParams,
-    walletAddress: props.walletAddress,
+    walletAddress: walletAddress.data ?? "",
   });
   const headers = HISTORY_HEADER_ITEMS;
+
+  if (walletAddress.isIdle) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Connect your Sifchain wallet
+      </div>
+    );
+  }
+  if (walletAddress.isError) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Unable to connect your Sifchain wallet. Try again later.
+      </div>
+    );
+  }
+  if (walletAddress.isLoading) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Loading your Sifchain wallet...
+      </div>
+    );
+  }
 
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
