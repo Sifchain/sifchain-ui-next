@@ -1,4 +1,4 @@
-import { ButtonGroup, Modal } from "@sifchain/ui";
+import { ButtonGroup, Maybe, Modal } from "@sifchain/ui";
 import { useCallback, useMemo } from "react";
 import { usePoolStatsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -42,7 +42,10 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
     const externalTvl = poolStats?.poolDepth ?? 0;
     const nativeTvl = poolTvl - externalTvl;
 
-    return [nativeTvl / poolTvl, externalTvl / poolTvl] as const;
+    return [
+      nativeTvl / poolTvl || undefined,
+      externalTvl / poolTvl || undefined,
+    ] as const;
   }, [poolStats]);
 
   const form = useMemo(() => {
@@ -75,11 +78,15 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
         <dl className="flex flex-col gap-1 uppercase [&>div]:flex [&>div]:justify-between [&>div]:gap-4">
           <div>
             <dt className="uppercase">{token?.displaySymbol}</dt>
-            <dd>{percentageFormat.format(externalRatio)}</dd>
+            <dd>
+              {Maybe.of(externalRatio).mapOr("...", percentageFormat.format)}
+            </dd>
           </div>
           <div>
             <dt>ROWAN</dt>
-            <dd>{percentageFormat.format(nativeRatio)}</dd>
+            <dd>
+              {Maybe.of(nativeRatio).mapOr("...", percentageFormat.format)}
+            </dd>
           </div>
         </dl>
       </div>
