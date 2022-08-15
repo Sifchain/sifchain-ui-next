@@ -124,6 +124,15 @@ const PoolsPage: NextPage = () => {
 
   const selectedDenom = Maybe.of(getFirstQueryValue(router.query["denom"])).mapOrUndefined(decodeURIComponent);
 
+  const onPressPoolButton = useCallback(
+    (denom?: string) => {
+      if (!isNilOrWhitespace(denom)) {
+        router.push(`/pools?action=add&denom=${encodeURIComponent(denom)}`);
+      }
+    },
+    [router],
+  );
+
   return (
     <>
       <section className="w-full flex-1 bg-black p-6 md:py-12 md:px-24">
@@ -161,7 +170,7 @@ const PoolsPage: NextPage = () => {
                 key={index}
                 className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
               >
-                <summary className="flex flex-col bg-gray-800 p-3 md:flex-row md:py-4">
+                <summary className="flex flex-col bg-gray-800 p-3 md:flex-row">
                   <header className="mb-2 flex items-center justify-between md:mb-0 md:flex-1">
                     <div className="flex items-center gap-2">
                       <div className="[&>*:first-child]:-mr-4 flex items-center">
@@ -174,7 +183,7 @@ const PoolsPage: NextPage = () => {
                       <ChevronDownIcon />
                     </button>
                   </header>
-                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8]">
+                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
                     <dt>TVL</dt>
                     <dd>
                       {x.poolTVL?.toLocaleString(undefined, {
@@ -203,6 +212,12 @@ const PoolsPage: NextPage = () => {
                         style: "percent",
                         maximumFractionDigits: 2,
                       })}
+                    </dd>
+                    <dt>Actions</dt>
+                    <dd className="flex justify-end">
+                      <Button variant="secondary" onClick={() => onPressPoolButton(x.denom)}>
+                        <PoolsIcon /> Pool
+                      </Button>
                     </dd>
                   </dl>
                 </summary>
@@ -275,13 +290,9 @@ const PoolsPage: NextPage = () => {
                     </DetailDataList>
                   </div>
                   <Button
-                    className="mt-2 w-full"
+                    className="mt-2 w-full md:hidden"
                     variant="secondary"
-                    onClick={() => {
-                      if (!isNilOrWhitespace(x.denom)) {
-                        router.push(`/pools?action=add&denom=${encodeURIComponent(x.denom)}`);
-                      }
-                    }}
+                    onClick={() => onPressPoolButton(x.denom)}
                   >
                     <PoolsIcon /> Pool
                   </Button>
