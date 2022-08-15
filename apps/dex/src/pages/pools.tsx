@@ -1,26 +1,26 @@
-import {
-  Button,
-  ChevronDownIcon,
-  Maybe,
-  PoolsIcon,
-  RacetrackSpinnerIcon,
-  SearchInput,
-} from "@sifchain/ui";
+import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, SearchInput } from "@sifchain/ui";
+import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { sort } from "rambda";
 import { descend } from "ramda";
 import { ChangeEventHandler, useCallback, useMemo } from "react";
+import tw from "tailwind-styled-components";
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
 import { useLiquidityProvidersQuery, usePoolsQuery } from "~/domains/clp";
 import useCancelLiquidityUnlockMutation from "~/domains/clp/hooks/useCancelLiquidityUnlockMutation";
 import useRemoveLiquidityMutation from "~/domains/clp/hooks/useRemoveLiquidityMutation";
+import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { getFirstQueryValue } from "~/utils/query";
-import { isNilOrWhitespace } from "@sifchain/utils";
+
+const DetailDataList = tw.dl`
+  grid auto-cols-auto gap-y-1
+  [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dt]:text-gray-300 [&>dd]:font-semibold [&>dd]:text-right md:flex-1
+`;
 
 const usePoolsPageData = () => {
   const tokenRegistryQuery = useTokenRegistryQuery();
@@ -34,18 +34,12 @@ const usePoolsPageData = () => {
       data: tokenStatsQuery.data?.pools?.map((x) => {
         const token = tokenRegistryQuery.indexedByDisplaySymbol[x.symbol ?? ""];
 
-        const liquidityProvider =
-          liquidityProviderQuery.data?.liquidityProviderData.find(
-            (y) => y.liquidityProvider?.asset?.symbol === token?.denom
-          );
-        const pool = poolsQuery.data?.pools.find(
-          (y) => y.externalAsset?.symbol === token?.denom
+        const liquidityProvider = liquidityProviderQuery.data?.liquidityProviderData.find(
+          (y) => y.liquidityProvider?.asset?.symbol === token?.denom,
         );
+        const pool = poolsQuery.data?.pools.find((y) => y.externalAsset?.symbol === token?.denom);
 
-        if (
-          liquidityProvider?.liquidityProvider === undefined ||
-          pool === undefined
-        )
+        if (liquidityProvider?.liquidityProvider === undefined || pool === undefined)
           return {
             ...x,
             denom: token?.denom,
@@ -54,31 +48,24 @@ const usePoolsPageData = () => {
             unlock: undefined,
           };
 
-        const rowanPoolValue = new BigNumber(
-          tokenStatsQuery.data.rowanUSD ?? 0
-        ).times(liquidityProvider.nativeAssetBalance.toString());
-
-        const externalAssetPoolValue = new BigNumber(x.priceToken ?? 0).times(
-          liquidityProvider.externalAssetBalance.toString()
+        const rowanPoolValue = new BigNumber(tokenStatsQuery.data.rowanUSD ?? 0).times(
+          liquidityProvider.nativeAssetBalance.toString(),
         );
 
-        const currentUnlockRequest =
-          liquidityProvider.liquidityProvider.unlocks[0];
+        const externalAssetPoolValue = new BigNumber(x.priceToken ?? 0).times(
+          liquidityProvider.externalAssetBalance.toString(),
+        );
+
+        const currentUnlockRequest = liquidityProvider.liquidityProvider.unlocks[0];
 
         return {
           ...x,
           denom: token?.denom,
-          liquidityProviderPoolShare: new BigNumber(
-            liquidityProvider.liquidityProvider.liquidityProviderUnits
-          )
+          liquidityProviderPoolShare: new BigNumber(liquidityProvider.liquidityProvider.liquidityProviderUnits)
             .div(pool.poolUnits)
             .toNumber(),
-          liquidityProviderPoolValue: rowanPoolValue
-            .plus(externalAssetPoolValue)
-            .toNumber(),
-          unlock: currentUnlockRequest?.expired
-            ? undefined
-            : currentUnlockRequest,
+          liquidityProviderPoolValue: rowanPoolValue.plus(externalAssetPoolValue).toNumber(),
+          unlock: currentUnlockRequest?.expired ? undefined : currentUnlockRequest,
         };
       }),
     }),
@@ -90,42 +77,35 @@ const usePoolsPageData = () => {
       tokenStatsQuery.data?.pools,
       tokenStatsQuery.data?.rowanUSD,
       tokenStatsQuery.isLoading,
-    ]
+    ],
   );
 };
 
 const PoolsPage: NextPage = () => {
+  const { data: env } = useDexEnvironment();
   const router = useRouter();
   const { data } = usePoolsPageData();
-  const searchQuery = decodeURIComponent(
-    getFirstQueryValue(router.query["q"]) ?? ""
-  );
+  const searchQuery = decodeURIComponent(getFirstQueryValue(router.query["q"]) ?? "");
 
   const filteredPools = useMemo(
     () =>
-      !searchQuery
-        ? data
-        : data?.filter((x) =>
-            x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase())
-          ),
-    [data, searchQuery]
+      !searchQuery ? data : data?.filter((x) => x.symbol?.toLowerCase().includes(searchQuery.trim().toLowerCase())),
+    [data, searchQuery],
   );
 
   const filteredAndSortedPools = useMemo(
     () =>
       sort(
         descend((x) => x.liquidityProviderPoolValue),
-        filteredPools ?? []
+        filteredPools ?? [],
       ),
-    [filteredPools]
+    [filteredPools],
   );
 
   const removeLiquidityMutation = useRemoveLiquidityMutation();
   const cancelUnlockMutation = useCancelLiquidityUnlockMutation();
 
-  const selectedDenom = Maybe.of(
-    getFirstQueryValue(router.query["denom"])
-  ).mapOrUndefined(decodeURIComponent);
+  const selectedDenom = Maybe.of(getFirstQueryValue(router.query["denom"])).mapOrUndefined(decodeURIComponent);
 
   return (
     <>
@@ -151,10 +131,10 @@ const PoolsPage: NextPage = () => {
                           },
                     },
                     undefined,
-                    { shallow: true }
+                    { shallow: true },
                   );
                 },
-                [router]
+                [router],
               )}
             />
           </div>
@@ -162,32 +142,22 @@ const PoolsPage: NextPage = () => {
             {filteredAndSortedPools?.map((x, index) => (
               <details
                 key={index}
-                className="overflow-hidden rounded-md border-2 border-stone-800 [&[open]_.marker]:rotate-180"
+                className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
               >
                 <summary className="flex flex-col bg-gray-800 p-3">
                   <header className="mb-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center [&>*:first-child]:-mr-4">
-                        <AssetIcon
-                          network="sifchain"
-                          symbol="rowan"
-                          size="md"
-                        />
-                        <AssetIcon
-                          network="sifchain"
-                          symbol={x.symbol ?? ""}
-                          size="md"
-                        />
+                      <div className="[&>*:first-child]:-mr-4 flex items-center">
+                        <AssetIcon network="sifchain" symbol={env?.nativeAsset.denom ?? ""} size="md" />
+                        <AssetIcon network="sifchain" symbol={x.symbol ?? ""} size="md" />
                       </div>
-                      <span className="font-bold">
-                        {x.symbol?.toUpperCase()}
-                      </span>
+                      <span className="font-bold">{x.symbol?.toUpperCase()}</span>
                     </div>
                     <button className="marker pointer-events-none">
                       <ChevronDownIcon />
                     </button>
                   </header>
-                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold">
+                  <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold grid auto-cols-auto gap-y-1">
                     <dt>My pool value</dt>
                     <dd>
                       {x.liquidityProviderPoolValue?.toLocaleString(undefined, {
@@ -205,49 +175,73 @@ const PoolsPage: NextPage = () => {
                     </dd>
                   </dl>
                 </summary>
-                <div className="p-3">
-                  <dl className="grid auto-cols-auto gap-y-1 [&>dt]:col-start-1 [&>dt]:text-gray-300 [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold">
-                    <dt>TVL</dt>
-                    <dd>
-                      {x.poolTVL?.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 2,
-                      })}
-                    </dd>
-                    <dt>APR</dt>
-                    <dd>
-                      {x.poolApr?.toLocaleString(undefined, {
-                        style: "percent",
-                      })}
-                    </dd>
-                    <dt>24hr trading volume</dt>
-                    <dd>
-                      {x.volume?.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                        maximumFractionDigits: 2,
-                      })}
-                    </dd>
-                    <dt>Arb opportunity</dt>
-                    <dd className="error-">
-                      {x.arb &&
-                        (x.arb / 100).toLocaleString(undefined, {
-                          style: "percent",
+                <div className="p-3 md:py-6 md:px-28">
+                  <div className="md:flex md:gap-28">
+                    <DetailDataList>
+                      <dt className="md:hidden">TVL</dt>
+                      <dd className="md:hidden">
+                        {x.poolTVL?.toLocaleString(undefined, {
+                          style: "currency",
+                          currency: "USD",
                           maximumFractionDigits: 2,
                         })}
-                    </dd>
-                  </dl>
+                      </dd>
+                      <dt className="md:hidden">APR</dt>
+                      <dd className="md:hidden">
+                        {x.poolApr?.toLocaleString(undefined, {
+                          style: "percent",
+                        })}
+                      </dd>
+                      <dt className="hidden md:inline">Your liquidity</dt>
+                      <dd className="hidden items-center justify-end gap-1 md:flex">
+                        {(1000).toLocaleString()}
+                        <AssetIcon size="sm" symbol={x.denom ?? ""} />
+                      </dd>
+                      <dt className="hidden md:inline">Pool liquidity</dt>
+                      <dd className="hidden items-center justify-end gap-1 md:flex">
+                        {(1000).toLocaleString()}
+                        <AssetIcon size="sm" symbol={x.denom ?? ""} />
+                      </dd>
+                      <dt>24hr trading volume</dt>
+                      <dd>
+                        {x.volume?.toLocaleString(undefined, {
+                          style: "currency",
+                          currency: "USD",
+                          maximumFractionDigits: 2,
+                        })}
+                      </dd>
+                      <dt>Arb opportunity</dt>
+                      <dd className="error-">
+                        {x.arb &&
+                          (x.arb / 100).toLocaleString(undefined, {
+                            style: "percent",
+                            maximumFractionDigits: 2,
+                          })}
+                      </dd>
+                    </DetailDataList>
+                    <DetailDataList className="hidden md:grid">
+                      <dt>Your liquidity</dt>
+                      <dd className="flex items-center justify-end gap-1">
+                        {(1000).toLocaleString()}
+                        <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
+                      </dd>
+                      <dt>Pool liquidity</dt>
+                      <dd className="flex items-center justify-end gap-1">
+                        {(1000).toLocaleString()}
+                        <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
+                      </dd>
+                      <dt>Rewards paid to the pool</dt>
+                      <dd>{x.rewardPeriodNativeDistributed?.toLocaleString()}</dd>
+                      <dt>Rewards time remaining</dt>
+                      <dd>45 days</dd>
+                    </DetailDataList>
+                  </div>
                   <Button
                     className="mt-2 w-full"
                     variant="secondary"
                     onClick={() => {
                       if (!isNilOrWhitespace(x.denom)) {
-                        router.push(
-                          `/pools?action=add&denom=${encodeURIComponent(
-                            x.denom
-                          )}`
-                        );
+                        router.push(`/pools?action=add&denom=${encodeURIComponent(x.denom)}`);
                       }
                     }}
                   >
@@ -264,15 +258,11 @@ const PoolsPage: NextPage = () => {
                             units: x.unlock?.units ?? "0",
                           })
                         }
-                        disabled={
-                          cancelUnlockMutation.isLoading ||
-                          removeLiquidityMutation.isLoading
-                        }
+                        disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
                       >
-                        {cancelUnlockMutation.isLoading &&
-                          cancelUnlockMutation.variables?.denom === x.denom && (
-                            <RacetrackSpinnerIcon />
-                          )}
+                        {cancelUnlockMutation.isLoading && cancelUnlockMutation.variables?.denom === x.denom && (
+                          <RacetrackSpinnerIcon />
+                        )}
                         Cancel request
                       </Button>
                       <Button
@@ -284,14 +274,11 @@ const PoolsPage: NextPage = () => {
                             units: x.unlock?.units ?? "0",
                           })
                         }
-                        disabled={
-                          cancelUnlockMutation.isLoading ||
-                          removeLiquidityMutation.isLoading
-                        }
+                        disabled={cancelUnlockMutation.isLoading || removeLiquidityMutation.isLoading}
                       >
-                        {removeLiquidityMutation.isLoading &&
-                          removeLiquidityMutation.variables?.denom ===
-                            x.denom && <RacetrackSpinnerIcon />}
+                        {removeLiquidityMutation.isLoading && removeLiquidityMutation.variables?.denom === x.denom && (
+                          <RacetrackSpinnerIcon />
+                        )}
                         Claim liquidity
                       </Button>
                     </div>
@@ -314,16 +301,16 @@ const PoolsPage: NextPage = () => {
                 query: { ...router.query, denom: encodeURIComponent(denom) },
               },
               undefined,
-              { shallow: true }
+              { shallow: true },
             ),
-          [router]
+          [router],
         )}
         onChangeAction={useCallback(
           (action) =>
             router.replace({ query: { ...router.query, action } }, undefined, {
               shallow: true,
             }),
-          [router]
+          [router],
         )}
       />
     </>
