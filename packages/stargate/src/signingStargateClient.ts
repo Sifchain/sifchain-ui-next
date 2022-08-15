@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import { Decimal } from "@cosmjs/math";
 import {
   Coin,
@@ -11,6 +7,7 @@ import {
   Registry,
 } from "@cosmjs/proto-signing";
 import {
+  AminoConverter,
   AminoConverters,
   AminoTypes,
   createAuthzAminoConverters,
@@ -57,7 +54,7 @@ import { createQueryClient, SifQueryClient } from "./queryClient";
 const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx, marginTx];
 
 const generateTypeUrlAndTypeRecords = (
-  proto: Record<string, GeneratedType | any> & {
+  proto: Record<string, GeneratedType | unknown> & {
     protobufPackage: string;
   },
 ) =>
@@ -69,13 +66,13 @@ const generateTypeUrlAndTypeRecords = (
     }));
 
 const createSifchainAminoConverters = (): AminoConverters =>
-  Object.fromEntries(
-    MODULES.flatMap(generateTypeUrlAndTypeRecords).map((x) => [
-      x.typeUrl,
+  Object.fromEntries<AminoConverter>(
+    MODULES.flatMap(generateTypeUrlAndTypeRecords).map((proto) => [
+      proto.typeUrl,
       {
-        aminoType: createAminoTypeNameFromProtoTypeUrl(x.typeUrl),
-        toAmino: (value) => convertToSnakeCaseDeep(value),
-        fromAmino: (value) => convertToCamelCaseDeep(value),
+        aminoType: createAminoTypeNameFromProtoTypeUrl(proto.typeUrl),
+        toAmino: (value) => convertToSnakeCaseDeep(value) as unknown,
+        fromAmino: (value) => convertToCamelCaseDeep(value) as unknown,
       },
     ]),
   );
@@ -108,7 +105,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     options: StargateClientOptions = {},
   ) {
     const tmClient = await Tendermint34Client.connect(endpoint);
-    return new this(tmClient, {} as any, options) as StargateClient &
+    return new this(tmClient, {} as OfflineSigner, options) as StargateClient &
       Pick<SifSigningStargateClient, "simulateSwap" | "simulateSwapSync">;
   }
 
@@ -121,11 +118,11 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(tmClient, signer, options);
   }
 
-  static override async offline(
+  static override offline(
     signer: OfflineSigner,
     options: SigningStargateClientOptions = {},
   ) {
-    return new this(undefined, signer, options);
+    return Promise.resolve(new this(undefined, signer, options));
   }
 
   readonly #sifQueryClient: SifQueryClient | undefined;
