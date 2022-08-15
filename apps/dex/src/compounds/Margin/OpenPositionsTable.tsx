@@ -44,8 +44,6 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Base Leverage", order_by: "leverage" },
   { title: "Unrealized P&L", order_by: "unrealized_pnl" },
   { title: "Interest Rate", order_by: "interest_rate" },
-  { title: "Unsettled Interest", order_by: "unsettled_interest" },
-  { title: "Next Payment", order_by: "next_payment" },
   { title: "Paid Interest", order_by: "paid_interest" },
   { title: "Health", order_by: "health" },
   { title: "Date Opened", order_by: "date_opened" },
@@ -231,20 +229,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
                         formatNumberAsPercent(Number(item.interest_rate))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Unsettled Interest")}>
-                      {isTruthy(item.unsettled_interest) ? (
-                        formatNumberAsCurrency(Number(item.unsettled_interest))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Next Payment")}>
-                      {isTruthy(item.next_payment) ? (
-                        formatDateRelative(new Date(item.next_payment))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

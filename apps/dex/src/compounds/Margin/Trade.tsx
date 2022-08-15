@@ -1010,12 +1010,7 @@ const Trade = (props: TradeProps) => {
             walletAddress={walletAddress.data ?? ""}
             extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
-              hideColumns: [
-                "Pool",
-                "Unsettled Interest",
-                "Next Payment",
-                "Paid Interest",
-              ],
+              hideColumns: ["Pool", "Paid Interest"],
             }}
           />
         </section>
