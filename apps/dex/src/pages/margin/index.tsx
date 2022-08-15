@@ -13,7 +13,6 @@ const TABS = {
   trade: { title: "Trade", slug: "trade" },
   positions: { title: "Positions", slug: "positions" },
   history: { title: "History", slug: "history" },
-  portfolio: { title: "Portfolio", slug: "portfolio" },
 } as const;
 const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   {
@@ -34,13 +33,6 @@ const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
     title: TABS.history.title,
     slug: TABS.history.slug,
     content: dynamic(() => import("~/compounds/Margin/History"), {
-      suspense: true,
-    }),
-  },
-  {
-    title: TABS.portfolio.title,
-    slug: TABS.portfolio.slug,
-    content: dynamic(() => import("~/compounds/Margin/Portfolio"), {
       suspense: true,
     }),
   },

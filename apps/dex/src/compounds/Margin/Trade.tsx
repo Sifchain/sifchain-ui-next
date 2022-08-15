@@ -21,7 +21,7 @@ import {
 import BigNumber from "bignumber.js";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import {
   useEnhancedPoolsQuery,
@@ -1006,12 +1006,9 @@ const Trade = (props: TradeProps) => {
           )}
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
-          <PortfolioTable
+          <OpenPositionsTable
             walletAddress={walletAddress.data ?? ""}
-            extraQuerystring={{ pool: poolActive?.asset.denom }}
-            openPositions={{
-              hideColumns: ["Pool", "Paid Interest"],
-            }}
+            hideColumns={["Pool", "Paid Interest"]}
           />
         </section>
       </section>
