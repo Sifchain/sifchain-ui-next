@@ -214,10 +214,13 @@ const PoolsPage: NextPage = () => {
                       })}
                     </dd>
                     <dt className="hidden md:inline">Actions</dt>
-                    <dd className="hidden justify-end md:flex">
+                    <dd className="hidden items-center justify-end gap-12 md:flex">
                       <Button variant="secondary" onClick={() => onPressPoolButton(x.denom)}>
                         <PoolsIcon /> Pool
                       </Button>
+                      <button className="marker pointer-events-none">
+                        <ChevronDownIcon />
+                      </button>
                     </dd>
                   </dl>
                 </summary>
