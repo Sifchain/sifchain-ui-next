@@ -1,6 +1,7 @@
 import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, SearchInput } from "@sifchain/ui";
 import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
+import clsx from "clsx";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { sort } from "rambda";
@@ -223,7 +224,12 @@ const PoolsPage: NextPage = () => {
                         })}
                       </dd>
                       <dt>Arb opportunity</dt>
-                      <dd className="error-">
+                      <dd
+                        className={clsx({
+                          "text-emerald-600": (x.arb ?? 0) > 0,
+                          "text-rose-700": (x.arb ?? 0) < 0,
+                        })}
+                      >
                         {x.arb &&
                           (x.arb / 100).toLocaleString(undefined, {
                             style: "percent",
