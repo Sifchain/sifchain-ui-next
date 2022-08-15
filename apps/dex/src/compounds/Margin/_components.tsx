@@ -39,7 +39,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
 
 type PaginationButtonsProps = {
   pages: number;
-  render: (page: number) => React.ReactNode;
+  render: (_page: number) => React.ReactNode;
 };
 export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
   return (
@@ -64,7 +64,7 @@ type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
   rowanPriceUsd: number;
-  onChangePoolSelector: (token: TokenEntry) => void;
+  onChangePoolSelector: (_token: TokenEntry) => void;
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
