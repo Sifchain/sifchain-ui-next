@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { type FC, useState } from "react";
 
-export type Option<T> = {
+export type ButtonGroupOption<T> = {
   label: string;
   value: T;
   disabled?: boolean;
 };
 
 export type ButtonGroupProps<T> = {
-  options: Option<T>[];
+  options: ButtonGroupOption<T>[];
   selectedIndex?: number;
   onChange: (index: number) => void;
   className?: string;
