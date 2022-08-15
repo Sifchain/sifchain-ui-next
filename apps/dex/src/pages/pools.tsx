@@ -55,6 +55,13 @@ const usePoolsPageData = () => {
         );
         const pool = poolsQuery.data?.pools.find((y) => y.externalAsset?.symbol === token?.denom);
 
+        const poolNativeAssetBalanceUsd = new BigNumber(pool?.nativeAssetBalance.toString() ?? 0)
+          .times(tokenStatsQuery.data.rowanUSD ?? 0)
+          .toNumber();
+        const poolExternalAssetBalanceUsd = new BigNumber(pool?.externalAssetBalance.toString() ?? 0)
+          .times(x.priceToken ?? 0)
+          .toNumber();
+
         if (liquidityProvider?.liquidityProvider === undefined || pool === undefined)
           return {
             ...x,
@@ -64,6 +71,8 @@ const usePoolsPageData = () => {
             externalAssetBalance: 0,
             poolNativeAssetBalance: pool?.nativeAssetBalance.toFloatApproximation() ?? 0,
             poolExternalAssetBalance: pool?.externalAssetBalance.toFloatApproximation() ?? 0,
+            poolNativeAssetBalanceUsd,
+            poolExternalAssetBalanceUsd,
             liquidityProviderPoolShare: 0,
             liquidityProviderPoolValue: 0,
             unlock: undefined,
@@ -93,6 +102,8 @@ const usePoolsPageData = () => {
           externalAssetBalance,
           poolNativeAssetBalance: pool.nativeAssetBalance.toFloatApproximation(),
           poolExternalAssetBalance: pool.externalAssetBalance.toFloatApproximation(),
+          poolNativeAssetBalanceUsd,
+          poolExternalAssetBalanceUsd,
           liquidityProviderPoolShare: poolShare.toNumber(),
           liquidityProviderPoolValue: rowanPoolValue.plus(externalAssetPoolValue).toNumber(),
           unlock: currentUnlockRequest?.expired ? undefined : currentUnlockRequest,
@@ -285,6 +296,8 @@ const PoolsPage: NextPage = () => {
                       {x.poolExternalAssetBalance.toLocaleString()}
                       <AssetIcon size="sm" symbol={x.denom ?? ""} />
                     </dd>
+                    <dt>Pool value ({x.displaySymbol?.toUpperCase()})</dt>
+                    <dd>{currencyFormat.format(x.poolExternalAssetBalanceUsd)}</dd>
                     <dt>24hr trading volume</dt>
                     <dd>{Maybe.of(x.volume).mapOr("...", currencyFormat.format)}</dd>
                     <dt>Arb opportunity</dt>
@@ -308,6 +321,8 @@ const PoolsPage: NextPage = () => {
                       {x.poolNativeAssetBalance.toLocaleString()}
                       <AssetIcon size="sm" symbol={env?.nativeAsset.symbol ?? ""} />
                     </dd>
+                    <dt>Pool value ({env?.nativeAsset.displaySymbol.toUpperCase()})</dt>
+                    <dd>{currencyFormat.format(x.poolNativeAssetBalanceUsd)}</dd>
                     <dt>Rewards paid to the pool</dt>
                     <dd>{x.rewardPeriodNativeDistributed?.toLocaleString()}</dd>
                     <dt>Rewards time remaining</dt>
