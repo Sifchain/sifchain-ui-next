@@ -56,7 +56,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
-  walletAddress: string | undefined;
+  walletAddress: string;
   hideColumns?: HideColsUnion[];
 };
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
@@ -72,8 +72,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
-    walletAddress: props.walletAddress ?? "",
+    walletAddress: props.walletAddress,
   });
+  console.log({ openPositionsQuery });
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;

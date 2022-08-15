@@ -29,7 +29,7 @@ const OPTIONS_ITEMS = {
 } as const;
 
 type PortfolioTableProps = {
-  walletAddress: string | undefined;
+  walletAddress: string;
   extraQuerystring?: ReturnType<typeof useRouter>["query"];
   openPositions?: {
     hideColumns: OpenPositionsTableProps["hideColumns"];

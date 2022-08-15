@@ -57,7 +57,7 @@ const MTP_STATUS = {
   CLOSE: "margin/mtp_close",
 } as Record<string, string>;
 export type HistoryTableProps = {
-  walletAddress: string | undefined;
+  walletAddress: string;
   classNamePaginationContainer?: string;
 };
 const HistoryTable = (props: HistoryTableProps) => {
@@ -70,7 +70,7 @@ const HistoryTable = (props: HistoryTableProps) => {
   };
   const historyQuery = useHistoryQuery({
     ...queryParams,
-    walletAddress: props.walletAddress ?? "",
+    walletAddress: props.walletAddress,
   });
   const headers = HISTORY_HEADER_ITEMS;
 

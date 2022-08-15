@@ -1007,7 +1007,7 @@ const Trade = (props: TradeProps) => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
-            walletAddress={walletAddress.data}
+            walletAddress={walletAddress.data ?? ""}
             extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
               hideColumns: [
