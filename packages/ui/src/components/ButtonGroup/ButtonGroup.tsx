@@ -38,7 +38,7 @@ const Indicator: FC<IndicatorProps> = (props) => {
         {
           "opacity-0": props.selectedIndex === -1,
         },
-        props.className
+        props.className,
       )}
       style={{
         width: props.itemWidth - props.gap,
@@ -64,10 +64,7 @@ export function ButtonGroup<T = unknown>(props: ButtonGroupProps<T>) {
           setContainerWidth(x.clientWidth);
         }
       }}
-      className={clsx(
-        "relative flex overflow-hidden rounded-lg bg-gray-800 p-1.5",
-        props.className
-      )}
+      className={clsx("relative flex overflow-hidden rounded-lg bg-gray-800 p-1.5", props.className)}
     >
       <Indicator
         selectedIndex={hoverIndex}
@@ -94,19 +91,13 @@ export function ButtonGroup<T = unknown>(props: ButtonGroupProps<T>) {
             key={index}
             type="button"
             className={clsx(
-              "flex-1 py-2.5 rounded-xl font-semibold disabled:cursor-not-allowed",
-              index === props.selectedIndex
-                ? "text-gray-50"
-                : item.disabled
-                ? "text-gray-750"
-                : "text-gray-300",
-              typeof props.itemClassName === "function"
-                ? props.itemClassName(index)
-                : props.itemClassName,
+              "flex-1 rounded-xl py-2.5 font-semibold disabled:cursor-not-allowed",
+              index === props.selectedIndex ? "text-gray-50" : item.disabled ? "text-gray-750" : "text-gray-300",
+              typeof props.itemClassName === "function" ? props.itemClassName(index) : props.itemClassName,
               {
                 "text-sm": props.size === "md",
                 "text-xs": props.size === "sm",
-              }
+              },
             )}
             onClick={props.onChange.bind(null, index)}
             onMouseOver={setHoverIndex.bind(null, index)}

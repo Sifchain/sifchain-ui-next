@@ -21,17 +21,15 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
       {
         label: "Remove liquidity",
         value: "unlock",
-        disabled:
-          liquidityProvider === undefined ||
-          (liquidityProvider?.unlocks.length ?? 0) > 0,
+        disabled: liquidityProvider === undefined || (liquidityProvider?.unlocks.length ?? 0) > 0,
       },
     ],
-    [liquidityProvider]
+    [liquidityProvider],
   );
 
   const selectedTabIndex = useMemo(
     () => Object.values(tabOptions).findIndex((x) => x.value === props.action),
-    [props.action, tabOptions]
+    [props.action, tabOptions],
   );
 
   const { indexedByDenom } = useTokenRegistryQuery();
@@ -39,11 +37,8 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
   const poolStatsQuery = usePoolStatsQuery();
 
   const poolStats = useMemo(
-    () =>
-      poolStatsQuery.data?.pools?.find(
-        (x) => x.symbol?.toLowerCase() === token?.displaySymbol.toLowerCase()
-      ),
-    [poolStatsQuery.data?.pools, token?.displaySymbol]
+    () => poolStatsQuery.data?.pools?.find((x) => x.symbol?.toLowerCase() === token?.displaySymbol.toLowerCase()),
+    [poolStatsQuery.data?.pools, token?.displaySymbol],
   );
 
   const [nativeRatio, externalRatio] = useMemo(() => {
@@ -51,10 +46,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
     const externalTvl = poolStats?.poolDepth ?? 0;
     const nativeTvl = poolTvl - externalTvl;
 
-    return [
-      nativeTvl / poolTvl || undefined,
-      externalTvl / poolTvl || undefined,
-    ] as const;
+    return [nativeTvl / poolTvl || undefined, externalTvl / poolTvl || undefined] as const;
   }, [poolStats]);
 
   const form = useMemo(() => {
@@ -81,21 +73,17 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
                 props.onChangeAction(option.value);
               }
             },
-            [props, tabOptions]
+            [props, tabOptions],
           )}
         />
-        <dl className="flex flex-col gap-1 uppercase [&>div]:flex [&>div]:justify-between [&>div]:gap-4">
+        <dl className="[&>div]:flex [&>div]:justify-between [&>div]:gap-4 flex flex-col gap-1 uppercase">
           <div>
             <dt className="uppercase">{token?.displaySymbol}</dt>
-            <dd>
-              {Maybe.of(externalRatio).mapOr("...", percentageFormat.format)}
-            </dd>
+            <dd>{Maybe.of(externalRatio).mapOr("...", percentageFormat.format)}</dd>
           </div>
           <div>
             <dt>ROWAN</dt>
-            <dd>
-              {Maybe.of(nativeRatio).mapOr("...", percentageFormat.format)}
-            </dd>
+            <dd>{Maybe.of(nativeRatio).mapOr("...", percentageFormat.format)}</dd>
           </div>
         </dl>
       </div>

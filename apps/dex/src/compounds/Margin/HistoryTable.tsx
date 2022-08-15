@@ -66,11 +66,7 @@ const HistoryTable = (props: HistoryTableProps) => {
   const headers = HISTORY_HEADER_ITEMS;
 
   if (walletAddress.isIdle) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        Connect your Sifchain wallet
-      </div>
-    );
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Connect your Sifchain wallet</div>;
   }
   if (walletAddress.isError) {
     return (
@@ -80,11 +76,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
   if (walletAddress.isLoading) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        Loading your Sifchain wallet...
-      </div>
-    );
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading your Sifchain wallet...</div>;
   }
 
   if (historyQuery.isSuccess) {
