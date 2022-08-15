@@ -3,6 +3,7 @@ info:
   title: Sichain API
   version: 0.0.5
 servers:
+  # Added by API Auto Mocking Plugin
   - url: https://data.sifchain.finance/beta
     description: AWS API Gateway
 
@@ -26,14 +27,14 @@ paths:
         - Pools
       operationId: getPools
       responses:
-        "200":
+        '200':
           description: This endpoint gets all available Pools information
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolsResponse"
+                  $ref: '#/components/schemas/getPoolsResponse'
       x-swagger-router-controller: Pools
   /pool/{symbol}:
     get:
@@ -49,12 +50,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Display individual Pool info
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getPoolResponse"
+                $ref: '#/components/schemas/getPoolResponse'
       x-swagger-router-controller: Pools
   /pool/{symbol}/liquidityProvider:
     get:
@@ -70,7 +71,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description:
             Displays all current Liquidity Providers for the specified
             Pool
@@ -79,7 +80,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getLiquidityProvidersResponse"
+                  $ref: '#/components/schemas/getLiquidityProvidersResponse'
       x-swagger-router-controller: Pools
   /pool/{symbol}/liquidityProvider/{lpAddress}:
     get:
@@ -102,14 +103,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description:
             Displays single Liquidity Provider information for the specified
             Pool
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getLiquidityProviderResponse"
+                $ref: '#/components/schemas/getLiquidityProviderResponse'
       x-swagger-router-controller: Pools
   /pool/{symbol}/liquidityProvider/{lpAddress}/share:
     get:
@@ -132,12 +133,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: This endpoint gets pool share for given Liquidity Provider
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PoolShareResponse"
+                $ref: '#/components/schemas/PoolShareResponse'
       x-swagger-router-controller: Pools
   /validator:
     get:
@@ -145,12 +146,12 @@ paths:
         - Validators
       operationId: getValidators
       responses:
-        "200":
+        '200':
           description: This endpoint gets information for all Validators.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetValidatorsResponse"
+                $ref: '#/components/schemas/GetValidatorsResponse'
       x-swagger-router-controller: Validators
   /validator/{validatorAddress}:
     get:
@@ -166,12 +167,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: This endpoint gets Validator information.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetValidatorResponse"
+                $ref: '#/components/schemas/GetValidatorResponse'
       x-swagger-router-controller: Validators
   /validator/{validatorAddress}/delegator:
     get:
@@ -187,12 +188,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: This endpoint gets Validator Delegator information.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetDelegatorsResponse"
+                $ref: '#/components/schemas/GetDelegatorsResponse'
       x-swagger-router-controller: Validators
   /validator/delegator/{delegatorAddress}:
     get:
@@ -208,12 +209,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: This endpoint gets specific Delegator information.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetDelegatorResponse"
+                $ref: '#/components/schemas/GetDelegatorResponse'
       x-swagger-router-controller: Validators
   /validator/inactiveValidators:
     get:
@@ -221,14 +222,14 @@ paths:
         - Validators
       operationId: getInactiveValidators
       responses:
-        "200":
+        '200':
           description: This end point gets all inactive validators
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getInactiveValidatorsResponse"
+                  $ref: '#/components/schemas/getInactiveValidatorsResponse'
       x-swagger-router-controller: Validators
   /validator/delegator/totalStaked:
     get:
@@ -236,12 +237,12 @@ paths:
         - Validators
       operationId: getTotalStakedByDelegators
       responses:
-        "200":
+        '200':
           description: This end point gets total token amount delegated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTotalStakedByDelegatorsResponse"
+                $ref: '#/components/schemas/getTotalStakedByDelegatorsResponse'
       x-swagger-router-controller: Validators
   /validator/stakingRewards:
     get:
@@ -249,7 +250,7 @@ paths:
         - Stats
       operationId: getStakingRewards
       responses:
-        "200":
+        '200':
           description: This end point gets staking rewards rate.
           content:
             application/json:
@@ -293,14 +294,14 @@ paths:
         on the exchange.
       operationId: getAssets
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getAssetsResponse"
+                  $ref: '#/components/schemas/getAssetsResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Assets
   /asset/{symbol}:
@@ -317,12 +318,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: This endpoint gets USD value of token.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTokenValueResponse"
+                $ref: '#/components/schemas/GetTokenValueResponse'
       x-swagger-router-controller: Assets
   /asset/totalSupply:
     get:
@@ -330,12 +331,12 @@ paths:
         - Stats
       operationId: getTotalSupply
       responses:
-        "200":
+        '200':
           description: This end point gets total supply of Rowan.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTotalSupplyResponse"
+                $ref: '#/components/schemas/getTotalSupplyResponse'
       x-swagger-router-controller: Stats
   /asset/cmcTotalSupply:
     get:
@@ -343,7 +344,7 @@ paths:
         - Stats
       operationId: cmcTotalSupply
       responses:
-        "200":
+        '200':
           description: This end point gets total supply of Rowan as a string.
           content:
             application/json:
@@ -357,12 +358,12 @@ paths:
       description: This end point gets the total circulating supply of Rowan.
       operationId: getCirculatingSupply
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getCirculatingSupplyResponse"
+                $ref: '#/components/schemas/getCirculatingSupplyResponse'
       x-swagger-router-controller: Stats
   /asset/cmcCirculatingSupply:
     get:
@@ -371,7 +372,7 @@ paths:
       description: This end point gets the total circulating supply of Rowan as a string.
       operationId: cmcCirculatingSupply
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
@@ -385,12 +386,12 @@ paths:
       description: This end point gets the statistics of tokens
       operationId: getTokenStats
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTokenStatsResponse"
+                $ref: '#/components/schemas/getTokenStatsResponse'
       x-swagger-router-controller: Assets
 
   /asset/tokenStatsPMTP:
@@ -400,12 +401,12 @@ paths:
       description: This end point gets the statistics of tokens
       operationId: getTokenStatsPMTP
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getTokenStatsPMTPResponse"
+                $ref: '#/components/schemas/getTokenStatsPMTPResponse'
       x-swagger-router-controller: Assets
 
   /network:
@@ -414,12 +415,12 @@ paths:
         - Network
       operationId: getNetworkInfo
       responses:
-        "200":
+        '200':
           description: This end point gets network information.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getNetworkResponse"
+                $ref: '#/components/schemas/getNetworkResponse'
       x-swagger-router-controller: Network
 
   /network/dispensation/{type}:
@@ -436,12 +437,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Dispensation List
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getPoolResponse"
+                $ref: '#/components/schemas/getPoolResponse'
       x-swagger-router-controller: Network
 
   /network/rewardConfig/{type}:
@@ -458,12 +459,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Reward Configuration Setting
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getPoolResponse"
+                $ref: '#/components/schemas/getPoolResponse'
       x-swagger-router-controller: Network
 
   /network/{symbol}/netChange/{lpAddress}:
@@ -487,12 +488,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Displays net gain or loss for a liquidity provider with specified address and token symbol
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/getLiquidityProviderResponse"
+                $ref: '#/components/schemas/getLiquidityProviderResponse'
       x-swagger-router-controller: Network
 
   /dailyPrice:
@@ -501,14 +502,14 @@ paths:
         - Network
       operationId: getDailyPrice
       responses:
-        "200":
+        '200':
           description: This end point gets daily OHLC ticker data.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getDailyPriceResponse"
+                  $ref: '#/components/schemas/getDailyPriceResponse'
       x-swagger-router-controller: Network
 
   /cmcTotalDailyVolume:
@@ -517,7 +518,7 @@ paths:
         - Network
       operationId: cmcTotalDailyVolume
       responses:
-        "200":
+        '200':
           description: This end point gets the total volume of Rowan for the last 24 hours.
           content:
             application/json:
@@ -552,14 +553,14 @@ paths:
             default: 0
             description: The page number.
       responses:
-        "200":
+        '200':
           description: Successful operation.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getHistoricalPriceResponse"
+                  $ref: '#/components/schemas/getHistoricalPriceResponse'
       x-swagger-router-controller: Network
 
   /summary:
@@ -572,14 +573,14 @@ paths:
         all tickers and all market pairs on the exchange.
       operationId: getSummary
       responses:
-        "200":
+        '200':
           description: Successful operation.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getSummaryResponse"
+                  $ref: '#/components/schemas/getSummaryResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
@@ -593,14 +594,14 @@ paths:
         all tickers and all market pairs on the exchange.
       operationId: getCmcSummary
       responses:
-        "200":
+        '200':
           description: Successful operation.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getSummaryResponse"
+                  $ref: '#/components/schemas/getSummaryResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
@@ -623,14 +624,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getTradeResponse"
+                  $ref: '#/components/schemas/getTradeResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Trades
 
@@ -659,14 +660,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getTradeResponse"
+                  $ref: '#/components/schemas/getTradeResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Trades
 
@@ -687,14 +688,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getTradeResponse"
+                  $ref: '#/components/schemas/getTradeResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Trades
 
@@ -715,14 +716,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Reward Payout Amount
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: '#/components/schemas/getPoolResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
@@ -743,27 +744,27 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Reward Payout Amount
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: '#/components/schemas/getPoolResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
-  /margin/openPosition/{address}:
+  /margin/openposition/{address}:
     get:
       tags:
-        - Stats
+        - Margin
       summary: Get margin open position filtered by user
       description: This endpoint returns open position history filtered per user address
       operationId: getMarginOpenPosition
       parameters:
-        - name: address
-          in: path
+        - in: path
+          name: address
           description: Wallet address
           required: true
           style: simple
@@ -773,12 +774,12 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
+            type: number
           description: The number of items to skip before starting to collect the result set
         - in: query
           name: limit
           schema:
-            type: integer
+            type: number
           description: The number of items to return
         - in: query
           name: orderBy
@@ -792,21 +793,21 @@ paths:
           description: direction to sort
 
       responses:
-        "200":
+        '200':
           description: Margin Open Position
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: '#/components/schemas/getMarginOpenPositionResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
   /margin/history/{address}:
     get:
       tags:
-        - Stats
+        - Margin
       summary: Get margin trade history filtered by user
       description: This endpoint returns open position history filtered per user address
       operationId: getMarginHistory
@@ -822,12 +823,12 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
+            type: number
           description: The number of items to skip before starting to collect the result set
         - in: query
           name: limit
           schema:
-            type: integer
+            type: number
           description: The number of items to return
         - in: query
           name: orderBy
@@ -841,19 +842,51 @@ paths:
           description: direction to sort
 
       responses:
-        "200":
+        '200':
           description: Margin Open Position
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/getPoolResponse"
+                  $ref: '#/components/schemas/getMarginHistoryResponse'
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
 components:
   schemas:
+    getMarginHistoryResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: string
+            limit:
+              type: string
+            offset:
+              type: string
+            order_by:
+              type: string
+            sort_by:
+              type: string
+    getMarginOpenPositionResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: string
+            limit:
+              type: string
+            offset:
+              type: string
+            order_by:
+              type: string
+            sort_by:
+              type: string
     getTokenStatsResponse:
       type: object
       properties:
@@ -942,17 +975,17 @@ components:
       type: object
       properties:
         externalAsset:
-          $ref: "#/components/schemas/externalAsset"
+          $ref: '#/components/schemas/externalAsset'
         nativeAsset:
-          $ref: "#/components/schemas/nativeAsset"
+          $ref: '#/components/schemas/nativeAsset'
         poolUnits:
           type: string
-          example: "123456"
+          example: '123456'
     getPoolResponse:
       type: object
       properties:
         Pool:
-          $ref: "#/components/schemas/getPoolsResponse"
+          $ref: '#/components/schemas/getPoolsResponse'
         clpModuleAddress:
           type: string
         height:
@@ -965,17 +998,17 @@ components:
         address:
           type: string
       example:
-        units: "123456"
-        address: "jk32l4j3l4j3l2j4l324jlhggfv3"
+        units: '123456'
+        address: 'jk32l4j3l4j3l2j4l324jlhggfv3'
     getLiquidityProviderResponse:
       type: object
       properties:
         LiquidityProvider:
-          $ref: "#/components/schemas/getLiquidityProvidersResponse"
+          $ref: '#/components/schemas/getLiquidityProvidersResponse'
         externalAsset:
-          $ref: "#/components/schemas/externalAsset"
+          $ref: '#/components/schemas/externalAsset'
         nativeAsset:
-          $ref: "#/components/schemas/nativeAsset"
+          $ref: '#/components/schemas/nativeAsset'
         height:
           type: string
     PoolShareResponse:
@@ -984,7 +1017,7 @@ components:
         poolShare:
           type: string
       example:
-        poolShare: "0.800828190461011502065957"
+        poolShare: '0.800828190461011502065957'
     GetValidatorsResponse:
       type: array
       items:
@@ -995,7 +1028,7 @@ components:
         commissionRate:
           type: string
       example:
-        commissionRate: "0.80082819046101150206595775671303272247314453125"
+        commissionRate: '0.80082819046101150206595775671303272247314453125'
         validatorAddress: sifj890868767868969837739example
     GetValidatorResponse:
       type: object
@@ -1020,15 +1053,15 @@ components:
           type: string
           description: Validator uptime percentage over last 30 days
       example:
-        stakedAmount: "0.80082819046101150206595775671303272247314453125"
-        performance: "2.3021358869347654518833223846741020679473876953125"
+        stakedAmount: '0.80082819046101150206595775671303272247314453125'
+        performance: '2.3021358869347654518833223846741020679473876953125'
         isSlashed: true
-        balance: "5.63737665663332876420099637471139430999755859375"
+        balance: '5.63737665663332876420099637471139430999755859375'
         validatorAddress: validatorAddress
         name: name
-        externalDelegation: "1.46581298050294517310021547018550336360931396484375"
-        unclaimedRewards: "5.962133916683182377482808078639209270477294921875"
-        selfDelegation: "6.02745618307040320615897144307382404804229736328125"
+        externalDelegation: '1.46581298050294517310021547018550336360931396484375'
+        unclaimedRewards: '5.962133916683182377482808078639209270477294921875'
+        selfDelegation: '6.02745618307040320615897144307382404804229736328125'
     GetDelegatorsResponse:
       type: array
       items:
@@ -1040,7 +1073,7 @@ components:
             type: string
         example:
           delegatorAddress: sifj890868767868969837739example
-          delegationTotal: "0.80082819046101150206595775671303272247314453125"
+          delegationTotal: '0.80082819046101150206595775671303272247314453125'
     GetDelegatorResponse:
       type: object
       properties:
@@ -1058,12 +1091,12 @@ components:
           type: string
           description: Validator uptime percentage over last 30 days
       example:
-        performance: "1.46581298050294517310021547018550336360931396484375"
+        performance: '1.46581298050294517310021547018550336360931396484375'
         isSlashed: true
         validatorAddress: sifj890868767868969837739example
         validatorName: validatorName
-        delegationTotal: "0.80082819046101150206595775671303272247314453125"
-        unclaimedRewards: "6.02745618307040320615897144307382404804229736328125"
+        delegationTotal: '0.80082819046101150206595775671303272247314453125'
+        unclaimedRewards: '6.02745618307040320615897144307382404804229736328125'
     getAssetsResponse:
       type: object
       properties:
@@ -1089,14 +1122,14 @@ components:
           type: string
       example:
         symbol: symbol
-        priceInUSDC: "0.80082819046101150206595775671303272247314453125"
-        priceInRowan: "6.02745618307040320615897144307382404804229736328125"
+        priceInUSDC: '0.80082819046101150206595775671303272247314453125'
+        priceInRowan: '6.02745618307040320615897144307382404804229736328125'
     getInactiveValidatorsResponse:
       type: object
       properties:
         inactiveValidator:
           type: string
-          example: "abcuiyi88y, yuy7112zy"
+          example: 'abcuiyi88y, yuy7112zy'
       example:
         inactiveValidator: inactiveValidator
     getTotalStakedByDelegatorsResponse:
@@ -1105,7 +1138,7 @@ components:
         amountDelegated:
           type: string
       example:
-        amountDelegated: "0.80082819046101150206595775671303272247314453125"
+        amountDelegated: '0.80082819046101150206595775671303272247314453125'
     getPeggedAssetsResponse:
       type: object
       properties:
@@ -1114,88 +1147,88 @@ components:
           example: USD
         value:
           type: string
-          example: "120.5"
+          example: '120.5'
     getTotalSupplyResponse:
       type: object
       properties:
         denom:
           type: string
-          example: "rowan"
+          example: 'rowan'
         amount:
           type: string
-          example: "1000000000000000000000000000"
+          example: '1000000000000000000000000000'
     getCirculatingSupplyResponse:
       type: object
       properties:
         denom:
           type: string
-          example: "rowan"
+          example: 'rowan'
         amount:
           type: string
-          example: "76121765689399231786235494"
+          example: '76121765689399231786235494'
     getNetworkResponse:
       type: object
       properties:
         totalRowanStaked:
           type: string
-          example: "120"
+          example: '120'
         totalUSDStaked:
           type: string
-          example: "120"
+          example: '120'
         blockReward:
           type: string
-          example: "120"
+          example: '120'
         averageBlockTime:
           type: string
-          example: "120"
+          example: '120'
         averageFee:
           type: string
-          example: "120"
+          example: '120'
         totalUsers:
           type: string
-          example: "abcuiyi88y, yuy7112zy"
+          example: 'abcuiyi88y, yuy7112zy'
         networkBondingTime:
           type: string
-          example: "245"
+          example: '245'
         validatorMinimumBondAmount:
           type: string
-          example: "10"
+          example: '10'
         delegatorMinimumBondAmount:
           type: string
-          example: "10"
+          example: '10'
     getDailyPriceResponse:
       type: object
       properties:
         tickerid:
           type: string
-          example: "leash_rowan"
+          example: 'leash_rowan'
         base_currency:
           type: string
-          example: "leash"
+          example: 'leash'
         target_currency:
           type: string
-          example: "rowan"
+          example: 'rowan'
         last_price:
           type: string
-          example: "4903.9466783618955"
+          example: '4903.9466783618955'
         base_volume:
           type: string
-          example: "1284.3708362610455"
+          example: '1284.3708362610455'
         target_volume:
           type: string
-          example: "115901.14717083503"
+          example: '115901.14717083503'
         bid:
           type: string
-          example: "4894.1387850051715"
+          example: '4894.1387850051715'
         ask:
           type: string
-          example: "14903.94667836189550"
+          example: '14903.94667836189550'
         high:
           type: string
-          example: "4903.9466783618955"
+          example: '4903.9466783618955'
         low:
           type: string
-          example: "4903.9466783618955"
+          example: '4903.9466783618955'
     getHistoricalPriceResponse:
       type: object
       properties:
@@ -1217,10 +1250,10 @@ components:
           example: ETC_BTC
         baseCurrency:
           type: string
-          description: "Symbol/currency code of base currency, eg. BTC"
+          description: 'Symbol/currency code of base currency, eg. BTC'
         targetCurrency:
           type: string
-          description: "Symbol/currency code of target currency, eg. USD"
+          description: 'Symbol/currency code of target currency, eg. USD'
         lastPrice:
           type: string
           description:
@@ -1290,7 +1323,7 @@ components:
           type: string
       example:
         symbol: USDC
-        balance: "12345556"
+        balance: '12345556'
     nativeAsset:
       type: object
       properties:
@@ -1301,5 +1334,5 @@ components:
           type: string
       example:
         symbol: ROWAN
-        balance: "12345556"
-x-aws-api-id: "i7q5doxsoi"
+        balance: '12345556'
+x-aws-api-id: 'i7q5doxsoi'

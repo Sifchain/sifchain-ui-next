@@ -9,7 +9,13 @@ export type SifnodeClient = Awaited<ReturnType<typeof createQueryClient>>;
 
 export type PublicSifnodeClient = Pick<
   SifnodeClient,
-  "clp" | "ethBridge" | "bank" | "dispensation" | "staking" | "tokenRegistry"
+  | "clp"
+  | "ethBridge"
+  | "bank"
+  | "dispensation"
+  | "staking"
+  | "tokenRegistry"
+  | "margin"
 >;
 
 type PublicModuleKey = keyof PublicSifnodeClient;
@@ -42,7 +48,7 @@ export default function useSifnodeQuery<
   const { data: client } = useQueryClient();
 
   return useQuery(
-    [query, ...args],
+    [query, client, ...args],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     async (): Awaited<ReturnType<PublicSifnodeClient[T][P]>> => {

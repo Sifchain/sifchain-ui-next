@@ -61,18 +61,22 @@ export interface Params {
   maxOpenPositions: Long;
   poolOpenThreshold: string;
   forceCloseFundPercentage: string;
-  insuranceFundAddress: string;
+  forceCloseInsuranceFundAddress: string;
+  incrementalInterestPaymentFundPercentage: string;
+  incrementalInterestPaymentInsuranceFundAddress: string;
   sqModifier: string;
   safetyFactor: string;
   closedPools: string[];
+  incrementalInterestPaymentEnabled: boolean;
 }
 
 export interface MTP {
   address: string;
   collateralAsset: string;
   collateralAmount: string;
-  liabilitiesP: string;
-  liabilitiesI: string;
+  liabilities: string;
+  interestPaid: string;
+  interestUnpaid: string;
   custodyAsset: string;
   custodyAmount: string;
   leverage: string;
@@ -154,10 +158,13 @@ function createBaseParams(): Params {
     maxOpenPositions: Long.UZERO,
     poolOpenThreshold: "",
     forceCloseFundPercentage: "",
-    insuranceFundAddress: "",
+    forceCloseInsuranceFundAddress: "",
+    incrementalInterestPaymentFundPercentage: "",
+    incrementalInterestPaymentInsuranceFundAddress: "",
     sqModifier: "",
     safetyFactor: "",
     closedPools: [],
+    incrementalInterestPaymentEnabled: false,
   };
 }
 
@@ -205,17 +212,30 @@ export const Params = {
     if (message.forceCloseFundPercentage !== "") {
       writer.uint32(106).string(message.forceCloseFundPercentage);
     }
-    if (message.insuranceFundAddress !== "") {
-      writer.uint32(114).string(message.insuranceFundAddress);
+    if (message.forceCloseInsuranceFundAddress !== "") {
+      writer.uint32(114).string(message.forceCloseInsuranceFundAddress);
+    }
+    if (message.incrementalInterestPaymentFundPercentage !== "") {
+      writer
+        .uint32(122)
+        .string(message.incrementalInterestPaymentFundPercentage);
+    }
+    if (message.incrementalInterestPaymentInsuranceFundAddress !== "") {
+      writer
+        .uint32(130)
+        .string(message.incrementalInterestPaymentInsuranceFundAddress);
     }
     if (message.sqModifier !== "") {
-      writer.uint32(122).string(message.sqModifier);
+      writer.uint32(138).string(message.sqModifier);
     }
     if (message.safetyFactor !== "") {
-      writer.uint32(130).string(message.safetyFactor);
+      writer.uint32(146).string(message.safetyFactor);
     }
     for (const v of message.closedPools) {
-      writer.uint32(138).string(v!);
+      writer.uint32(154).string(v!);
+    }
+    if (message.incrementalInterestPaymentEnabled === true) {
+      writer.uint32(160).bool(message.incrementalInterestPaymentEnabled);
     }
     return writer;
   },
@@ -267,16 +287,26 @@ export const Params = {
           message.forceCloseFundPercentage = reader.string();
           break;
         case 14:
-          message.insuranceFundAddress = reader.string();
+          message.forceCloseInsuranceFundAddress = reader.string();
           break;
         case 15:
-          message.sqModifier = reader.string();
+          message.incrementalInterestPaymentFundPercentage = reader.string();
           break;
         case 16:
-          message.safetyFactor = reader.string();
+          message.incrementalInterestPaymentInsuranceFundAddress =
+            reader.string();
           break;
         case 17:
+          message.sqModifier = reader.string();
+          break;
+        case 18:
+          message.safetyFactor = reader.string();
+          break;
+        case 19:
           message.closedPools.push(reader.string());
+          break;
+        case 20:
+          message.incrementalInterestPaymentEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -325,8 +355,20 @@ export const Params = {
       forceCloseFundPercentage: isSet(object.forceCloseFundPercentage)
         ? String(object.forceCloseFundPercentage)
         : "",
-      insuranceFundAddress: isSet(object.insuranceFundAddress)
-        ? String(object.insuranceFundAddress)
+      forceCloseInsuranceFundAddress: isSet(
+        object.forceCloseInsuranceFundAddress,
+      )
+        ? String(object.forceCloseInsuranceFundAddress)
+        : "",
+      incrementalInterestPaymentFundPercentage: isSet(
+        object.incrementalInterestPaymentFundPercentage,
+      )
+        ? String(object.incrementalInterestPaymentFundPercentage)
+        : "",
+      incrementalInterestPaymentInsuranceFundAddress: isSet(
+        object.incrementalInterestPaymentInsuranceFundAddress,
+      )
+        ? String(object.incrementalInterestPaymentInsuranceFundAddress)
         : "",
       sqModifier: isSet(object.sqModifier) ? String(object.sqModifier) : "",
       safetyFactor: isSet(object.safetyFactor)
@@ -335,6 +377,11 @@ export const Params = {
       closedPools: Array.isArray(object?.closedPools)
         ? object.closedPools.map((e: any) => String(e))
         : [],
+      incrementalInterestPaymentEnabled: isSet(
+        object.incrementalInterestPaymentEnabled,
+      )
+        ? Boolean(object.incrementalInterestPaymentEnabled)
+        : false,
     };
   },
 
@@ -371,8 +418,15 @@ export const Params = {
       (obj.poolOpenThreshold = message.poolOpenThreshold);
     message.forceCloseFundPercentage !== undefined &&
       (obj.forceCloseFundPercentage = message.forceCloseFundPercentage);
-    message.insuranceFundAddress !== undefined &&
-      (obj.insuranceFundAddress = message.insuranceFundAddress);
+    message.forceCloseInsuranceFundAddress !== undefined &&
+      (obj.forceCloseInsuranceFundAddress =
+        message.forceCloseInsuranceFundAddress);
+    message.incrementalInterestPaymentFundPercentage !== undefined &&
+      (obj.incrementalInterestPaymentFundPercentage =
+        message.incrementalInterestPaymentFundPercentage);
+    message.incrementalInterestPaymentInsuranceFundAddress !== undefined &&
+      (obj.incrementalInterestPaymentInsuranceFundAddress =
+        message.incrementalInterestPaymentInsuranceFundAddress);
     message.sqModifier !== undefined && (obj.sqModifier = message.sqModifier);
     message.safetyFactor !== undefined &&
       (obj.safetyFactor = message.safetyFactor);
@@ -381,6 +435,9 @@ export const Params = {
     } else {
       obj.closedPools = [];
     }
+    message.incrementalInterestPaymentEnabled !== undefined &&
+      (obj.incrementalInterestPaymentEnabled =
+        message.incrementalInterestPaymentEnabled);
     return obj;
   },
 
@@ -405,10 +462,17 @@ export const Params = {
         : Long.UZERO;
     message.poolOpenThreshold = object.poolOpenThreshold ?? "";
     message.forceCloseFundPercentage = object.forceCloseFundPercentage ?? "";
-    message.insuranceFundAddress = object.insuranceFundAddress ?? "";
+    message.forceCloseInsuranceFundAddress =
+      object.forceCloseInsuranceFundAddress ?? "";
+    message.incrementalInterestPaymentFundPercentage =
+      object.incrementalInterestPaymentFundPercentage ?? "";
+    message.incrementalInterestPaymentInsuranceFundAddress =
+      object.incrementalInterestPaymentInsuranceFundAddress ?? "";
     message.sqModifier = object.sqModifier ?? "";
     message.safetyFactor = object.safetyFactor ?? "";
     message.closedPools = object.closedPools?.map((e) => e) || [];
+    message.incrementalInterestPaymentEnabled =
+      object.incrementalInterestPaymentEnabled ?? false;
     return message;
   },
 };
@@ -418,8 +482,9 @@ function createBaseMTP(): MTP {
     address: "",
     collateralAsset: "",
     collateralAmount: "",
-    liabilitiesP: "",
-    liabilitiesI: "",
+    liabilities: "",
+    interestPaid: "",
+    interestUnpaid: "",
     custodyAsset: "",
     custodyAmount: "",
     leverage: "",
@@ -440,29 +505,32 @@ export const MTP = {
     if (message.collateralAmount !== "") {
       writer.uint32(26).string(message.collateralAmount);
     }
-    if (message.liabilitiesP !== "") {
-      writer.uint32(34).string(message.liabilitiesP);
+    if (message.liabilities !== "") {
+      writer.uint32(34).string(message.liabilities);
     }
-    if (message.liabilitiesI !== "") {
-      writer.uint32(42).string(message.liabilitiesI);
+    if (message.interestPaid !== "") {
+      writer.uint32(42).string(message.interestPaid);
+    }
+    if (message.interestUnpaid !== "") {
+      writer.uint32(50).string(message.interestUnpaid);
     }
     if (message.custodyAsset !== "") {
-      writer.uint32(50).string(message.custodyAsset);
+      writer.uint32(58).string(message.custodyAsset);
     }
     if (message.custodyAmount !== "") {
-      writer.uint32(58).string(message.custodyAmount);
+      writer.uint32(66).string(message.custodyAmount);
     }
     if (message.leverage !== "") {
-      writer.uint32(66).string(message.leverage);
+      writer.uint32(74).string(message.leverage);
     }
     if (message.mtpHealth !== "") {
-      writer.uint32(74).string(message.mtpHealth);
+      writer.uint32(82).string(message.mtpHealth);
     }
     if (message.position !== 0) {
-      writer.uint32(80).int32(message.position);
+      writer.uint32(88).int32(message.position);
     }
     if (!message.id.isZero()) {
-      writer.uint32(88).uint64(message.id);
+      writer.uint32(96).uint64(message.id);
     }
     return writer;
   },
@@ -484,27 +552,30 @@ export const MTP = {
           message.collateralAmount = reader.string();
           break;
         case 4:
-          message.liabilitiesP = reader.string();
+          message.liabilities = reader.string();
           break;
         case 5:
-          message.liabilitiesI = reader.string();
+          message.interestPaid = reader.string();
           break;
         case 6:
-          message.custodyAsset = reader.string();
+          message.interestUnpaid = reader.string();
           break;
         case 7:
-          message.custodyAmount = reader.string();
+          message.custodyAsset = reader.string();
           break;
         case 8:
-          message.leverage = reader.string();
+          message.custodyAmount = reader.string();
           break;
         case 9:
-          message.mtpHealth = reader.string();
+          message.leverage = reader.string();
           break;
         case 10:
-          message.position = reader.int32() as any;
+          message.mtpHealth = reader.string();
           break;
         case 11:
+          message.position = reader.int32() as any;
+          break;
+        case 12:
           message.id = reader.uint64() as Long;
           break;
         default:
@@ -524,11 +595,12 @@ export const MTP = {
       collateralAmount: isSet(object.collateralAmount)
         ? String(object.collateralAmount)
         : "",
-      liabilitiesP: isSet(object.liabilitiesP)
-        ? String(object.liabilitiesP)
+      liabilities: isSet(object.liabilities) ? String(object.liabilities) : "",
+      interestPaid: isSet(object.interestPaid)
+        ? String(object.interestPaid)
         : "",
-      liabilitiesI: isSet(object.liabilitiesI)
-        ? String(object.liabilitiesI)
+      interestUnpaid: isSet(object.interestUnpaid)
+        ? String(object.interestUnpaid)
         : "",
       custodyAsset: isSet(object.custodyAsset)
         ? String(object.custodyAsset)
@@ -550,10 +622,12 @@ export const MTP = {
       (obj.collateralAsset = message.collateralAsset);
     message.collateralAmount !== undefined &&
       (obj.collateralAmount = message.collateralAmount);
-    message.liabilitiesP !== undefined &&
-      (obj.liabilitiesP = message.liabilitiesP);
-    message.liabilitiesI !== undefined &&
-      (obj.liabilitiesI = message.liabilitiesI);
+    message.liabilities !== undefined &&
+      (obj.liabilities = message.liabilities);
+    message.interestPaid !== undefined &&
+      (obj.interestPaid = message.interestPaid);
+    message.interestUnpaid !== undefined &&
+      (obj.interestUnpaid = message.interestUnpaid);
     message.custodyAsset !== undefined &&
       (obj.custodyAsset = message.custodyAsset);
     message.custodyAmount !== undefined &&
@@ -572,8 +646,9 @@ export const MTP = {
     message.address = object.address ?? "";
     message.collateralAsset = object.collateralAsset ?? "";
     message.collateralAmount = object.collateralAmount ?? "";
-    message.liabilitiesP = object.liabilitiesP ?? "";
-    message.liabilitiesI = object.liabilitiesI ?? "";
+    message.liabilities = object.liabilities ?? "";
+    message.interestPaid = object.interestPaid ?? "";
+    message.interestUnpaid = object.interestUnpaid ?? "";
     message.custodyAsset = object.custodyAsset ?? "";
     message.custodyAmount = object.custodyAmount ?? "";
     message.leverage = object.leverage ?? "";

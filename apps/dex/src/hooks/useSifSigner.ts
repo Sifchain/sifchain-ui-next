@@ -1,6 +1,6 @@
 import { useSigner } from "@sifchain/cosmos-connect";
 import { invariant } from "@sifchain/ui";
-import { useQuery } from "react-query";
+import { useQuery, QueryObserverOptions } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 
 function useSifSigner() {
@@ -8,21 +8,23 @@ function useSifSigner() {
   return useSigner(env?.sifChainId ?? "", { enabled: env !== undefined });
 }
 
-export function useSifSignerAddress() {
+export function useSifSignerAddress(options?: { enabled: boolean }) {
   const { signer } = useSifSigner();
+  const customOptions = options ?? { enabled: signer !== undefined };
 
   return useQuery(
     "sifchain-signer-address",
     async () => {
-      invariant(signer !== undefined, "Sif signer is not defined");
+      if (signer) {
+        const accounts = await signer?.getAccounts();
 
-      const accounts = await signer?.getAccounts();
+        return accounts?.[0]?.address;
+      }
 
-      return accounts?.[0]?.address ?? "";
+      console.error("Sif signer is not defined");
+      return "";
     },
-    {
-      enabled: signer !== undefined,
-    },
+    customOptions,
   );
 }
 

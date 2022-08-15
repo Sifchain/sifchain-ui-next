@@ -60,6 +60,23 @@ export interface StatusResponse {
   lifetimeMtpCount: Long;
 }
 
+export interface WhitelistRequest {
+  pagination?: PageRequest;
+}
+
+export interface WhitelistResponse {
+  whitelist: string[];
+  pagination?: PageResponse;
+}
+
+export interface GetSQParamsRequest {
+  pool: string;
+}
+
+export interface GetSQParamsResponse {
+  beginBlock: Long;
+}
+
 function createBaseMTPRequest(): MTPRequest {
   return { address: "", id: Long.UZERO };
 }
@@ -864,6 +881,262 @@ export const StatusResponse = {
   },
 };
 
+function createBaseWhitelistRequest(): WhitelistRequest {
+  return { pagination: undefined };
+}
+
+export const WhitelistRequest = {
+  encode(
+    message: WhitelistRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WhitelistRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WhitelistRequest {
+    return {
+      pagination: isSet(object.pagination)
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined,
+    };
+  },
+
+  toJSON(message: WhitelistRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<WhitelistRequest>, I>>(
+    object: I,
+  ): WhitelistRequest {
+    const message = createBaseWhitelistRequest();
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseWhitelistResponse(): WhitelistResponse {
+  return { whitelist: [], pagination: undefined };
+}
+
+export const WhitelistResponse = {
+  encode(
+    message: WhitelistResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    for (const v of message.whitelist) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork(),
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WhitelistResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.whitelist.push(reader.string());
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WhitelistResponse {
+    return {
+      whitelist: Array.isArray(object?.whitelist)
+        ? object.whitelist.map((e: any) => String(e))
+        : [],
+      pagination: isSet(object.pagination)
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined,
+    };
+  },
+
+  toJSON(message: WhitelistResponse): unknown {
+    const obj: any = {};
+    if (message.whitelist) {
+      obj.whitelist = message.whitelist.map((e) => e);
+    } else {
+      obj.whitelist = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<WhitelistResponse>, I>>(
+    object: I,
+  ): WhitelistResponse {
+    const message = createBaseWhitelistResponse();
+    message.whitelist = object.whitelist?.map((e) => e) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseGetSQParamsRequest(): GetSQParamsRequest {
+  return { pool: "" };
+}
+
+export const GetSQParamsRequest = {
+  encode(
+    message: GetSQParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.pool !== "") {
+      writer.uint32(10).string(message.pool);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetSQParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSQParamsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pool = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetSQParamsRequest {
+    return {
+      pool: isSet(object.pool) ? String(object.pool) : "",
+    };
+  },
+
+  toJSON(message: GetSQParamsRequest): unknown {
+    const obj: any = {};
+    message.pool !== undefined && (obj.pool = message.pool);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GetSQParamsRequest>, I>>(
+    object: I,
+  ): GetSQParamsRequest {
+    const message = createBaseGetSQParamsRequest();
+    message.pool = object.pool ?? "";
+    return message;
+  },
+};
+
+function createBaseGetSQParamsResponse(): GetSQParamsResponse {
+  return { beginBlock: Long.ZERO };
+}
+
+export const GetSQParamsResponse = {
+  encode(
+    message: GetSQParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (!message.beginBlock.isZero()) {
+      writer.uint32(8).int64(message.beginBlock);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetSQParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSQParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.beginBlock = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetSQParamsResponse {
+    return {
+      beginBlock: isSet(object.beginBlock)
+        ? Long.fromValue(object.beginBlock)
+        : Long.ZERO,
+    };
+  },
+
+  toJSON(message: GetSQParamsResponse): unknown {
+    const obj: any = {};
+    message.beginBlock !== undefined &&
+      (obj.beginBlock = (message.beginBlock || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GetSQParamsResponse>, I>>(
+    object: I,
+  ): GetSQParamsResponse {
+    const message = createBaseGetSQParamsResponse();
+    message.beginBlock =
+      object.beginBlock !== undefined && object.beginBlock !== null
+        ? Long.fromValue(object.beginBlock)
+        : Long.ZERO;
+    return message;
+  },
+};
+
 export interface Query {
   GetMTP(request: MTPRequest): Promise<MTPResponse>;
   GetPositions(request: PositionsRequest): Promise<PositionsResponse>;
@@ -875,6 +1148,8 @@ export interface Query {
   ): Promise<PositionsByPoolResponse>;
   GetParams(request: ParamsRequest): Promise<ParamsResponse>;
   GetStatus(request: StatusRequest): Promise<StatusResponse>;
+  GetSQParams(request: GetSQParamsRequest): Promise<GetSQParamsResponse>;
+  GetWhitelist(request: WhitelistRequest): Promise<WhitelistResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -887,6 +1162,8 @@ export class QueryClientImpl implements Query {
     this.GetPositionsByPool = this.GetPositionsByPool.bind(this);
     this.GetParams = this.GetParams.bind(this);
     this.GetStatus = this.GetStatus.bind(this);
+    this.GetSQParams = this.GetSQParams.bind(this);
+    this.GetWhitelist = this.GetWhitelist.bind(this);
   }
   GetMTP(request: MTPRequest): Promise<MTPResponse> {
     const data = MTPRequest.encode(request).finish();
@@ -952,6 +1229,30 @@ export class QueryClientImpl implements Query {
       data,
     );
     return promise.then((data) => StatusResponse.decode(new _m0.Reader(data)));
+  }
+
+  GetSQParams(request: GetSQParamsRequest): Promise<GetSQParamsResponse> {
+    const data = GetSQParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.margin.v1.Query",
+      "GetSQParams",
+      data,
+    );
+    return promise.then((data) =>
+      GetSQParamsResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  GetWhitelist(request: WhitelistRequest): Promise<WhitelistResponse> {
+    const data = WhitelistRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.margin.v1.Query",
+      "GetWhitelist",
+      data,
+    );
+    return promise.then((data) =>
+      WhitelistResponse.decode(new _m0.Reader(data)),
+    );
   }
 }
 

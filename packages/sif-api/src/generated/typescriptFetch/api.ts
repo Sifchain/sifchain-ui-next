@@ -12,21 +12,21 @@
  * Do not edit the file manually.
  */
 
-import * as url from "url";
-import * as isomorphicFetch from "isomorphic-fetch";
-import { Configuration } from "./configuration";
+import * as url from 'url';
+import * as isomorphicFetch from 'isomorphic-fetch';
+import { Configuration } from './configuration';
 
-const BASE_PATH = "https://data.sifchain.finance/beta".replace(/\/+$/, "");
+const BASE_PATH = 'https://data.sifchain.finance/beta'.replace(/\/+$/, '');
 
 /**
  *
  * @export
  */
 export const COLLECTION_FORMATS = {
-  csv: ",",
-  ssv: " ",
-  tsv: "\t",
-  pipes: "|",
+  csv: ',',
+  ssv: ' ',
+  tsv: '\t',
+  pipes: '|',
 };
 
 /**
@@ -59,7 +59,7 @@ export class BaseAPI {
   constructor(
     configuration?: Configuration,
     protected basePath: string = BASE_PATH,
-    protected fetch: FetchAPI = isomorphicFetch,
+    protected fetch: FetchAPI = isomorphicFetch
   ) {
     if (configuration) {
       this.configuration = configuration;
@@ -75,7 +75,7 @@ export class BaseAPI {
  * @extends {Error}
  */
 export class RequiredError extends Error {
-  name: "RequiredError";
+  name: 'RequiredError';
   constructor(public field: string, msg?: string) {
     super(msg);
   }
@@ -371,6 +371,69 @@ export interface GetLiquidityProvidersResponse {
    * @memberof GetLiquidityProvidersResponse
    */
   address?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetMarginHistoryResponse
+ */
+export interface GetMarginHistoryResponse {
+  /**
+   *
+   * @type {GetMarginHistoryResponsePagination}
+   * @memberof GetMarginHistoryResponse
+   */
+  pagination?: GetMarginHistoryResponsePagination;
+}
+/**
+ *
+ * @export
+ * @interface GetMarginHistoryResponsePagination
+ */
+export interface GetMarginHistoryResponsePagination {
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  total?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  limit?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  offset?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  orderBy?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetMarginHistoryResponsePagination
+   */
+  sortBy?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetMarginOpenPositionResponse
+ */
+export interface GetMarginOpenPositionResponse {
+  /**
+   *
+   * @type {GetMarginHistoryResponsePagination}
+   * @memberof GetMarginOpenPositionResponse
+   */
+  pagination?: GetMarginHistoryResponsePagination;
 }
 /**
  *
@@ -1047,7 +1110,7 @@ export interface PoolShareResponse {
  * @export
  */
 export const AssetsApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -1059,7 +1122,7 @@ export const AssetsApiFetchParamCreator = function (
     getAssets(options: any = {}): FetchArgs {
       const localVarPath = `/asset`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1067,14 +1130,14 @@ export const AssetsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1090,7 +1153,7 @@ export const AssetsApiFetchParamCreator = function (
     getTokenStats(options: any = {}): FetchArgs {
       const localVarPath = `/asset/tokenStats`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1098,14 +1161,14 @@ export const AssetsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1121,7 +1184,7 @@ export const AssetsApiFetchParamCreator = function (
     getTokenStatsPMTP(options: any = {}): FetchArgs {
       const localVarPath = `/asset/tokenStatsPMTP`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1129,14 +1192,14 @@ export const AssetsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1154,16 +1217,16 @@ export const AssetsApiFetchParamCreator = function (
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getTokenValue.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getTokenValue.'
         );
       }
       const localVarPath = `/asset/{symbol}`.replace(
-        `{${"symbol"}}`,
-        encodeURIComponent(String(symbol)),
+        `{${'symbol'}}`,
+        encodeURIComponent(String(symbol))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1171,14 +1234,14 @@ export const AssetsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1202,20 +1265,20 @@ export const AssetsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getAssets(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetAssetsResponse>> {
       const localVarFetchArgs =
         AssetsApiFetchParamCreator(configuration).getAssets(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1231,17 +1294,17 @@ export const AssetsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getTokenStats(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetTokenStatsResponse> {
       const localVarFetchArgs =
         AssetsApiFetchParamCreator(configuration).getTokenStats(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1257,20 +1320,20 @@ export const AssetsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getTokenStatsPMTP(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetTokenStatsPMTPResponse> {
       const localVarFetchArgs =
         AssetsApiFetchParamCreator(configuration).getTokenStatsPMTP(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1288,18 +1351,18 @@ export const AssetsApiFp = function (configuration?: Configuration) {
      */
     getTokenValue(
       symbol: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetTokenValueResponse> {
       const localVarFetchArgs = AssetsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getTokenValue(symbol, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1319,7 +1382,7 @@ export const AssetsApiFp = function (configuration?: Configuration) {
 export const AssetsApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -1347,7 +1410,7 @@ export const AssetsApiFactory = function (
     getTokenStatsPMTP(options?: any) {
       return AssetsApiFp(configuration).getTokenStatsPMTP(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -1359,7 +1422,7 @@ export const AssetsApiFactory = function (
     getTokenValue(symbol: string, options?: any) {
       return AssetsApiFp(configuration).getTokenValue(symbol, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
   };
@@ -1382,7 +1445,7 @@ export class AssetsApi extends BaseAPI {
   public getAssets(options?: any) {
     return AssetsApiFp(this.configuration).getAssets(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -1395,7 +1458,7 @@ export class AssetsApi extends BaseAPI {
   public getTokenStats(options?: any) {
     return AssetsApiFp(this.configuration).getTokenStats(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -1408,7 +1471,7 @@ export class AssetsApi extends BaseAPI {
   public getTokenStatsPMTP(options?: any) {
     return AssetsApiFp(this.configuration).getTokenStatsPMTP(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -1422,8 +1485,386 @@ export class AssetsApi extends BaseAPI {
   public getTokenValue(symbol: string, options?: any) {
     return AssetsApiFp(this.configuration).getTokenValue(symbol, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
+  }
+}
+/**
+ * MarginApi - fetch parameter creator
+ * @export
+ */
+export const MarginApiFetchParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {}
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          'address',
+          'Required parameter address was null or undefined when calling getMarginHistory.'
+        );
+      }
+      const localVarPath = `/margin/history/{address}`.replace(
+        `{${'address'}}`,
+        encodeURIComponent(String(address))
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter['orderBy'] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter['sortBy'] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options: any = {}
+    ): FetchArgs {
+      // verify required parameter 'address' is not null or undefined
+      if (address === null || address === undefined) {
+        throw new RequiredError(
+          'address',
+          'Required parameter address was null or undefined when calling getMarginOpenPosition.'
+        );
+      }
+      const localVarPath = `/margin/openposition/{address}`.replace(
+        `{${'address'}}`,
+        encodeURIComponent(String(address))
+      );
+      const localVarUrlObj = url.parse(localVarPath, true);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (offset !== undefined) {
+        localVarQueryParameter['offset'] = offset;
+      }
+
+      if (limit !== undefined) {
+        localVarQueryParameter['limit'] = limit;
+      }
+
+      if (orderBy !== undefined) {
+        localVarQueryParameter['orderBy'] = orderBy;
+      }
+
+      if (sortBy !== undefined) {
+        localVarQueryParameter['sortBy'] = sortBy;
+      }
+
+      localVarUrlObj.query = Object.assign(
+        {},
+        localVarUrlObj.query,
+        localVarQueryParameter,
+        options.query
+      );
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      localVarRequestOptions.headers = Object.assign(
+        {},
+        localVarHeaderParameter,
+        options.headers
+      );
+
+      return {
+        url: url.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
+};
+
+/**
+ * MarginApi - functional programming interface
+ * @export
+ */
+export const MarginApiFp = function (configuration?: Configuration) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string
+    ) => Promise<Array<GetMarginHistoryResponse>> {
+      const localVarFetchArgs = MarginApiFetchParamCreator(
+        configuration
+      ).getMarginHistory(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any
+    ): (
+      fetch?: FetchAPI,
+      basePath?: string
+    ) => Promise<Array<GetMarginOpenPositionResponse>> {
+      const localVarFetchArgs = MarginApiFetchParamCreator(
+        configuration
+      ).getMarginOpenPosition(address, offset, limit, orderBy, sortBy, options);
+      return (
+        fetch: FetchAPI = isomorphicFetch,
+        basePath: string = BASE_PATH
+      ) => {
+        return fetch(
+          basePath + localVarFetchArgs.url,
+          localVarFetchArgs.options
+        ).then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            throw response;
+          }
+        });
+      };
+    },
+  };
+};
+
+/**
+ * MarginApi - factory interface
+ * @export
+ */
+export const MarginApiFactory = function (
+  configuration?: Configuration,
+  fetch?: FetchAPI,
+  basePath?: string
+) {
+  return {
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin trade history filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginHistory(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any
+    ) {
+      return MarginApiFp(configuration).getMarginHistory(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options
+      )(fetch, basePath);
+    },
+    /**
+     * This endpoint returns open position history filtered per user address
+     * @summary Get margin open position filtered by user
+     * @param {string} address Wallet address
+     * @param {number} [offset] The number of items to skip before starting to collect the result set
+     * @param {number} [limit] The number of items to return
+     * @param {string} [orderBy] column to sort by
+     * @param {string} [sortBy] direction to sort
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMarginOpenPosition(
+      address: string,
+      offset?: number,
+      limit?: number,
+      orderBy?: string,
+      sortBy?: string,
+      options?: any
+    ) {
+      return MarginApiFp(configuration).getMarginOpenPosition(
+        address,
+        offset,
+        limit,
+        orderBy,
+        sortBy,
+        options
+      )(fetch, basePath);
+    },
+  };
+};
+
+/**
+ * MarginApi - object-oriented interface
+ * @export
+ * @class MarginApi
+ * @extends {BaseAPI}
+ */
+export class MarginApi extends BaseAPI {
+  /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin trade history filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MarginApi
+   */
+  public getMarginHistory(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any
+  ) {
+    return MarginApiFp(this.configuration).getMarginHistory(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options
+    )(this.fetch, this.basePath);
+  }
+
+  /**
+   * This endpoint returns open position history filtered per user address
+   * @summary Get margin open position filtered by user
+   * @param {string} address Wallet address
+   * @param {number} [offset] The number of items to skip before starting to collect the result set
+   * @param {number} [limit] The number of items to return
+   * @param {string} [orderBy] column to sort by
+   * @param {string} [sortBy] direction to sort
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MarginApi
+   */
+  public getMarginOpenPosition(
+    address: string,
+    offset?: number,
+    limit?: number,
+    orderBy?: string,
+    sortBy?: string,
+    options?: any
+  ) {
+    return MarginApiFp(this.configuration).getMarginOpenPosition(
+      address,
+      offset,
+      limit,
+      orderBy,
+      sortBy,
+      options
+    )(this.fetch, this.basePath);
   }
 }
 /**
@@ -1431,7 +1872,7 @@ export class AssetsApi extends BaseAPI {
  * @export
  */
 export const NetworkApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -1442,7 +1883,7 @@ export const NetworkApiFetchParamCreator = function (
     cmcTotalDailyVolume(options: any = {}): FetchArgs {
       const localVarPath = `/cmcTotalDailyVolume`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1450,14 +1891,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1474,7 +1915,7 @@ export const NetworkApiFetchParamCreator = function (
     getCmcSummary(options: any = {}): FetchArgs {
       const localVarPath = `/cmcsummary`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1482,14 +1923,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1505,7 +1946,7 @@ export const NetworkApiFetchParamCreator = function (
     getDailyPrice(options: any = {}): FetchArgs {
       const localVarPath = `/dailyPrice`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1513,14 +1954,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1538,16 +1979,16 @@ export const NetworkApiFetchParamCreator = function (
       // verify required parameter 'type' is not null or undefined
       if (type === null || type === undefined) {
         throw new RequiredError(
-          "type",
-          "Required parameter type was null or undefined when calling getDispensation.",
+          'type',
+          'Required parameter type was null or undefined when calling getDispensation.'
         );
       }
       const localVarPath = `/network/dispensation/{type}`.replace(
-        `{${"type"}}`,
-        encodeURIComponent(String(type)),
+        `{${'type'}}`,
+        encodeURIComponent(String(type))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1555,14 +1996,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1582,44 +2023,44 @@ export const NetworkApiFetchParamCreator = function (
       symbol: string,
       limit?: number,
       page?: number,
-      options: any = {},
+      options: any = {}
     ): FetchArgs {
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getHistoricalPrice.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getHistoricalPrice.'
         );
       }
       const localVarPath = `/historicalPrice/{symbol}`.replace(
-        `{${"symbol"}}`,
-        encodeURIComponent(String(symbol)),
+        `{${'symbol'}}`,
+        encodeURIComponent(String(symbol))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
       if (limit !== undefined) {
-        localVarQueryParameter["limit"] = limit;
+        localVarQueryParameter['limit'] = limit;
       }
 
       if (page !== undefined) {
-        localVarQueryParameter["page"] = page;
+        localVarQueryParameter['page'] = page;
       }
 
       localVarUrlObj.query = Object.assign(
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1638,16 +2079,16 @@ export const NetworkApiFetchParamCreator = function (
       // verify required parameter 'address' is not null or undefined
       if (address === null || address === undefined) {
         throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getLppdReward.",
+          'address',
+          'Required parameter address was null or undefined when calling getLppdReward.'
         );
       }
       const localVarPath = `/network/lppdReward/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
+        `{${'address'}}`,
+        encodeURIComponent(String(address))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1655,14 +2096,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1680,27 +2121,27 @@ export const NetworkApiFetchParamCreator = function (
     getNetChange(
       symbol: string,
       lpAddress: string,
-      options: any = {},
+      options: any = {}
     ): FetchArgs {
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getNetChange.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getNetChange.'
         );
       }
       // verify required parameter 'lpAddress' is not null or undefined
       if (lpAddress === null || lpAddress === undefined) {
         throw new RequiredError(
-          "lpAddress",
-          "Required parameter lpAddress was null or undefined when calling getNetChange.",
+          'lpAddress',
+          'Required parameter lpAddress was null or undefined when calling getNetChange.'
         );
       }
       const localVarPath = `/network/{symbol}/netChange/{lpAddress}`
-        .replace(`{${"symbol"}}`, encodeURIComponent(String(symbol)))
-        .replace(`{${"lpAddress"}}`, encodeURIComponent(String(lpAddress)));
+        .replace(`{${'symbol'}}`, encodeURIComponent(String(symbol)))
+        .replace(`{${'lpAddress'}}`, encodeURIComponent(String(lpAddress)));
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1708,14 +2149,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1731,7 +2172,7 @@ export const NetworkApiFetchParamCreator = function (
     getNetworkInfo(options: any = {}): FetchArgs {
       const localVarPath = `/network`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1739,14 +2180,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1764,16 +2205,16 @@ export const NetworkApiFetchParamCreator = function (
       // verify required parameter 'type' is not null or undefined
       if (type === null || type === undefined) {
         throw new RequiredError(
-          "type",
-          "Required parameter type was null or undefined when calling getRewardConfig.",
+          'type',
+          'Required parameter type was null or undefined when calling getRewardConfig.'
         );
       }
       const localVarPath = `/network/rewardConfig/{type}`.replace(
-        `{${"type"}}`,
-        encodeURIComponent(String(type)),
+        `{${'type'}}`,
+        encodeURIComponent(String(type))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1781,14 +2222,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1807,16 +2248,16 @@ export const NetworkApiFetchParamCreator = function (
       // verify required parameter 'address' is not null or undefined
       if (address === null || address === undefined) {
         throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getRewardUser.",
+          'address',
+          'Required parameter address was null or undefined when calling getRewardUser.'
         );
       }
       const localVarPath = `/network/rewardPay/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
+        `{${'address'}}`,
+        encodeURIComponent(String(address))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1824,14 +2265,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1848,7 +2289,7 @@ export const NetworkApiFetchParamCreator = function (
     getSummary(options: any = {}): FetchArgs {
       const localVarPath = `/summary`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -1856,14 +2297,14 @@ export const NetworkApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -1886,17 +2327,17 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     cmcTotalDailyVolume(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).cmcTotalDailyVolume(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1913,20 +2354,20 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getCmcSummary(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetSummaryResponse>> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).getCmcSummary(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1942,20 +2383,20 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getDailyPrice(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetDailyPriceResponse>> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).getDailyPrice(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -1973,18 +2414,18 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      */
     getDispensation(
       type: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetPoolResponse> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getDispensation(type, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2006,21 +2447,21 @@ export const NetworkApiFp = function (configuration?: Configuration) {
       symbol: string,
       limit?: number,
       page?: number,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetHistoricalPriceResponse>> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getHistoricalPrice(symbol, limit, page, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2039,21 +2480,21 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      */
     getLppdReward(
       address: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetPoolResponse>> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getLppdReward(address, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2073,21 +2514,21 @@ export const NetworkApiFp = function (configuration?: Configuration) {
     getNetChange(
       symbol: string,
       lpAddress: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetLiquidityProviderResponse> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getNetChange(symbol, lpAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2103,17 +2544,17 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getNetworkInfo(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetNetworkResponse> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).getNetworkInfo(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2131,18 +2572,18 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      */
     getRewardConfig(
       type: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetPoolResponse> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getRewardConfig(type, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2161,21 +2602,21 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      */
     getRewardUser(
       address: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetPoolResponse>> {
       const localVarFetchArgs = NetworkApiFetchParamCreator(
-        configuration,
+        configuration
       ).getRewardUser(address, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2192,20 +2633,20 @@ export const NetworkApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getSummary(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetSummaryResponse>> {
       const localVarFetchArgs =
         NetworkApiFetchParamCreator(configuration).getSummary(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2225,7 +2666,7 @@ export const NetworkApiFp = function (configuration?: Configuration) {
 export const NetworkApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -2236,7 +2677,7 @@ export const NetworkApiFactory = function (
     cmcTotalDailyVolume(options?: any) {
       return NetworkApiFp(configuration).cmcTotalDailyVolume(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2248,7 +2689,7 @@ export const NetworkApiFactory = function (
     getCmcSummary(options?: any) {
       return NetworkApiFp(configuration).getCmcSummary(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2259,7 +2700,7 @@ export const NetworkApiFactory = function (
     getDailyPrice(options?: any) {
       return NetworkApiFp(configuration).getDailyPrice(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2271,7 +2712,7 @@ export const NetworkApiFactory = function (
     getDispensation(type: string, options?: any) {
       return NetworkApiFp(configuration).getDispensation(type, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2286,13 +2727,13 @@ export const NetworkApiFactory = function (
       symbol: string,
       limit?: number,
       page?: number,
-      options?: any,
+      options?: any
     ) {
       return NetworkApiFp(configuration).getHistoricalPrice(
         symbol,
         limit,
         page,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -2305,7 +2746,7 @@ export const NetworkApiFactory = function (
     getLppdReward(address: string, options?: any) {
       return NetworkApiFp(configuration).getLppdReward(address, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2319,7 +2760,7 @@ export const NetworkApiFactory = function (
       return NetworkApiFp(configuration).getNetChange(
         symbol,
         lpAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -2330,7 +2771,7 @@ export const NetworkApiFactory = function (
     getNetworkInfo(options?: any) {
       return NetworkApiFp(configuration).getNetworkInfo(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2342,7 +2783,7 @@ export const NetworkApiFactory = function (
     getRewardConfig(type: string, options?: any) {
       return NetworkApiFp(configuration).getRewardConfig(type, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2355,7 +2796,7 @@ export const NetworkApiFactory = function (
     getRewardUser(address: string, options?: any) {
       return NetworkApiFp(configuration).getRewardUser(address, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2386,7 +2827,7 @@ export class NetworkApi extends BaseAPI {
   public cmcTotalDailyVolume(options?: any) {
     return NetworkApiFp(this.configuration).cmcTotalDailyVolume(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2400,7 +2841,7 @@ export class NetworkApi extends BaseAPI {
   public getCmcSummary(options?: any) {
     return NetworkApiFp(this.configuration).getCmcSummary(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2413,7 +2854,7 @@ export class NetworkApi extends BaseAPI {
   public getDailyPrice(options?: any) {
     return NetworkApiFp(this.configuration).getDailyPrice(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2427,7 +2868,7 @@ export class NetworkApi extends BaseAPI {
   public getDispensation(type: string, options?: any) {
     return NetworkApiFp(this.configuration).getDispensation(type, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2444,13 +2885,13 @@ export class NetworkApi extends BaseAPI {
     symbol: string,
     limit?: number,
     page?: number,
-    options?: any,
+    options?: any
   ) {
     return NetworkApiFp(this.configuration).getHistoricalPrice(
       symbol,
       limit,
       page,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -2465,7 +2906,7 @@ export class NetworkApi extends BaseAPI {
   public getLppdReward(address: string, options?: any) {
     return NetworkApiFp(this.configuration).getLppdReward(address, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2481,7 +2922,7 @@ export class NetworkApi extends BaseAPI {
     return NetworkApiFp(this.configuration).getNetChange(
       symbol,
       lpAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -2494,7 +2935,7 @@ export class NetworkApi extends BaseAPI {
   public getNetworkInfo(options?: any) {
     return NetworkApiFp(this.configuration).getNetworkInfo(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2508,7 +2949,7 @@ export class NetworkApi extends BaseAPI {
   public getRewardConfig(type: string, options?: any) {
     return NetworkApiFp(this.configuration).getRewardConfig(type, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2523,7 +2964,7 @@ export class NetworkApi extends BaseAPI {
   public getRewardUser(address: string, options?: any) {
     return NetworkApiFp(this.configuration).getRewardUser(address, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -2537,7 +2978,7 @@ export class NetworkApi extends BaseAPI {
   public getSummary(options?: any) {
     return NetworkApiFp(this.configuration).getSummary(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 }
@@ -2546,7 +2987,7 @@ export class NetworkApi extends BaseAPI {
  * @export
  */
 export const PoolsApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -2559,27 +3000,27 @@ export const PoolsApiFetchParamCreator = function (
     getLiquidityProvider(
       symbol: string,
       lpAddress: string,
-      options: any = {},
+      options: any = {}
     ): FetchArgs {
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getLiquidityProvider.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getLiquidityProvider.'
         );
       }
       // verify required parameter 'lpAddress' is not null or undefined
       if (lpAddress === null || lpAddress === undefined) {
         throw new RequiredError(
-          "lpAddress",
-          "Required parameter lpAddress was null or undefined when calling getLiquidityProvider.",
+          'lpAddress',
+          'Required parameter lpAddress was null or undefined when calling getLiquidityProvider.'
         );
       }
       const localVarPath = `/pool/{symbol}/liquidityProvider/{lpAddress}`
-        .replace(`{${"symbol"}}`, encodeURIComponent(String(symbol)))
-        .replace(`{${"lpAddress"}}`, encodeURIComponent(String(lpAddress)));
+        .replace(`{${'symbol'}}`, encodeURIComponent(String(symbol)))
+        .replace(`{${'lpAddress'}}`, encodeURIComponent(String(lpAddress)));
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -2587,14 +3028,14 @@ export const PoolsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -2612,16 +3053,16 @@ export const PoolsApiFetchParamCreator = function (
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getLiquidityProviders.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getLiquidityProviders.'
         );
       }
       const localVarPath = `/pool/{symbol}/liquidityProvider`.replace(
-        `{${"symbol"}}`,
-        encodeURIComponent(String(symbol)),
+        `{${'symbol'}}`,
+        encodeURIComponent(String(symbol))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -2629,14 +3070,14 @@ export const PoolsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -2654,16 +3095,16 @@ export const PoolsApiFetchParamCreator = function (
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getPool.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getPool.'
         );
       }
       const localVarPath = `/pool/{symbol}`.replace(
-        `{${"symbol"}}`,
-        encodeURIComponent(String(symbol)),
+        `{${'symbol'}}`,
+        encodeURIComponent(String(symbol))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -2671,14 +3112,14 @@ export const PoolsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -2696,27 +3137,27 @@ export const PoolsApiFetchParamCreator = function (
     getPoolShare(
       symbol: string,
       lpAddress: string,
-      options: any = {},
+      options: any = {}
     ): FetchArgs {
       // verify required parameter 'symbol' is not null or undefined
       if (symbol === null || symbol === undefined) {
         throw new RequiredError(
-          "symbol",
-          "Required parameter symbol was null or undefined when calling getPoolShare.",
+          'symbol',
+          'Required parameter symbol was null or undefined when calling getPoolShare.'
         );
       }
       // verify required parameter 'lpAddress' is not null or undefined
       if (lpAddress === null || lpAddress === undefined) {
         throw new RequiredError(
-          "lpAddress",
-          "Required parameter lpAddress was null or undefined when calling getPoolShare.",
+          'lpAddress',
+          'Required parameter lpAddress was null or undefined when calling getPoolShare.'
         );
       }
       const localVarPath = `/pool/{symbol}/liquidityProvider/{lpAddress}/share`
-        .replace(`{${"symbol"}}`, encodeURIComponent(String(symbol)))
-        .replace(`{${"lpAddress"}}`, encodeURIComponent(String(lpAddress)));
+        .replace(`{${'symbol'}}`, encodeURIComponent(String(symbol)))
+        .replace(`{${'lpAddress'}}`, encodeURIComponent(String(lpAddress)));
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -2724,14 +3165,14 @@ export const PoolsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -2747,7 +3188,7 @@ export const PoolsApiFetchParamCreator = function (
     getPools(options: any = {}): FetchArgs {
       const localVarPath = `/pool`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -2755,14 +3196,14 @@ export const PoolsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -2789,21 +3230,21 @@ export const PoolsApiFp = function (configuration?: Configuration) {
     getLiquidityProvider(
       symbol: string,
       lpAddress: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetLiquidityProviderResponse> {
       const localVarFetchArgs = PoolsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getLiquidityProvider(symbol, lpAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2821,21 +3262,21 @@ export const PoolsApiFp = function (configuration?: Configuration) {
      */
     getLiquidityProviders(
       symbol: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetLiquidityProvidersResponse>> {
       const localVarFetchArgs = PoolsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getLiquidityProviders(symbol, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2853,18 +3294,18 @@ export const PoolsApiFp = function (configuration?: Configuration) {
      */
     getPool(
       symbol: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetPoolResponse> {
       const localVarFetchArgs = PoolsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getPool(symbol, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2884,18 +3325,18 @@ export const PoolsApiFp = function (configuration?: Configuration) {
     getPoolShare(
       symbol: string,
       lpAddress: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<PoolShareResponse> {
       const localVarFetchArgs = PoolsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getPoolShare(symbol, lpAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2911,20 +3352,20 @@ export const PoolsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getPools(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetPoolsResponse>> {
       const localVarFetchArgs =
         PoolsApiFetchParamCreator(configuration).getPools(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -2944,7 +3385,7 @@ export const PoolsApiFp = function (configuration?: Configuration) {
 export const PoolsApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -2958,7 +3399,7 @@ export const PoolsApiFactory = function (
       return PoolsApiFp(configuration).getLiquidityProvider(
         symbol,
         lpAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -2970,7 +3411,7 @@ export const PoolsApiFactory = function (
     getLiquidityProviders(symbol: string, options?: any) {
       return PoolsApiFp(configuration).getLiquidityProviders(symbol, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2982,7 +3423,7 @@ export const PoolsApiFactory = function (
     getPool(symbol: string, options?: any) {
       return PoolsApiFp(configuration).getPool(symbol, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -2996,7 +3437,7 @@ export const PoolsApiFactory = function (
       return PoolsApiFp(configuration).getPoolShare(
         symbol,
         lpAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -3028,12 +3469,12 @@ export class PoolsApi extends BaseAPI {
   public getLiquidityProvider(
     symbol: string,
     lpAddress: string,
-    options?: any,
+    options?: any
   ) {
     return PoolsApiFp(this.configuration).getLiquidityProvider(
       symbol,
       lpAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -3047,7 +3488,7 @@ export class PoolsApi extends BaseAPI {
   public getLiquidityProviders(symbol: string, options?: any) {
     return PoolsApiFp(this.configuration).getLiquidityProviders(
       symbol,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -3061,7 +3502,7 @@ export class PoolsApi extends BaseAPI {
   public getPool(symbol: string, options?: any) {
     return PoolsApiFp(this.configuration).getPool(symbol, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -3077,7 +3518,7 @@ export class PoolsApi extends BaseAPI {
     return PoolsApiFp(this.configuration).getPoolShare(
       symbol,
       lpAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -3090,7 +3531,7 @@ export class PoolsApi extends BaseAPI {
   public getPools(options?: any) {
     return PoolsApiFp(this.configuration).getPools(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 }
@@ -3099,7 +3540,7 @@ export class PoolsApi extends BaseAPI {
  * @export
  */
 export const StatsApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -3110,7 +3551,7 @@ export const StatsApiFetchParamCreator = function (
     cmcCirculatingSupply(options: any = {}): FetchArgs {
       const localVarPath = `/asset/cmcCirculatingSupply`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3118,14 +3559,14 @@ export const StatsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3141,7 +3582,7 @@ export const StatsApiFetchParamCreator = function (
     cmcTotalSupply(options: any = {}): FetchArgs {
       const localVarPath = `/asset/cmcTotalSupply`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3149,14 +3590,14 @@ export const StatsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3172,7 +3613,7 @@ export const StatsApiFetchParamCreator = function (
     getCirculatingSupply(options: any = {}): FetchArgs {
       const localVarPath = `/asset/circulatingsupply`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3180,154 +3621,14 @@ export const StatsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
-      );
-
-      return {
-        url: url.format(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options: any = {},
-    ): FetchArgs {
-      // verify required parameter 'address' is not null or undefined
-      if (address === null || address === undefined) {
-        throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getMarginHistory.",
-        );
-      }
-      const localVarPath = `/margin/history/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
-      );
-      const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (offset !== undefined) {
-        localVarQueryParameter["offset"] = offset;
-      }
-
-      if (limit !== undefined) {
-        localVarQueryParameter["limit"] = limit;
-      }
-
-      if (orderBy !== undefined) {
-        localVarQueryParameter["orderBy"] = orderBy;
-      }
-
-      if (sortBy !== undefined) {
-        localVarQueryParameter["sortBy"] = sortBy;
-      }
-
-      localVarUrlObj.query = Object.assign(
-        {},
-        localVarUrlObj.query,
-        localVarQueryParameter,
-        options.query,
-      );
-      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
-      localVarRequestOptions.headers = Object.assign(
-        {},
-        localVarHeaderParameter,
-        options.headers,
-      );
-
-      return {
-        url: url.format(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options: any = {},
-    ): FetchArgs {
-      // verify required parameter 'address' is not null or undefined
-      if (address === null || address === undefined) {
-        throw new RequiredError(
-          "address",
-          "Required parameter address was null or undefined when calling getMarginOpenPosition.",
-        );
-      }
-      const localVarPath = `/margin/openPosition/{address}`.replace(
-        `{${"address"}}`,
-        encodeURIComponent(String(address)),
-      );
-      const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (offset !== undefined) {
-        localVarQueryParameter["offset"] = offset;
-      }
-
-      if (limit !== undefined) {
-        localVarQueryParameter["limit"] = limit;
-      }
-
-      if (orderBy !== undefined) {
-        localVarQueryParameter["orderBy"] = orderBy;
-      }
-
-      if (sortBy !== undefined) {
-        localVarQueryParameter["sortBy"] = sortBy;
-      }
-
-      localVarUrlObj.query = Object.assign(
-        {},
-        localVarUrlObj.query,
-        localVarQueryParameter,
-        options.query,
-      );
-      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
-      delete localVarUrlObj.search;
-      localVarRequestOptions.headers = Object.assign(
-        {},
-        localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3343,7 +3644,7 @@ export const StatsApiFetchParamCreator = function (
     getStakingRewards(options: any = {}): FetchArgs {
       const localVarPath = `/validator/stakingRewards`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3351,14 +3652,14 @@ export const StatsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3374,7 +3675,7 @@ export const StatsApiFetchParamCreator = function (
     getTotalSupply(options: any = {}): FetchArgs {
       const localVarPath = `/asset/totalSupply`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3382,14 +3683,14 @@ export const StatsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3412,17 +3713,17 @@ export const StatsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     cmcCirculatingSupply(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
       const localVarFetchArgs =
         StatsApiFetchParamCreator(configuration).cmcCirculatingSupply(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -3438,17 +3739,17 @@ export const StatsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     cmcTotalSupply(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<string> {
       const localVarFetchArgs =
         StatsApiFetchParamCreator(configuration).cmcTotalSupply(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -3464,102 +3765,20 @@ export const StatsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getCirculatingSupply(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetCirculatingSupplyResponse> {
       const localVarFetchArgs =
         StatsApiFetchParamCreator(configuration).getCirculatingSupply(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
-        ).then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            return response.json();
-          } else {
-            throw response;
-          }
-        });
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ): (
-      fetch?: FetchAPI,
-      basePath?: string,
-    ) => Promise<Array<GetPoolResponse>> {
-      const localVarFetchArgs = StatsApiFetchParamCreator(
-        configuration,
-      ).getMarginHistory(address, offset, limit, orderBy, sortBy, options);
-      return (
-        fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
-      ) => {
-        return fetch(
-          basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
-        ).then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            return response.json();
-          } else {
-            throw response;
-          }
-        });
-      };
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ): (
-      fetch?: FetchAPI,
-      basePath?: string,
-    ) => Promise<Array<GetPoolResponse>> {
-      const localVarFetchArgs = StatsApiFetchParamCreator(
-        configuration,
-      ).getMarginOpenPosition(address, offset, limit, orderBy, sortBy, options);
-      return (
-        fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
-      ) => {
-        return fetch(
-          basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -3575,17 +3794,17 @@ export const StatsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getStakingRewards(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<InlineResponse200> {
       const localVarFetchArgs =
         StatsApiFetchParamCreator(configuration).getStakingRewards(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -3601,20 +3820,20 @@ export const StatsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getTotalSupply(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetTotalSupplyResponse> {
       const localVarFetchArgs =
         StatsApiFetchParamCreator(configuration).getTotalSupply(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -3634,7 +3853,7 @@ export const StatsApiFp = function (configuration?: Configuration) {
 export const StatsApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -3645,7 +3864,7 @@ export const StatsApiFactory = function (
     cmcCirculatingSupply(options?: any) {
       return StatsApiFp(configuration).cmcCirculatingSupply(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -3664,64 +3883,8 @@ export const StatsApiFactory = function (
     getCirculatingSupply(options?: any) {
       return StatsApiFp(configuration).getCirculatingSupply(options)(
         fetch,
-        basePath,
+        basePath
       );
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin trade history filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginHistory(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ) {
-      return StatsApiFp(configuration).getMarginHistory(
-        address,
-        offset,
-        limit,
-        orderBy,
-        sortBy,
-        options,
-      )(fetch, basePath);
-    },
-    /**
-     * This endpoint returns open position history filtered per user address
-     * @summary Get margin open position filtered by user
-     * @param {string} address Wallet address
-     * @param {number} [offset] The number of items to skip before starting to collect the result set
-     * @param {number} [limit] The number of items to return
-     * @param {string} [orderBy] column to sort by
-     * @param {string} [sortBy] direction to sort
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMarginOpenPosition(
-      address: string,
-      offset?: number,
-      limit?: number,
-      orderBy?: string,
-      sortBy?: string,
-      options?: any,
-    ) {
-      return StatsApiFp(configuration).getMarginOpenPosition(
-        address,
-        offset,
-        limit,
-        orderBy,
-        sortBy,
-        options,
-      )(fetch, basePath);
     },
     /**
      *
@@ -3731,7 +3894,7 @@ export const StatsApiFactory = function (
     getStakingRewards(options?: any) {
       return StatsApiFp(configuration).getStakingRewards(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -3761,7 +3924,7 @@ export class StatsApi extends BaseAPI {
   public cmcCirculatingSupply(options?: any) {
     return StatsApiFp(this.configuration).cmcCirculatingSupply(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -3774,7 +3937,7 @@ export class StatsApi extends BaseAPI {
   public cmcTotalSupply(options?: any) {
     return StatsApiFp(this.configuration).cmcTotalSupply(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -3787,68 +3950,8 @@ export class StatsApi extends BaseAPI {
   public getCirculatingSupply(options?: any) {
     return StatsApiFp(this.configuration).getCirculatingSupply(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
-  }
-
-  /**
-   * This endpoint returns open position history filtered per user address
-   * @summary Get margin trade history filtered by user
-   * @param {string} address Wallet address
-   * @param {number} [offset] The number of items to skip before starting to collect the result set
-   * @param {number} [limit] The number of items to return
-   * @param {string} [orderBy] column to sort by
-   * @param {string} [sortBy] direction to sort
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof StatsApi
-   */
-  public getMarginHistory(
-    address: string,
-    offset?: number,
-    limit?: number,
-    orderBy?: string,
-    sortBy?: string,
-    options?: any,
-  ) {
-    return StatsApiFp(this.configuration).getMarginHistory(
-      address,
-      offset,
-      limit,
-      orderBy,
-      sortBy,
-      options,
-    )(this.fetch, this.basePath);
-  }
-
-  /**
-   * This endpoint returns open position history filtered per user address
-   * @summary Get margin open position filtered by user
-   * @param {string} address Wallet address
-   * @param {number} [offset] The number of items to skip before starting to collect the result set
-   * @param {number} [limit] The number of items to return
-   * @param {string} [orderBy] column to sort by
-   * @param {string} [sortBy] direction to sort
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof StatsApi
-   */
-  public getMarginOpenPosition(
-    address: string,
-    offset?: number,
-    limit?: number,
-    orderBy?: string,
-    sortBy?: string,
-    options?: any,
-  ) {
-    return StatsApiFp(this.configuration).getMarginOpenPosition(
-      address,
-      offset,
-      limit,
-      orderBy,
-      sortBy,
-      options,
-    )(this.fetch, this.basePath);
   }
 
   /**
@@ -3860,7 +3963,7 @@ export class StatsApi extends BaseAPI {
   public getStakingRewards(options?: any) {
     return StatsApiFp(this.configuration).getStakingRewards(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -3873,7 +3976,7 @@ export class StatsApi extends BaseAPI {
   public getTotalSupply(options?: any) {
     return StatsApiFp(this.configuration).getTotalSupply(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 }
@@ -3882,7 +3985,7 @@ export class StatsApi extends BaseAPI {
  * @export
  */
 export const TradesApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -3896,16 +3999,16 @@ export const TradesApiFetchParamCreator = function (
       // verify required parameter 'type' is not null or undefined
       if (type === null || type === undefined) {
         throw new RequiredError(
-          "type",
-          "Required parameter type was null or undefined when calling getCompetitionRanks.",
+          'type',
+          'Required parameter type was null or undefined when calling getCompetitionRanks.'
         );
       }
       const localVarPath = `/trade/tx_vol/{type}`.replace(
-        `{${"type"}}`,
-        encodeURIComponent(String(type)),
+        `{${'type'}}`,
+        encodeURIComponent(String(type))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3913,14 +4016,14 @@ export const TradesApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3939,27 +4042,27 @@ export const TradesApiFetchParamCreator = function (
     getCompetitionRanksByToken(
       token: string,
       type: string,
-      options: any = {},
+      options: any = {}
     ): FetchArgs {
       // verify required parameter 'token' is not null or undefined
       if (token === null || token === undefined) {
         throw new RequiredError(
-          "token",
-          "Required parameter token was null or undefined when calling getCompetitionRanksByToken.",
+          'token',
+          'Required parameter token was null or undefined when calling getCompetitionRanksByToken.'
         );
       }
       // verify required parameter 'type' is not null or undefined
       if (type === null || type === undefined) {
         throw new RequiredError(
-          "type",
-          "Required parameter type was null or undefined when calling getCompetitionRanksByToken.",
+          'type',
+          'Required parameter type was null or undefined when calling getCompetitionRanksByToken.'
         );
       }
       const localVarPath = `/trade/{token}/tx_vol/{type}`
-        .replace(`{${"token"}}`, encodeURIComponent(String(token)))
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)));
+        .replace(`{${'token'}}`, encodeURIComponent(String(token)))
+        .replace(`{${'type'}}`, encodeURIComponent(String(type)));
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -3967,14 +4070,14 @@ export const TradesApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -3993,16 +4096,16 @@ export const TradesApiFetchParamCreator = function (
       // verify required parameter 'marketPair' is not null or undefined
       if (marketPair === null || marketPair === undefined) {
         throw new RequiredError(
-          "marketPair",
-          "Required parameter marketPair was null or undefined when calling getTrades.",
+          'marketPair',
+          'Required parameter marketPair was null or undefined when calling getTrades.'
         );
       }
       const localVarPath = `/trade/{market_pair}`.replace(
-        `{${"market_pair"}}`,
-        encodeURIComponent(String(marketPair)),
+        `{${'market_pair'}}`,
+        encodeURIComponent(String(marketPair))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4010,14 +4113,14 @@ export const TradesApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4043,21 +4146,21 @@ export const TradesApiFp = function (configuration?: Configuration) {
      */
     getCompetitionRanks(
       type: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetTradeResponse>> {
       const localVarFetchArgs = TradesApiFetchParamCreator(
-        configuration,
+        configuration
       ).getCompetitionRanks(type, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4078,21 +4181,21 @@ export const TradesApiFp = function (configuration?: Configuration) {
     getCompetitionRanksByToken(
       token: string,
       type: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetTradeResponse>> {
       const localVarFetchArgs = TradesApiFetchParamCreator(
-        configuration,
+        configuration
       ).getCompetitionRanksByToken(token, type, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4111,21 +4214,21 @@ export const TradesApiFp = function (configuration?: Configuration) {
      */
     getTrades(
       marketPair: string,
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetTradeResponse>> {
       const localVarFetchArgs = TradesApiFetchParamCreator(
-        configuration,
+        configuration
       ).getTrades(marketPair, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4145,7 +4248,7 @@ export const TradesApiFp = function (configuration?: Configuration) {
 export const TradesApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -4158,7 +4261,7 @@ export const TradesApiFactory = function (
     getCompetitionRanks(type: string, options?: any) {
       return TradesApiFp(configuration).getCompetitionRanks(type, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -4173,7 +4276,7 @@ export const TradesApiFactory = function (
       return TradesApiFp(configuration).getCompetitionRanksByToken(
         token,
         type,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -4186,7 +4289,7 @@ export const TradesApiFactory = function (
     getTrades(marketPair: string, options?: any) {
       return TradesApiFp(configuration).getTrades(marketPair, options)(
         fetch,
-        basePath,
+        basePath
       );
     },
   };
@@ -4210,7 +4313,7 @@ export class TradesApi extends BaseAPI {
   public getCompetitionRanks(type: string, options?: any) {
     return TradesApiFp(this.configuration).getCompetitionRanks(type, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -4226,12 +4329,12 @@ export class TradesApi extends BaseAPI {
   public getCompetitionRanksByToken(
     token: string,
     type: string,
-    options?: any,
+    options?: any
   ) {
     return TradesApiFp(this.configuration).getCompetitionRanksByToken(
       token,
       type,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -4246,7 +4349,7 @@ export class TradesApi extends BaseAPI {
   public getTrades(marketPair: string, options?: any) {
     return TradesApiFp(this.configuration).getTrades(marketPair, options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 }
@@ -4255,7 +4358,7 @@ export class TradesApi extends BaseAPI {
  * @export
  */
 export const ValidatorsApiFetchParamCreator = function (
-  configuration?: Configuration,
+  configuration?: Configuration
 ) {
   return {
     /**
@@ -4268,16 +4371,16 @@ export const ValidatorsApiFetchParamCreator = function (
       // verify required parameter 'delegatorAddress' is not null or undefined
       if (delegatorAddress === null || delegatorAddress === undefined) {
         throw new RequiredError(
-          "delegatorAddress",
-          "Required parameter delegatorAddress was null or undefined when calling getDelegator.",
+          'delegatorAddress',
+          'Required parameter delegatorAddress was null or undefined when calling getDelegator.'
         );
       }
       const localVarPath = `/validator/delegator/{delegatorAddress}`.replace(
-        `{${"delegatorAddress"}}`,
-        encodeURIComponent(String(delegatorAddress)),
+        `{${'delegatorAddress'}}`,
+        encodeURIComponent(String(delegatorAddress))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4285,14 +4388,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4310,16 +4413,16 @@ export const ValidatorsApiFetchParamCreator = function (
       // verify required parameter 'validatorAddress' is not null or undefined
       if (validatorAddress === null || validatorAddress === undefined) {
         throw new RequiredError(
-          "validatorAddress",
-          "Required parameter validatorAddress was null or undefined when calling getDelegators.",
+          'validatorAddress',
+          'Required parameter validatorAddress was null or undefined when calling getDelegators.'
         );
       }
       const localVarPath = `/validator/{validatorAddress}/delegator`.replace(
-        `{${"validatorAddress"}}`,
-        encodeURIComponent(String(validatorAddress)),
+        `{${'validatorAddress'}}`,
+        encodeURIComponent(String(validatorAddress))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4327,14 +4430,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4350,7 +4453,7 @@ export const ValidatorsApiFetchParamCreator = function (
     getInactiveValidators(options: any = {}): FetchArgs {
       const localVarPath = `/validator/inactiveValidators`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4358,14 +4461,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4381,7 +4484,7 @@ export const ValidatorsApiFetchParamCreator = function (
     getTotalStakedByDelegators(options: any = {}): FetchArgs {
       const localVarPath = `/validator/delegator/totalStaked`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4389,14 +4492,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4414,16 +4517,16 @@ export const ValidatorsApiFetchParamCreator = function (
       // verify required parameter 'validatorAddress' is not null or undefined
       if (validatorAddress === null || validatorAddress === undefined) {
         throw new RequiredError(
-          "validatorAddress",
-          "Required parameter validatorAddress was null or undefined when calling getValidator.",
+          'validatorAddress',
+          'Required parameter validatorAddress was null or undefined when calling getValidator.'
         );
       }
       const localVarPath = `/validator/{validatorAddress}`.replace(
-        `{${"validatorAddress"}}`,
-        encodeURIComponent(String(validatorAddress)),
+        `{${'validatorAddress'}}`,
+        encodeURIComponent(String(validatorAddress))
       );
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4431,14 +4534,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4454,7 +4557,7 @@ export const ValidatorsApiFetchParamCreator = function (
     getValidators(options: any = {}): FetchArgs {
       const localVarPath = `/validator`;
       const localVarUrlObj = url.parse(localVarPath, true);
-      const localVarRequestOptions = Object.assign({ method: "GET" }, options);
+      const localVarRequestOptions = Object.assign({ method: 'GET' }, options);
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -4462,14 +4565,14 @@ export const ValidatorsApiFetchParamCreator = function (
         {},
         localVarUrlObj.query,
         localVarQueryParameter,
-        options.query,
+        options.query
       );
       // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
       delete localVarUrlObj.search;
       localVarRequestOptions.headers = Object.assign(
         {},
         localVarHeaderParameter,
-        options.headers,
+        options.headers
       );
 
       return {
@@ -4494,18 +4597,18 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      */
     getDelegator(
       delegatorAddress: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetDelegatorResponse> {
       const localVarFetchArgs = ValidatorsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getDelegator(delegatorAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4523,18 +4626,18 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      */
     getDelegators(
       validatorAddress: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetDelegatorsResponse> {
       const localVarFetchArgs = ValidatorsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getDelegators(validatorAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4550,22 +4653,22 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getInactiveValidators(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<Array<GetInactiveValidatorsResponse>> {
       const localVarFetchArgs =
         ValidatorsApiFetchParamCreator(configuration).getInactiveValidators(
-          options,
+          options
         );
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4581,22 +4684,22 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getTotalStakedByDelegators(
-      options?: any,
+      options?: any
     ): (
       fetch?: FetchAPI,
-      basePath?: string,
+      basePath?: string
     ) => Promise<GetTotalStakedByDelegatorsResponse> {
       const localVarFetchArgs =
         ValidatorsApiFetchParamCreator(
-          configuration,
+          configuration
         ).getTotalStakedByDelegators(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4614,18 +4717,18 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      */
     getValidator(
       validatorAddress: string,
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetValidatorResponse> {
       const localVarFetchArgs = ValidatorsApiFetchParamCreator(
-        configuration,
+        configuration
       ).getValidator(validatorAddress, options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4641,17 +4744,17 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     getValidators(
-      options?: any,
+      options?: any
     ): (fetch?: FetchAPI, basePath?: string) => Promise<GetValidatorsResponse> {
       const localVarFetchArgs =
         ValidatorsApiFetchParamCreator(configuration).getValidators(options);
       return (
         fetch: FetchAPI = isomorphicFetch,
-        basePath: string = BASE_PATH,
+        basePath: string = BASE_PATH
       ) => {
         return fetch(
           basePath + localVarFetchArgs.url,
-          localVarFetchArgs.options,
+          localVarFetchArgs.options
         ).then((response) => {
           if (response.status >= 200 && response.status < 300) {
             return response.json();
@@ -4671,7 +4774,7 @@ export const ValidatorsApiFp = function (configuration?: Configuration) {
 export const ValidatorsApiFactory = function (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) {
   return {
     /**
@@ -4683,7 +4786,7 @@ export const ValidatorsApiFactory = function (
     getDelegator(delegatorAddress: string, options?: any) {
       return ValidatorsApiFp(configuration).getDelegator(
         delegatorAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -4695,7 +4798,7 @@ export const ValidatorsApiFactory = function (
     getDelegators(validatorAddress: string, options?: any) {
       return ValidatorsApiFp(configuration).getDelegators(
         validatorAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -4706,7 +4809,7 @@ export const ValidatorsApiFactory = function (
     getInactiveValidators(options?: any) {
       return ValidatorsApiFp(configuration).getInactiveValidators(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -4717,7 +4820,7 @@ export const ValidatorsApiFactory = function (
     getTotalStakedByDelegators(options?: any) {
       return ValidatorsApiFp(configuration).getTotalStakedByDelegators(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
     /**
@@ -4729,7 +4832,7 @@ export const ValidatorsApiFactory = function (
     getValidator(validatorAddress: string, options?: any) {
       return ValidatorsApiFp(configuration).getValidator(
         validatorAddress,
-        options,
+        options
       )(fetch, basePath);
     },
     /**
@@ -4740,7 +4843,7 @@ export const ValidatorsApiFactory = function (
     getValidators(options?: any) {
       return ValidatorsApiFp(configuration).getValidators(options)(
         fetch,
-        basePath,
+        basePath
       );
     },
   };
@@ -4763,7 +4866,7 @@ export class ValidatorsApi extends BaseAPI {
   public getDelegator(delegatorAddress: string, options?: any) {
     return ValidatorsApiFp(this.configuration).getDelegator(
       delegatorAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -4777,7 +4880,7 @@ export class ValidatorsApi extends BaseAPI {
   public getDelegators(validatorAddress: string, options?: any) {
     return ValidatorsApiFp(this.configuration).getDelegators(
       validatorAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -4790,7 +4893,7 @@ export class ValidatorsApi extends BaseAPI {
   public getInactiveValidators(options?: any) {
     return ValidatorsApiFp(this.configuration).getInactiveValidators(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 
@@ -4802,7 +4905,7 @@ export class ValidatorsApi extends BaseAPI {
    */
   public getTotalStakedByDelegators(options?: any) {
     return ValidatorsApiFp(this.configuration).getTotalStakedByDelegators(
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -4816,7 +4919,7 @@ export class ValidatorsApi extends BaseAPI {
   public getValidator(validatorAddress: string, options?: any) {
     return ValidatorsApiFp(this.configuration).getValidator(
       validatorAddress,
-      options,
+      options
     )(this.fetch, this.basePath);
   }
 
@@ -4829,7 +4932,7 @@ export class ValidatorsApi extends BaseAPI {
   public getValidators(options?: any) {
     return ValidatorsApiFp(this.configuration).getValidators(options)(
       this.fetch,
-      this.basePath,
+      this.basePath
     );
   }
 }

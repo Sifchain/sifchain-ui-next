@@ -46,6 +46,20 @@ export interface MsgUpdatePools {
 
 export interface MsgUpdatePoolsResponse {}
 
+export interface MsgWhitelist {
+  signer: string;
+  whitelistedAddress: string;
+}
+
+export interface MsgWhitelistResponse {}
+
+export interface MsgDewhitelist {
+  signer: string;
+  whitelistedAddress: string;
+}
+
+export interface MsgDewhitelistResponse {}
+
 function createBaseMsgOpen(): MsgOpen {
   return {
     signer: "",
@@ -679,12 +693,240 @@ export const MsgUpdatePoolsResponse = {
   },
 };
 
+function createBaseMsgWhitelist(): MsgWhitelist {
+  return { signer: "", whitelistedAddress: "" };
+}
+
+export const MsgWhitelist = {
+  encode(
+    message: MsgWhitelist,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.whitelistedAddress !== "") {
+      writer.uint32(18).string(message.whitelistedAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWhitelist {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWhitelist();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.whitelistedAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWhitelist {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      whitelistedAddress: isSet(object.whitelistedAddress)
+        ? String(object.whitelistedAddress)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgWhitelist): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.whitelistedAddress !== undefined &&
+      (obj.whitelistedAddress = message.whitelistedAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWhitelist>, I>>(
+    object: I,
+  ): MsgWhitelist {
+    const message = createBaseMsgWhitelist();
+    message.signer = object.signer ?? "";
+    message.whitelistedAddress = object.whitelistedAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgWhitelistResponse(): MsgWhitelistResponse {
+  return {};
+}
+
+export const MsgWhitelistResponse = {
+  encode(
+    _: MsgWhitelistResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgWhitelistResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWhitelistResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWhitelistResponse {
+    return {};
+  },
+
+  toJSON(_: MsgWhitelistResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWhitelistResponse>, I>>(
+    _: I,
+  ): MsgWhitelistResponse {
+    const message = createBaseMsgWhitelistResponse();
+    return message;
+  },
+};
+
+function createBaseMsgDewhitelist(): MsgDewhitelist {
+  return { signer: "", whitelistedAddress: "" };
+}
+
+export const MsgDewhitelist = {
+  encode(
+    message: MsgDewhitelist,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.whitelistedAddress !== "") {
+      writer.uint32(18).string(message.whitelistedAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDewhitelist {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgDewhitelist();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.whitelistedAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDewhitelist {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      whitelistedAddress: isSet(object.whitelistedAddress)
+        ? String(object.whitelistedAddress)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgDewhitelist): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.whitelistedAddress !== undefined &&
+      (obj.whitelistedAddress = message.whitelistedAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgDewhitelist>, I>>(
+    object: I,
+  ): MsgDewhitelist {
+    const message = createBaseMsgDewhitelist();
+    message.signer = object.signer ?? "";
+    message.whitelistedAddress = object.whitelistedAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgDewhitelistResponse(): MsgDewhitelistResponse {
+  return {};
+}
+
+export const MsgDewhitelistResponse = {
+  encode(
+    _: MsgDewhitelistResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): MsgDewhitelistResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgDewhitelistResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDewhitelistResponse {
+    return {};
+  },
+
+  toJSON(_: MsgDewhitelistResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgDewhitelistResponse>, I>>(
+    _: I,
+  ): MsgDewhitelistResponse {
+    const message = createBaseMsgDewhitelistResponse();
+    return message;
+  },
+};
+
 export interface Msg {
   Open(request: MsgOpen): Promise<MsgOpenResponse>;
   Close(request: MsgClose): Promise<MsgCloseResponse>;
   ForceClose(request: MsgForceClose): Promise<MsgForceCloseResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   UpdatePools(request: MsgUpdatePools): Promise<MsgUpdatePoolsResponse>;
+  Whitelist(request: MsgWhitelist): Promise<MsgWhitelistResponse>;
+  Dewhitelist(request: MsgDewhitelist): Promise<MsgDewhitelistResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -696,6 +938,8 @@ export class MsgClientImpl implements Msg {
     this.ForceClose = this.ForceClose.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.UpdatePools = this.UpdatePools.bind(this);
+    this.Whitelist = this.Whitelist.bind(this);
+    this.Dewhitelist = this.Dewhitelist.bind(this);
   }
   Open(request: MsgOpen): Promise<MsgOpenResponse> {
     const data = MsgOpen.encode(request).finish();
@@ -744,6 +988,30 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdatePoolsResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  Whitelist(request: MsgWhitelist): Promise<MsgWhitelistResponse> {
+    const data = MsgWhitelist.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.margin.v1.Msg",
+      "Whitelist",
+      data,
+    );
+    return promise.then((data) =>
+      MsgWhitelistResponse.decode(new _m0.Reader(data)),
+    );
+  }
+
+  Dewhitelist(request: MsgDewhitelist): Promise<MsgDewhitelistResponse> {
+    const data = MsgDewhitelist.encode(request).finish();
+    const promise = this.rpc.request(
+      "sifnode.margin.v1.Msg",
+      "Dewhitelist",
+      data,
+    );
+    return promise.then((data) =>
+      MsgDewhitelistResponse.decode(new _m0.Reader(data)),
     );
   }
 }

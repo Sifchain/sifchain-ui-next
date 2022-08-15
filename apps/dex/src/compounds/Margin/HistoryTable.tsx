@@ -1,9 +1,12 @@
-import { pathOr } from "ramda";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
 import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
+import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
+
+import { isNil } from "rambda";
+const isTruthy = (target: any) => !isNil(target);
 
 /**
  * ********************************************************************************************
@@ -21,15 +24,14 @@ import {
   PaginationButtons,
   PillUpdating,
 } from "./_components";
-import { useQueryHistory } from "./_mockdata";
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import {
-  fromColNameToItemKey,
   findNextOrderAndSortBy,
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
 } from "./_tables";
+import { HtmlUnicode } from "./_trade";
 
 /**
  * ********************************************************************************************
@@ -39,30 +41,44 @@ import {
  * ********************************************************************************************
  */
 const HISTORY_HEADER_ITEMS = [
-  "Date Closed",
-  "Time Open",
-  "Pool",
-  "Side",
-  "Asset",
-  "Amount",
-  "Realized P&L",
+  { title: "Status", order_by: "" },
+  { title: "Date Closed", order_by: "" },
+  { title: "Time Open", order_by: "open_date_time" },
+  { title: "Pool", order_by: "" },
+  { title: "Side", order_by: "position" },
+  { title: "Asset", order_by: "open_custody_asset" },
+  { title: "Amount", order_by: "open_custody_amount" },
+  { title: "Realized P&L", order_by: "" },
 ];
+const MTP_STATUS = {
+  "margin/mtp_open": "OPEN",
+  "margin/mtp_close": "CLOSE",
+  OPEN: "margin/mtp_open",
+  CLOSE: "margin/mtp_close",
+} as Record<string, string>;
 export type HistoryTableProps = {
+  walletAddress: string | undefined;
   classNamePaginationContainer?: string;
 };
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const queryParams = {
-    page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
-    limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
-    orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
-    sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
+    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
+    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
+    orderBy: (router.query["orderBy"] as string) || "address",
+    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-  const historyQuery = useQueryHistory(queryParams);
+  const historyQuery = useHistoryQuery({
+    ...queryParams,
+    walletAddress: props.walletAddress ?? "",
+  });
   const headers = HISTORY_HEADER_ITEMS;
 
   if (historyQuery.isSuccess) {
     const { results, pagination } = historyQuery.data;
+    const pages = Math.ceil(
+      Number(pagination.total) / Number(pagination.limit),
+    );
 
     return (
       <>
@@ -75,20 +91,23 @@ const HistoryTable = (props: HistoryTableProps) => {
           {historyQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
-            page={Number(pagination.page)}
+            offset={Number(pagination.offset)}
             total={Number(pagination.total)}
           />
           <PaginationButtons
-            pages={Number(pagination.pages)}
+            pages={pages}
             render={(page) => {
+              const offset = String(
+                Number(pagination.limit) * page - Number(pagination.limit),
+              );
               return (
                 <Link
-                  href={{ query: { ...router.query, page } }}
+                  href={{ query: { ...router.query, offset } }}
                   scroll={false}
                 >
                   <a
                     className={clsx("px-2 py-1 rounded", {
-                      "bg-gray-400": Number(pagination.page) === page,
+                      "bg-gray-400": pagination.offset === offset,
                     })}
                   >
                     {page}
@@ -102,20 +121,15 @@ const HistoryTable = (props: HistoryTableProps) => {
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
-                {headers.map((title) => {
-                  const itemKey = fromColNameToItemKey(title);
-                  const itemActive = pagination.orderBy === itemKey;
+                {headers.map((header) => {
+                  const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
-                    itemKey,
+                    itemKey: header.order_by,
                     itemActive,
-                    currentSortBy: pagination.sortBy,
+                    currentSortBy: pagination.sort_by,
                   });
                   return (
-                    <th
-                      key={itemKey}
-                      data-item-key={itemKey}
-                      className="font-normal px-4 py-3"
-                    >
+                    <th key={header.title} className="font-normal px-4 py-3">
                       <Link
                         href={{
                           query: {
@@ -129,14 +143,15 @@ const HistoryTable = (props: HistoryTableProps) => {
                         <a
                           className={clsx("flex flex-row items-center", {
                             "text-white font-semibold": itemActive,
+                            "cursor-not-allowed": header.order_by === "",
                           })}
                         >
-                          {title}
+                          {header.title}
                           {itemActive && (
                             <ChevronDownIcon
                               className={clsx("ml-1 transition-transform", {
                                 "-rotate-180":
-                                  pagination.sortBy === SORT_BY.ASC,
+                                  pagination.sort_by === SORT_BY.ASC,
                               })}
                             />
                           )}
@@ -155,52 +170,106 @@ const HistoryTable = (props: HistoryTableProps) => {
                 />
               )}
               {results.map((item) => {
-                const position = MARGIN_POSITION[item.side];
-                const amountSign = Math.sign(Number(item.amount));
-                const realizedPLSign = Math.sign(Number(item.realizedPL));
+                const amountSign = Math.sign(Number(item.open_custody_amount));
+                const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
                 return (
                   <tr key={item.id}>
                     <td className="px-4 py-3">
-                      {formatDateRelative(item.dateClosed)}
-                    </td>
-                    <td className="px-4 py-3">
-                      {formatDateDistance(item.timeOpen)}
-                    </td>
-                    <td className="px-4 py-3">{item.pool}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-cyan-400": position === MARGIN_POSITION[0],
-                          "text-green-400": position === MARGIN_POSITION[1],
-                          "text-red-400": position === MARGIN_POSITION[2],
-                        })}
-                      >
-                        {position}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">{item.asset}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-green-400": amountSign === 1,
-                          "text-red-400": amountSign === -1,
-                        })}
-                      >
-                        {formatNumberAsCurrency(Number(item.amount), 4)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-green-400">
+                      {isTruthy(item.type) ? (
                         <span
                           className={clsx({
-                            "text-green-400": realizedPLSign === 1,
-                            "text-red-400": realizedPLSign === -1,
+                            "text-green-400": item.type === MTP_STATUS["OPEN"],
+                            "text-red-400": item.type === MTP_STATUS["CLOSE"],
                           })}
                         >
-                          {formatNumberAsCurrency(Number(item.realizedPL), 2)}
+                          {MTP_STATUS[item.type]}
                         </span>
-                      </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.closed_date_time) ? (
+                        formatDateRelative(new Date(item.closed_date_time))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_date_time) ? (
+                        formatDateDistance(new Date(item.open_date_time))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_custody_asset) ? (
+                        item.open_custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.position) ? (
+                        <span
+                          className={clsx({
+                            "text-cyan-400":
+                              item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400":
+                              item.position === MARGIN_POSITION.LONG,
+                            "text-red-400":
+                              item.position === MARGIN_POSITION.SHORT,
+                          })}
+                        >
+                          {item.position}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_custody_asset) ? (
+                        item.open_custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.open_custody_amount) ? (
+                        <span
+                          className={clsx({
+                            "text-green-400": amountSign === 1,
+                            "text-red-400": amountSign === -1,
+                          })}
+                        >
+                          {formatNumberAsCurrency(
+                            Number(item.open_custody_amount),
+                            4,
+                          )}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.realized_pnl) ? (
+                        <span className="text-green-400">
+                          <span
+                            className={clsx({
+                              "text-green-400": realizedPLSign === 1,
+                              "text-red-400": realizedPLSign === -1,
+                            })}
+                          >
+                            {formatNumberAsCurrency(
+                              Number(item.realized_pnl),
+                              2,
+                            )}
+                          </span>
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                   </tr>
                 );
@@ -209,6 +278,14 @@ const HistoryTable = (props: HistoryTableProps) => {
           </table>
         </div>
       </>
+    );
+  }
+
+  if (historyQuery.isError) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Try again later.
+      </div>
     );
   }
 

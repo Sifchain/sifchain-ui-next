@@ -10,152 +10,54 @@
  * Do not edit the file manually.
  */
 
-import * as api from "./api";
-import { Configuration } from "./configuration";
+import * as api from './api';
+import { Configuration } from './configuration';
 
 const config: Configuration = {};
 
-describe("AssetsApi", () => {
+describe('AssetsApi', () => {
   let instance: api.AssetsApi;
   beforeEach(function () {
     instance = new api.AssetsApi(config);
   });
 
-  test("getAssets", () => {
+  test('getAssets', () => {
     return expect(instance.getAssets({})).resolves.toBe(null);
   });
-  test("getTokenStats", () => {
+  test('getTokenStats', () => {
     return expect(instance.getTokenStats({})).resolves.toBe(null);
   });
-  test("getTokenStatsPMTP", () => {
+  test('getTokenStatsPMTP', () => {
     return expect(instance.getTokenStatsPMTP({})).resolves.toBe(null);
   });
-  test("getTokenValue", () => {
-    const symbol: string = "symbol_example";
+  test('getTokenValue', () => {
+    const symbol: string = 'symbol_example';
     return expect(instance.getTokenValue(symbol, {})).resolves.toBe(null);
   });
 });
 
-describe("NetworkApi", () => {
-  let instance: api.NetworkApi;
+describe('MarginApi', () => {
+  let instance: api.MarginApi;
   beforeEach(function () {
-    instance = new api.NetworkApi(config);
+    instance = new api.MarginApi(config);
   });
 
-  test("cmcTotalDailyVolume", () => {
-    return expect(instance.cmcTotalDailyVolume({})).resolves.toBe(null);
-  });
-  test("getCmcSummary", () => {
-    return expect(instance.getCmcSummary({})).resolves.toBe(null);
-  });
-  test("getDailyPrice", () => {
-    return expect(instance.getDailyPrice({})).resolves.toBe(null);
-  });
-  test("getDispensation", () => {
-    const type: string = "type_example";
-    return expect(instance.getDispensation(type, {})).resolves.toBe(null);
-  });
-  test("getHistoricalPrice", () => {
-    const symbol: string = "symbol_example";
-    const limit: number = 56;
-    const page: number = 56;
+  test('getMarginHistory', () => {
+    const address: string = 'address_example';
+    const offset: number = 1.2;
+    const limit: number = 1.2;
+    const orderBy: string = 'orderBy_example';
+    const sortBy: string = 'sortBy_example';
     return expect(
-      instance.getHistoricalPrice(symbol, limit, page, {}),
+      instance.getMarginHistory(address, offset, limit, orderBy, sortBy, {})
     ).resolves.toBe(null);
   });
-  test("getLppdReward", () => {
-    const address: string = "address_example";
-    return expect(instance.getLppdReward(address, {})).resolves.toBe(null);
-  });
-  test("getNetChange", () => {
-    const symbol: string = "symbol_example";
-    const lpAddress: string = "lpAddress_example";
-    return expect(instance.getNetChange(symbol, lpAddress, {})).resolves.toBe(
-      null,
-    );
-  });
-  test("getNetworkInfo", () => {
-    return expect(instance.getNetworkInfo({})).resolves.toBe(null);
-  });
-  test("getRewardConfig", () => {
-    const type: string = "type_example";
-    return expect(instance.getRewardConfig(type, {})).resolves.toBe(null);
-  });
-  test("getRewardUser", () => {
-    const address: string = "address_example";
-    return expect(instance.getRewardUser(address, {})).resolves.toBe(null);
-  });
-  test("getSummary", () => {
-    return expect(instance.getSummary({})).resolves.toBe(null);
-  });
-});
-
-describe("PoolsApi", () => {
-  let instance: api.PoolsApi;
-  beforeEach(function () {
-    instance = new api.PoolsApi(config);
-  });
-
-  test("getLiquidityProvider", () => {
-    const symbol: string = "symbol_example";
-    const lpAddress: string = "lpAddress_example";
-    return expect(
-      instance.getLiquidityProvider(symbol, lpAddress, {}),
-    ).resolves.toBe(null);
-  });
-  test("getLiquidityProviders", () => {
-    const symbol: string = "symbol_example";
-    return expect(instance.getLiquidityProviders(symbol, {})).resolves.toBe(
-      null,
-    );
-  });
-  test("getPool", () => {
-    const symbol: string = "symbol_example";
-    return expect(instance.getPool(symbol, {})).resolves.toBe(null);
-  });
-  test("getPoolShare", () => {
-    const symbol: string = "symbol_example";
-    const lpAddress: string = "lpAddress_example";
-    return expect(instance.getPoolShare(symbol, lpAddress, {})).resolves.toBe(
-      null,
-    );
-  });
-  test("getPools", () => {
-    return expect(instance.getPools({})).resolves.toBe(null);
-  });
-});
-
-describe("StatsApi", () => {
-  let instance: api.StatsApi;
-  beforeEach(function () {
-    instance = new api.StatsApi(config);
-  });
-
-  test("cmcCirculatingSupply", () => {
-    return expect(instance.cmcCirculatingSupply({})).resolves.toBe(null);
-  });
-  test("cmcTotalSupply", () => {
-    return expect(instance.cmcTotalSupply({})).resolves.toBe(null);
-  });
-  test("getCirculatingSupply", () => {
-    return expect(instance.getCirculatingSupply({})).resolves.toBe(null);
-  });
-  test("getMarginHistory", () => {
-    const address: string = "address_example";
-    const offset: number = 56;
-    const limit: number = 56;
-    const orderBy: string = "orderBy_example";
-    const sortBy: string = "sortBy_example";
-    return expect(
-      instance.getMarginHistory(address, offset, limit, orderBy, sortBy, {}),
-    ).resolves.toBe(null);
-  });
-  test("getMarginOpenPosition", () => {
-    const address: string = "address_example";
-    const offset: number = 56;
-    const limit: number = 56;
-    const orderBy: string = "orderBy_example";
-    const sortBy: string = "sortBy_example";
+  test('getMarginOpenPosition', () => {
+    const address: string = 'address_example';
+    const offset: number = 1.2;
+    const limit: number = 1.2;
+    const orderBy: string = 'orderBy_example';
+    const sortBy: string = 'sortBy_example';
     return expect(
       instance.getMarginOpenPosition(
         address,
@@ -163,72 +65,178 @@ describe("StatsApi", () => {
         limit,
         orderBy,
         sortBy,
-        {},
-      ),
+        {}
+      )
     ).resolves.toBe(null);
   });
-  test("getStakingRewards", () => {
+});
+
+describe('NetworkApi', () => {
+  let instance: api.NetworkApi;
+  beforeEach(function () {
+    instance = new api.NetworkApi(config);
+  });
+
+  test('cmcTotalDailyVolume', () => {
+    return expect(instance.cmcTotalDailyVolume({})).resolves.toBe(null);
+  });
+  test('getCmcSummary', () => {
+    return expect(instance.getCmcSummary({})).resolves.toBe(null);
+  });
+  test('getDailyPrice', () => {
+    return expect(instance.getDailyPrice({})).resolves.toBe(null);
+  });
+  test('getDispensation', () => {
+    const type: string = 'type_example';
+    return expect(instance.getDispensation(type, {})).resolves.toBe(null);
+  });
+  test('getHistoricalPrice', () => {
+    const symbol: string = 'symbol_example';
+    const limit: number = 56;
+    const page: number = 56;
+    return expect(
+      instance.getHistoricalPrice(symbol, limit, page, {})
+    ).resolves.toBe(null);
+  });
+  test('getLppdReward', () => {
+    const address: string = 'address_example';
+    return expect(instance.getLppdReward(address, {})).resolves.toBe(null);
+  });
+  test('getNetChange', () => {
+    const symbol: string = 'symbol_example';
+    const lpAddress: string = 'lpAddress_example';
+    return expect(instance.getNetChange(symbol, lpAddress, {})).resolves.toBe(
+      null
+    );
+  });
+  test('getNetworkInfo', () => {
+    return expect(instance.getNetworkInfo({})).resolves.toBe(null);
+  });
+  test('getRewardConfig', () => {
+    const type: string = 'type_example';
+    return expect(instance.getRewardConfig(type, {})).resolves.toBe(null);
+  });
+  test('getRewardUser', () => {
+    const address: string = 'address_example';
+    return expect(instance.getRewardUser(address, {})).resolves.toBe(null);
+  });
+  test('getSummary', () => {
+    return expect(instance.getSummary({})).resolves.toBe(null);
+  });
+});
+
+describe('PoolsApi', () => {
+  let instance: api.PoolsApi;
+  beforeEach(function () {
+    instance = new api.PoolsApi(config);
+  });
+
+  test('getLiquidityProvider', () => {
+    const symbol: string = 'symbol_example';
+    const lpAddress: string = 'lpAddress_example';
+    return expect(
+      instance.getLiquidityProvider(symbol, lpAddress, {})
+    ).resolves.toBe(null);
+  });
+  test('getLiquidityProviders', () => {
+    const symbol: string = 'symbol_example';
+    return expect(instance.getLiquidityProviders(symbol, {})).resolves.toBe(
+      null
+    );
+  });
+  test('getPool', () => {
+    const symbol: string = 'symbol_example';
+    return expect(instance.getPool(symbol, {})).resolves.toBe(null);
+  });
+  test('getPoolShare', () => {
+    const symbol: string = 'symbol_example';
+    const lpAddress: string = 'lpAddress_example';
+    return expect(instance.getPoolShare(symbol, lpAddress, {})).resolves.toBe(
+      null
+    );
+  });
+  test('getPools', () => {
+    return expect(instance.getPools({})).resolves.toBe(null);
+  });
+});
+
+describe('StatsApi', () => {
+  let instance: api.StatsApi;
+  beforeEach(function () {
+    instance = new api.StatsApi(config);
+  });
+
+  test('cmcCirculatingSupply', () => {
+    return expect(instance.cmcCirculatingSupply({})).resolves.toBe(null);
+  });
+  test('cmcTotalSupply', () => {
+    return expect(instance.cmcTotalSupply({})).resolves.toBe(null);
+  });
+  test('getCirculatingSupply', () => {
+    return expect(instance.getCirculatingSupply({})).resolves.toBe(null);
+  });
+  test('getStakingRewards', () => {
     return expect(instance.getStakingRewards({})).resolves.toBe(null);
   });
-  test("getTotalSupply", () => {
+  test('getTotalSupply', () => {
     return expect(instance.getTotalSupply({})).resolves.toBe(null);
   });
 });
 
-describe("TradesApi", () => {
+describe('TradesApi', () => {
   let instance: api.TradesApi;
   beforeEach(function () {
     instance = new api.TradesApi(config);
   });
 
-  test("getCompetitionRanks", () => {
-    const type: string = "type_example";
+  test('getCompetitionRanks', () => {
+    const type: string = 'type_example';
     return expect(instance.getCompetitionRanks(type, {})).resolves.toBe(null);
   });
-  test("getCompetitionRanksByToken", () => {
-    const token: string = "token_example";
-    const type: string = "type_example";
+  test('getCompetitionRanksByToken', () => {
+    const token: string = 'token_example';
+    const type: string = 'type_example';
     return expect(
-      instance.getCompetitionRanksByToken(token, type, {}),
+      instance.getCompetitionRanksByToken(token, type, {})
     ).resolves.toBe(null);
   });
-  test("getTrades", () => {
-    const marketPair: string = "marketPair_example";
+  test('getTrades', () => {
+    const marketPair: string = 'marketPair_example';
     return expect(instance.getTrades(marketPair, {})).resolves.toBe(null);
   });
 });
 
-describe("ValidatorsApi", () => {
+describe('ValidatorsApi', () => {
   let instance: api.ValidatorsApi;
   beforeEach(function () {
     instance = new api.ValidatorsApi(config);
   });
 
-  test("getDelegator", () => {
-    const delegatorAddress: string = "delegatorAddress_example";
+  test('getDelegator', () => {
+    const delegatorAddress: string = 'delegatorAddress_example';
     return expect(instance.getDelegator(delegatorAddress, {})).resolves.toBe(
-      null,
+      null
     );
   });
-  test("getDelegators", () => {
-    const validatorAddress: string = "validatorAddress_example";
+  test('getDelegators', () => {
+    const validatorAddress: string = 'validatorAddress_example';
     return expect(instance.getDelegators(validatorAddress, {})).resolves.toBe(
-      null,
+      null
     );
   });
-  test("getInactiveValidators", () => {
+  test('getInactiveValidators', () => {
     return expect(instance.getInactiveValidators({})).resolves.toBe(null);
   });
-  test("getTotalStakedByDelegators", () => {
+  test('getTotalStakedByDelegators', () => {
     return expect(instance.getTotalStakedByDelegators({})).resolves.toBe(null);
   });
-  test("getValidator", () => {
-    const validatorAddress: string = "validatorAddress_example";
+  test('getValidator', () => {
+    const validatorAddress: string = 'validatorAddress_example';
     return expect(instance.getValidator(validatorAddress, {})).resolves.toBe(
-      null,
+      null
     );
   });
-  test("getValidators", () => {
+  test('getValidators', () => {
     return expect(instance.getValidators({})).resolves.toBe(null);
   });
 });

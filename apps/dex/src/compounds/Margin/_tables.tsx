@@ -22,15 +22,14 @@ export const SORT_BY = {
   DESC: "desc",
 };
 export const QS_DEFAULTS = {
-  page: "1",
   limit: "30",
-  orderBy: "",
+  offset: "0",
   sortBy: SORT_BY.DESC,
 };
-export const MARGIN_POSITION: Record<string, string> = {
-  "0": "Unspecified",
-  "1": "Long",
-  "2": "Short",
+export const MARGIN_POSITION = {
+  UNSPECIFIED: "UNSPECIFIED",
+  LONG: "LONG",
+  SHORT: "SHORT",
 };
 
 type FindNextOrderAndSortByProps = {

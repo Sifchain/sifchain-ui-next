@@ -54,7 +54,7 @@ export function useQueryPositionToClose(params: { id: string }) {
 
 export function useQueryOpenPositions(queryParams: {
   limit: string;
-  page: string;
+  offset: string;
   orderBy: string;
   sortBy: string;
 }) {
@@ -70,12 +70,9 @@ export function useQueryOpenPositions(queryParams: {
 
   const results = maybeCacheResults;
 
-  const pages = Math.ceil(Number(results.length) / Number(queryParams.limit));
-  const page =
-    Number(queryParams.page) > pages ? pages : Number(queryParams.page);
   const paginatedResults = results.slice(
-    (page - 1) * Number(queryParams.limit),
-    Number(queryParams.limit) * page,
+    Number(queryParams.offset),
+    Number(queryParams.offset) + Number(queryParams.limit),
   );
 
   const query = () =>
@@ -85,8 +82,7 @@ export function useQueryOpenPositions(queryParams: {
           pagination: {
             total: `${results.length}`,
             limit: queryParams.limit,
-            pages: `${pages}`,
-            page: `${page}`,
+            offset: queryParams.offset,
             orderBy: queryParams.orderBy,
             sortBy: queryParams.sortBy,
           },
@@ -97,8 +93,7 @@ export function useQueryOpenPositions(queryParams: {
       pagination: {
         total: string;
         limit: string;
-        pages: string;
-        page: string;
+        offset: string;
         orderBy: string;
         sortBy: string;
       };
@@ -111,7 +106,7 @@ export function useQueryOpenPositions(queryParams: {
 
 export function useQueryHistory(queryParams: {
   limit: string;
-  page: string;
+  offset: string;
   orderBy: string;
   sortBy: string;
 }) {
@@ -127,12 +122,9 @@ export function useQueryHistory(queryParams: {
 
   const results = maybeCacheResults;
 
-  const pages = Math.ceil(Number(results.length) / Number(queryParams.limit));
-  const page =
-    Number(queryParams.page) > pages ? pages : Number(queryParams.page);
   const paginatedResults = results.slice(
-    (page - 1) * Number(queryParams.limit),
-    Number(queryParams.limit) * page,
+    Number(queryParams.offset),
+    Number(queryParams.offset) + Number(queryParams.limit),
   );
 
   const query = () =>
@@ -142,8 +134,7 @@ export function useQueryHistory(queryParams: {
           pagination: {
             total: `${results.length}`,
             limit: queryParams.limit,
-            pages: `${pages}`,
-            page: `${page}`,
+            offset: queryParams.offset,
             orderBy: queryParams.orderBy,
             sortBy: queryParams.sortBy,
           },
@@ -154,8 +145,7 @@ export function useQueryHistory(queryParams: {
       pagination: {
         total: string;
         limit: string;
-        pages: string;
-        page: string;
+        offset: string;
         orderBy: string;
         sortBy: string;
       };
@@ -173,8 +163,8 @@ function createFakeOpenPositions({
   limit: number;
   multi?: number;
 }) {
-  return Array.from({ length: Number(limit) * multi }, () =>
-    createOpenPositionsRow(),
+  return Array.from({ length: Number(limit) * multi }, (_, index) =>
+    createOpenPositionsRow(index++),
   );
 }
 function createFakeHistory({
@@ -184,8 +174,8 @@ function createFakeHistory({
   limit: number;
   multi?: number;
 }) {
-  return Array.from({ length: Number(limit) * multi }, () =>
-    createHistoryRow(),
+  return Array.from({ length: Number(limit) * multi }, (_, index) =>
+    createHistoryRow(index++),
   );
 }
 
@@ -193,12 +183,12 @@ function rand(range: number) {
   return Math.floor(Math.random() * range);
 }
 
-function createOpenPositionsRow() {
+function createOpenPositionsRow(index: number) {
   const sides = ["0", "1", "2"];
   const amounts = ["11.5432", "-32.9832", "8192331"];
   const unrealizedPLs = ["32.5432", "-2000.15"];
   return {
-    id: Math.random().toString(16).slice(2),
+    id: `${Math.random().toString(16).slice(2)}.${index}`,
     pool: "ETH",
     side: sides[rand(3)] as string,
     asset: "ETH",
@@ -215,12 +205,12 @@ function createOpenPositionsRow() {
   };
 }
 
-function createHistoryRow() {
+function createHistoryRow(index: number) {
   const sides = ["0", "1", "2"];
   const amounts = ["11.5432", "-32.9832", "8192331"];
   const realizedPLs = ["32.5432", "-2000.15"];
   return {
-    id: Math.random().toString(16).slice(2),
+    id: `${Math.random().toString(16).slice(2)}.${index}`,
     dateClosed: new Date(),
     timeOpen: new Date(),
     pool: "ETH",

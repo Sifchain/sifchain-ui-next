@@ -1,15 +1,13 @@
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
-import { pathOr } from "ramda";
-
 import {
   formatNumberAsCurrency,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
 
-import { formatNumberAsDecimal } from "./_intl";
+import { formatNumberAsPercent } from "./_intl";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -27,19 +25,19 @@ export function NoResultsRow(props: NoResultsTrProps) {
 
 type PaginationShowItemsProps = {
   limit: number;
-  page: number;
+  offset: number;
   total: number;
 };
 export function PaginationShowItems({
   limit,
-  page,
+  offset,
   total,
 }: PaginationShowItemsProps) {
-  const initial = limit * page;
+  const initial = offset + limit;
   return (
     <p className="text-sm mx-4 py-3">
       <span>Showing</span>
-      <span className="mx-1">{initial > total ? total : limit * page}</span>
+      <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
       <span className="mx-1">{total}</span>
       <span>items</span>
@@ -81,8 +79,10 @@ type PoolOverviewProps = {
   onChangePoolSelector: (token: TokenEntry) => void;
 };
 export function PoolOverview(props: PoolOverviewProps) {
-  const poolTVL = pathOr(0, ["stats", "poolTVL"], props.pool);
-  const volume = pathOr(0, ["stats", "volume"], props.pool);
+  const poolTVL = props.pool.stats.poolTVL || 0;
+  const volume = props.pool.stats.volume || 0;
+  const health = props.pool.stats.health || 0;
+
   return (
     <ul className="grid grid-cols-7 gap-5">
       <li className="col-span-2 pl-4 py-4">
@@ -142,7 +142,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
           <span className="font-semibold text-sm">
-            {formatNumberAsDecimal(Number(Math.random()))}
+            {formatNumberAsPercent(health)}
           </span>
         </div>
       </li>

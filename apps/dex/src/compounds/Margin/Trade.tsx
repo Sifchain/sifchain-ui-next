@@ -1,22 +1,23 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
-import type { NextPage } from "next";
+import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
-
-import { pathOr } from "ramda";
-import { useMemo, useState } from "react";
-import { useRouter } from "next/router";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { pathOr } from "ramda";
+import type { ChangeEvent, SyntheticEvent } from "react";
+import { useMemo, useState } from "react";
 
 import {
   Button,
   formatNumberAsCurrency,
+  Maybe,
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
-  toast,
   TokenEntry,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
@@ -25,7 +26,13 @@ import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
+  useSwapSimulation,
 } from "~/domains/clp";
+import {
+  useMarginParamsQuery,
+  useOpenMTPMutation,
+} from "~/domains/margin/hooks";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 /**
  * ********************************************************************************************
@@ -36,24 +43,41 @@ import {
  *
  * ********************************************************************************************
  */
+import { ROWAN } from "~/domains/assets";
+import { PoolOverview } from "./_components";
+import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
-  HtmlUnicode,
   COLLATERAL_MAX_VALUE,
-  POSITION_MAX_VALUE,
-  LEVERAGE_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
-  POSITION_MIN_VALUE,
   LEVERAGE_MIN_VALUE,
+  POSITION_MAX_VALUE,
+  POSITION_MIN_VALUE,
+  HtmlUnicode,
+  inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
-  inputValidatorCollateral,
 } from "./_trade";
-import { formatNumberAsDecimal } from "./_intl";
-import { PoolOverview } from "./_components";
-import { useMutationConfirmOpenPosition } from "./_mockdata";
 
-const FEE_USDC = 0.5;
-const INTEREST_RATE = 0.25;
+const calculateOpenPosition = (
+  positionTokenAmount: number,
+  positionPriceUsd: number,
+) => {
+  return positionTokenAmount / positionPriceUsd;
+};
+const calculateBorrowAmount = (
+  collateralTokenAmount: number,
+  leverage: number,
+) => {
+  return collateralTokenAmount * leverage - collateralTokenAmount;
+};
+const withLeverage = (
+  rawReceiving: string,
+  decimals: number,
+  leverage: string,
+) =>
+  BigNumber(
+    Decimal.fromAtomics(rawReceiving, decimals).toString(),
+  ).multipliedBy(leverage);
 
 /**
  * ********************************************************************************************
@@ -73,20 +97,52 @@ const TradeCompound: NextPage = () => {
   const enhancedPools = useEnhancedPoolsQuery();
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
+  const govParams = useMarginParamsQuery();
+  // const addressList = useMarginAllowedAddressList();
+
+  if (
+    [
+      enhancedPools,
+      enhancedRowan,
+      rowanPrice,
+      govParams,
+      // addressList
+    ].some((query) => query.isError)
+  ) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Try again later.
+      </div>
+    );
+  }
 
   if (
     enhancedPools.isSuccess &&
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
+    govParams.isSuccess &&
+    // addressList.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
-    rowanPrice.data
+    rowanPrice.data &&
+    govParams.data &&
+    // addressList.data &&
+    govParams.data.params
   ) {
+    const { params } = govParams.data;
+    const allowedPools = params.pools;
+    const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
+      allowedPools.includes(pool.asset.symbol.toLowerCase()),
+    );
     enhancedRowan.data.priceUsd = rowanPrice.data;
+    // console.log(addressList);
     return (
       <Trade
-        enhancedPools={enhancedPools.data}
+        enhancedPools={filteredEnhancedPools}
         enhancedRowan={enhancedRowan.data}
+        govParams={{
+          leverageMax: params.leverageMax,
+        }}
       />
     );
   }
@@ -118,6 +174,9 @@ type TradeProps = {
     ReturnType<typeof useEnhancedTokenQuery>["data"],
     undefined
   >;
+  govParams: {
+    leverageMax: string;
+  };
 };
 
 const ROWAN_DENOM = "rowan";
@@ -126,6 +185,7 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
+  const walletAddress = useSifSignerAddress({ enabled: true });
   const { enhancedPools, enhancedRowan } = props;
 
   /**
@@ -214,6 +274,11 @@ const Trade = (props: TradeProps) => {
     priceUsd: number;
   };
 
+  const maxLeverageDecimal = Decimal.fromAtomics(
+    props.govParams.leverageMax,
+    ROWAN.decimals,
+  );
+
   /**
    * ********************************************************************************************
    *
@@ -222,17 +287,17 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [inputCollateral, setInputCollateral] = useState({
-    value: `0`,
+    value: String(COLLATERAL_MIN_VALUE),
     error: "",
   });
 
   const [inputPosition, setInputPosition] = useState({
-    value: `0`,
+    value: String(POSITION_MIN_VALUE),
     error: "",
   });
 
   const [inputLeverage, setInputLeverage] = useState({
-    value: `${LEVERAGE_MAX_VALUE}`,
+    value: maxLeverageDecimal.toString(),
     error: "",
   });
 
@@ -303,9 +368,17 @@ const Trade = (props: TradeProps) => {
     return (
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
-      Boolean(inputLeverage.error)
+      Boolean(inputLeverage.error) ||
+      inputCollateral.value === "0" ||
+      inputPosition.value === "0"
     );
-  }, [inputCollateral.error, inputPosition.error, inputLeverage.error]);
+  }, [
+    inputCollateral.error,
+    inputPosition.error,
+    inputLeverage.error,
+    inputCollateral.value,
+    inputPosition.value,
+  ]);
 
   /**
    * ********************************************************************************************
@@ -316,8 +389,14 @@ const Trade = (props: TradeProps) => {
    */
   const [checkbox01, setCheckbox01] = useState(false);
   const [checkbox02, setCheckbox02] = useState(false);
+  const computedBorrowAmount = useMemo(() => {
+    return calculateBorrowAmount(
+      Number(inputCollateral.value),
+      Number(inputLeverage.value),
+    );
+  }, [inputCollateral.value, inputLeverage.value]);
 
-  const confirmOpenPositionMutation = useMutationConfirmOpenPosition();
+  const confirmOpenPositionMutation = useOpenMTPMutation();
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
@@ -331,16 +410,69 @@ const Trade = (props: TradeProps) => {
   ) => {
     event.preventDefault();
     try {
+      const { atomics: collateralAmount } = Decimal.fromUserInput(
+        inputCollateral.value,
+        selectedCollateral.decimals,
+      );
+      const { atomics: leverage } = Decimal.fromUserInput(
+        inputLeverage.value,
+        ROWAN.decimals,
+      );
+
       const req = await confirmOpenPositionMutation.mutateAsync({
-        id: "1234",
+        collateralAsset: selectedCollateral.symbol.toLowerCase(),
+        borrowAsset: selectedPosition.symbol.toLowerCase(),
+        position: 1, // LONG
+        collateralAmount,
+        leverage: leverage,
       });
-      const json = req as { id: string };
-      setModalConfirmOpenPosition({ isOpen: false });
-      toast.success(`Position created successfully! Position ID: ${json.id}`);
+      if (req && req.data) {
+        setModalConfirmOpenPosition({ isOpen: false });
+      }
     } catch (err) {
       console.log(err);
     }
   };
+
+  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
+    selectedCollateral.denom ?? selectedCollateral.symbol,
+    selectedPosition.denom ?? selectedPosition.symbol,
+    inputCollateral.value,
+  );
+
+  const openPositionFee = useMemo(
+    () =>
+      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation(),
+      ),
+    [swapSimulation],
+  );
+
+  const { recompute: calculateReverseSwap } = useSwapSimulation(
+    selectedPosition.denom ?? selectedPosition.symbol,
+    selectedCollateral.denom ?? selectedCollateral.symbol,
+    inputPosition.value,
+  );
+
+  const calculatePosition = (
+    inputAmount: string,
+    leverage = inputLeverage.value,
+  ) =>
+    withLeverage(
+      calculateSwap(inputAmount)?.rawReceiving || "0",
+      selectedPosition.decimals,
+      leverage,
+    );
+
+  const calculateCollateral = (
+    inputAmount: string,
+    leverage = inputLeverage.value,
+  ) =>
+    withLeverage(
+      calculateReverseSwap(inputAmount)?.rawReceiving || "0",
+      selectedCollateral.decimals,
+      leverage,
+    );
 
   /**
    * ********************************************************************************************
@@ -353,23 +485,7 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorCollateral($input, "change");
 
-    const positionTokenPrice =
-      selectedPosition.denom === ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralTokenPrice =
-      selectedPosition.denom !== ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralDollarValue =
-      (collateralTokenPrice ?? 0) * Number(payload.value);
-
-    // colleteral dollar value * leverage / position token price
-    const positionInputAmount =
-      (collateralDollarValue * Number(inputLeverage.value)) /
-      positionTokenPrice;
+    const positionInputAmount = calculatePosition(payload.value);
 
     setInputCollateral(payload);
     setInputPosition({
@@ -395,22 +511,7 @@ const Trade = (props: TradeProps) => {
     const $input = event.currentTarget;
     const payload = inputValidatorPosition($input, "change");
 
-    const positionTokenPrice =
-      selectedPosition.denom === ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const collateralTokenPrice =
-      selectedPosition.denom !== ROWAN_DENOM
-        ? enhancedRowan.priceUsd
-        : poolActive?.stats.priceToken ?? 0;
-
-    const positionDollarValue =
-      (positionTokenPrice ?? 0) * Number(payload.value);
-
-    // position dollar value / leverage / collateral token price
-    const collateralInputAmount =
-      positionDollarValue / Number(inputLeverage.value) / collateralTokenPrice;
+    const collateralInputAmount = calculateCollateral(payload.value);
 
     setInputPosition(payload);
     setInputCollateral({
@@ -434,28 +535,20 @@ const Trade = (props: TradeProps) => {
    */
   const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "change");
+    const payload = inputValidatorLeverage(
+      $input,
+      "change",
+      maxLeverageDecimal.toString(),
+    );
 
     if (!payload.error) {
-      const positionTokenPrice =
-        selectedPosition.denom === ROWAN_DENOM
-          ? enhancedRowan.priceUsd
-          : poolActive?.stats.priceToken ?? 0;
-
-      const collateralTokenPrice =
-        selectedPosition.denom !== ROWAN_DENOM
-          ? enhancedRowan.priceUsd
-          : poolActive?.stats.priceToken ?? 0;
-
-      const collateralDollarValue =
-        (collateralTokenPrice ?? 0) * Number(inputCollateral.value);
-
-      // colleteral dollar value * leverage / position token price
-      const positionInputAmount =
-        (collateralDollarValue * Number(payload.value)) / positionTokenPrice;
+      const positionInputAmount = calculatePosition(
+        inputCollateral.value,
+        payload.value,
+      );
 
       setInputPosition({
-        value: String(positionInputAmount),
+        value: positionInputAmount.toString(),
         error: "",
       });
     }
@@ -465,7 +558,11 @@ const Trade = (props: TradeProps) => {
 
   const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur");
+    const payload = inputValidatorLeverage(
+      $input,
+      "blur",
+      maxLeverageDecimal.toString(),
+    );
     setInputLeverage(payload);
   };
 
@@ -487,7 +584,7 @@ const Trade = (props: TradeProps) => {
       error: "",
     });
     setInputLeverage({
-      value: String(LEVERAGE_MAX_VALUE),
+      value: maxLeverageDecimal.toString(),
       error: "",
     });
   };
@@ -688,14 +785,21 @@ const Trade = (props: TradeProps) => {
               <div className="col-span-3 flex flex-col">
                 <span className="text-xs text-gray-300 mb-1">
                   <span className="mr-1">Leverage</span>
-                  <span className="text-gray-400">Up to 2x</span>
+                  <span className="text-gray-400">
+                    <span>Up to </span>
+                    {formatNumberAsDecimal(
+                      maxLeverageDecimal.toFloatApproximation(),
+                      2,
+                    )}
+                    x
+                  </span>
                 </span>
                 <input
                   type="number"
                   placeholder="Leverage amount"
                   step="0.01"
                   min={LEVERAGE_MIN_VALUE}
-                  max={LEVERAGE_MAX_VALUE}
+                  max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
                   onBlur={onBlurLeverage}
@@ -761,12 +865,7 @@ const Trade = (props: TradeProps) => {
                       </span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">
-                          {formatNumberAsDecimal(
-                            Number(inputCollateral.value) *
-                              Number(inputLeverage.value) -
-                              Number(inputCollateral.value),
-                            4,
-                          )}
+                          {formatNumberAsDecimal(computedBorrowAmount, 4)}
                         </span>
                         <AssetIcon
                           symbol={selectedCollateral.denom}
@@ -825,7 +924,11 @@ const Trade = (props: TradeProps) => {
                       </span>
                       <div className="flex flex-row items-center gap-1">
                         <HtmlUnicode name="MinusSign" />
-                        <span>{formatNumberAsCurrency(FEE_USDC)}</span>
+                        <span>
+                          {formatNumberAsCurrency(
+                            openPositionFee * selectedPosition.priceUsd,
+                          )}
+                        </span>
                       </div>
                     </div>
                   </li>
@@ -838,8 +941,11 @@ const Trade = (props: TradeProps) => {
                         <span className="mr-1">
                           {formatNumberAsDecimal(
                             Number(inputPosition.value) > 0
-                              ? Number(inputPosition.value) -
-                                  FEE_USDC / Number(selectedPosition.priceUsd)
+                              ? calculateOpenPosition(
+                                  Number(inputPosition.value),
+                                  Number(selectedPosition.priceUsd),
+                                ) -
+                                  openPositionFee * selectedPosition.priceUsd
                               : 0,
                           )}
                         </span>
@@ -851,14 +957,24 @@ const Trade = (props: TradeProps) => {
                       </div>
                     </div>
                   </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">
-                        Current interest rate
-                      </span>
-                      <span>{INTEREST_RATE * 100}%</span>
-                    </div>
-                  </li>
+                  {poolActive ? (
+                    <li className="px-4">
+                      <div className="flex flex-row items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">
+                          Current interest rate
+                        </span>
+                        <span>
+                          {formatNumberAsPercent(
+                            Decimal.fromAtomics(
+                              poolActive.interestRate,
+                              ROWAN.decimals,
+                            ).toFloatApproximation() * 100,
+                            8,
+                          )}
+                        </span>
+                      </div>
+                    </li>
+                  ) : null}
                 </ul>
               </div>
               <div className="grid grid-cols-4 gap-2 px-4 pb-4 mt-4">
@@ -891,13 +1007,14 @@ const Trade = (props: TradeProps) => {
         </aside>
         <section className="col-span-5 rounded border border-gold-800">
           <PortfolioTable
-            queryId="SomePoolIdOrAddress"
+            walletAddress={walletAddress.data}
+            extraQuerystring={{ pool: poolActive?.asset.denom }}
             openPositions={{
               hideColumns: [
-                "pool",
-                "unsettledInterest",
-                "nextPayment",
-                "paidInterest",
+                "Pool",
+                "Unsettled Interest",
+                "Next Payment",
+                "Paid Interest",
               ],
             }}
           />
@@ -931,8 +1048,10 @@ const Trade = (props: TradeProps) => {
                     <span className="mr-1">
                       {formatNumberAsDecimal(
                         Number(inputPosition.value) > 0
-                          ? Number(inputPosition.value) -
-                              FEE_USDC / Number(selectedPosition.priceUsd)
+                          ? calculateOpenPosition(
+                              Number(inputPosition.value),
+                              Number(selectedPosition.priceUsd),
+                            )
                           : 0,
                       )}
                     </span>
@@ -961,7 +1080,13 @@ const Trade = (props: TradeProps) => {
                   <span className="mr-auto min-w-fit text-gray-300">
                     Current interest rate
                   </span>
-                  <span>{INTEREST_RATE * 100}%</span>
+                  {poolActive ? (
+                    <span>
+                      {formatNumberAsPercent(
+                        Number(poolActive.stats.interestRate),
+                      )}
+                    </span>
+                  ) : null}
                 </div>
               </li>
             </ul>

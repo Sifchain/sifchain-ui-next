@@ -6,7 +6,9 @@ import useSifApiQuery from "~/hooks/useSifApiQuery";
 
 export function usePoolStatsQuery() {
   // TODO: must be reverted to "assets.getTokenStats" when deployed to mainnet
-  const { data, ...query } = useSifApiQuery("assets.getTokenStatsPMTP", []);
+  const { data, ...query } = useSifApiQuery("assets.getTokenStatsPMTP", [], {
+    retry: false,
+  });
 
   const indexedBySymbol = useMemo(() => {
     return Maybe.of(data?.pools).mapOr(

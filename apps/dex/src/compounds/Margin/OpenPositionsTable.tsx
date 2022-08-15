@@ -1,8 +1,8 @@
-import { pathOr } from "ramda";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 import { useState, SyntheticEvent } from "react";
+import Long from "long";
 
 import {
   Button,
@@ -12,7 +12,13 @@ import {
   ArrowDownIcon,
   toast,
 } from "@sifchain/ui";
+
 import AssetIcon from "~/compounds/AssetIcon";
+import { useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { useCloseMTPMutation } from "~/domains/margin/hooks";
+
+import { isNil } from "rambda";
+const isTruthy = (target: any) => !isNil(target);
 
 /**
  * ********************************************************************************************
@@ -31,7 +37,6 @@ import {
   PillUpdating,
 } from "./_components";
 import {
-  useQueryOpenPositions,
   useQueryPositionToClose,
   useMutationPositionToClose,
 } from "./_mockdata";
@@ -42,12 +47,12 @@ import {
   formatDateDistance,
 } from "./_intl";
 import {
-  fromColNameToItemKey,
   findNextOrderAndSortBy,
   SORT_BY,
   MARGIN_POSITION,
   QS_DEFAULTS,
 } from "./_tables";
+import { HtmlUnicode } from "./_trade";
 
 /**
  * ********************************************************************************************
@@ -57,39 +62,26 @@ import {
  * ********************************************************************************************
  */
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  "Pool",
-  "Side",
-  "Position", // Maps to "amount" field
-  "Asset",
-  "Base Leverage",
-  "Unrealized P&L",
-  "Interest Rate",
-  "Unsettled Interest",
-  "Next Payment",
-  "Paid Interest",
-  "Health",
-  "Date Opened",
-  "Time Open",
-  "Close Position", // We don't display this text
-] as const;
+  { title: "Pool", order_by: "" },
+  { title: "Side", order_by: "position" },
+  { title: "Position", order_by: "custody_amount" },
+  { title: "Asset", order_by: "custody_asset" },
+  { title: "Base Leverage", order_by: "leverage" },
+  { title: "Unrealized P&L", order_by: "unrealized_pnl" },
+  { title: "Interest Rate", order_by: "interest_rate" },
+  { title: "Unsettled Interest", order_by: "unsettled_interest" },
+  { title: "Next Payment", order_by: "next_payment" },
+  { title: "Paid Interest", order_by: "paid_interest" },
+  { title: "Health", order_by: "health" },
+  { title: "Date Opened", order_by: "date_opened" },
+  { title: "Time Open", order_by: "" },
+  { title: "Close Position", order_by: "" },
+];
 
-type HideColsUnion =
-  | "pool"
-  | "side"
-  | "amount"
-  | "asset"
-  | "baseLeverage"
-  | "unrealizedPL"
-  | "interestRate"
-  | "unsettledInterest"
-  | "nextPayment"
-  | "paidInterest"
-  | "health"
-  | "dateOpened"
-  | "timeOpen";
+type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
-  queryId: string;
+  walletAddress: string | undefined;
   hideColumns?: HideColsUnion[];
 };
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
@@ -97,12 +89,17 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
   const router = useRouter();
   const queryParams = {
-    page: pathOr(QS_DEFAULTS.page, ["page"], router.query),
-    limit: pathOr(QS_DEFAULTS.limit, ["limit"], router.query),
-    orderBy: pathOr(QS_DEFAULTS.orderBy, ["orderBy"], router.query),
-    sortBy: pathOr(QS_DEFAULTS.sortBy, ["sortBy"], router.query),
+    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
+    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
+    orderBy: (router.query["orderBy"] as string) || "custody_amount",
+    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-  const openPositionsQuery = useQueryOpenPositions(queryParams);
+
+  const openPositionsQuery = useOpenPositionsQuery({
+    ...queryParams,
+    walletAddress: props.walletAddress ?? "",
+  });
+
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
     id: string;
@@ -113,6 +110,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   if (openPositionsQuery.isSuccess) {
     const { results, pagination } = openPositionsQuery.data;
+    const pages = Math.ceil(
+      Number(pagination.total) / Number(pagination.limit),
+    );
 
     return (
       <>
@@ -125,20 +125,23 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           {openPositionsQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems
             limit={Number(pagination.limit)}
-            page={Number(pagination.page)}
+            offset={Number(pagination.offset)}
             total={Number(pagination.total)}
           />
           <PaginationButtons
-            pages={Number(pagination.pages)}
+            pages={pages}
             render={(page) => {
+              const offset = String(
+                Number(pagination.limit) * page - Number(pagination.limit),
+              );
               return (
                 <Link
-                  href={{ query: { ...router.query, page } }}
+                  href={{ query: { ...router.query, offset } }}
                   scroll={false}
                 >
                   <a
                     className={clsx("px-2 py-1 rounded", {
-                      "bg-gray-400": Number(pagination.page) === page,
+                      "bg-gray-400": pagination.offset === offset,
                     })}
                   >
                     {page}
@@ -152,22 +155,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <table className="table-auto overflow-scroll w-full text-left text-xs whitespace-nowrap">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
-                {headers.map((title) => {
-                  const itemKey = fromColNameToItemKey(title);
-                  const itemActive = pagination.orderBy === itemKey;
+                {headers.map((header) => {
+                  const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
-                    itemKey,
+                    itemKey: header.order_by,
                     itemActive,
-                    currentSortBy: pagination.sortBy,
+                    currentSortBy: pagination.sort_by,
                   });
                   return (
                     <th
-                      key={itemKey}
-                      data-item-key={itemKey}
+                      key={header.title}
                       className="font-normal px-4 py-3"
-                      hidden={hideColumns?.includes(itemKey as HideColsUnion)}
+                      hidden={hideColumns?.includes(header.title)}
                     >
-                      {itemKey === "closePosition" ? null : (
+                      {header.title === "Close Position" ? null : (
                         <Link
                           href={{
                             query: {
@@ -181,14 +182,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           <a
                             className={clsx("flex flex-row items-center", {
                               "text-white font-semibold": itemActive,
+                              "cursor-not-allowed": header.order_by === "",
                             })}
                           >
-                            {title}
+                            {header.title}
                             {itemActive && (
                               <ChevronDownIcon
                                 className={clsx("ml-1 transition-transform", {
                                   "-rotate-180":
-                                    pagination.sortBy === SORT_BY.ASC,
+                                    pagination.sort_by === SORT_BY.ASC,
                                 })}
                               />
                             )}
@@ -208,30 +210,39 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 />
               )}
               {results.map((item) => {
-                const position = MARGIN_POSITION[item.side];
-                const amountSign = Math.sign(Number(item.amount));
-                const unrealizedPLSign = Math.sign(Number(item.unrealizedPL));
+                const amountSign = Math.sign(Number(item.custody_amount));
+                const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
 
                 return (
                   <tr key={item.id}>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("pool")}
+                      hidden={hideColumns?.includes("Pool")}
                     >
-                      {item.pool}
+                      {isTruthy(item.pool) ? (
+                        item.pool
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-cyan-400": position === MARGIN_POSITION[0],
-                          "text-green-400": position === MARGIN_POSITION[1],
-                          "text-red-400": position === MARGIN_POSITION[2],
-                        })}
-                      >
-                        {position}
-                      </span>
+                      {isTruthy(item.position) ? (
+                        <span
+                          className={clsx({
+                            "text-cyan-400":
+                              item.position === MARGIN_POSITION.UNSPECIFIED,
+                            "text-green-400":
+                              item.position === MARGIN_POSITION.LONG,
+                            "text-red-400":
+                              item.position === MARGIN_POSITION.SHORT,
+                          })}
+                        >
+                          {item.position}
+                        </span>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
-
                     <td className="px-4 py-3">
                       <span
                         className={clsx({
@@ -239,12 +250,26 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": amountSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.amount), 4)}
+                        {isTruthy(item.custody_amount) ? (
+                          formatNumberAsCurrency(Number(item.custody_amount), 4)
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
                       </span>
                     </td>
-                    <td className="px-4 py-3">{item.asset}</td>
                     <td className="px-4 py-3">
-                      {formatNumberAsDecimal(Number(item.baseLeverage))}x
+                      {isTruthy(item.custody_asset) ? (
+                        item.custody_asset.toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.leverage) ? (
+                        `${formatNumberAsDecimal(Number(item.leverage))}x`
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -253,38 +278,70 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": unrealizedPLSign === -1,
                         })}
                       >
-                        {formatNumberAsCurrency(Number(item.unrealizedPL), 2)}
+                        {isTruthy(item.unrealized_pnl) ? (
+                          formatNumberAsCurrency(Number(item.unrealized_pnl), 2)
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {formatNumberAsPercent(Number(item.interestRate))}
+                      {isTruthy(item.interest_rate) ? (
+                        formatNumberAsPercent(Number(item.interest_rate))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("unsettledInterest")}
+                      hidden={hideColumns?.includes("Unsettled Interest")}
                     >
-                      {formatNumberAsCurrency(Number(item.unsettledInterest))}
+                      {isTruthy(item.unsettled_interest) ? (
+                        formatNumberAsCurrency(Number(item.unsettled_interest))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("nextPayment")}
+                      hidden={hideColumns?.includes("Next Payment")}
                     >
-                      {formatDateRelative(item.nextPayment)}
+                      {isTruthy(item.next_payment) ? (
+                        formatDateRelative(new Date(item.next_payment))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td
                       className="px-4 py-3"
-                      hidden={hideColumns?.includes("paidInterest")}
+                      hidden={hideColumns?.includes("Paid Interest")}
                     >
-                      {formatNumberAsCurrency(Number(item.paidInterest))}
+                      {isTruthy(item.paid_interest) ? (
+                        formatNumberAsCurrency(Number(item.paid_interest))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatNumberAsDecimal(Number(item.health))}
+                      {isTruthy(item.health) ? (
+                        formatNumberAsDecimal(Number(item.health))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateRelative(item.dateOpened)}
+                      {isTruthy(item.date_opened) ? (
+                        formatDateRelative(new Date(item.date_opened))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      {formatDateDistance(item.timeOpen)}
+                      {isTruthy(item.time_open) ? (
+                        formatDateDistance(new Date(item.time_open))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4">
                       <Button
@@ -321,14 +378,19 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               setPositionToClose((prev) => ({ ...prev, isOpen: false }));
             }
           }}
-          onMutationSuccess={(position) => {
-            toast.success(
-              `Position closed successfully! Position ID: ${position.id}`,
-            );
+          onMutationSuccess={() => {
             setPositionToClose({ id: "", isOpen: false });
           }}
         />
       </>
+    );
+  }
+
+  if (openPositionsQuery.isError) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        Try again later.
+      </div>
     );
   }
 
@@ -344,21 +406,23 @@ type PositionToCloseModalProps = {
   isOpen: boolean;
   onTransitionEnd: () => void;
   onClose: () => void;
-  onMutationSuccess: (position: { id: string }) => void;
+  onMutationSuccess: () => void;
   onMutationError?: (error: Error) => void;
 };
 function PositionToCloseModal(props: PositionToCloseModalProps) {
+  console.log(props.id);
   const positionToCloseQuery = useQueryPositionToClose({ id: props.id });
-  const positionToCloseMutation = useMutationPositionToClose();
+  const positionToCloseMutation = useCloseMTPMutation();
   const onClickConfirmClose = async (
     event: SyntheticEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     try {
       const position = await positionToCloseMutation.mutateAsync({
-        id: props.id,
+        id: Long.fromNumber(Number(props.id)),
       });
-      props.onMutationSuccess(position as { id: string });
+      position?.data;
+      props.onMutationSuccess();
     } catch (err) {
       if (props.onMutationError) {
         props.onMutationError(err as Error);

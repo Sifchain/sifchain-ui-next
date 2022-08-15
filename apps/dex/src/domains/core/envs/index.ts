@@ -2,6 +2,7 @@ import { getSdkConfig, NetworkEnv, NETWORK_ENVS } from "@sifchain/common";
 import { useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
+import { useFeatureFlag } from "~/lib/featureFlags";
 
 export type DexEnvironment = {
   kind: NetworkEnv;
@@ -36,9 +37,14 @@ export function useDexEnvKind(): NetworkEnv {
 export function useDexEnvironment() {
   const environment = useDexEnvKind();
 
+  const isMarginStandAloneOn = useFeatureFlag("margin-standalone");
+
   return useQuery(
     `dex_env_${environment}`,
-    async () => getSdkConfig({ environment }),
+    async () =>
+      isMarginStandAloneOn
+        ? getSdkConfig({ environment: "tempnet" })
+        : getSdkConfig({ environment }),
     {
       staleTime: 3600_000,
       refetchOnMount: false,

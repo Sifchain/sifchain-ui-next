@@ -7,6 +7,7 @@ import {
   Registry,
 } from "@cosmjs/proto-signing";
 import {
+  AminoConverter,
   AminoConverters,
   AminoTypes,
   createAuthzAminoConverters,
@@ -33,11 +34,13 @@ import {
 import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
+import * as marginTx from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import * as tokenRegistryTx from "@sifchain/proto-types/sifnode/tokenregistry/v1/tx";
 import BigNumber from "bignumber.js";
 import type { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Height } from "cosmjs-types/ibc/core/client/v1/client";
 import Long from "long";
+
 import { DEFAULT_GAS_PRICE } from "./fees";
 import {
   convertToCamelCaseDeep,
@@ -47,28 +50,29 @@ import {
 import type { CosmosEncodeObject, SifEncodeObject } from "./messages";
 import { createQueryClient, SifQueryClient } from "./queryClient";
 
-const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx];
+// Must be updated whenever a new module is added to sifnode
+const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx, marginTx];
 
 const generateTypeUrlAndTypeRecords = (
-  proto: Record<string, GeneratedType | any> & {
+  proto: Record<string, GeneratedType | unknown> & {
     protobufPackage: string;
   },
 ) =>
   Object.entries(proto)
-    .filter(([_, value]) => isTsProtoGeneratedType(value))
+    .filter(([_, value]) => isTsProtoGeneratedType(value as GeneratedType))
     .map(([key, value]) => ({
       typeUrl: `/${proto.protobufPackage}.${key}`,
-      type: value,
+      type: value as GeneratedType,
     }));
 
 const createSifchainAminoConverters = (): AminoConverters =>
-  Object.fromEntries(
-    MODULES.flatMap(generateTypeUrlAndTypeRecords).map((x) => [
-      x.typeUrl,
+  Object.fromEntries<AminoConverter>(
+    MODULES.flatMap(generateTypeUrlAndTypeRecords).map((proto) => [
+      proto.typeUrl,
       {
-        aminoType: createAminoTypeNameFromProtoTypeUrl(x.typeUrl),
-        toAmino: (value) => convertToSnakeCaseDeep(value),
-        fromAmino: (value) => convertToCamelCaseDeep(value),
+        aminoType: createAminoTypeNameFromProtoTypeUrl(proto.typeUrl),
+        toAmino: (value) => convertToSnakeCaseDeep(value) as unknown,
+        fromAmino: (value) => convertToCamelCaseDeep(value) as unknown,
       },
     ]),
   );
@@ -101,7 +105,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     options: StargateClientOptions = {},
   ) {
     const tmClient = await Tendermint34Client.connect(endpoint);
-    return new this(tmClient, {} as any, options) as StargateClient &
+    return new this(tmClient, {} as OfflineSigner, options) as StargateClient &
       Pick<SifSigningStargateClient, "simulateSwap" | "simulateSwapSync">;
   }
 
@@ -114,11 +118,11 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(tmClient, signer, options);
   }
 
-  static override async offline(
+  static override offline(
     signer: OfflineSigner,
     options: SigningStargateClientOptions = {},
   ) {
-    return new this(undefined, signer, options);
+    return Promise.resolve(new this(undefined, signer, options));
   }
 
   readonly #sifQueryClient: SifQueryClient | undefined;
