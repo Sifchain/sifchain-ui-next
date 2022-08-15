@@ -20,7 +20,7 @@ const Portfolio: NextPage = () => {
           </div>
         )}
         {walletAddress.isSuccess && (
-          <PortfolioTable queryId={walletAddress.data} />
+          <PortfolioTable walletAddress={walletAddress.data} />
         )}
       </section>
     </>

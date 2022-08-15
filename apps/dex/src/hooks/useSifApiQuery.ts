@@ -31,7 +31,6 @@ export default function useSifApiQuery<
   F = M extends () => any ? ReturnType<M> : never,
   Res = Awaited<F>,
 >(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
@@ -44,7 +43,6 @@ export default function useSifApiQuery<
 
   return useQuery(
     [query, client],
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {
       if (!client) {
@@ -63,6 +61,10 @@ export default function useSifApiQuery<
 
       const result = await method(...args);
 
+      if ("error" in result) {
+        throw new Error(result.error);
+      }
+
       // TODO: sifApi should return a standardized response type
       return "body" in result ? result.body : result;
     },
@@ -71,7 +73,6 @@ export default function useSifApiQuery<
         "enabled" in options
           ? options.enabled && Boolean(client)
           : Boolean(client),
-      // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
     },
   );

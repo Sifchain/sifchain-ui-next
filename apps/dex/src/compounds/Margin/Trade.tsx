@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import {
   Button,
   formatNumberAsCurrency,
+  Maybe,
   Modal,
   RacetrackSpinnerIcon,
   SwapIcon,
@@ -29,7 +30,6 @@ import {
 } from "~/domains/clp";
 import {
   useMarginParamsQuery,
-  useMarginAllowedAddressList,
   useOpenMTPMutation,
 } from "~/domains/margin/hooks";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
@@ -58,12 +58,11 @@ import {
   inputValidatorPosition,
 } from "./_trade";
 
-const FEE_USDC = 0.5;
 const calculateOpenPosition = (
   positionTokenAmount: number,
   positionPriceUsd: number,
 ) => {
-  return positionTokenAmount - FEE_USDC / positionPriceUsd;
+  return positionTokenAmount / positionPriceUsd;
 };
 const calculateBorrowAmount = (
   collateralTokenAmount: number,
@@ -435,10 +434,18 @@ const Trade = (props: TradeProps) => {
     }
   };
 
-  const { recompute: calculateSwap } = useSwapSimulation(
+  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
+  );
+
+  const openPositionFee = useMemo(
+    () =>
+      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation(),
+      ),
+    [swapSimulation],
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
@@ -917,7 +924,11 @@ const Trade = (props: TradeProps) => {
                       </span>
                       <div className="flex flex-row items-center gap-1">
                         <HtmlUnicode name="MinusSign" />
-                        <span>{formatNumberAsCurrency(FEE_USDC)}</span>
+                        <span>
+                          {formatNumberAsCurrency(
+                            openPositionFee * selectedPosition.priceUsd,
+                          )}
+                        </span>
                       </div>
                     </div>
                   </li>
@@ -933,7 +944,8 @@ const Trade = (props: TradeProps) => {
                               ? calculateOpenPosition(
                                   Number(inputPosition.value),
                                   Number(selectedPosition.priceUsd),
-                                )
+                                ) -
+                                  openPositionFee * selectedPosition.priceUsd
                               : 0,
                           )}
                         </span>
@@ -953,7 +965,11 @@ const Trade = (props: TradeProps) => {
                         </span>
                         <span>
                           {formatNumberAsPercent(
-                            Number(poolActive.stats.interestRate),
+                            Decimal.fromAtomics(
+                              poolActive.interestRate,
+                              ROWAN.decimals,
+                            ).toFloatApproximation() * 100,
+                            8,
                           )}
                         </span>
                       </div>

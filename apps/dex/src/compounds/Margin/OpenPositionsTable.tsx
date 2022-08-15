@@ -97,7 +97,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
-    walletAddress: props.walletAddress,
+    walletAddress: props.walletAddress ?? "",
   });
 
   const [positionToClose, setPositionToClose] = useState<{
@@ -209,7 +209,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   message="You have no open positions."
                 />
               )}
-              {results.map((item: any) => {
+              {results.map((item) => {
                 const amountSign = Math.sign(Number(item.custody_amount));
                 const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
 
@@ -307,7 +307,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       hidden={hideColumns?.includes("Next Payment")}
                     >
                       {isTruthy(item.next_payment) ? (
-                        formatDateRelative(item.next_payment)
+                        formatDateRelative(new Date(item.next_payment))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -338,7 +338,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.time_open) ? (
-                        formatDateDistance(item.time_open)
+                        formatDateDistance(new Date(item.time_open))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

@@ -70,7 +70,7 @@ const HistoryTable = (props: HistoryTableProps) => {
   };
   const historyQuery = useHistoryQuery({
     ...queryParams,
-    walletAddress: props.walletAddress,
+    walletAddress: props.walletAddress ?? "",
   });
   const headers = HISTORY_HEADER_ITEMS;
 
@@ -169,7 +169,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                   message="History not available. Try again later."
                 />
               )}
-              {results.map((item: any) => {
+              {results.map((item) => {
                 const amountSign = Math.sign(Number(item.open_custody_amount));
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
