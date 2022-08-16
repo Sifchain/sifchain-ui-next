@@ -1,13 +1,14 @@
 import clsx from "clsx";
 import { type FC, useState } from "react";
 
-export type Option<T> = {
+export type ButtonGroupOption<T> = {
   label: string;
   value: T;
+  disabled?: boolean;
 };
 
 export type ButtonGroupProps<T> = {
-  options: Option<T>[];
+  options: ButtonGroupOption<T>[];
   selectedIndex?: number;
   onChange: (index: number) => void;
   className?: string;
@@ -50,7 +51,7 @@ const Indicator: FC<IndicatorProps> = (props) => {
   );
 };
 
-export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
+export function ButtonGroup<T = unknown>(props: ButtonGroupProps<T>) {
   const [containerWidth, setContainerWidth] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(-1);
 
@@ -93,8 +94,12 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
             key={index}
             type="button"
             className={clsx(
-              "flex-1 rounded-xl py-2.5 font-semibold",
-              index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
+              "flex-1 py-2.5 rounded-xl font-semibold disabled:cursor-not-allowed",
+              index === props.selectedIndex
+                ? "text-gray-50"
+                : item.disabled
+                ? "text-gray-750"
+                : "text-gray-300",
               typeof props.itemClassName === "function"
                 ? props.itemClassName(index)
                 : props.itemClassName,
@@ -106,6 +111,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
             onClick={props.onChange.bind(null, index)}
             onMouseOver={setHoverIndex.bind(null, index)}
             onMouseLeave={setHoverIndex.bind(null, -1)}
+            disabled={item.disabled}
           >
             {item.label}
           </button>
