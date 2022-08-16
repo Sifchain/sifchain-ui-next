@@ -1,15 +1,7 @@
 /* eslint-disable */
 import { Pool } from "./pool";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
-import {
-  LiquidityProvider,
-  PmtpEpoch,
-  Asset,
-  LiquidityProviderData,
-} from "./types";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
+import { LiquidityProvider, PmtpEpoch, Asset, LiquidityProviderData } from "./types";
 import {
   Params,
   RewardParams,
@@ -144,10 +136,7 @@ function createBasePoolReq(): PoolReq {
 }
 
 export const PoolReq = {
-  encode(
-    message: PoolReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PoolReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.symbol !== "") {
       writer.uint32(10).string(message.symbol);
     }
@@ -196,10 +185,7 @@ function createBasePoolRes(): PoolRes {
 }
 
 export const PoolRes = {
-  encode(
-    message: PoolRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PoolRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pool !== undefined) {
       Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
@@ -239,35 +225,24 @@ export const PoolRes = {
   fromJSON(object: any): PoolRes {
     return {
       pool: isSet(object.pool) ? Pool.fromJSON(object.pool) : undefined,
-      clpModuleAddress: isSet(object.clpModuleAddress)
-        ? String(object.clpModuleAddress)
-        : "",
+      clpModuleAddress: isSet(object.clpModuleAddress) ? String(object.clpModuleAddress) : "",
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
   toJSON(message: PoolRes): unknown {
     const obj: any = {};
-    message.pool !== undefined &&
-      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
-    message.clpModuleAddress !== undefined &&
-      (obj.clpModuleAddress = message.clpModuleAddress);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.pool !== undefined && (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
+    message.clpModuleAddress !== undefined && (obj.clpModuleAddress = message.clpModuleAddress);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<PoolRes>, I>>(object: I): PoolRes {
     const message = createBasePoolRes();
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? Pool.fromPartial(object.pool)
-        : undefined;
+    message.pool = object.pool !== undefined && object.pool !== null ? Pool.fromPartial(object.pool) : undefined;
     message.clpModuleAddress = object.clpModuleAddress ?? "";
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -277,10 +252,7 @@ function createBasePoolsReq(): PoolsReq {
 }
 
 export const PoolsReq = {
-  encode(
-    message: PoolsReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PoolsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
@@ -307,18 +279,14 @@ export const PoolsReq = {
 
   fromJSON(object: any): PoolsReq {
     return {
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: PoolsReq): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
@@ -333,19 +301,11 @@ export const PoolsReq = {
 };
 
 function createBasePoolsRes(): PoolsRes {
-  return {
-    pools: [],
-    clpModuleAddress: "",
-    height: Long.ZERO,
-    pagination: undefined,
-  };
+  return { pools: [], clpModuleAddress: "", height: Long.ZERO, pagination: undefined };
 }
 
 export const PoolsRes = {
-  encode(
-    message: PoolsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PoolsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.pools) {
       Pool.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -356,10 +316,7 @@ export const PoolsRes = {
       writer.uint32(24).int64(message.height);
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(34).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -393,16 +350,10 @@ export const PoolsRes = {
 
   fromJSON(object: any): PoolsRes {
     return {
-      pools: Array.isArray(object?.pools)
-        ? object.pools.map((e: any) => Pool.fromJSON(e))
-        : [],
-      clpModuleAddress: isSet(object.clpModuleAddress)
-        ? String(object.clpModuleAddress)
-        : "",
+      pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => Pool.fromJSON(e)) : [],
+      clpModuleAddress: isSet(object.clpModuleAddress) ? String(object.clpModuleAddress) : "",
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -413,14 +364,10 @@ export const PoolsRes = {
     } else {
       obj.pools = [];
     }
-    message.clpModuleAddress !== undefined &&
-      (obj.clpModuleAddress = message.clpModuleAddress);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.clpModuleAddress !== undefined && (obj.clpModuleAddress = message.clpModuleAddress);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
@@ -428,10 +375,7 @@ export const PoolsRes = {
     const message = createBasePoolsRes();
     message.pools = object.pools?.map((e) => Pool.fromPartial(e)) || [];
     message.clpModuleAddress = object.clpModuleAddress ?? "";
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -445,10 +389,7 @@ function createBaseLiquidityProviderReq(): LiquidityProviderReq {
 }
 
 export const LiquidityProviderReq = {
-  encode(
-    message: LiquidityProviderReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.symbol !== "") {
       writer.uint32(10).string(message.symbol);
     }
@@ -458,10 +399,7 @@ export const LiquidityProviderReq = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderReq();
@@ -496,9 +434,7 @@ export const LiquidityProviderReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderReq>, I>>(
-    object: I,
-  ): LiquidityProviderReq {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderReq>, I>>(object: I): LiquidityProviderReq {
     const message = createBaseLiquidityProviderReq();
     message.symbol = object.symbol ?? "";
     message.lpAddress = object.lpAddress ?? "";
@@ -507,24 +443,13 @@ export const LiquidityProviderReq = {
 };
 
 function createBaseLiquidityProviderRes(): LiquidityProviderRes {
-  return {
-    liquidityProvider: undefined,
-    nativeAssetBalance: "",
-    externalAssetBalance: "",
-    height: Long.ZERO,
-  };
+  return { liquidityProvider: undefined, nativeAssetBalance: "", externalAssetBalance: "", height: Long.ZERO };
 }
 
 export const LiquidityProviderRes = {
-  encode(
-    message: LiquidityProviderRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.liquidityProvider !== undefined) {
-      LiquidityProvider.encode(
-        message.liquidityProvider,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      LiquidityProvider.encode(message.liquidityProvider, writer.uint32(10).fork()).ldelim();
     }
     if (message.nativeAssetBalance !== "") {
       writer.uint32(18).string(message.nativeAssetBalance);
@@ -538,10 +463,7 @@ export const LiquidityProviderRes = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderRes();
@@ -549,10 +471,7 @@ export const LiquidityProviderRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityProvider = LiquidityProvider.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.liquidityProvider = LiquidityProvider.decode(reader, reader.uint32());
           break;
         case 2:
           message.nativeAssetBalance = reader.string();
@@ -576,12 +495,8 @@ export const LiquidityProviderRes = {
       liquidityProvider: isSet(object.liquidityProvider)
         ? LiquidityProvider.fromJSON(object.liquidityProvider)
         : undefined,
-      nativeAssetBalance: isSet(object.nativeAssetBalance)
-        ? String(object.nativeAssetBalance)
-        : "",
-      externalAssetBalance: isSet(object.externalAssetBalance)
-        ? String(object.externalAssetBalance)
-        : "",
+      nativeAssetBalance: isSet(object.nativeAssetBalance) ? String(object.nativeAssetBalance) : "",
+      externalAssetBalance: isSet(object.externalAssetBalance) ? String(object.externalAssetBalance) : "",
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
@@ -592,30 +507,21 @@ export const LiquidityProviderRes = {
       (obj.liquidityProvider = message.liquidityProvider
         ? LiquidityProvider.toJSON(message.liquidityProvider)
         : undefined);
-    message.nativeAssetBalance !== undefined &&
-      (obj.nativeAssetBalance = message.nativeAssetBalance);
-    message.externalAssetBalance !== undefined &&
-      (obj.externalAssetBalance = message.externalAssetBalance);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.nativeAssetBalance !== undefined && (obj.nativeAssetBalance = message.nativeAssetBalance);
+    message.externalAssetBalance !== undefined && (obj.externalAssetBalance = message.externalAssetBalance);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderRes>, I>>(
-    object: I,
-  ): LiquidityProviderRes {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderRes>, I>>(object: I): LiquidityProviderRes {
     const message = createBaseLiquidityProviderRes();
     message.liquidityProvider =
-      object.liquidityProvider !== undefined &&
-      object.liquidityProvider !== null
+      object.liquidityProvider !== undefined && object.liquidityProvider !== null
         ? LiquidityProvider.fromPartial(object.liquidityProvider)
         : undefined;
     message.nativeAssetBalance = object.nativeAssetBalance ?? "";
     message.externalAssetBalance = object.externalAssetBalance ?? "";
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -625,10 +531,7 @@ function createBaseAssetListReq(): AssetListReq {
 }
 
 export const AssetListReq = {
-  encode(
-    message: AssetListReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: AssetListReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.lpAddress !== "") {
       writer.uint32(10).string(message.lpAddress);
     }
@@ -662,9 +565,7 @@ export const AssetListReq = {
   fromJSON(object: any): AssetListReq {
     return {
       lpAddress: isSet(object.lpAddress) ? String(object.lpAddress) : "",
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -672,15 +573,11 @@ export const AssetListReq = {
     const obj: any = {};
     message.lpAddress !== undefined && (obj.lpAddress = message.lpAddress);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AssetListReq>, I>>(
-    object: I,
-  ): AssetListReq {
+  fromPartial<I extends Exact<DeepPartial<AssetListReq>, I>>(object: I): AssetListReq {
     const message = createBaseAssetListReq();
     message.lpAddress = object.lpAddress ?? "";
     message.pagination =
@@ -696,10 +593,7 @@ function createBaseAssetListRes(): AssetListRes {
 }
 
 export const AssetListRes = {
-  encode(
-    message: AssetListRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: AssetListRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.assets) {
       Asset.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -707,10 +601,7 @@ export const AssetListRes = {
       writer.uint32(16).int64(message.height);
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(26).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -741,13 +632,9 @@ export const AssetListRes = {
 
   fromJSON(object: any): AssetListRes {
     return {
-      assets: Array.isArray(object?.assets)
-        ? object.assets.map((e: any) => Asset.fromJSON(e))
-        : [],
+      assets: Array.isArray(object?.assets) ? object.assets.map((e: any) => Asset.fromJSON(e)) : [],
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -758,24 +645,16 @@ export const AssetListRes = {
     } else {
       obj.assets = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AssetListRes>, I>>(
-    object: I,
-  ): AssetListRes {
+  fromPartial<I extends Exact<DeepPartial<AssetListRes>, I>>(object: I): AssetListRes {
     const message = createBaseAssetListRes();
     message.assets = object.assets?.map((e) => Asset.fromPartial(e)) || [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -789,10 +668,7 @@ function createBaseLiquidityProviderDataReq(): LiquidityProviderDataReq {
 }
 
 export const LiquidityProviderDataReq = {
-  encode(
-    message: LiquidityProviderDataReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderDataReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.lpAddress !== "") {
       writer.uint32(10).string(message.lpAddress);
     }
@@ -802,10 +678,7 @@ export const LiquidityProviderDataReq = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderDataReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderDataReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderDataReq();
@@ -829,9 +702,7 @@ export const LiquidityProviderDataReq = {
   fromJSON(object: any): LiquidityProviderDataReq {
     return {
       lpAddress: isSet(object.lpAddress) ? String(object.lpAddress) : "",
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -839,15 +710,11 @@ export const LiquidityProviderDataReq = {
     const obj: any = {};
     message.lpAddress !== undefined && (obj.lpAddress = message.lpAddress);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderDataReq>, I>>(
-    object: I,
-  ): LiquidityProviderDataReq {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderDataReq>, I>>(object: I): LiquidityProviderDataReq {
     const message = createBaseLiquidityProviderDataReq();
     message.lpAddress = object.lpAddress ?? "";
     message.pagination =
@@ -859,18 +726,11 @@ export const LiquidityProviderDataReq = {
 };
 
 function createBaseLiquidityProviderDataRes(): LiquidityProviderDataRes {
-  return {
-    liquidityProviderData: [],
-    height: Long.ZERO,
-    pagination: undefined,
-  };
+  return { liquidityProviderData: [], height: Long.ZERO, pagination: undefined };
 }
 
 export const LiquidityProviderDataRes = {
-  encode(
-    message: LiquidityProviderDataRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderDataRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.liquidityProviderData) {
       LiquidityProviderData.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -883,10 +743,7 @@ export const LiquidityProviderDataRes = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderDataRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderDataRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderDataRes();
@@ -894,9 +751,7 @@ export const LiquidityProviderDataRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityProviderData.push(
-            LiquidityProviderData.decode(reader, reader.uint32()),
-          );
+          message.liquidityProviderData.push(LiquidityProviderData.decode(reader, reader.uint32()));
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -915,14 +770,10 @@ export const LiquidityProviderDataRes = {
   fromJSON(object: any): LiquidityProviderDataRes {
     return {
       liquidityProviderData: Array.isArray(object?.liquidityProviderData)
-        ? object.liquidityProviderData.map((e: any) =>
-            LiquidityProviderData.fromJSON(e),
-          )
+        ? object.liquidityProviderData.map((e: any) => LiquidityProviderData.fromJSON(e))
         : [],
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -935,27 +786,17 @@ export const LiquidityProviderDataRes = {
     } else {
       obj.liquidityProviderData = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderDataRes>, I>>(
-    object: I,
-  ): LiquidityProviderDataRes {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderDataRes>, I>>(object: I): LiquidityProviderDataRes {
     const message = createBaseLiquidityProviderDataRes();
     message.liquidityProviderData =
-      object.liquidityProviderData?.map((e) =>
-        LiquidityProviderData.fromPartial(e),
-      ) || [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+      object.liquidityProviderData?.map((e) => LiquidityProviderData.fromPartial(e)) || [];
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -969,10 +810,7 @@ function createBaseLiquidityProviderListReq(): LiquidityProviderListReq {
 }
 
 export const LiquidityProviderListReq = {
-  encode(
-    message: LiquidityProviderListReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderListReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.symbol !== "") {
       writer.uint32(10).string(message.symbol);
     }
@@ -982,10 +820,7 @@ export const LiquidityProviderListReq = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderListReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderListReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderListReq();
@@ -1009,9 +844,7 @@ export const LiquidityProviderListReq = {
   fromJSON(object: any): LiquidityProviderListReq {
     return {
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -1019,15 +852,11 @@ export const LiquidityProviderListReq = {
     const obj: any = {};
     message.symbol !== undefined && (obj.symbol = message.symbol);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderListReq>, I>>(
-    object: I,
-  ): LiquidityProviderListReq {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderListReq>, I>>(object: I): LiquidityProviderListReq {
     const message = createBaseLiquidityProviderListReq();
     message.symbol = object.symbol ?? "";
     message.pagination =
@@ -1043,10 +872,7 @@ function createBaseLiquidityProviderListRes(): LiquidityProviderListRes {
 }
 
 export const LiquidityProviderListRes = {
-  encode(
-    message: LiquidityProviderListRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderListRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.liquidityProviders) {
       LiquidityProvider.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1054,18 +880,12 @@ export const LiquidityProviderListRes = {
       writer.uint32(16).int64(message.height);
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(26).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderListRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderListRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderListRes();
@@ -1073,9 +893,7 @@ export const LiquidityProviderListRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityProviders.push(
-            LiquidityProvider.decode(reader, reader.uint32()),
-          );
+          message.liquidityProviders.push(LiquidityProvider.decode(reader, reader.uint32()));
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -1094,46 +912,30 @@ export const LiquidityProviderListRes = {
   fromJSON(object: any): LiquidityProviderListRes {
     return {
       liquidityProviders: Array.isArray(object?.liquidityProviders)
-        ? object.liquidityProviders.map((e: any) =>
-            LiquidityProvider.fromJSON(e),
-          )
+        ? object.liquidityProviders.map((e: any) => LiquidityProvider.fromJSON(e))
         : [],
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: LiquidityProviderListRes): unknown {
     const obj: any = {};
     if (message.liquidityProviders) {
-      obj.liquidityProviders = message.liquidityProviders.map((e) =>
-        e ? LiquidityProvider.toJSON(e) : undefined,
-      );
+      obj.liquidityProviders = message.liquidityProviders.map((e) => (e ? LiquidityProvider.toJSON(e) : undefined));
     } else {
       obj.liquidityProviders = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderListRes>, I>>(
-    object: I,
-  ): LiquidityProviderListRes {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderListRes>, I>>(object: I): LiquidityProviderListRes {
     const message = createBaseLiquidityProviderListRes();
-    message.liquidityProviders =
-      object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) ||
-      [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.liquidityProviders = object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) || [];
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -1147,20 +949,14 @@ function createBaseLiquidityProvidersReq(): LiquidityProvidersReq {
 }
 
 export const LiquidityProvidersReq = {
-  encode(
-    message: LiquidityProvidersReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProvidersReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProvidersReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProvidersReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProvidersReq();
@@ -1180,24 +976,18 @@ export const LiquidityProvidersReq = {
 
   fromJSON(object: any): LiquidityProvidersReq {
     return {
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: LiquidityProvidersReq): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProvidersReq>, I>>(
-    object: I,
-  ): LiquidityProvidersReq {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProvidersReq>, I>>(object: I): LiquidityProvidersReq {
     const message = createBaseLiquidityProvidersReq();
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1212,10 +1002,7 @@ function createBaseLiquidityProvidersRes(): LiquidityProvidersRes {
 }
 
 export const LiquidityProvidersRes = {
-  encode(
-    message: LiquidityProvidersRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProvidersRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.liquidityProviders) {
       LiquidityProvider.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1223,18 +1010,12 @@ export const LiquidityProvidersRes = {
       writer.uint32(16).int64(message.height);
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(26).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProvidersRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProvidersRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProvidersRes();
@@ -1242,9 +1023,7 @@ export const LiquidityProvidersRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityProviders.push(
-            LiquidityProvider.decode(reader, reader.uint32()),
-          );
+          message.liquidityProviders.push(LiquidityProvider.decode(reader, reader.uint32()));
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -1263,46 +1042,30 @@ export const LiquidityProvidersRes = {
   fromJSON(object: any): LiquidityProvidersRes {
     return {
       liquidityProviders: Array.isArray(object?.liquidityProviders)
-        ? object.liquidityProviders.map((e: any) =>
-            LiquidityProvider.fromJSON(e),
-          )
+        ? object.liquidityProviders.map((e: any) => LiquidityProvider.fromJSON(e))
         : [],
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: LiquidityProvidersRes): unknown {
     const obj: any = {};
     if (message.liquidityProviders) {
-      obj.liquidityProviders = message.liquidityProviders.map((e) =>
-        e ? LiquidityProvider.toJSON(e) : undefined,
-      );
+      obj.liquidityProviders = message.liquidityProviders.map((e) => (e ? LiquidityProvider.toJSON(e) : undefined));
     } else {
       obj.liquidityProviders = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProvidersRes>, I>>(
-    object: I,
-  ): LiquidityProvidersRes {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProvidersRes>, I>>(object: I): LiquidityProvidersRes {
     const message = createBaseLiquidityProvidersRes();
-    message.liquidityProviders =
-      object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) ||
-      [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.liquidityProviders = object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) || [];
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -1351,18 +1114,11 @@ export const ParamsReq = {
 };
 
 function createBaseParamsRes(): ParamsRes {
-  return {
-    params: undefined,
-    symmetryThreshold: "",
-    symmetryRatioThreshold: "",
-  };
+  return { params: undefined, symmetryThreshold: "", symmetryRatioThreshold: "" };
 }
 
 export const ParamsRes = {
-  encode(
-    message: ParamsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -1402,34 +1158,23 @@ export const ParamsRes = {
   fromJSON(object: any): ParamsRes {
     return {
       params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
-      symmetryThreshold: isSet(object.symmetryThreshold)
-        ? String(object.symmetryThreshold)
-        : "",
-      symmetryRatioThreshold: isSet(object.symmetryRatioThreshold)
-        ? String(object.symmetryRatioThreshold)
-        : "",
+      symmetryThreshold: isSet(object.symmetryThreshold) ? String(object.symmetryThreshold) : "",
+      symmetryRatioThreshold: isSet(object.symmetryRatioThreshold) ? String(object.symmetryRatioThreshold) : "",
     };
   },
 
   toJSON(message: ParamsRes): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
-    message.symmetryThreshold !== undefined &&
-      (obj.symmetryThreshold = message.symmetryThreshold);
-    message.symmetryRatioThreshold !== undefined &&
-      (obj.symmetryRatioThreshold = message.symmetryRatioThreshold);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.symmetryThreshold !== undefined && (obj.symmetryThreshold = message.symmetryThreshold);
+    message.symmetryRatioThreshold !== undefined && (obj.symmetryRatioThreshold = message.symmetryRatioThreshold);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ParamsRes>, I>>(
-    object: I,
-  ): ParamsRes {
+  fromPartial<I extends Exact<DeepPartial<ParamsRes>, I>>(object: I): ParamsRes {
     const message = createBaseParamsRes();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
     message.symmetryThreshold = object.symmetryThreshold ?? "";
     message.symmetryRatioThreshold = object.symmetryRatioThreshold ?? "";
     return message;
@@ -1441,10 +1186,7 @@ function createBaseRewardParamsReq(): RewardParamsReq {
 }
 
 export const RewardParamsReq = {
-  encode(
-    _: RewardParamsReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: RewardParamsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -1472,9 +1214,7 @@ export const RewardParamsReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RewardParamsReq>, I>>(
-    _: I,
-  ): RewardParamsReq {
+  fromPartial<I extends Exact<DeepPartial<RewardParamsReq>, I>>(_: I): RewardParamsReq {
     const message = createBaseRewardParamsReq();
     return message;
   },
@@ -1485,10 +1225,7 @@ function createBaseRewardParamsRes(): RewardParamsRes {
 }
 
 export const RewardParamsRes = {
-  encode(
-    message: RewardParamsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RewardParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       RewardParams.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -1515,29 +1252,20 @@ export const RewardParamsRes = {
 
   fromJSON(object: any): RewardParamsRes {
     return {
-      params: isSet(object.params)
-        ? RewardParams.fromJSON(object.params)
-        : undefined,
+      params: isSet(object.params) ? RewardParams.fromJSON(object.params) : undefined,
     };
   },
 
   toJSON(message: RewardParamsRes): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? RewardParams.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? RewardParams.toJSON(message.params) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RewardParamsRes>, I>>(
-    object: I,
-  ): RewardParamsRes {
+  fromPartial<I extends Exact<DeepPartial<RewardParamsRes>, I>>(object: I): RewardParamsRes {
     const message = createBaseRewardParamsRes();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? RewardParams.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? RewardParams.fromPartial(object.params) : undefined;
     return message;
   },
 };
@@ -1547,10 +1275,7 @@ function createBasePmtpParamsReq(): PmtpParamsReq {
 }
 
 export const PmtpParamsReq = {
-  encode(
-    _: PmtpParamsReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: PmtpParamsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -1578,36 +1303,23 @@ export const PmtpParamsReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PmtpParamsReq>, I>>(
-    _: I,
-  ): PmtpParamsReq {
+  fromPartial<I extends Exact<DeepPartial<PmtpParamsReq>, I>>(_: I): PmtpParamsReq {
     const message = createBasePmtpParamsReq();
     return message;
   },
 };
 
 function createBasePmtpParamsRes(): PmtpParamsRes {
-  return {
-    params: undefined,
-    pmtpRateParams: undefined,
-    pmtpEpoch: undefined,
-    height: Long.ZERO,
-  };
+  return { params: undefined, pmtpRateParams: undefined, pmtpEpoch: undefined, height: Long.ZERO };
 }
 
 export const PmtpParamsRes = {
-  encode(
-    message: PmtpParamsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PmtpParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       PmtpParams.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
     if (message.pmtpRateParams !== undefined) {
-      PmtpRateParams.encode(
-        message.pmtpRateParams,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      PmtpRateParams.encode(message.pmtpRateParams, writer.uint32(18).fork()).ldelim();
     }
     if (message.pmtpEpoch !== undefined) {
       PmtpEpoch.encode(message.pmtpEpoch, writer.uint32(26).fork()).ldelim();
@@ -1629,10 +1341,7 @@ export const PmtpParamsRes = {
           message.params = PmtpParams.decode(reader, reader.uint32());
           break;
         case 2:
-          message.pmtpRateParams = PmtpRateParams.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.pmtpRateParams = PmtpRateParams.decode(reader, reader.uint32());
           break;
         case 3:
           message.pmtpEpoch = PmtpEpoch.decode(reader, reader.uint32());
@@ -1650,58 +1359,35 @@ export const PmtpParamsRes = {
 
   fromJSON(object: any): PmtpParamsRes {
     return {
-      params: isSet(object.params)
-        ? PmtpParams.fromJSON(object.params)
-        : undefined,
-      pmtpRateParams: isSet(object.pmtpRateParams)
-        ? PmtpRateParams.fromJSON(object.pmtpRateParams)
-        : undefined,
-      pmtpEpoch: isSet(object.pmtpEpoch)
-        ? PmtpEpoch.fromJSON(object.pmtpEpoch)
-        : undefined,
+      params: isSet(object.params) ? PmtpParams.fromJSON(object.params) : undefined,
+      pmtpRateParams: isSet(object.pmtpRateParams) ? PmtpRateParams.fromJSON(object.pmtpRateParams) : undefined,
+      pmtpEpoch: isSet(object.pmtpEpoch) ? PmtpEpoch.fromJSON(object.pmtpEpoch) : undefined,
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
 
   toJSON(message: PmtpParamsRes): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? PmtpParams.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? PmtpParams.toJSON(message.params) : undefined);
     message.pmtpRateParams !== undefined &&
-      (obj.pmtpRateParams = message.pmtpRateParams
-        ? PmtpRateParams.toJSON(message.pmtpRateParams)
-        : undefined);
+      (obj.pmtpRateParams = message.pmtpRateParams ? PmtpRateParams.toJSON(message.pmtpRateParams) : undefined);
     message.pmtpEpoch !== undefined &&
-      (obj.pmtpEpoch = message.pmtpEpoch
-        ? PmtpEpoch.toJSON(message.pmtpEpoch)
-        : undefined);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+      (obj.pmtpEpoch = message.pmtpEpoch ? PmtpEpoch.toJSON(message.pmtpEpoch) : undefined);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PmtpParamsRes>, I>>(
-    object: I,
-  ): PmtpParamsRes {
+  fromPartial<I extends Exact<DeepPartial<PmtpParamsRes>, I>>(object: I): PmtpParamsRes {
     const message = createBasePmtpParamsRes();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? PmtpParams.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? PmtpParams.fromPartial(object.params) : undefined;
     message.pmtpRateParams =
       object.pmtpRateParams !== undefined && object.pmtpRateParams !== null
         ? PmtpRateParams.fromPartial(object.pmtpRateParams)
         : undefined;
     message.pmtpEpoch =
-      object.pmtpEpoch !== undefined && object.pmtpEpoch !== null
-        ? PmtpEpoch.fromPartial(object.pmtpEpoch)
-        : undefined;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+      object.pmtpEpoch !== undefined && object.pmtpEpoch !== null ? PmtpEpoch.fromPartial(object.pmtpEpoch) : undefined;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -1711,17 +1397,11 @@ function createBaseLiquidityProtectionParamsReq(): LiquidityProtectionParamsReq 
 }
 
 export const LiquidityProtectionParamsReq = {
-  encode(
-    _: LiquidityProtectionParamsReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: LiquidityProtectionParamsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProtectionParamsReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProtectionParamsReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProtectionParamsReq();
@@ -1745,9 +1425,7 @@ export const LiquidityProtectionParamsReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParamsReq>, I>>(
-    _: I,
-  ): LiquidityProtectionParamsReq {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParamsReq>, I>>(_: I): LiquidityProtectionParamsReq {
     const message = createBaseLiquidityProtectionParamsReq();
     return message;
   },
@@ -1758,21 +1436,12 @@ function createBaseLiquidityProtectionParamsRes(): LiquidityProtectionParamsRes 
 }
 
 export const LiquidityProtectionParamsRes = {
-  encode(
-    message: LiquidityProtectionParamsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProtectionParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
-      LiquidityProtectionParams.encode(
-        message.params,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      LiquidityProtectionParams.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
     if (message.rateParams !== undefined) {
-      LiquidityProtectionRateParams.encode(
-        message.rateParams,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      LiquidityProtectionRateParams.encode(message.rateParams, writer.uint32(18).fork()).ldelim();
     }
     if (!message.height.isZero()) {
       writer.uint32(24).int64(message.height);
@@ -1780,10 +1449,7 @@ export const LiquidityProtectionParamsRes = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProtectionParamsRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProtectionParamsRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProtectionParamsRes();
@@ -1791,16 +1457,10 @@ export const LiquidityProtectionParamsRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.params = LiquidityProtectionParams.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.params = LiquidityProtectionParams.decode(reader, reader.uint32());
           break;
         case 2:
-          message.rateParams = LiquidityProtectionRateParams.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.rateParams = LiquidityProtectionRateParams.decode(reader, reader.uint32());
           break;
         case 3:
           message.height = reader.int64() as Long;
@@ -1815,12 +1475,8 @@ export const LiquidityProtectionParamsRes = {
 
   fromJSON(object: any): LiquidityProtectionParamsRes {
     return {
-      params: isSet(object.params)
-        ? LiquidityProtectionParams.fromJSON(object.params)
-        : undefined,
-      rateParams: isSet(object.rateParams)
-        ? LiquidityProtectionRateParams.fromJSON(object.rateParams)
-        : undefined,
+      params: isSet(object.params) ? LiquidityProtectionParams.fromJSON(object.params) : undefined,
+      rateParams: isSet(object.rateParams) ? LiquidityProtectionRateParams.fromJSON(object.rateParams) : undefined,
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
@@ -1828,21 +1484,14 @@ export const LiquidityProtectionParamsRes = {
   toJSON(message: LiquidityProtectionParamsRes): unknown {
     const obj: any = {};
     message.params !== undefined &&
-      (obj.params = message.params
-        ? LiquidityProtectionParams.toJSON(message.params)
-        : undefined);
+      (obj.params = message.params ? LiquidityProtectionParams.toJSON(message.params) : undefined);
     message.rateParams !== undefined &&
-      (obj.rateParams = message.rateParams
-        ? LiquidityProtectionRateParams.toJSON(message.rateParams)
-        : undefined);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+      (obj.rateParams = message.rateParams ? LiquidityProtectionRateParams.toJSON(message.rateParams) : undefined);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParamsRes>, I>>(
-    object: I,
-  ): LiquidityProtectionParamsRes {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParamsRes>, I>>(object: I): LiquidityProtectionParamsRes {
     const message = createBaseLiquidityProtectionParamsRes();
     message.params =
       object.params !== undefined && object.params !== null
@@ -1852,10 +1501,7 @@ export const LiquidityProtectionParamsRes = {
       object.rateParams !== undefined && object.rateParams !== null
         ? LiquidityProtectionRateParams.fromPartial(object.rateParams)
         : undefined;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -1865,17 +1511,11 @@ function createBaseProviderDistributionParamsReq(): ProviderDistributionParamsRe
 }
 
 export const ProviderDistributionParamsReq = {
-  encode(
-    _: ProviderDistributionParamsReq,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: ProviderDistributionParamsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): ProviderDistributionParamsReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProviderDistributionParamsReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProviderDistributionParamsReq();
@@ -1899,9 +1539,7 @@ export const ProviderDistributionParamsReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProviderDistributionParamsReq>, I>>(
-    _: I,
-  ): ProviderDistributionParamsReq {
+  fromPartial<I extends Exact<DeepPartial<ProviderDistributionParamsReq>, I>>(_: I): ProviderDistributionParamsReq {
     const message = createBaseProviderDistributionParamsReq();
     return message;
   },
@@ -1912,23 +1550,14 @@ function createBaseProviderDistributionParamsRes(): ProviderDistributionParamsRe
 }
 
 export const ProviderDistributionParamsRes = {
-  encode(
-    message: ProviderDistributionParamsRes,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ProviderDistributionParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
-      ProviderDistributionParams.encode(
-        message.params,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      ProviderDistributionParams.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): ProviderDistributionParamsRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProviderDistributionParamsRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProviderDistributionParamsRes();
@@ -1936,10 +1565,7 @@ export const ProviderDistributionParamsRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.params = ProviderDistributionParams.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.params = ProviderDistributionParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1951,18 +1577,14 @@ export const ProviderDistributionParamsRes = {
 
   fromJSON(object: any): ProviderDistributionParamsRes {
     return {
-      params: isSet(object.params)
-        ? ProviderDistributionParams.fromJSON(object.params)
-        : undefined,
+      params: isSet(object.params) ? ProviderDistributionParams.fromJSON(object.params) : undefined,
     };
   },
 
   toJSON(message: ProviderDistributionParamsRes): unknown {
     const obj: any = {};
     message.params !== undefined &&
-      (obj.params = message.params
-        ? ProviderDistributionParams.toJSON(message.params)
-        : undefined);
+      (obj.params = message.params ? ProviderDistributionParams.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -1981,28 +1603,16 @@ export const ProviderDistributionParamsRes = {
 export interface Query {
   GetPool(request: PoolReq): Promise<PoolRes>;
   GetPools(request: PoolsReq): Promise<PoolsRes>;
-  GetLiquidityProvider(
-    request: LiquidityProviderReq,
-  ): Promise<LiquidityProviderRes>;
-  GetLiquidityProviderData(
-    request: LiquidityProviderDataReq,
-  ): Promise<LiquidityProviderDataRes>;
+  GetLiquidityProvider(request: LiquidityProviderReq): Promise<LiquidityProviderRes>;
+  GetLiquidityProviderData(request: LiquidityProviderDataReq): Promise<LiquidityProviderDataRes>;
   GetAssetList(request: AssetListReq): Promise<AssetListRes>;
-  GetLiquidityProviders(
-    request: LiquidityProvidersReq,
-  ): Promise<LiquidityProvidersRes>;
-  GetLiquidityProviderList(
-    request: LiquidityProviderListReq,
-  ): Promise<LiquidityProviderListRes>;
+  GetLiquidityProviders(request: LiquidityProvidersReq): Promise<LiquidityProvidersRes>;
+  GetLiquidityProviderList(request: LiquidityProviderListReq): Promise<LiquidityProviderListRes>;
   GetParams(request: ParamsReq): Promise<ParamsRes>;
   GetRewardParams(request: RewardParamsReq): Promise<RewardParamsRes>;
   GetPmtpParams(request: PmtpParamsReq): Promise<PmtpParamsRes>;
-  GetLiquidityProtectionParams(
-    request: LiquidityProtectionParamsReq,
-  ): Promise<LiquidityProtectionParamsRes>;
-  GetProviderDistributionParams(
-    request: ProviderDistributionParamsReq,
-  ): Promise<ProviderDistributionParamsRes>;
+  GetLiquidityProtectionParams(request: LiquidityProtectionParamsReq): Promise<LiquidityProtectionParamsRes>;
+  GetProviderDistributionParams(request: ProviderDistributionParamsReq): Promise<ProviderDistributionParamsRes>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2019,10 +1629,8 @@ export class QueryClientImpl implements Query {
     this.GetParams = this.GetParams.bind(this);
     this.GetRewardParams = this.GetRewardParams.bind(this);
     this.GetPmtpParams = this.GetPmtpParams.bind(this);
-    this.GetLiquidityProtectionParams =
-      this.GetLiquidityProtectionParams.bind(this);
-    this.GetProviderDistributionParams =
-      this.GetProviderDistributionParams.bind(this);
+    this.GetLiquidityProtectionParams = this.GetLiquidityProtectionParams.bind(this);
+    this.GetProviderDistributionParams = this.GetProviderDistributionParams.bind(this);
   }
   GetPool(request: PoolReq): Promise<PoolRes> {
     const data = PoolReq.encode(request).finish();
@@ -2036,70 +1644,34 @@ export class QueryClientImpl implements Query {
     return promise.then((data) => PoolsRes.decode(new _m0.Reader(data)));
   }
 
-  GetLiquidityProvider(
-    request: LiquidityProviderReq,
-  ): Promise<LiquidityProviderRes> {
+  GetLiquidityProvider(request: LiquidityProviderReq): Promise<LiquidityProviderRes> {
     const data = LiquidityProviderReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetLiquidityProvider",
-      data,
-    );
-    return promise.then((data) =>
-      LiquidityProviderRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetLiquidityProvider", data);
+    return promise.then((data) => LiquidityProviderRes.decode(new _m0.Reader(data)));
   }
 
-  GetLiquidityProviderData(
-    request: LiquidityProviderDataReq,
-  ): Promise<LiquidityProviderDataRes> {
+  GetLiquidityProviderData(request: LiquidityProviderDataReq): Promise<LiquidityProviderDataRes> {
     const data = LiquidityProviderDataReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetLiquidityProviderData",
-      data,
-    );
-    return promise.then((data) =>
-      LiquidityProviderDataRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetLiquidityProviderData", data);
+    return promise.then((data) => LiquidityProviderDataRes.decode(new _m0.Reader(data)));
   }
 
   GetAssetList(request: AssetListReq): Promise<AssetListRes> {
     const data = AssetListReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetAssetList",
-      data,
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetAssetList", data);
     return promise.then((data) => AssetListRes.decode(new _m0.Reader(data)));
   }
 
-  GetLiquidityProviders(
-    request: LiquidityProvidersReq,
-  ): Promise<LiquidityProvidersRes> {
+  GetLiquidityProviders(request: LiquidityProvidersReq): Promise<LiquidityProvidersRes> {
     const data = LiquidityProvidersReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetLiquidityProviders",
-      data,
-    );
-    return promise.then((data) =>
-      LiquidityProvidersRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetLiquidityProviders", data);
+    return promise.then((data) => LiquidityProvidersRes.decode(new _m0.Reader(data)));
   }
 
-  GetLiquidityProviderList(
-    request: LiquidityProviderListReq,
-  ): Promise<LiquidityProviderListRes> {
+  GetLiquidityProviderList(request: LiquidityProviderListReq): Promise<LiquidityProviderListRes> {
     const data = LiquidityProviderListReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetLiquidityProviderList",
-      data,
-    );
-    return promise.then((data) =>
-      LiquidityProviderListRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetLiquidityProviderList", data);
+    return promise.then((data) => LiquidityProviderListRes.decode(new _m0.Reader(data)));
   }
 
   GetParams(request: ParamsReq): Promise<ParamsRes> {
@@ -2110,69 +1682,34 @@ export class QueryClientImpl implements Query {
 
   GetRewardParams(request: RewardParamsReq): Promise<RewardParamsRes> {
     const data = RewardParamsReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetRewardParams",
-      data,
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetRewardParams", data);
     return promise.then((data) => RewardParamsRes.decode(new _m0.Reader(data)));
   }
 
   GetPmtpParams(request: PmtpParamsReq): Promise<PmtpParamsRes> {
     const data = PmtpParamsReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetPmtpParams",
-      data,
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetPmtpParams", data);
     return promise.then((data) => PmtpParamsRes.decode(new _m0.Reader(data)));
   }
 
-  GetLiquidityProtectionParams(
-    request: LiquidityProtectionParamsReq,
-  ): Promise<LiquidityProtectionParamsRes> {
+  GetLiquidityProtectionParams(request: LiquidityProtectionParamsReq): Promise<LiquidityProtectionParamsRes> {
     const data = LiquidityProtectionParamsReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetLiquidityProtectionParams",
-      data,
-    );
-    return promise.then((data) =>
-      LiquidityProtectionParamsRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetLiquidityProtectionParams", data);
+    return promise.then((data) => LiquidityProtectionParamsRes.decode(new _m0.Reader(data)));
   }
 
-  GetProviderDistributionParams(
-    request: ProviderDistributionParamsReq,
-  ): Promise<ProviderDistributionParamsRes> {
+  GetProviderDistributionParams(request: ProviderDistributionParamsReq): Promise<ProviderDistributionParamsRes> {
     const data = ProviderDistributionParamsReq.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Query",
-      "GetProviderDistributionParams",
-      data,
-    );
-    return promise.then((data) =>
-      ProviderDistributionParamsRes.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetProviderDistributionParams", data);
+    return promise.then((data) => ProviderDistributionParamsRes.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -2189,9 +1726,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

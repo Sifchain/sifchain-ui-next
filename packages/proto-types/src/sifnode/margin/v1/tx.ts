@@ -61,21 +61,11 @@ export interface MsgDewhitelist {
 export interface MsgDewhitelistResponse {}
 
 function createBaseMsgOpen(): MsgOpen {
-  return {
-    signer: "",
-    collateralAsset: "",
-    collateralAmount: "",
-    borrowAsset: "",
-    position: 0,
-    leverage: "",
-  };
+  return { signer: "", collateralAsset: "", collateralAmount: "", borrowAsset: "", position: 0, leverage: "" };
 }
 
 export const MsgOpen = {
-  encode(
-    message: MsgOpen,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgOpen, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -133,12 +123,8 @@ export const MsgOpen = {
   fromJSON(object: any): MsgOpen {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      collateralAsset: isSet(object.collateralAsset)
-        ? String(object.collateralAsset)
-        : "",
-      collateralAmount: isSet(object.collateralAmount)
-        ? String(object.collateralAmount)
-        : "",
+      collateralAsset: isSet(object.collateralAsset) ? String(object.collateralAsset) : "",
+      collateralAmount: isSet(object.collateralAmount) ? String(object.collateralAmount) : "",
       borrowAsset: isSet(object.borrowAsset) ? String(object.borrowAsset) : "",
       position: isSet(object.position) ? positionFromJSON(object.position) : 0,
       leverage: isSet(object.leverage) ? String(object.leverage) : "",
@@ -148,14 +134,10 @@ export const MsgOpen = {
   toJSON(message: MsgOpen): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.collateralAsset !== undefined &&
-      (obj.collateralAsset = message.collateralAsset);
-    message.collateralAmount !== undefined &&
-      (obj.collateralAmount = message.collateralAmount);
-    message.borrowAsset !== undefined &&
-      (obj.borrowAsset = message.borrowAsset);
-    message.position !== undefined &&
-      (obj.position = positionToJSON(message.position));
+    message.collateralAsset !== undefined && (obj.collateralAsset = message.collateralAsset);
+    message.collateralAmount !== undefined && (obj.collateralAmount = message.collateralAmount);
+    message.borrowAsset !== undefined && (obj.borrowAsset = message.borrowAsset);
+    message.position !== undefined && (obj.position = positionToJSON(message.position));
     message.leverage !== undefined && (obj.leverage = message.leverage);
     return obj;
   },
@@ -177,10 +159,7 @@ function createBaseMsgOpenResponse(): MsgOpenResponse {
 }
 
 export const MsgOpenResponse = {
-  encode(
-    _: MsgOpenResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgOpenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -208,9 +187,7 @@ export const MsgOpenResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgOpenResponse>, I>>(
-    _: I,
-  ): MsgOpenResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgOpenResponse>, I>>(_: I): MsgOpenResponse {
     const message = createBaseMsgOpenResponse();
     return message;
   },
@@ -221,10 +198,7 @@ function createBaseMsgClose(): MsgClose {
 }
 
 export const MsgClose = {
-  encode(
-    message: MsgClose,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgClose, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -265,18 +239,14 @@ export const MsgClose = {
   toJSON(message: MsgClose): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgClose>, I>>(object: I): MsgClose {
     const message = createBaseMsgClose();
     message.signer = object.signer ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.UZERO;
     return message;
   },
 };
@@ -286,10 +256,7 @@ function createBaseMsgCloseResponse(): MsgCloseResponse {
 }
 
 export const MsgCloseResponse = {
-  encode(
-    _: MsgCloseResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCloseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -317,9 +284,7 @@ export const MsgCloseResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCloseResponse>, I>>(
-    _: I,
-  ): MsgCloseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCloseResponse>, I>>(_: I): MsgCloseResponse {
     const message = createBaseMsgCloseResponse();
     return message;
   },
@@ -330,10 +295,7 @@ function createBaseMsgForceClose(): MsgForceClose {
 }
 
 export const MsgForceClose = {
-  encode(
-    message: MsgForceClose,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgForceClose, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -382,21 +344,15 @@ export const MsgForceClose = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.mtpAddress !== undefined && (obj.mtpAddress = message.mtpAddress);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgForceClose>, I>>(
-    object: I,
-  ): MsgForceClose {
+  fromPartial<I extends Exact<DeepPartial<MsgForceClose>, I>>(object: I): MsgForceClose {
     const message = createBaseMsgForceClose();
     message.signer = object.signer ?? "";
     message.mtpAddress = object.mtpAddress ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.UZERO;
     return message;
   },
 };
@@ -406,17 +362,11 @@ function createBaseMsgForceCloseResponse(): MsgForceCloseResponse {
 }
 
 export const MsgForceCloseResponse = {
-  encode(
-    _: MsgForceCloseResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgForceCloseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgForceCloseResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgForceCloseResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgForceCloseResponse();
@@ -440,9 +390,7 @@ export const MsgForceCloseResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgForceCloseResponse>, I>>(
-    _: I,
-  ): MsgForceCloseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgForceCloseResponse>, I>>(_: I): MsgForceCloseResponse {
     const message = createBaseMsgForceCloseResponse();
     return message;
   },
@@ -453,10 +401,7 @@ function createBaseMsgUpdateParams(): MsgUpdateParams {
 }
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -497,20 +442,15 @@ export const MsgUpdateParams = {
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateParams>, I>>(
-    object: I,
-  ): MsgUpdateParams {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateParams>, I>>(object: I): MsgUpdateParams {
     const message = createBaseMsgUpdateParams();
     message.signer = object.signer ?? "";
     message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
     return message;
   },
 };
@@ -520,17 +460,11 @@ function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
 }
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateParamsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateParamsResponse();
@@ -554,9 +488,7 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(
-    _: I,
-  ): MsgUpdateParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(_: I): MsgUpdateParamsResponse {
     const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
@@ -567,10 +499,7 @@ function createBaseMsgUpdatePools(): MsgUpdatePools {
 }
 
 export const MsgUpdatePools = {
-  encode(
-    message: MsgUpdatePools,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdatePools, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -610,12 +539,8 @@ export const MsgUpdatePools = {
   fromJSON(object: any): MsgUpdatePools {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      pools: Array.isArray(object?.pools)
-        ? object.pools.map((e: any) => String(e))
-        : [],
-      closedPools: Array.isArray(object?.closedPools)
-        ? object.closedPools.map((e: any) => String(e))
-        : [],
+      pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => String(e)) : [],
+      closedPools: Array.isArray(object?.closedPools) ? object.closedPools.map((e: any) => String(e)) : [],
     };
   },
 
@@ -635,9 +560,7 @@ export const MsgUpdatePools = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdatePools>, I>>(
-    object: I,
-  ): MsgUpdatePools {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdatePools>, I>>(object: I): MsgUpdatePools {
     const message = createBaseMsgUpdatePools();
     message.signer = object.signer ?? "";
     message.pools = object.pools?.map((e) => e) || [];
@@ -651,17 +574,11 @@ function createBaseMsgUpdatePoolsResponse(): MsgUpdatePoolsResponse {
 }
 
 export const MsgUpdatePoolsResponse = {
-  encode(
-    _: MsgUpdatePoolsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdatePoolsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdatePoolsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePoolsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdatePoolsResponse();
@@ -685,9 +602,7 @@ export const MsgUpdatePoolsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdatePoolsResponse>, I>>(
-    _: I,
-  ): MsgUpdatePoolsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdatePoolsResponse>, I>>(_: I): MsgUpdatePoolsResponse {
     const message = createBaseMsgUpdatePoolsResponse();
     return message;
   },
@@ -698,10 +613,7 @@ function createBaseMsgWhitelist(): MsgWhitelist {
 }
 
 export const MsgWhitelist = {
-  encode(
-    message: MsgWhitelist,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgWhitelist, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -735,23 +647,18 @@ export const MsgWhitelist = {
   fromJSON(object: any): MsgWhitelist {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      whitelistedAddress: isSet(object.whitelistedAddress)
-        ? String(object.whitelistedAddress)
-        : "",
+      whitelistedAddress: isSet(object.whitelistedAddress) ? String(object.whitelistedAddress) : "",
     };
   },
 
   toJSON(message: MsgWhitelist): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.whitelistedAddress !== undefined &&
-      (obj.whitelistedAddress = message.whitelistedAddress);
+    message.whitelistedAddress !== undefined && (obj.whitelistedAddress = message.whitelistedAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgWhitelist>, I>>(
-    object: I,
-  ): MsgWhitelist {
+  fromPartial<I extends Exact<DeepPartial<MsgWhitelist>, I>>(object: I): MsgWhitelist {
     const message = createBaseMsgWhitelist();
     message.signer = object.signer ?? "";
     message.whitelistedAddress = object.whitelistedAddress ?? "";
@@ -764,17 +671,11 @@ function createBaseMsgWhitelistResponse(): MsgWhitelistResponse {
 }
 
 export const MsgWhitelistResponse = {
-  encode(
-    _: MsgWhitelistResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgWhitelistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgWhitelistResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWhitelistResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgWhitelistResponse();
@@ -798,9 +699,7 @@ export const MsgWhitelistResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgWhitelistResponse>, I>>(
-    _: I,
-  ): MsgWhitelistResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgWhitelistResponse>, I>>(_: I): MsgWhitelistResponse {
     const message = createBaseMsgWhitelistResponse();
     return message;
   },
@@ -811,10 +710,7 @@ function createBaseMsgDewhitelist(): MsgDewhitelist {
 }
 
 export const MsgDewhitelist = {
-  encode(
-    message: MsgDewhitelist,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgDewhitelist, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -848,23 +744,18 @@ export const MsgDewhitelist = {
   fromJSON(object: any): MsgDewhitelist {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      whitelistedAddress: isSet(object.whitelistedAddress)
-        ? String(object.whitelistedAddress)
-        : "",
+      whitelistedAddress: isSet(object.whitelistedAddress) ? String(object.whitelistedAddress) : "",
     };
   },
 
   toJSON(message: MsgDewhitelist): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.whitelistedAddress !== undefined &&
-      (obj.whitelistedAddress = message.whitelistedAddress);
+    message.whitelistedAddress !== undefined && (obj.whitelistedAddress = message.whitelistedAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDewhitelist>, I>>(
-    object: I,
-  ): MsgDewhitelist {
+  fromPartial<I extends Exact<DeepPartial<MsgDewhitelist>, I>>(object: I): MsgDewhitelist {
     const message = createBaseMsgDewhitelist();
     message.signer = object.signer ?? "";
     message.whitelistedAddress = object.whitelistedAddress ?? "";
@@ -877,17 +768,11 @@ function createBaseMsgDewhitelistResponse(): MsgDewhitelistResponse {
 }
 
 export const MsgDewhitelistResponse = {
-  encode(
-    _: MsgDewhitelistResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgDewhitelistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgDewhitelistResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDewhitelistResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgDewhitelistResponse();
@@ -911,9 +796,7 @@ export const MsgDewhitelistResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDewhitelistResponse>, I>>(
-    _: I,
-  ): MsgDewhitelistResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgDewhitelistResponse>, I>>(_: I): MsgDewhitelistResponse {
     const message = createBaseMsgDewhitelistResponse();
     return message;
   },
@@ -950,88 +833,45 @@ export class MsgClientImpl implements Msg {
   Close(request: MsgClose): Promise<MsgCloseResponse> {
     const data = MsgClose.encode(request).finish();
     const promise = this.rpc.request("sifnode.margin.v1.Msg", "Close", data);
-    return promise.then((data) =>
-      MsgCloseResponse.decode(new _m0.Reader(data)),
-    );
+    return promise.then((data) => MsgCloseResponse.decode(new _m0.Reader(data)));
   }
 
   ForceClose(request: MsgForceClose): Promise<MsgForceCloseResponse> {
     const data = MsgForceClose.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Msg",
-      "ForceClose",
-      data,
-    );
-    return promise.then((data) =>
-      MsgForceCloseResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Msg", "ForceClose", data);
+    return promise.then((data) => MsgForceCloseResponse.decode(new _m0.Reader(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Msg",
-      "UpdateParams",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Msg", "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(new _m0.Reader(data)));
   }
 
   UpdatePools(request: MsgUpdatePools): Promise<MsgUpdatePoolsResponse> {
     const data = MsgUpdatePools.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Msg",
-      "UpdatePools",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdatePoolsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Msg", "UpdatePools", data);
+    return promise.then((data) => MsgUpdatePoolsResponse.decode(new _m0.Reader(data)));
   }
 
   Whitelist(request: MsgWhitelist): Promise<MsgWhitelistResponse> {
     const data = MsgWhitelist.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Msg",
-      "Whitelist",
-      data,
-    );
-    return promise.then((data) =>
-      MsgWhitelistResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Msg", "Whitelist", data);
+    return promise.then((data) => MsgWhitelistResponse.decode(new _m0.Reader(data)));
   }
 
   Dewhitelist(request: MsgDewhitelist): Promise<MsgDewhitelistResponse> {
     const data = MsgDewhitelist.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Msg",
-      "Dewhitelist",
-      data,
-    );
-    return promise.then((data) =>
-      MsgDewhitelistResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Msg", "Dewhitelist", data);
+    return promise.then((data) => MsgDewhitelistResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -1048,9 +888,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

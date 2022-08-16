@@ -1,9 +1,6 @@
 /* eslint-disable */
 import { MTP, Params } from "./types";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
@@ -91,10 +88,7 @@ function createBaseMTPRequest(): MTPRequest {
 }
 
 export const MTPRequest = {
-  encode(
-    message: MTPRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MTPRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -135,20 +129,14 @@ export const MTPRequest = {
   toJSON(message: MTPRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MTPRequest>, I>>(
-    object: I,
-  ): MTPRequest {
+  fromPartial<I extends Exact<DeepPartial<MTPRequest>, I>>(object: I): MTPRequest {
     const message = createBaseMTPRequest();
     message.address = object.address ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.UZERO;
     return message;
   },
 };
@@ -158,10 +146,7 @@ function createBaseMTPResponse(): MTPResponse {
 }
 
 export const MTPResponse = {
-  encode(
-    message: MTPResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MTPResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mtp !== undefined) {
       MTP.encode(message.mtp, writer.uint32(10).fork()).ldelim();
     }
@@ -194,19 +179,13 @@ export const MTPResponse = {
 
   toJSON(message: MTPResponse): unknown {
     const obj: any = {};
-    message.mtp !== undefined &&
-      (obj.mtp = message.mtp ? MTP.toJSON(message.mtp) : undefined);
+    message.mtp !== undefined && (obj.mtp = message.mtp ? MTP.toJSON(message.mtp) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MTPResponse>, I>>(
-    object: I,
-  ): MTPResponse {
+  fromPartial<I extends Exact<DeepPartial<MTPResponse>, I>>(object: I): MTPResponse {
     const message = createBaseMTPResponse();
-    message.mtp =
-      object.mtp !== undefined && object.mtp !== null
-        ? MTP.fromPartial(object.mtp)
-        : undefined;
+    message.mtp = object.mtp !== undefined && object.mtp !== null ? MTP.fromPartial(object.mtp) : undefined;
     return message;
   },
 };
@@ -216,10 +195,7 @@ function createBasePositionsForAddressRequest(): PositionsForAddressRequest {
 }
 
 export const PositionsForAddressRequest = {
-  encode(
-    message: PositionsForAddressRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsForAddressRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -229,10 +205,7 @@ export const PositionsForAddressRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): PositionsForAddressRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionsForAddressRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePositionsForAddressRequest();
@@ -256,9 +229,7 @@ export const PositionsForAddressRequest = {
   fromJSON(object: any): PositionsForAddressRequest {
     return {
       address: isSet(object.address) ? String(object.address) : "",
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -266,15 +237,11 @@ export const PositionsForAddressRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsForAddressRequest>, I>>(
-    object: I,
-  ): PositionsForAddressRequest {
+  fromPartial<I extends Exact<DeepPartial<PositionsForAddressRequest>, I>>(object: I): PositionsForAddressRequest {
     const message = createBasePositionsForAddressRequest();
     message.address = object.address ?? "";
     message.pagination =
@@ -290,26 +257,17 @@ function createBasePositionsForAddressResponse(): PositionsForAddressResponse {
 }
 
 export const PositionsForAddressResponse = {
-  encode(
-    message: PositionsForAddressResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsForAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.mtps) {
       MTP.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): PositionsForAddressResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionsForAddressResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePositionsForAddressResponse();
@@ -332,12 +290,8 @@ export const PositionsForAddressResponse = {
 
   fromJSON(object: any): PositionsForAddressResponse {
     return {
-      mtps: Array.isArray(object?.mtps)
-        ? object.mtps.map((e: any) => MTP.fromJSON(e))
-        : [],
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      mtps: Array.isArray(object?.mtps) ? object.mtps.map((e: any) => MTP.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -349,15 +303,11 @@ export const PositionsForAddressResponse = {
       obj.mtps = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsForAddressResponse>, I>>(
-    object: I,
-  ): PositionsForAddressResponse {
+  fromPartial<I extends Exact<DeepPartial<PositionsForAddressResponse>, I>>(object: I): PositionsForAddressResponse {
     const message = createBasePositionsForAddressResponse();
     message.mtps = object.mtps?.map((e) => MTP.fromPartial(e)) || [];
     message.pagination =
@@ -373,10 +323,7 @@ function createBasePositionsByPoolRequest(): PositionsByPoolRequest {
 }
 
 export const PositionsByPoolRequest = {
-  encode(
-    message: PositionsByPoolRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsByPoolRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.asset !== "") {
       writer.uint32(10).string(message.asset);
     }
@@ -386,10 +333,7 @@ export const PositionsByPoolRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): PositionsByPoolRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionsByPoolRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePositionsByPoolRequest();
@@ -413,9 +357,7 @@ export const PositionsByPoolRequest = {
   fromJSON(object: any): PositionsByPoolRequest {
     return {
       asset: isSet(object.asset) ? String(object.asset) : "",
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -423,15 +365,11 @@ export const PositionsByPoolRequest = {
     const obj: any = {};
     message.asset !== undefined && (obj.asset = message.asset);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsByPoolRequest>, I>>(
-    object: I,
-  ): PositionsByPoolRequest {
+  fromPartial<I extends Exact<DeepPartial<PositionsByPoolRequest>, I>>(object: I): PositionsByPoolRequest {
     const message = createBasePositionsByPoolRequest();
     message.asset = object.asset ?? "";
     message.pagination =
@@ -447,26 +385,17 @@ function createBasePositionsByPoolResponse(): PositionsByPoolResponse {
 }
 
 export const PositionsByPoolResponse = {
-  encode(
-    message: PositionsByPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsByPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.mtps) {
       MTP.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): PositionsByPoolResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionsByPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePositionsByPoolResponse();
@@ -489,12 +418,8 @@ export const PositionsByPoolResponse = {
 
   fromJSON(object: any): PositionsByPoolResponse {
     return {
-      mtps: Array.isArray(object?.mtps)
-        ? object.mtps.map((e: any) => MTP.fromJSON(e))
-        : [],
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      mtps: Array.isArray(object?.mtps) ? object.mtps.map((e: any) => MTP.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -506,15 +431,11 @@ export const PositionsByPoolResponse = {
       obj.mtps = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsByPoolResponse>, I>>(
-    object: I,
-  ): PositionsByPoolResponse {
+  fromPartial<I extends Exact<DeepPartial<PositionsByPoolResponse>, I>>(object: I): PositionsByPoolResponse {
     const message = createBasePositionsByPoolResponse();
     message.mtps = object.mtps?.map((e) => MTP.fromPartial(e)) || [];
     message.pagination =
@@ -530,10 +451,7 @@ function createBasePositionsRequest(): PositionsRequest {
 }
 
 export const PositionsRequest = {
-  encode(
-    message: PositionsRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
@@ -560,24 +478,18 @@ export const PositionsRequest = {
 
   fromJSON(object: any): PositionsRequest {
     return {
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: PositionsRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsRequest>, I>>(
-    object: I,
-  ): PositionsRequest {
+  fromPartial<I extends Exact<DeepPartial<PositionsRequest>, I>>(object: I): PositionsRequest {
     const message = createBasePositionsRequest();
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -592,18 +504,12 @@ function createBasePositionsResponse(): PositionsResponse {
 }
 
 export const PositionsResponse = {
-  encode(
-    message: PositionsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PositionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.mtps) {
       MTP.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -631,12 +537,8 @@ export const PositionsResponse = {
 
   fromJSON(object: any): PositionsResponse {
     return {
-      mtps: Array.isArray(object?.mtps)
-        ? object.mtps.map((e: any) => MTP.fromJSON(e))
-        : [],
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      mtps: Array.isArray(object?.mtps) ? object.mtps.map((e: any) => MTP.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -648,15 +550,11 @@ export const PositionsResponse = {
       obj.mtps = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PositionsResponse>, I>>(
-    object: I,
-  ): PositionsResponse {
+  fromPartial<I extends Exact<DeepPartial<PositionsResponse>, I>>(object: I): PositionsResponse {
     const message = createBasePositionsResponse();
     message.mtps = object.mtps?.map((e) => MTP.fromPartial(e)) || [];
     message.pagination =
@@ -672,10 +570,7 @@ function createBaseParamsRequest(): ParamsRequest {
 }
 
 export const ParamsRequest = {
-  encode(
-    _: ParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: ParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -703,9 +598,7 @@ export const ParamsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ParamsRequest>, I>>(
-    _: I,
-  ): ParamsRequest {
+  fromPartial<I extends Exact<DeepPartial<ParamsRequest>, I>>(_: I): ParamsRequest {
     const message = createBaseParamsRequest();
     return message;
   },
@@ -716,10 +609,7 @@ function createBaseParamsResponse(): ParamsResponse {
 }
 
 export const ParamsResponse = {
-  encode(
-    message: ParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -752,19 +642,14 @@ export const ParamsResponse = {
 
   toJSON(message: ParamsResponse): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ParamsResponse>, I>>(
-    object: I,
-  ): ParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<ParamsResponse>, I>>(object: I): ParamsResponse {
     const message = createBaseParamsResponse();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
     return message;
   },
 };
@@ -774,10 +659,7 @@ function createBaseStatusRequest(): StatusRequest {
 }
 
 export const StatusRequest = {
-  encode(
-    _: StatusRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: StatusRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -805,9 +687,7 @@ export const StatusRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StatusRequest>, I>>(
-    _: I,
-  ): StatusRequest {
+  fromPartial<I extends Exact<DeepPartial<StatusRequest>, I>>(_: I): StatusRequest {
     const message = createBaseStatusRequest();
     return message;
   },
@@ -818,10 +698,7 @@ function createBaseStatusResponse(): StatusResponse {
 }
 
 export const StatusResponse = {
-  encode(
-    message: StatusResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: StatusResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.openMtpCount.isZero()) {
       writer.uint32(8).uint64(message.openMtpCount);
     }
@@ -854,29 +731,20 @@ export const StatusResponse = {
 
   fromJSON(object: any): StatusResponse {
     return {
-      openMtpCount: isSet(object.openMtpCount)
-        ? Long.fromValue(object.openMtpCount)
-        : Long.UZERO,
-      lifetimeMtpCount: isSet(object.lifetimeMtpCount)
-        ? Long.fromValue(object.lifetimeMtpCount)
-        : Long.UZERO,
+      openMtpCount: isSet(object.openMtpCount) ? Long.fromValue(object.openMtpCount) : Long.UZERO,
+      lifetimeMtpCount: isSet(object.lifetimeMtpCount) ? Long.fromValue(object.lifetimeMtpCount) : Long.UZERO,
     };
   },
 
   toJSON(message: StatusResponse): unknown {
     const obj: any = {};
-    message.openMtpCount !== undefined &&
-      (obj.openMtpCount = (message.openMtpCount || Long.UZERO).toString());
+    message.openMtpCount !== undefined && (obj.openMtpCount = (message.openMtpCount || Long.UZERO).toString());
     message.lifetimeMtpCount !== undefined &&
-      (obj.lifetimeMtpCount = (
-        message.lifetimeMtpCount || Long.UZERO
-      ).toString());
+      (obj.lifetimeMtpCount = (message.lifetimeMtpCount || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StatusResponse>, I>>(
-    object: I,
-  ): StatusResponse {
+  fromPartial<I extends Exact<DeepPartial<StatusResponse>, I>>(object: I): StatusResponse {
     const message = createBaseStatusResponse();
     message.openMtpCount =
       object.openMtpCount !== undefined && object.openMtpCount !== null
@@ -895,10 +763,7 @@ function createBaseWhitelistRequest(): WhitelistRequest {
 }
 
 export const WhitelistRequest = {
-  encode(
-    message: WhitelistRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: WhitelistRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
@@ -925,24 +790,18 @@ export const WhitelistRequest = {
 
   fromJSON(object: any): WhitelistRequest {
     return {
-      pagination: isSet(object.pagination)
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: WhitelistRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<WhitelistRequest>, I>>(
-    object: I,
-  ): WhitelistRequest {
+  fromPartial<I extends Exact<DeepPartial<WhitelistRequest>, I>>(object: I): WhitelistRequest {
     const message = createBaseWhitelistRequest();
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -957,18 +816,12 @@ function createBaseWhitelistResponse(): WhitelistResponse {
 }
 
 export const WhitelistResponse = {
-  encode(
-    message: WhitelistResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: WhitelistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.whitelist) {
       writer.uint32(10).string(v!);
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -996,12 +849,8 @@ export const WhitelistResponse = {
 
   fromJSON(object: any): WhitelistResponse {
     return {
-      whitelist: Array.isArray(object?.whitelist)
-        ? object.whitelist.map((e: any) => String(e))
-        : [],
-      pagination: isSet(object.pagination)
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined,
+      whitelist: Array.isArray(object?.whitelist) ? object.whitelist.map((e: any) => String(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -1013,15 +862,11 @@ export const WhitelistResponse = {
       obj.whitelist = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<WhitelistResponse>, I>>(
-    object: I,
-  ): WhitelistResponse {
+  fromPartial<I extends Exact<DeepPartial<WhitelistResponse>, I>>(object: I): WhitelistResponse {
     const message = createBaseWhitelistResponse();
     message.whitelist = object.whitelist?.map((e) => e) || [];
     message.pagination =
@@ -1037,10 +882,7 @@ function createBaseGetSQParamsRequest(): GetSQParamsRequest {
 }
 
 export const GetSQParamsRequest = {
-  encode(
-    message: GetSQParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GetSQParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pool !== "") {
       writer.uint32(10).string(message.pool);
     }
@@ -1077,9 +919,7 @@ export const GetSQParamsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetSQParamsRequest>, I>>(
-    object: I,
-  ): GetSQParamsRequest {
+  fromPartial<I extends Exact<DeepPartial<GetSQParamsRequest>, I>>(object: I): GetSQParamsRequest {
     const message = createBaseGetSQParamsRequest();
     message.pool = object.pool ?? "";
     return message;
@@ -1091,10 +931,7 @@ function createBaseGetSQParamsResponse(): GetSQParamsResponse {
 }
 
 export const GetSQParamsResponse = {
-  encode(
-    message: GetSQParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GetSQParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.beginBlock.isZero()) {
       writer.uint32(8).int64(message.beginBlock);
     }
@@ -1121,27 +958,20 @@ export const GetSQParamsResponse = {
 
   fromJSON(object: any): GetSQParamsResponse {
     return {
-      beginBlock: isSet(object.beginBlock)
-        ? Long.fromValue(object.beginBlock)
-        : Long.ZERO,
+      beginBlock: isSet(object.beginBlock) ? Long.fromValue(object.beginBlock) : Long.ZERO,
     };
   },
 
   toJSON(message: GetSQParamsResponse): unknown {
     const obj: any = {};
-    message.beginBlock !== undefined &&
-      (obj.beginBlock = (message.beginBlock || Long.ZERO).toString());
+    message.beginBlock !== undefined && (obj.beginBlock = (message.beginBlock || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetSQParamsResponse>, I>>(
-    object: I,
-  ): GetSQParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<GetSQParamsResponse>, I>>(object: I): GetSQParamsResponse {
     const message = createBaseGetSQParamsResponse();
     message.beginBlock =
-      object.beginBlock !== undefined && object.beginBlock !== null
-        ? Long.fromValue(object.beginBlock)
-        : Long.ZERO;
+      object.beginBlock !== undefined && object.beginBlock !== null ? Long.fromValue(object.beginBlock) : Long.ZERO;
     return message;
   },
 };
@@ -1151,20 +981,14 @@ function createBaseIsWhitelistedRequest(): IsWhitelistedRequest {
 }
 
 export const IsWhitelistedRequest = {
-  encode(
-    message: IsWhitelistedRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: IsWhitelistedRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): IsWhitelistedRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsWhitelistedRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIsWhitelistedRequest();
@@ -1194,9 +1018,7 @@ export const IsWhitelistedRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<IsWhitelistedRequest>, I>>(
-    object: I,
-  ): IsWhitelistedRequest {
+  fromPartial<I extends Exact<DeepPartial<IsWhitelistedRequest>, I>>(object: I): IsWhitelistedRequest {
     const message = createBaseIsWhitelistedRequest();
     message.address = object.address ?? "";
     return message;
@@ -1208,10 +1030,7 @@ function createBaseIsWhitelistedResponse(): IsWhitelistedResponse {
 }
 
 export const IsWhitelistedResponse = {
-  encode(
-    message: IsWhitelistedResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: IsWhitelistedResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -1221,10 +1040,7 @@ export const IsWhitelistedResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): IsWhitelistedResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsWhitelistedResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIsWhitelistedResponse();
@@ -1248,23 +1064,18 @@ export const IsWhitelistedResponse = {
   fromJSON(object: any): IsWhitelistedResponse {
     return {
       address: isSet(object.address) ? String(object.address) : "",
-      isWhitelisted: isSet(object.isWhitelisted)
-        ? Boolean(object.isWhitelisted)
-        : false,
+      isWhitelisted: isSet(object.isWhitelisted) ? Boolean(object.isWhitelisted) : false,
     };
   },
 
   toJSON(message: IsWhitelistedResponse): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.isWhitelisted !== undefined &&
-      (obj.isWhitelisted = message.isWhitelisted);
+    message.isWhitelisted !== undefined && (obj.isWhitelisted = message.isWhitelisted);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<IsWhitelistedResponse>, I>>(
-    object: I,
-  ): IsWhitelistedResponse {
+  fromPartial<I extends Exact<DeepPartial<IsWhitelistedResponse>, I>>(object: I): IsWhitelistedResponse {
     const message = createBaseIsWhitelistedResponse();
     message.address = object.address ?? "";
     message.isWhitelisted = object.isWhitelisted ?? false;
@@ -1275,12 +1086,8 @@ export const IsWhitelistedResponse = {
 export interface Query {
   GetMTP(request: MTPRequest): Promise<MTPResponse>;
   GetPositions(request: PositionsRequest): Promise<PositionsResponse>;
-  GetPositionsForAddress(
-    request: PositionsForAddressRequest,
-  ): Promise<PositionsForAddressResponse>;
-  GetPositionsByPool(
-    request: PositionsByPoolRequest,
-  ): Promise<PositionsByPoolResponse>;
+  GetPositionsForAddress(request: PositionsForAddressRequest): Promise<PositionsForAddressResponse>;
+  GetPositionsByPool(request: PositionsByPoolRequest): Promise<PositionsByPoolResponse>;
   GetParams(request: ParamsRequest): Promise<ParamsResponse>;
   GetStatus(request: StatusRequest): Promise<StatusResponse>;
   GetSQParams(request: GetSQParamsRequest): Promise<GetSQParamsResponse>;
@@ -1310,117 +1117,58 @@ export class QueryClientImpl implements Query {
 
   GetPositions(request: PositionsRequest): Promise<PositionsResponse> {
     const data = PositionsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetPositions",
-      data,
-    );
-    return promise.then((data) =>
-      PositionsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetPositions", data);
+    return promise.then((data) => PositionsResponse.decode(new _m0.Reader(data)));
   }
 
-  GetPositionsForAddress(
-    request: PositionsForAddressRequest,
-  ): Promise<PositionsForAddressResponse> {
+  GetPositionsForAddress(request: PositionsForAddressRequest): Promise<PositionsForAddressResponse> {
     const data = PositionsForAddressRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetPositionsForAddress",
-      data,
-    );
-    return promise.then((data) =>
-      PositionsForAddressResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetPositionsForAddress", data);
+    return promise.then((data) => PositionsForAddressResponse.decode(new _m0.Reader(data)));
   }
 
-  GetPositionsByPool(
-    request: PositionsByPoolRequest,
-  ): Promise<PositionsByPoolResponse> {
+  GetPositionsByPool(request: PositionsByPoolRequest): Promise<PositionsByPoolResponse> {
     const data = PositionsByPoolRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetPositionsByPool",
-      data,
-    );
-    return promise.then((data) =>
-      PositionsByPoolResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetPositionsByPool", data);
+    return promise.then((data) => PositionsByPoolResponse.decode(new _m0.Reader(data)));
   }
 
   GetParams(request: ParamsRequest): Promise<ParamsResponse> {
     const data = ParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetParams",
-      data,
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetParams", data);
     return promise.then((data) => ParamsResponse.decode(new _m0.Reader(data)));
   }
 
   GetStatus(request: StatusRequest): Promise<StatusResponse> {
     const data = StatusRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetStatus",
-      data,
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetStatus", data);
     return promise.then((data) => StatusResponse.decode(new _m0.Reader(data)));
   }
 
   GetSQParams(request: GetSQParamsRequest): Promise<GetSQParamsResponse> {
     const data = GetSQParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetSQParams",
-      data,
-    );
-    return promise.then((data) =>
-      GetSQParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetSQParams", data);
+    return promise.then((data) => GetSQParamsResponse.decode(new _m0.Reader(data)));
   }
 
   GetWhitelist(request: WhitelistRequest): Promise<WhitelistResponse> {
     const data = WhitelistRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "GetWhitelist",
-      data,
-    );
-    return promise.then((data) =>
-      WhitelistResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "GetWhitelist", data);
+    return promise.then((data) => WhitelistResponse.decode(new _m0.Reader(data)));
   }
 
   IsWhitelisted(request: IsWhitelistedRequest): Promise<IsWhitelistedResponse> {
     const data = IsWhitelistedRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.margin.v1.Query",
-      "IsWhitelisted",
-      data,
-    );
-    return promise.then((data) =>
-      IsWhitelistedResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.margin.v1.Query", "IsWhitelisted", data);
+    return promise.then((data) => IsWhitelistedResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -1437,9 +1185,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

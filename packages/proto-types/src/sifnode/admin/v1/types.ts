@@ -75,10 +75,7 @@ function createBaseGenesisState(): GenesisState {
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.adminAccounts) {
       AdminAccount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -93,9 +90,7 @@ export const GenesisState = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.adminAccounts.push(
-            AdminAccount.decode(reader, reader.uint32()),
-          );
+          message.adminAccounts.push(AdminAccount.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -116,21 +111,16 @@ export const GenesisState = {
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
     if (message.adminAccounts) {
-      obj.adminAccounts = message.adminAccounts.map((e) =>
-        e ? AdminAccount.toJSON(e) : undefined,
-      );
+      obj.adminAccounts = message.adminAccounts.map((e) => (e ? AdminAccount.toJSON(e) : undefined));
     } else {
       obj.adminAccounts = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
-    message.adminAccounts =
-      object.adminAccounts?.map((e) => AdminAccount.fromPartial(e)) || [];
+    message.adminAccounts = object.adminAccounts?.map((e) => AdminAccount.fromPartial(e)) || [];
     return message;
   },
 };
@@ -140,10 +130,7 @@ function createBaseAdminAccount(): AdminAccount {
 }
 
 export const AdminAccount = {
-  encode(
-    message: AdminAccount,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: AdminAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.adminType !== 0) {
       writer.uint32(8).int32(message.adminType);
     }
@@ -176,27 +163,19 @@ export const AdminAccount = {
 
   fromJSON(object: any): AdminAccount {
     return {
-      adminType: isSet(object.adminType)
-        ? adminTypeFromJSON(object.adminType)
-        : 0,
-      adminAddress: isSet(object.adminAddress)
-        ? String(object.adminAddress)
-        : "",
+      adminType: isSet(object.adminType) ? adminTypeFromJSON(object.adminType) : 0,
+      adminAddress: isSet(object.adminAddress) ? String(object.adminAddress) : "",
     };
   },
 
   toJSON(message: AdminAccount): unknown {
     const obj: any = {};
-    message.adminType !== undefined &&
-      (obj.adminType = adminTypeToJSON(message.adminType));
-    message.adminAddress !== undefined &&
-      (obj.adminAddress = message.adminAddress);
+    message.adminType !== undefined && (obj.adminType = adminTypeToJSON(message.adminType));
+    message.adminAddress !== undefined && (obj.adminAddress = message.adminAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AdminAccount>, I>>(
-    object: I,
-  ): AdminAccount {
+  fromPartial<I extends Exact<DeepPartial<AdminAccount>, I>>(object: I): AdminAccount {
     const message = createBaseAdminAccount();
     message.adminType = object.adminType ?? 0;
     message.adminAddress = object.adminAddress ?? "";
@@ -204,14 +183,7 @@ export const AdminAccount = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -228,9 +200,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

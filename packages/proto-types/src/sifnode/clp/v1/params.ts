@@ -77,10 +77,7 @@ function createBaseParams(): Params {
 }
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.minCreatePoolThreshold.isZero()) {
       writer.uint32(8).uint64(message.minCreatePoolThreshold);
     }
@@ -116,28 +113,22 @@ export const Params = {
       minCreatePoolThreshold: isSet(object.minCreatePoolThreshold)
         ? Long.fromValue(object.minCreatePoolThreshold)
         : Long.UZERO,
-      enableRemovalQueue: isSet(object.enableRemovalQueue)
-        ? Boolean(object.enableRemovalQueue)
-        : false,
+      enableRemovalQueue: isSet(object.enableRemovalQueue) ? Boolean(object.enableRemovalQueue) : false,
     };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.minCreatePoolThreshold !== undefined &&
-      (obj.minCreatePoolThreshold = (
-        message.minCreatePoolThreshold || Long.UZERO
-      ).toString());
-    message.enableRemovalQueue !== undefined &&
-      (obj.enableRemovalQueue = message.enableRemovalQueue);
+      (obj.minCreatePoolThreshold = (message.minCreatePoolThreshold || Long.UZERO).toString());
+    message.enableRemovalQueue !== undefined && (obj.enableRemovalQueue = message.enableRemovalQueue);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = createBaseParams();
     message.minCreatePoolThreshold =
-      object.minCreatePoolThreshold !== undefined &&
-      object.minCreatePoolThreshold !== null
+      object.minCreatePoolThreshold !== undefined && object.minCreatePoolThreshold !== null
         ? Long.fromValue(object.minCreatePoolThreshold)
         : Long.UZERO;
     message.enableRemovalQueue = object.enableRemovalQueue ?? false;
@@ -155,10 +146,7 @@ function createBaseRewardParams(): RewardParams {
 }
 
 export const RewardParams = {
-  encode(
-    message: RewardParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RewardParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.liquidityRemovalLockPeriod.isZero()) {
       writer.uint32(8).uint64(message.liquidityRemovalLockPeriod);
     }
@@ -188,9 +176,7 @@ export const RewardParams = {
           message.liquidityRemovalCancelPeriod = reader.uint64() as Long;
           break;
         case 4:
-          message.rewardPeriods.push(
-            RewardPeriod.decode(reader, reader.uint32()),
-          );
+          message.rewardPeriods.push(RewardPeriod.decode(reader, reader.uint32()));
           break;
         case 5:
           message.rewardPeriodStartTime = reader.string();
@@ -214,68 +200,47 @@ export const RewardParams = {
       rewardPeriods: Array.isArray(object?.rewardPeriods)
         ? object.rewardPeriods.map((e: any) => RewardPeriod.fromJSON(e))
         : [],
-      rewardPeriodStartTime: isSet(object.rewardPeriodStartTime)
-        ? String(object.rewardPeriodStartTime)
-        : "",
+      rewardPeriodStartTime: isSet(object.rewardPeriodStartTime) ? String(object.rewardPeriodStartTime) : "",
     };
   },
 
   toJSON(message: RewardParams): unknown {
     const obj: any = {};
     message.liquidityRemovalLockPeriod !== undefined &&
-      (obj.liquidityRemovalLockPeriod = (
-        message.liquidityRemovalLockPeriod || Long.UZERO
-      ).toString());
+      (obj.liquidityRemovalLockPeriod = (message.liquidityRemovalLockPeriod || Long.UZERO).toString());
     message.liquidityRemovalCancelPeriod !== undefined &&
-      (obj.liquidityRemovalCancelPeriod = (
-        message.liquidityRemovalCancelPeriod || Long.UZERO
-      ).toString());
+      (obj.liquidityRemovalCancelPeriod = (message.liquidityRemovalCancelPeriod || Long.UZERO).toString());
     if (message.rewardPeriods) {
-      obj.rewardPeriods = message.rewardPeriods.map((e) =>
-        e ? RewardPeriod.toJSON(e) : undefined,
-      );
+      obj.rewardPeriods = message.rewardPeriods.map((e) => (e ? RewardPeriod.toJSON(e) : undefined));
     } else {
       obj.rewardPeriods = [];
     }
-    message.rewardPeriodStartTime !== undefined &&
-      (obj.rewardPeriodStartTime = message.rewardPeriodStartTime);
+    message.rewardPeriodStartTime !== undefined && (obj.rewardPeriodStartTime = message.rewardPeriodStartTime);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RewardParams>, I>>(
-    object: I,
-  ): RewardParams {
+  fromPartial<I extends Exact<DeepPartial<RewardParams>, I>>(object: I): RewardParams {
     const message = createBaseRewardParams();
     message.liquidityRemovalLockPeriod =
-      object.liquidityRemovalLockPeriod !== undefined &&
-      object.liquidityRemovalLockPeriod !== null
+      object.liquidityRemovalLockPeriod !== undefined && object.liquidityRemovalLockPeriod !== null
         ? Long.fromValue(object.liquidityRemovalLockPeriod)
         : Long.UZERO;
     message.liquidityRemovalCancelPeriod =
-      object.liquidityRemovalCancelPeriod !== undefined &&
-      object.liquidityRemovalCancelPeriod !== null
+      object.liquidityRemovalCancelPeriod !== undefined && object.liquidityRemovalCancelPeriod !== null
         ? Long.fromValue(object.liquidityRemovalCancelPeriod)
         : Long.UZERO;
-    message.rewardPeriods =
-      object.rewardPeriods?.map((e) => RewardPeriod.fromPartial(e)) || [];
+    message.rewardPeriods = object.rewardPeriods?.map((e) => RewardPeriod.fromPartial(e)) || [];
     message.rewardPeriodStartTime = object.rewardPeriodStartTime ?? "";
     return message;
   },
 };
 
 function createBasePmtpRateParams(): PmtpRateParams {
-  return {
-    pmtpPeriodBlockRate: "",
-    pmtpCurrentRunningRate: "",
-    pmtpInterPolicyRate: "",
-  };
+  return { pmtpPeriodBlockRate: "", pmtpCurrentRunningRate: "", pmtpInterPolicyRate: "" };
 }
 
 export const PmtpRateParams = {
-  encode(
-    message: PmtpRateParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PmtpRateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pmtpPeriodBlockRate !== "") {
       writer.uint32(18).string(message.pmtpPeriodBlockRate);
     }
@@ -314,32 +279,21 @@ export const PmtpRateParams = {
 
   fromJSON(object: any): PmtpRateParams {
     return {
-      pmtpPeriodBlockRate: isSet(object.pmtpPeriodBlockRate)
-        ? String(object.pmtpPeriodBlockRate)
-        : "",
-      pmtpCurrentRunningRate: isSet(object.pmtpCurrentRunningRate)
-        ? String(object.pmtpCurrentRunningRate)
-        : "",
-      pmtpInterPolicyRate: isSet(object.pmtpInterPolicyRate)
-        ? String(object.pmtpInterPolicyRate)
-        : "",
+      pmtpPeriodBlockRate: isSet(object.pmtpPeriodBlockRate) ? String(object.pmtpPeriodBlockRate) : "",
+      pmtpCurrentRunningRate: isSet(object.pmtpCurrentRunningRate) ? String(object.pmtpCurrentRunningRate) : "",
+      pmtpInterPolicyRate: isSet(object.pmtpInterPolicyRate) ? String(object.pmtpInterPolicyRate) : "",
     };
   },
 
   toJSON(message: PmtpRateParams): unknown {
     const obj: any = {};
-    message.pmtpPeriodBlockRate !== undefined &&
-      (obj.pmtpPeriodBlockRate = message.pmtpPeriodBlockRate);
-    message.pmtpCurrentRunningRate !== undefined &&
-      (obj.pmtpCurrentRunningRate = message.pmtpCurrentRunningRate);
-    message.pmtpInterPolicyRate !== undefined &&
-      (obj.pmtpInterPolicyRate = message.pmtpInterPolicyRate);
+    message.pmtpPeriodBlockRate !== undefined && (obj.pmtpPeriodBlockRate = message.pmtpPeriodBlockRate);
+    message.pmtpCurrentRunningRate !== undefined && (obj.pmtpCurrentRunningRate = message.pmtpCurrentRunningRate);
+    message.pmtpInterPolicyRate !== undefined && (obj.pmtpInterPolicyRate = message.pmtpInterPolicyRate);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PmtpRateParams>, I>>(
-    object: I,
-  ): PmtpRateParams {
+  fromPartial<I extends Exact<DeepPartial<PmtpRateParams>, I>>(object: I): PmtpRateParams {
     const message = createBasePmtpRateParams();
     message.pmtpPeriodBlockRate = object.pmtpPeriodBlockRate ?? "";
     message.pmtpCurrentRunningRate = object.pmtpCurrentRunningRate ?? "";
@@ -358,10 +312,7 @@ function createBasePmtpParams(): PmtpParams {
 }
 
 export const PmtpParams = {
-  encode(
-    message: PmtpParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PmtpParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pmtpPeriodGovernanceRate !== "") {
       writer.uint32(10).string(message.pmtpPeriodGovernanceRate);
     }
@@ -406,58 +357,42 @@ export const PmtpParams = {
 
   fromJSON(object: any): PmtpParams {
     return {
-      pmtpPeriodGovernanceRate: isSet(object.pmtpPeriodGovernanceRate)
-        ? String(object.pmtpPeriodGovernanceRate)
-        : "",
+      pmtpPeriodGovernanceRate: isSet(object.pmtpPeriodGovernanceRate) ? String(object.pmtpPeriodGovernanceRate) : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
         ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
         ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO,
-      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Long.fromValue(object.pmtpPeriodEndBlock)
-        : Long.ZERO,
+      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock) ? Long.fromValue(object.pmtpPeriodEndBlock) : Long.ZERO,
     };
   },
 
   toJSON(message: PmtpParams): unknown {
     const obj: any = {};
-    message.pmtpPeriodGovernanceRate !== undefined &&
-      (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
+    message.pmtpPeriodGovernanceRate !== undefined && (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
     message.pmtpPeriodEpochLength !== undefined &&
-      (obj.pmtpPeriodEpochLength = (
-        message.pmtpPeriodEpochLength || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodEpochLength = (message.pmtpPeriodEpochLength || Long.ZERO).toString());
     message.pmtpPeriodStartBlock !== undefined &&
-      (obj.pmtpPeriodStartBlock = (
-        message.pmtpPeriodStartBlock || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodStartBlock = (message.pmtpPeriodStartBlock || Long.ZERO).toString());
     message.pmtpPeriodEndBlock !== undefined &&
-      (obj.pmtpPeriodEndBlock = (
-        message.pmtpPeriodEndBlock || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodEndBlock = (message.pmtpPeriodEndBlock || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PmtpParams>, I>>(
-    object: I,
-  ): PmtpParams {
+  fromPartial<I extends Exact<DeepPartial<PmtpParams>, I>>(object: I): PmtpParams {
     const message = createBasePmtpParams();
     message.pmtpPeriodGovernanceRate = object.pmtpPeriodGovernanceRate ?? "";
     message.pmtpPeriodEpochLength =
-      object.pmtpPeriodEpochLength !== undefined &&
-      object.pmtpPeriodEpochLength !== null
+      object.pmtpPeriodEpochLength !== undefined && object.pmtpPeriodEpochLength !== null
         ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO;
     message.pmtpPeriodStartBlock =
-      object.pmtpPeriodStartBlock !== undefined &&
-      object.pmtpPeriodStartBlock !== null
+      object.pmtpPeriodStartBlock !== undefined && object.pmtpPeriodStartBlock !== null
         ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO;
     message.pmtpPeriodEndBlock =
-      object.pmtpPeriodEndBlock !== undefined &&
-      object.pmtpPeriodEndBlock !== null
+      object.pmtpPeriodEndBlock !== undefined && object.pmtpPeriodEndBlock !== null
         ? Long.fromValue(object.pmtpPeriodEndBlock)
         : Long.ZERO;
     return message;
@@ -478,10 +413,7 @@ function createBaseRewardPeriod(): RewardPeriod {
 }
 
 export const RewardPeriod = {
-  encode(
-    message: RewardPeriod,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RewardPeriod, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardPeriodId !== "") {
       writer.uint32(10).string(message.rewardPeriodId);
     }
@@ -529,9 +461,7 @@ export const RewardPeriod = {
           message.rewardPeriodAllocation = reader.string();
           break;
         case 5:
-          message.rewardPeriodPoolMultipliers.push(
-            PoolMultiplier.decode(reader, reader.uint32()),
-          );
+          message.rewardPeriodPoolMultipliers.push(PoolMultiplier.decode(reader, reader.uint32()));
           break;
         case 6:
           message.rewardPeriodDefaultMultiplier = reader.string();
@@ -552,92 +482,62 @@ export const RewardPeriod = {
 
   fromJSON(object: any): RewardPeriod {
     return {
-      rewardPeriodId: isSet(object.rewardPeriodId)
-        ? String(object.rewardPeriodId)
-        : "",
+      rewardPeriodId: isSet(object.rewardPeriodId) ? String(object.rewardPeriodId) : "",
       rewardPeriodStartBlock: isSet(object.rewardPeriodStartBlock)
         ? Long.fromValue(object.rewardPeriodStartBlock)
         : Long.UZERO,
       rewardPeriodEndBlock: isSet(object.rewardPeriodEndBlock)
         ? Long.fromValue(object.rewardPeriodEndBlock)
         : Long.UZERO,
-      rewardPeriodAllocation: isSet(object.rewardPeriodAllocation)
-        ? String(object.rewardPeriodAllocation)
-        : "",
-      rewardPeriodPoolMultipliers: Array.isArray(
-        object?.rewardPeriodPoolMultipliers,
-      )
-        ? object.rewardPeriodPoolMultipliers.map((e: any) =>
-            PoolMultiplier.fromJSON(e),
-          )
+      rewardPeriodAllocation: isSet(object.rewardPeriodAllocation) ? String(object.rewardPeriodAllocation) : "",
+      rewardPeriodPoolMultipliers: Array.isArray(object?.rewardPeriodPoolMultipliers)
+        ? object.rewardPeriodPoolMultipliers.map((e: any) => PoolMultiplier.fromJSON(e))
         : [],
       rewardPeriodDefaultMultiplier: isSet(object.rewardPeriodDefaultMultiplier)
         ? String(object.rewardPeriodDefaultMultiplier)
         : "",
-      rewardPeriodDistribute: isSet(object.rewardPeriodDistribute)
-        ? Boolean(object.rewardPeriodDistribute)
-        : false,
-      rewardPeriodMod: isSet(object.rewardPeriodMod)
-        ? Long.fromValue(object.rewardPeriodMod)
-        : Long.UZERO,
+      rewardPeriodDistribute: isSet(object.rewardPeriodDistribute) ? Boolean(object.rewardPeriodDistribute) : false,
+      rewardPeriodMod: isSet(object.rewardPeriodMod) ? Long.fromValue(object.rewardPeriodMod) : Long.UZERO,
     };
   },
 
   toJSON(message: RewardPeriod): unknown {
     const obj: any = {};
-    message.rewardPeriodId !== undefined &&
-      (obj.rewardPeriodId = message.rewardPeriodId);
+    message.rewardPeriodId !== undefined && (obj.rewardPeriodId = message.rewardPeriodId);
     message.rewardPeriodStartBlock !== undefined &&
-      (obj.rewardPeriodStartBlock = (
-        message.rewardPeriodStartBlock || Long.UZERO
-      ).toString());
+      (obj.rewardPeriodStartBlock = (message.rewardPeriodStartBlock || Long.UZERO).toString());
     message.rewardPeriodEndBlock !== undefined &&
-      (obj.rewardPeriodEndBlock = (
-        message.rewardPeriodEndBlock || Long.UZERO
-      ).toString());
-    message.rewardPeriodAllocation !== undefined &&
-      (obj.rewardPeriodAllocation = message.rewardPeriodAllocation);
+      (obj.rewardPeriodEndBlock = (message.rewardPeriodEndBlock || Long.UZERO).toString());
+    message.rewardPeriodAllocation !== undefined && (obj.rewardPeriodAllocation = message.rewardPeriodAllocation);
     if (message.rewardPeriodPoolMultipliers) {
-      obj.rewardPeriodPoolMultipliers = message.rewardPeriodPoolMultipliers.map(
-        (e) => (e ? PoolMultiplier.toJSON(e) : undefined),
+      obj.rewardPeriodPoolMultipliers = message.rewardPeriodPoolMultipliers.map((e) =>
+        e ? PoolMultiplier.toJSON(e) : undefined,
       );
     } else {
       obj.rewardPeriodPoolMultipliers = [];
     }
     message.rewardPeriodDefaultMultiplier !== undefined &&
-      (obj.rewardPeriodDefaultMultiplier =
-        message.rewardPeriodDefaultMultiplier);
-    message.rewardPeriodDistribute !== undefined &&
-      (obj.rewardPeriodDistribute = message.rewardPeriodDistribute);
-    message.rewardPeriodMod !== undefined &&
-      (obj.rewardPeriodMod = (
-        message.rewardPeriodMod || Long.UZERO
-      ).toString());
+      (obj.rewardPeriodDefaultMultiplier = message.rewardPeriodDefaultMultiplier);
+    message.rewardPeriodDistribute !== undefined && (obj.rewardPeriodDistribute = message.rewardPeriodDistribute);
+    message.rewardPeriodMod !== undefined && (obj.rewardPeriodMod = (message.rewardPeriodMod || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RewardPeriod>, I>>(
-    object: I,
-  ): RewardPeriod {
+  fromPartial<I extends Exact<DeepPartial<RewardPeriod>, I>>(object: I): RewardPeriod {
     const message = createBaseRewardPeriod();
     message.rewardPeriodId = object.rewardPeriodId ?? "";
     message.rewardPeriodStartBlock =
-      object.rewardPeriodStartBlock !== undefined &&
-      object.rewardPeriodStartBlock !== null
+      object.rewardPeriodStartBlock !== undefined && object.rewardPeriodStartBlock !== null
         ? Long.fromValue(object.rewardPeriodStartBlock)
         : Long.UZERO;
     message.rewardPeriodEndBlock =
-      object.rewardPeriodEndBlock !== undefined &&
-      object.rewardPeriodEndBlock !== null
+      object.rewardPeriodEndBlock !== undefined && object.rewardPeriodEndBlock !== null
         ? Long.fromValue(object.rewardPeriodEndBlock)
         : Long.UZERO;
     message.rewardPeriodAllocation = object.rewardPeriodAllocation ?? "";
     message.rewardPeriodPoolMultipliers =
-      object.rewardPeriodPoolMultipliers?.map((e) =>
-        PoolMultiplier.fromPartial(e),
-      ) || [];
-    message.rewardPeriodDefaultMultiplier =
-      object.rewardPeriodDefaultMultiplier ?? "";
+      object.rewardPeriodPoolMultipliers?.map((e) => PoolMultiplier.fromPartial(e)) || [];
+    message.rewardPeriodDefaultMultiplier = object.rewardPeriodDefaultMultiplier ?? "";
     message.rewardPeriodDistribute = object.rewardPeriodDistribute ?? false;
     message.rewardPeriodMod =
       object.rewardPeriodMod !== undefined && object.rewardPeriodMod !== null
@@ -652,10 +552,7 @@ function createBasePoolMultiplier(): PoolMultiplier {
 }
 
 export const PoolMultiplier = {
-  encode(
-    message: PoolMultiplier,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PoolMultiplier, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.poolMultiplierAsset !== "") {
       writer.uint32(10).string(message.poolMultiplierAsset);
     }
@@ -688,24 +585,19 @@ export const PoolMultiplier = {
 
   fromJSON(object: any): PoolMultiplier {
     return {
-      poolMultiplierAsset: isSet(object.poolMultiplierAsset)
-        ? String(object.poolMultiplierAsset)
-        : "",
+      poolMultiplierAsset: isSet(object.poolMultiplierAsset) ? String(object.poolMultiplierAsset) : "",
       multiplier: isSet(object.multiplier) ? String(object.multiplier) : "",
     };
   },
 
   toJSON(message: PoolMultiplier): unknown {
     const obj: any = {};
-    message.poolMultiplierAsset !== undefined &&
-      (obj.poolMultiplierAsset = message.poolMultiplierAsset);
+    message.poolMultiplierAsset !== undefined && (obj.poolMultiplierAsset = message.poolMultiplierAsset);
     message.multiplier !== undefined && (obj.multiplier = message.multiplier);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PoolMultiplier>, I>>(
-    object: I,
-  ): PoolMultiplier {
+  fromPartial<I extends Exact<DeepPartial<PoolMultiplier>, I>>(object: I): PoolMultiplier {
     const message = createBasePoolMultiplier();
     message.poolMultiplierAsset = object.poolMultiplierAsset ?? "";
     message.multiplier = object.multiplier ?? "";
@@ -723,10 +615,7 @@ function createBaseLiquidityProtectionParams(): LiquidityProtectionParams {
 }
 
 export const LiquidityProtectionParams = {
-  encode(
-    message: LiquidityProtectionParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProtectionParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.maxRowanLiquidityThreshold !== "") {
       writer.uint32(10).string(message.maxRowanLiquidityThreshold);
     }
@@ -742,10 +631,7 @@ export const LiquidityProtectionParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProtectionParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProtectionParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProtectionParams();
@@ -777,14 +663,10 @@ export const LiquidityProtectionParams = {
       maxRowanLiquidityThreshold: isSet(object.maxRowanLiquidityThreshold)
         ? String(object.maxRowanLiquidityThreshold)
         : "",
-      maxRowanLiquidityThresholdAsset: isSet(
-        object.maxRowanLiquidityThresholdAsset,
-      )
+      maxRowanLiquidityThresholdAsset: isSet(object.maxRowanLiquidityThresholdAsset)
         ? String(object.maxRowanLiquidityThresholdAsset)
         : "",
-      epochLength: isSet(object.epochLength)
-        ? Long.fromValue(object.epochLength)
-        : Long.UZERO,
+      epochLength: isSet(object.epochLength) ? Long.fromValue(object.epochLength) : Long.UZERO,
       isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
     };
   },
@@ -794,26 +676,18 @@ export const LiquidityProtectionParams = {
     message.maxRowanLiquidityThreshold !== undefined &&
       (obj.maxRowanLiquidityThreshold = message.maxRowanLiquidityThreshold);
     message.maxRowanLiquidityThresholdAsset !== undefined &&
-      (obj.maxRowanLiquidityThresholdAsset =
-        message.maxRowanLiquidityThresholdAsset);
-    message.epochLength !== undefined &&
-      (obj.epochLength = (message.epochLength || Long.UZERO).toString());
+      (obj.maxRowanLiquidityThresholdAsset = message.maxRowanLiquidityThresholdAsset);
+    message.epochLength !== undefined && (obj.epochLength = (message.epochLength || Long.UZERO).toString());
     message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParams>, I>>(
-    object: I,
-  ): LiquidityProtectionParams {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProtectionParams>, I>>(object: I): LiquidityProtectionParams {
     const message = createBaseLiquidityProtectionParams();
-    message.maxRowanLiquidityThreshold =
-      object.maxRowanLiquidityThreshold ?? "";
-    message.maxRowanLiquidityThresholdAsset =
-      object.maxRowanLiquidityThresholdAsset ?? "";
+    message.maxRowanLiquidityThreshold = object.maxRowanLiquidityThreshold ?? "";
+    message.maxRowanLiquidityThresholdAsset = object.maxRowanLiquidityThresholdAsset ?? "";
     message.epochLength =
-      object.epochLength !== undefined && object.epochLength !== null
-        ? Long.fromValue(object.epochLength)
-        : Long.UZERO;
+      object.epochLength !== undefined && object.epochLength !== null ? Long.fromValue(object.epochLength) : Long.UZERO;
     message.isActive = object.isActive ?? false;
     return message;
   },
@@ -824,20 +698,14 @@ function createBaseLiquidityProtectionRateParams(): LiquidityProtectionRateParam
 }
 
 export const LiquidityProtectionRateParams = {
-  encode(
-    message: LiquidityProtectionRateParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProtectionRateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.currentRowanLiquidityThreshold !== "") {
       writer.uint32(10).string(message.currentRowanLiquidityThreshold);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProtectionRateParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProtectionRateParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProtectionRateParams();
@@ -857,9 +725,7 @@ export const LiquidityProtectionRateParams = {
 
   fromJSON(object: any): LiquidityProtectionRateParams {
     return {
-      currentRowanLiquidityThreshold: isSet(
-        object.currentRowanLiquidityThreshold,
-      )
+      currentRowanLiquidityThreshold: isSet(object.currentRowanLiquidityThreshold)
         ? String(object.currentRowanLiquidityThreshold)
         : "",
     };
@@ -868,8 +734,7 @@ export const LiquidityProtectionRateParams = {
   toJSON(message: LiquidityProtectionRateParams): unknown {
     const obj: any = {};
     message.currentRowanLiquidityThreshold !== undefined &&
-      (obj.currentRowanLiquidityThreshold =
-        message.currentRowanLiquidityThreshold);
+      (obj.currentRowanLiquidityThreshold = message.currentRowanLiquidityThreshold);
     return obj;
   },
 
@@ -877,8 +742,7 @@ export const LiquidityProtectionRateParams = {
     object: I,
   ): LiquidityProtectionRateParams {
     const message = createBaseLiquidityProtectionRateParams();
-    message.currentRowanLiquidityThreshold =
-      object.currentRowanLiquidityThreshold ?? "";
+    message.currentRowanLiquidityThreshold = object.currentRowanLiquidityThreshold ?? "";
     return message;
   },
 };
@@ -893,10 +757,7 @@ function createBaseProviderDistributionPeriod(): ProviderDistributionPeriod {
 }
 
 export const ProviderDistributionPeriod = {
-  encode(
-    message: ProviderDistributionPeriod,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ProviderDistributionPeriod, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionPeriodBlockRate !== "") {
       writer.uint32(10).string(message.distributionPeriodBlockRate);
     }
@@ -912,10 +773,7 @@ export const ProviderDistributionPeriod = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): ProviderDistributionPeriod {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProviderDistributionPeriod {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProviderDistributionPeriod();
@@ -964,39 +822,27 @@ export const ProviderDistributionPeriod = {
     message.distributionPeriodBlockRate !== undefined &&
       (obj.distributionPeriodBlockRate = message.distributionPeriodBlockRate);
     message.distributionPeriodStartBlock !== undefined &&
-      (obj.distributionPeriodStartBlock = (
-        message.distributionPeriodStartBlock || Long.UZERO
-      ).toString());
+      (obj.distributionPeriodStartBlock = (message.distributionPeriodStartBlock || Long.UZERO).toString());
     message.distributionPeriodEndBlock !== undefined &&
-      (obj.distributionPeriodEndBlock = (
-        message.distributionPeriodEndBlock || Long.UZERO
-      ).toString());
+      (obj.distributionPeriodEndBlock = (message.distributionPeriodEndBlock || Long.UZERO).toString());
     message.distributionPeriodMod !== undefined &&
-      (obj.distributionPeriodMod = (
-        message.distributionPeriodMod || Long.UZERO
-      ).toString());
+      (obj.distributionPeriodMod = (message.distributionPeriodMod || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProviderDistributionPeriod>, I>>(
-    object: I,
-  ): ProviderDistributionPeriod {
+  fromPartial<I extends Exact<DeepPartial<ProviderDistributionPeriod>, I>>(object: I): ProviderDistributionPeriod {
     const message = createBaseProviderDistributionPeriod();
-    message.distributionPeriodBlockRate =
-      object.distributionPeriodBlockRate ?? "";
+    message.distributionPeriodBlockRate = object.distributionPeriodBlockRate ?? "";
     message.distributionPeriodStartBlock =
-      object.distributionPeriodStartBlock !== undefined &&
-      object.distributionPeriodStartBlock !== null
+      object.distributionPeriodStartBlock !== undefined && object.distributionPeriodStartBlock !== null
         ? Long.fromValue(object.distributionPeriodStartBlock)
         : Long.UZERO;
     message.distributionPeriodEndBlock =
-      object.distributionPeriodEndBlock !== undefined &&
-      object.distributionPeriodEndBlock !== null
+      object.distributionPeriodEndBlock !== undefined && object.distributionPeriodEndBlock !== null
         ? Long.fromValue(object.distributionPeriodEndBlock)
         : Long.UZERO;
     message.distributionPeriodMod =
-      object.distributionPeriodMod !== undefined &&
-      object.distributionPeriodMod !== null
+      object.distributionPeriodMod !== undefined && object.distributionPeriodMod !== null
         ? Long.fromValue(object.distributionPeriodMod)
         : Long.UZERO;
     return message;
@@ -1008,20 +854,14 @@ function createBaseProviderDistributionParams(): ProviderDistributionParams {
 }
 
 export const ProviderDistributionParams = {
-  encode(
-    message: ProviderDistributionParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: ProviderDistributionParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.distributionPeriods) {
       ProviderDistributionPeriod.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): ProviderDistributionParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProviderDistributionParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProviderDistributionParams();
@@ -1029,9 +869,7 @@ export const ProviderDistributionParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributionPeriods.push(
-            ProviderDistributionPeriod.decode(reader, reader.uint32()),
-          );
+          message.distributionPeriods.push(ProviderDistributionPeriod.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1044,9 +882,7 @@ export const ProviderDistributionParams = {
   fromJSON(object: any): ProviderDistributionParams {
     return {
       distributionPeriods: Array.isArray(object?.distributionPeriods)
-        ? object.distributionPeriods.map((e: any) =>
-            ProviderDistributionPeriod.fromJSON(e),
-          )
+        ? object.distributionPeriods.map((e: any) => ProviderDistributionPeriod.fromJSON(e))
         : [],
     };
   },
@@ -1063,26 +899,15 @@ export const ProviderDistributionParams = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ProviderDistributionParams>, I>>(
-    object: I,
-  ): ProviderDistributionParams {
+  fromPartial<I extends Exact<DeepPartial<ProviderDistributionParams>, I>>(object: I): ProviderDistributionParams {
     const message = createBaseProviderDistributionParams();
     message.distributionPeriods =
-      object.distributionPeriods?.map((e) =>
-        ProviderDistributionPeriod.fromPartial(e),
-      ) || [];
+      object.distributionPeriods?.map((e) => ProviderDistributionPeriod.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -1099,9 +924,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

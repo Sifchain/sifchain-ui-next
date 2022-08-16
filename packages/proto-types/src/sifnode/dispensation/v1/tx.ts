@@ -1,9 +1,5 @@
 /* eslint-disable */
-import {
-  DistributionType,
-  distributionTypeFromJSON,
-  distributionTypeToJSON,
-} from "./types";
+import { DistributionType, distributionTypeFromJSON, distributionTypeToJSON } from "./types";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
@@ -35,19 +31,11 @@ export interface MsgRunDistribution {
 }
 
 function createBaseMsgCreateDistribution(): MsgCreateDistribution {
-  return {
-    distributor: "",
-    authorizedRunner: "",
-    distributionType: 0,
-    output: [],
-  };
+  return { distributor: "", authorizedRunner: "", distributionType: 0, output: [] };
 }
 
 export const MsgCreateDistribution = {
-  encode(
-    message: MsgCreateDistribution,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgCreateDistribution, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributor !== "") {
       writer.uint32(10).string(message.distributor);
     }
@@ -63,10 +51,7 @@ export const MsgCreateDistribution = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreateDistribution {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateDistribution {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateDistribution();
@@ -96,26 +81,17 @@ export const MsgCreateDistribution = {
   fromJSON(object: any): MsgCreateDistribution {
     return {
       distributor: isSet(object.distributor) ? String(object.distributor) : "",
-      authorizedRunner: isSet(object.authorizedRunner)
-        ? String(object.authorizedRunner)
-        : "",
-      distributionType: isSet(object.distributionType)
-        ? distributionTypeFromJSON(object.distributionType)
-        : 0,
-      output: Array.isArray(object?.output)
-        ? object.output.map((e: any) => String(e))
-        : [],
+      authorizedRunner: isSet(object.authorizedRunner) ? String(object.authorizedRunner) : "",
+      distributionType: isSet(object.distributionType) ? distributionTypeFromJSON(object.distributionType) : 0,
+      output: Array.isArray(object?.output) ? object.output.map((e: any) => String(e)) : [],
     };
   },
 
   toJSON(message: MsgCreateDistribution): unknown {
     const obj: any = {};
-    message.distributor !== undefined &&
-      (obj.distributor = message.distributor);
-    message.authorizedRunner !== undefined &&
-      (obj.authorizedRunner = message.authorizedRunner);
-    message.distributionType !== undefined &&
-      (obj.distributionType = distributionTypeToJSON(message.distributionType));
+    message.distributor !== undefined && (obj.distributor = message.distributor);
+    message.authorizedRunner !== undefined && (obj.authorizedRunner = message.authorizedRunner);
+    message.distributionType !== undefined && (obj.distributionType = distributionTypeToJSON(message.distributionType));
     if (message.output) {
       obj.output = message.output.map((e) => e);
     } else {
@@ -124,9 +100,7 @@ export const MsgCreateDistribution = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateDistribution>, I>>(
-    object: I,
-  ): MsgCreateDistribution {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDistribution>, I>>(object: I): MsgCreateDistribution {
     const message = createBaseMsgCreateDistribution();
     message.distributor = object.distributor ?? "";
     message.authorizedRunner = object.authorizedRunner ?? "";
@@ -141,17 +115,11 @@ function createBaseMsgCreateDistributionResponse(): MsgCreateDistributionRespons
 }
 
 export const MsgCreateDistributionResponse = {
-  encode(
-    _: MsgCreateDistributionResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCreateDistributionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreateDistributionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateDistributionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateDistributionResponse();
@@ -175,9 +143,7 @@ export const MsgCreateDistributionResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateDistributionResponse>, I>>(
-    _: I,
-  ): MsgCreateDistributionResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDistributionResponse>, I>>(_: I): MsgCreateDistributionResponse {
     const message = createBaseMsgCreateDistributionResponse();
     return message;
   },
@@ -188,17 +154,11 @@ function createBaseMsgCreateClaimResponse(): MsgCreateClaimResponse {
 }
 
 export const MsgCreateClaimResponse = {
-  encode(
-    _: MsgCreateClaimResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCreateClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreateClaimResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateClaimResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateClaimResponse();
@@ -222,9 +182,7 @@ export const MsgCreateClaimResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateClaimResponse>, I>>(
-    _: I,
-  ): MsgCreateClaimResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateClaimResponse>, I>>(_: I): MsgCreateClaimResponse {
     const message = createBaseMsgCreateClaimResponse();
     return message;
   },
@@ -235,17 +193,11 @@ function createBaseMsgRunDistributionResponse(): MsgRunDistributionResponse {
 }
 
 export const MsgRunDistributionResponse = {
-  encode(
-    _: MsgRunDistributionResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRunDistributionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRunDistributionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRunDistributionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRunDistributionResponse();
@@ -269,9 +221,7 @@ export const MsgRunDistributionResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRunDistributionResponse>, I>>(
-    _: I,
-  ): MsgRunDistributionResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRunDistributionResponse>, I>>(_: I): MsgRunDistributionResponse {
     const message = createBaseMsgRunDistributionResponse();
     return message;
   },
@@ -282,10 +232,7 @@ function createBaseMsgCreateUserClaim(): MsgCreateUserClaim {
 }
 
 export const MsgCreateUserClaim = {
-  encode(
-    message: MsgCreateUserClaim,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgCreateUserClaim, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userClaimAddress !== "") {
       writer.uint32(10).string(message.userClaimAddress);
     }
@@ -318,27 +265,19 @@ export const MsgCreateUserClaim = {
 
   fromJSON(object: any): MsgCreateUserClaim {
     return {
-      userClaimAddress: isSet(object.userClaimAddress)
-        ? String(object.userClaimAddress)
-        : "",
-      userClaimType: isSet(object.userClaimType)
-        ? distributionTypeFromJSON(object.userClaimType)
-        : 0,
+      userClaimAddress: isSet(object.userClaimAddress) ? String(object.userClaimAddress) : "",
+      userClaimType: isSet(object.userClaimType) ? distributionTypeFromJSON(object.userClaimType) : 0,
     };
   },
 
   toJSON(message: MsgCreateUserClaim): unknown {
     const obj: any = {};
-    message.userClaimAddress !== undefined &&
-      (obj.userClaimAddress = message.userClaimAddress);
-    message.userClaimType !== undefined &&
-      (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
+    message.userClaimAddress !== undefined && (obj.userClaimAddress = message.userClaimAddress);
+    message.userClaimType !== undefined && (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateUserClaim>, I>>(
-    object: I,
-  ): MsgCreateUserClaim {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateUserClaim>, I>>(object: I): MsgCreateUserClaim {
     const message = createBaseMsgCreateUserClaim();
     message.userClaimAddress = object.userClaimAddress ?? "";
     message.userClaimType = object.userClaimType ?? 0;
@@ -347,19 +286,11 @@ export const MsgCreateUserClaim = {
 };
 
 function createBaseMsgRunDistribution(): MsgRunDistribution {
-  return {
-    authorizedRunner: "",
-    distributionName: "",
-    distributionType: 0,
-    distributionCount: Long.ZERO,
-  };
+  return { authorizedRunner: "", distributionName: "", distributionType: 0, distributionCount: Long.ZERO };
 }
 
 export const MsgRunDistribution = {
-  encode(
-    message: MsgRunDistribution,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRunDistribution, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authorizedRunner !== "") {
       writer.uint32(10).string(message.authorizedRunner);
     }
@@ -404,46 +335,30 @@ export const MsgRunDistribution = {
 
   fromJSON(object: any): MsgRunDistribution {
     return {
-      authorizedRunner: isSet(object.authorizedRunner)
-        ? String(object.authorizedRunner)
-        : "",
-      distributionName: isSet(object.distributionName)
-        ? String(object.distributionName)
-        : "",
-      distributionType: isSet(object.distributionType)
-        ? distributionTypeFromJSON(object.distributionType)
-        : 0,
-      distributionCount: isSet(object.distributionCount)
-        ? Long.fromValue(object.distributionCount)
-        : Long.ZERO,
+      authorizedRunner: isSet(object.authorizedRunner) ? String(object.authorizedRunner) : "",
+      distributionName: isSet(object.distributionName) ? String(object.distributionName) : "",
+      distributionType: isSet(object.distributionType) ? distributionTypeFromJSON(object.distributionType) : 0,
+      distributionCount: isSet(object.distributionCount) ? Long.fromValue(object.distributionCount) : Long.ZERO,
     };
   },
 
   toJSON(message: MsgRunDistribution): unknown {
     const obj: any = {};
-    message.authorizedRunner !== undefined &&
-      (obj.authorizedRunner = message.authorizedRunner);
-    message.distributionName !== undefined &&
-      (obj.distributionName = message.distributionName);
-    message.distributionType !== undefined &&
-      (obj.distributionType = distributionTypeToJSON(message.distributionType));
+    message.authorizedRunner !== undefined && (obj.authorizedRunner = message.authorizedRunner);
+    message.distributionName !== undefined && (obj.distributionName = message.distributionName);
+    message.distributionType !== undefined && (obj.distributionType = distributionTypeToJSON(message.distributionType));
     message.distributionCount !== undefined &&
-      (obj.distributionCount = (
-        message.distributionCount || Long.ZERO
-      ).toString());
+      (obj.distributionCount = (message.distributionCount || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRunDistribution>, I>>(
-    object: I,
-  ): MsgRunDistribution {
+  fromPartial<I extends Exact<DeepPartial<MsgRunDistribution>, I>>(object: I): MsgRunDistribution {
     const message = createBaseMsgRunDistribution();
     message.authorizedRunner = object.authorizedRunner ?? "";
     message.distributionName = object.distributionName ?? "";
     message.distributionType = object.distributionType ?? 0;
     message.distributionCount =
-      object.distributionCount !== undefined &&
-      object.distributionCount !== null
+      object.distributionCount !== undefined && object.distributionCount !== null
         ? Long.fromValue(object.distributionCount)
         : Long.ZERO;
     return message;
@@ -451,13 +366,9 @@ export const MsgRunDistribution = {
 };
 
 export interface Msg {
-  CreateDistribution(
-    request: MsgCreateDistribution,
-  ): Promise<MsgCreateDistributionResponse>;
+  CreateDistribution(request: MsgCreateDistribution): Promise<MsgCreateDistributionResponse>;
   CreateUserClaim(request: MsgCreateUserClaim): Promise<MsgCreateClaimResponse>;
-  RunDistribution(
-    request: MsgRunDistribution,
-  ): Promise<MsgRunDistributionResponse>;
+  RunDistribution(request: MsgRunDistribution): Promise<MsgRunDistributionResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -468,65 +379,30 @@ export class MsgClientImpl implements Msg {
     this.CreateUserClaim = this.CreateUserClaim.bind(this);
     this.RunDistribution = this.RunDistribution.bind(this);
   }
-  CreateDistribution(
-    request: MsgCreateDistribution,
-  ): Promise<MsgCreateDistributionResponse> {
+  CreateDistribution(request: MsgCreateDistribution): Promise<MsgCreateDistributionResponse> {
     const data = MsgCreateDistribution.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Msg",
-      "CreateDistribution",
-      data,
-    );
-    return promise.then((data) =>
-      MsgCreateDistributionResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Msg", "CreateDistribution", data);
+    return promise.then((data) => MsgCreateDistributionResponse.decode(new _m0.Reader(data)));
   }
 
-  CreateUserClaim(
-    request: MsgCreateUserClaim,
-  ): Promise<MsgCreateClaimResponse> {
+  CreateUserClaim(request: MsgCreateUserClaim): Promise<MsgCreateClaimResponse> {
     const data = MsgCreateUserClaim.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Msg",
-      "CreateUserClaim",
-      data,
-    );
-    return promise.then((data) =>
-      MsgCreateClaimResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Msg", "CreateUserClaim", data);
+    return promise.then((data) => MsgCreateClaimResponse.decode(new _m0.Reader(data)));
   }
 
-  RunDistribution(
-    request: MsgRunDistribution,
-  ): Promise<MsgRunDistributionResponse> {
+  RunDistribution(request: MsgRunDistribution): Promise<MsgRunDistributionResponse> {
     const data = MsgRunDistribution.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Msg",
-      "RunDistribution",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRunDistributionResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Msg", "RunDistribution", data);
+    return promise.then((data) => MsgRunDistributionResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -543,9 +419,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -93,10 +93,7 @@ function createBaseGenesisState(): GenesisState {
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.addressWhitelist) {
       writer.uint32(10).string(v!);
     }
@@ -138,12 +135,8 @@ export const GenesisState = {
       addressWhitelist: Array.isArray(object?.addressWhitelist)
         ? object.addressWhitelist.map((e: any) => String(e))
         : [],
-      adminAddress: isSet(object.adminAddress)
-        ? String(object.adminAddress)
-        : "",
-      prophecies: Array.isArray(object?.prophecies)
-        ? object.prophecies.map((e: any) => DBProphecy.fromJSON(e))
-        : [],
+      adminAddress: isSet(object.adminAddress) ? String(object.adminAddress) : "",
+      prophecies: Array.isArray(object?.prophecies) ? object.prophecies.map((e: any) => DBProphecy.fromJSON(e)) : [],
     };
   },
 
@@ -154,26 +147,20 @@ export const GenesisState = {
     } else {
       obj.addressWhitelist = [];
     }
-    message.adminAddress !== undefined &&
-      (obj.adminAddress = message.adminAddress);
+    message.adminAddress !== undefined && (obj.adminAddress = message.adminAddress);
     if (message.prophecies) {
-      obj.prophecies = message.prophecies.map((e) =>
-        e ? DBProphecy.toJSON(e) : undefined,
-      );
+      obj.prophecies = message.prophecies.map((e) => (e ? DBProphecy.toJSON(e) : undefined));
     } else {
       obj.prophecies = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.addressWhitelist = object.addressWhitelist?.map((e) => e) || [];
     message.adminAddress = object.adminAddress ?? "";
-    message.prophecies =
-      object.prophecies?.map((e) => DBProphecy.fromPartial(e)) || [];
+    message.prophecies = object.prophecies?.map((e) => DBProphecy.fromPartial(e)) || [];
     return message;
   },
 };
@@ -223,9 +210,7 @@ export const Claim = {
   fromJSON(object: any): Claim {
     return {
       id: isSet(object.id) ? String(object.id) : "",
-      validatorAddress: isSet(object.validatorAddress)
-        ? String(object.validatorAddress)
-        : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
       content: isSet(object.content) ? String(object.content) : "",
     };
   },
@@ -233,8 +218,7 @@ export const Claim = {
   toJSON(message: Claim): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     message.content !== undefined && (obj.content = message.content);
     return obj;
   },
@@ -249,19 +233,11 @@ export const Claim = {
 };
 
 function createBaseDBProphecy(): DBProphecy {
-  return {
-    id: "",
-    status: undefined,
-    claimValidators: new Uint8Array(),
-    validatorClaims: new Uint8Array(),
-  };
+  return { id: "", status: undefined, claimValidators: new Uint8Array(), validatorClaims: new Uint8Array() };
 }
 
 export const DBProphecy = {
-  encode(
-    message: DBProphecy,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DBProphecy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -308,44 +284,31 @@ export const DBProphecy = {
     return {
       id: isSet(object.id) ? String(object.id) : "",
       status: isSet(object.status) ? Status.fromJSON(object.status) : undefined,
-      claimValidators: isSet(object.claimValidators)
-        ? bytesFromBase64(object.claimValidators)
-        : new Uint8Array(),
-      validatorClaims: isSet(object.validatorClaims)
-        ? bytesFromBase64(object.validatorClaims)
-        : new Uint8Array(),
+      claimValidators: isSet(object.claimValidators) ? bytesFromBase64(object.claimValidators) : new Uint8Array(),
+      validatorClaims: isSet(object.validatorClaims) ? bytesFromBase64(object.validatorClaims) : new Uint8Array(),
     };
   },
 
   toJSON(message: DBProphecy): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.status !== undefined &&
-      (obj.status = message.status ? Status.toJSON(message.status) : undefined);
+    message.status !== undefined && (obj.status = message.status ? Status.toJSON(message.status) : undefined);
     message.claimValidators !== undefined &&
       (obj.claimValidators = base64FromBytes(
-        message.claimValidators !== undefined
-          ? message.claimValidators
-          : new Uint8Array(),
+        message.claimValidators !== undefined ? message.claimValidators : new Uint8Array(),
       ));
     message.validatorClaims !== undefined &&
       (obj.validatorClaims = base64FromBytes(
-        message.validatorClaims !== undefined
-          ? message.validatorClaims
-          : new Uint8Array(),
+        message.validatorClaims !== undefined ? message.validatorClaims : new Uint8Array(),
       ));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DBProphecy>, I>>(
-    object: I,
-  ): DBProphecy {
+  fromPartial<I extends Exact<DeepPartial<DBProphecy>, I>>(object: I): DBProphecy {
     const message = createBaseDBProphecy();
     message.id = object.id ?? "";
     message.status =
-      object.status !== undefined && object.status !== null
-        ? Status.fromPartial(object.status)
-        : undefined;
+      object.status !== undefined && object.status !== null ? Status.fromPartial(object.status) : undefined;
     message.claimValidators = object.claimValidators ?? new Uint8Array();
     message.validatorClaims = object.validatorClaims ?? new Uint8Array();
     return message;
@@ -357,10 +320,7 @@ function createBaseStatus(): Status {
 }
 
 export const Status = {
-  encode(
-    message: Status,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Status, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.text !== 0) {
       writer.uint32(8).int32(message.text);
     }
@@ -449,14 +409,7 @@ function base64FromBytes(arr: Uint8Array): string {
   }
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -473,9 +426,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

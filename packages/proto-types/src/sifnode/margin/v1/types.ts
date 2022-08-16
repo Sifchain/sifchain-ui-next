@@ -91,10 +91,7 @@ function createBaseGenesisState(): GenesisState {
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -127,19 +124,14 @@ export const GenesisState = {
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
     return message;
   },
 };
@@ -171,10 +163,7 @@ function createBaseParams(): Params {
 }
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.leverageMax !== "") {
       writer.uint32(10).string(message.leverageMax);
     }
@@ -218,14 +207,10 @@ export const Params = {
       writer.uint32(114).string(message.forceCloseInsuranceFundAddress);
     }
     if (message.incrementalInterestPaymentFundPercentage !== "") {
-      writer
-        .uint32(122)
-        .string(message.incrementalInterestPaymentFundPercentage);
+      writer.uint32(122).string(message.incrementalInterestPaymentFundPercentage);
     }
     if (message.incrementalInterestPaymentInsuranceFundAddress !== "") {
-      writer
-        .uint32(130)
-        .string(message.incrementalInterestPaymentInsuranceFundAddress);
+      writer.uint32(130).string(message.incrementalInterestPaymentInsuranceFundAddress);
     }
     if (message.sqModifier !== "") {
       writer.uint32(138).string(message.sqModifier);
@@ -298,8 +283,7 @@ export const Params = {
           message.incrementalInterestPaymentFundPercentage = reader.string();
           break;
         case 16:
-          message.incrementalInterestPaymentInsuranceFundAddress =
-            reader.string();
+          message.incrementalInterestPaymentInsuranceFundAddress = reader.string();
           break;
         case 17:
           message.sqModifier = reader.string();
@@ -327,130 +311,73 @@ export const Params = {
   fromJSON(object: any): Params {
     return {
       leverageMax: isSet(object.leverageMax) ? String(object.leverageMax) : "",
-      interestRateMax: isSet(object.interestRateMax)
-        ? String(object.interestRateMax)
-        : "",
-      interestRateMin: isSet(object.interestRateMin)
-        ? String(object.interestRateMin)
-        : "",
-      interestRateIncrease: isSet(object.interestRateIncrease)
-        ? String(object.interestRateIncrease)
-        : "",
-      interestRateDecrease: isSet(object.interestRateDecrease)
-        ? String(object.interestRateDecrease)
-        : "",
-      healthGainFactor: isSet(object.healthGainFactor)
-        ? String(object.healthGainFactor)
-        : "",
-      epochLength: isSet(object.epochLength)
-        ? Long.fromValue(object.epochLength)
-        : Long.ZERO,
-      pools: Array.isArray(object?.pools)
-        ? object.pools.map((e: any) => String(e))
-        : [],
-      forceCloseThreshold: isSet(object.forceCloseThreshold)
-        ? String(object.forceCloseThreshold)
-        : "",
-      removalQueueThreshold: isSet(object.removalQueueThreshold)
-        ? String(object.removalQueueThreshold)
-        : "",
-      maxOpenPositions: isSet(object.maxOpenPositions)
-        ? Long.fromValue(object.maxOpenPositions)
-        : Long.UZERO,
-      poolOpenThreshold: isSet(object.poolOpenThreshold)
-        ? String(object.poolOpenThreshold)
-        : "",
-      forceCloseFundPercentage: isSet(object.forceCloseFundPercentage)
-        ? String(object.forceCloseFundPercentage)
-        : "",
-      forceCloseInsuranceFundAddress: isSet(
-        object.forceCloseInsuranceFundAddress,
-      )
+      interestRateMax: isSet(object.interestRateMax) ? String(object.interestRateMax) : "",
+      interestRateMin: isSet(object.interestRateMin) ? String(object.interestRateMin) : "",
+      interestRateIncrease: isSet(object.interestRateIncrease) ? String(object.interestRateIncrease) : "",
+      interestRateDecrease: isSet(object.interestRateDecrease) ? String(object.interestRateDecrease) : "",
+      healthGainFactor: isSet(object.healthGainFactor) ? String(object.healthGainFactor) : "",
+      epochLength: isSet(object.epochLength) ? Long.fromValue(object.epochLength) : Long.ZERO,
+      pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => String(e)) : [],
+      forceCloseThreshold: isSet(object.forceCloseThreshold) ? String(object.forceCloseThreshold) : "",
+      removalQueueThreshold: isSet(object.removalQueueThreshold) ? String(object.removalQueueThreshold) : "",
+      maxOpenPositions: isSet(object.maxOpenPositions) ? Long.fromValue(object.maxOpenPositions) : Long.UZERO,
+      poolOpenThreshold: isSet(object.poolOpenThreshold) ? String(object.poolOpenThreshold) : "",
+      forceCloseFundPercentage: isSet(object.forceCloseFundPercentage) ? String(object.forceCloseFundPercentage) : "",
+      forceCloseInsuranceFundAddress: isSet(object.forceCloseInsuranceFundAddress)
         ? String(object.forceCloseInsuranceFundAddress)
         : "",
-      incrementalInterestPaymentFundPercentage: isSet(
-        object.incrementalInterestPaymentFundPercentage,
-      )
+      incrementalInterestPaymentFundPercentage: isSet(object.incrementalInterestPaymentFundPercentage)
         ? String(object.incrementalInterestPaymentFundPercentage)
         : "",
-      incrementalInterestPaymentInsuranceFundAddress: isSet(
-        object.incrementalInterestPaymentInsuranceFundAddress,
-      )
+      incrementalInterestPaymentInsuranceFundAddress: isSet(object.incrementalInterestPaymentInsuranceFundAddress)
         ? String(object.incrementalInterestPaymentInsuranceFundAddress)
         : "",
       sqModifier: isSet(object.sqModifier) ? String(object.sqModifier) : "",
-      safetyFactor: isSet(object.safetyFactor)
-        ? String(object.safetyFactor)
-        : "",
-      closedPools: Array.isArray(object?.closedPools)
-        ? object.closedPools.map((e: any) => String(e))
-        : [],
-      incrementalInterestPaymentEnabled: isSet(
-        object.incrementalInterestPaymentEnabled,
-      )
+      safetyFactor: isSet(object.safetyFactor) ? String(object.safetyFactor) : "",
+      closedPools: Array.isArray(object?.closedPools) ? object.closedPools.map((e: any) => String(e)) : [],
+      incrementalInterestPaymentEnabled: isSet(object.incrementalInterestPaymentEnabled)
         ? Boolean(object.incrementalInterestPaymentEnabled)
         : false,
-      whitelistingEnabled: isSet(object.whitelistingEnabled)
-        ? Boolean(object.whitelistingEnabled)
-        : false,
+      whitelistingEnabled: isSet(object.whitelistingEnabled) ? Boolean(object.whitelistingEnabled) : false,
     };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.leverageMax !== undefined &&
-      (obj.leverageMax = message.leverageMax);
-    message.interestRateMax !== undefined &&
-      (obj.interestRateMax = message.interestRateMax);
-    message.interestRateMin !== undefined &&
-      (obj.interestRateMin = message.interestRateMin);
-    message.interestRateIncrease !== undefined &&
-      (obj.interestRateIncrease = message.interestRateIncrease);
-    message.interestRateDecrease !== undefined &&
-      (obj.interestRateDecrease = message.interestRateDecrease);
-    message.healthGainFactor !== undefined &&
-      (obj.healthGainFactor = message.healthGainFactor);
-    message.epochLength !== undefined &&
-      (obj.epochLength = (message.epochLength || Long.ZERO).toString());
+    message.leverageMax !== undefined && (obj.leverageMax = message.leverageMax);
+    message.interestRateMax !== undefined && (obj.interestRateMax = message.interestRateMax);
+    message.interestRateMin !== undefined && (obj.interestRateMin = message.interestRateMin);
+    message.interestRateIncrease !== undefined && (obj.interestRateIncrease = message.interestRateIncrease);
+    message.interestRateDecrease !== undefined && (obj.interestRateDecrease = message.interestRateDecrease);
+    message.healthGainFactor !== undefined && (obj.healthGainFactor = message.healthGainFactor);
+    message.epochLength !== undefined && (obj.epochLength = (message.epochLength || Long.ZERO).toString());
     if (message.pools) {
       obj.pools = message.pools.map((e) => e);
     } else {
       obj.pools = [];
     }
-    message.forceCloseThreshold !== undefined &&
-      (obj.forceCloseThreshold = message.forceCloseThreshold);
-    message.removalQueueThreshold !== undefined &&
-      (obj.removalQueueThreshold = message.removalQueueThreshold);
+    message.forceCloseThreshold !== undefined && (obj.forceCloseThreshold = message.forceCloseThreshold);
+    message.removalQueueThreshold !== undefined && (obj.removalQueueThreshold = message.removalQueueThreshold);
     message.maxOpenPositions !== undefined &&
-      (obj.maxOpenPositions = (
-        message.maxOpenPositions || Long.UZERO
-      ).toString());
-    message.poolOpenThreshold !== undefined &&
-      (obj.poolOpenThreshold = message.poolOpenThreshold);
-    message.forceCloseFundPercentage !== undefined &&
-      (obj.forceCloseFundPercentage = message.forceCloseFundPercentage);
+      (obj.maxOpenPositions = (message.maxOpenPositions || Long.UZERO).toString());
+    message.poolOpenThreshold !== undefined && (obj.poolOpenThreshold = message.poolOpenThreshold);
+    message.forceCloseFundPercentage !== undefined && (obj.forceCloseFundPercentage = message.forceCloseFundPercentage);
     message.forceCloseInsuranceFundAddress !== undefined &&
-      (obj.forceCloseInsuranceFundAddress =
-        message.forceCloseInsuranceFundAddress);
+      (obj.forceCloseInsuranceFundAddress = message.forceCloseInsuranceFundAddress);
     message.incrementalInterestPaymentFundPercentage !== undefined &&
-      (obj.incrementalInterestPaymentFundPercentage =
-        message.incrementalInterestPaymentFundPercentage);
+      (obj.incrementalInterestPaymentFundPercentage = message.incrementalInterestPaymentFundPercentage);
     message.incrementalInterestPaymentInsuranceFundAddress !== undefined &&
-      (obj.incrementalInterestPaymentInsuranceFundAddress =
-        message.incrementalInterestPaymentInsuranceFundAddress);
+      (obj.incrementalInterestPaymentInsuranceFundAddress = message.incrementalInterestPaymentInsuranceFundAddress);
     message.sqModifier !== undefined && (obj.sqModifier = message.sqModifier);
-    message.safetyFactor !== undefined &&
-      (obj.safetyFactor = message.safetyFactor);
+    message.safetyFactor !== undefined && (obj.safetyFactor = message.safetyFactor);
     if (message.closedPools) {
       obj.closedPools = message.closedPools.map((e) => e);
     } else {
       obj.closedPools = [];
     }
     message.incrementalInterestPaymentEnabled !== undefined &&
-      (obj.incrementalInterestPaymentEnabled =
-        message.incrementalInterestPaymentEnabled);
-    message.whitelistingEnabled !== undefined &&
-      (obj.whitelistingEnabled = message.whitelistingEnabled);
+      (obj.incrementalInterestPaymentEnabled = message.incrementalInterestPaymentEnabled);
+    message.whitelistingEnabled !== undefined && (obj.whitelistingEnabled = message.whitelistingEnabled);
     return obj;
   },
 
@@ -463,9 +390,7 @@ export const Params = {
     message.interestRateDecrease = object.interestRateDecrease ?? "";
     message.healthGainFactor = object.healthGainFactor ?? "";
     message.epochLength =
-      object.epochLength !== undefined && object.epochLength !== null
-        ? Long.fromValue(object.epochLength)
-        : Long.ZERO;
+      object.epochLength !== undefined && object.epochLength !== null ? Long.fromValue(object.epochLength) : Long.ZERO;
     message.pools = object.pools?.map((e) => e) || [];
     message.forceCloseThreshold = object.forceCloseThreshold ?? "";
     message.removalQueueThreshold = object.removalQueueThreshold ?? "";
@@ -475,17 +400,14 @@ export const Params = {
         : Long.UZERO;
     message.poolOpenThreshold = object.poolOpenThreshold ?? "";
     message.forceCloseFundPercentage = object.forceCloseFundPercentage ?? "";
-    message.forceCloseInsuranceFundAddress =
-      object.forceCloseInsuranceFundAddress ?? "";
-    message.incrementalInterestPaymentFundPercentage =
-      object.incrementalInterestPaymentFundPercentage ?? "";
+    message.forceCloseInsuranceFundAddress = object.forceCloseInsuranceFundAddress ?? "";
+    message.incrementalInterestPaymentFundPercentage = object.incrementalInterestPaymentFundPercentage ?? "";
     message.incrementalInterestPaymentInsuranceFundAddress =
       object.incrementalInterestPaymentInsuranceFundAddress ?? "";
     message.sqModifier = object.sqModifier ?? "";
     message.safetyFactor = object.safetyFactor ?? "";
     message.closedPools = object.closedPools?.map((e) => e) || [];
-    message.incrementalInterestPaymentEnabled =
-      object.incrementalInterestPaymentEnabled ?? false;
+    message.incrementalInterestPaymentEnabled = object.incrementalInterestPaymentEnabled ?? false;
     message.whitelistingEnabled = object.whitelistingEnabled ?? false;
     return message;
   },
@@ -603,25 +525,13 @@ export const MTP = {
   fromJSON(object: any): MTP {
     return {
       address: isSet(object.address) ? String(object.address) : "",
-      collateralAsset: isSet(object.collateralAsset)
-        ? String(object.collateralAsset)
-        : "",
-      collateralAmount: isSet(object.collateralAmount)
-        ? String(object.collateralAmount)
-        : "",
+      collateralAsset: isSet(object.collateralAsset) ? String(object.collateralAsset) : "",
+      collateralAmount: isSet(object.collateralAmount) ? String(object.collateralAmount) : "",
       liabilities: isSet(object.liabilities) ? String(object.liabilities) : "",
-      interestPaid: isSet(object.interestPaid)
-        ? String(object.interestPaid)
-        : "",
-      interestUnpaid: isSet(object.interestUnpaid)
-        ? String(object.interestUnpaid)
-        : "",
-      custodyAsset: isSet(object.custodyAsset)
-        ? String(object.custodyAsset)
-        : "",
-      custodyAmount: isSet(object.custodyAmount)
-        ? String(object.custodyAmount)
-        : "",
+      interestPaid: isSet(object.interestPaid) ? String(object.interestPaid) : "",
+      interestUnpaid: isSet(object.interestUnpaid) ? String(object.interestUnpaid) : "",
+      custodyAsset: isSet(object.custodyAsset) ? String(object.custodyAsset) : "",
+      custodyAmount: isSet(object.custodyAmount) ? String(object.custodyAmount) : "",
       leverage: isSet(object.leverage) ? String(object.leverage) : "",
       mtpHealth: isSet(object.mtpHealth) ? String(object.mtpHealth) : "",
       position: isSet(object.position) ? positionFromJSON(object.position) : 0,
@@ -632,26 +542,17 @@ export const MTP = {
   toJSON(message: MTP): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.collateralAsset !== undefined &&
-      (obj.collateralAsset = message.collateralAsset);
-    message.collateralAmount !== undefined &&
-      (obj.collateralAmount = message.collateralAmount);
-    message.liabilities !== undefined &&
-      (obj.liabilities = message.liabilities);
-    message.interestPaid !== undefined &&
-      (obj.interestPaid = message.interestPaid);
-    message.interestUnpaid !== undefined &&
-      (obj.interestUnpaid = message.interestUnpaid);
-    message.custodyAsset !== undefined &&
-      (obj.custodyAsset = message.custodyAsset);
-    message.custodyAmount !== undefined &&
-      (obj.custodyAmount = message.custodyAmount);
+    message.collateralAsset !== undefined && (obj.collateralAsset = message.collateralAsset);
+    message.collateralAmount !== undefined && (obj.collateralAmount = message.collateralAmount);
+    message.liabilities !== undefined && (obj.liabilities = message.liabilities);
+    message.interestPaid !== undefined && (obj.interestPaid = message.interestPaid);
+    message.interestUnpaid !== undefined && (obj.interestUnpaid = message.interestUnpaid);
+    message.custodyAsset !== undefined && (obj.custodyAsset = message.custodyAsset);
+    message.custodyAmount !== undefined && (obj.custodyAmount = message.custodyAmount);
     message.leverage !== undefined && (obj.leverage = message.leverage);
     message.mtpHealth !== undefined && (obj.mtpHealth = message.mtpHealth);
-    message.position !== undefined &&
-      (obj.position = positionToJSON(message.position));
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.position !== undefined && (obj.position = positionToJSON(message.position));
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -668,22 +569,12 @@ export const MTP = {
     message.leverage = object.leverage ?? "";
     message.mtpHealth = object.mtpHealth ?? "";
     message.position = object.position ?? 0;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.UZERO;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -700,9 +591,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

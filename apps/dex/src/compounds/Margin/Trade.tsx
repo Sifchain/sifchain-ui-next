@@ -41,6 +41,8 @@ import {
   inputValidatorLeverage,
   inputValidatorPosition,
 } from "./_trade";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
 
 const calculateOpenPosition = (positionTokenAmount: number, positionPriceUsd: number) => {
   return positionTokenAmount / positionPriceUsd;
@@ -70,7 +72,10 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
-  // const addressList = useMarginAllowedAddressList();
+  const walletAddress = useSifSignerAddress();
+  const isWhitelistedAccount = useMarginIsWhitelistedAccount({
+    walletAddress: walletAddress.data ?? "",
+  });
 
   if (
     [
@@ -82,6 +87,14 @@ const TradeCompound: NextPage = () => {
     ].some((query) => query.isError)
   ) {
     return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
+  }
+
+  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === true) {
+    return (
+      <div className="bg-gray-850 p-10 text-center text-gray-100">
+        You account is not part of the private Margin Beta. Please reach out to Sifchain Community on Discord.
+      </div>
+    );
   }
 
   if (

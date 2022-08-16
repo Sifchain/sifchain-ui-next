@@ -16,20 +16,14 @@ function createBaseQueryEntriesResponse(): QueryEntriesResponse {
 }
 
 export const QueryEntriesResponse = {
-  encode(
-    message: QueryEntriesResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryEntriesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.registry !== undefined) {
       Registry.encode(message.registry, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryEntriesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEntriesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryEntriesResponse();
@@ -49,29 +43,20 @@ export const QueryEntriesResponse = {
 
   fromJSON(object: any): QueryEntriesResponse {
     return {
-      registry: isSet(object.registry)
-        ? Registry.fromJSON(object.registry)
-        : undefined,
+      registry: isSet(object.registry) ? Registry.fromJSON(object.registry) : undefined,
     };
   },
 
   toJSON(message: QueryEntriesResponse): unknown {
     const obj: any = {};
-    message.registry !== undefined &&
-      (obj.registry = message.registry
-        ? Registry.toJSON(message.registry)
-        : undefined);
+    message.registry !== undefined && (obj.registry = message.registry ? Registry.toJSON(message.registry) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryEntriesResponse>, I>>(
-    object: I,
-  ): QueryEntriesResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryEntriesResponse>, I>>(object: I): QueryEntriesResponse {
     const message = createBaseQueryEntriesResponse();
     message.registry =
-      object.registry !== undefined && object.registry !== null
-        ? Registry.fromPartial(object.registry)
-        : undefined;
+      object.registry !== undefined && object.registry !== null ? Registry.fromPartial(object.registry) : undefined;
     return message;
   },
 };
@@ -81,10 +66,7 @@ function createBaseQueryEntriesRequest(): QueryEntriesRequest {
 }
 
 export const QueryEntriesRequest = {
-  encode(
-    _: QueryEntriesRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: QueryEntriesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -112,9 +94,7 @@ export const QueryEntriesRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryEntriesRequest>, I>>(
-    _: I,
-  ): QueryEntriesRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryEntriesRequest>, I>>(_: I): QueryEntriesRequest {
     const message = createBaseQueryEntriesRequest();
     return message;
   },
@@ -133,33 +113,16 @@ export class QueryClientImpl implements Query {
   }
   Entries(request: QueryEntriesRequest): Promise<QueryEntriesResponse> {
     const data = QueryEntriesRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.tokenregistry.v1.Query",
-      "Entries",
-      data,
-    );
-    return promise.then((data) =>
-      QueryEntriesResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.tokenregistry.v1.Query", "Entries", data);
+    return promise.then((data) => QueryEntriesResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -176,9 +139,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -112,10 +112,7 @@ function createBaseGenesisState(): GenesisState {
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.registry !== undefined) {
       Registry.encode(message.registry, writer.uint32(18).fork()).ldelim();
     }
@@ -142,29 +139,20 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     return {
-      registry: isSet(object.registry)
-        ? Registry.fromJSON(object.registry)
-        : undefined,
+      registry: isSet(object.registry) ? Registry.fromJSON(object.registry) : undefined,
     };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.registry !== undefined &&
-      (obj.registry = message.registry
-        ? Registry.toJSON(message.registry)
-        : undefined);
+    message.registry !== undefined && (obj.registry = message.registry ? Registry.toJSON(message.registry) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.registry =
-      object.registry !== undefined && object.registry !== null
-        ? Registry.fromPartial(object.registry)
-        : undefined;
+      object.registry !== undefined && object.registry !== null ? Registry.fromPartial(object.registry) : undefined;
     return message;
   },
 };
@@ -174,10 +162,7 @@ function createBaseRegistry(): Registry {
 }
 
 export const Registry = {
-  encode(
-    message: Registry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Registry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.entries) {
       RegistryEntry.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -204,18 +189,14 @@ export const Registry = {
 
   fromJSON(object: any): Registry {
     return {
-      entries: Array.isArray(object?.entries)
-        ? object.entries.map((e: any) => RegistryEntry.fromJSON(e))
-        : [],
+      entries: Array.isArray(object?.entries) ? object.entries.map((e: any) => RegistryEntry.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: Registry): unknown {
     const obj: any = {};
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? RegistryEntry.toJSON(e) : undefined,
-      );
+      obj.entries = message.entries.map((e) => (e ? RegistryEntry.toJSON(e) : undefined));
     } else {
       obj.entries = [];
     }
@@ -224,8 +205,7 @@ export const Registry = {
 
   fromPartial<I extends Exact<DeepPartial<Registry>, I>>(object: I): Registry {
     const message = createBaseRegistry();
-    message.entries =
-      object.entries?.map((e) => RegistryEntry.fromPartial(e)) || [];
+    message.entries = object.entries?.map((e) => RegistryEntry.fromPartial(e)) || [];
     return message;
   },
 };
@@ -252,10 +232,7 @@ function createBaseRegistryEntry(): RegistryEntry {
 }
 
 export const RegistryEntry = {
-  encode(
-    message: RegistryEntry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RegistryEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.decimals.isZero()) {
       writer.uint32(16).int64(message.decimals);
     }
@@ -381,85 +358,54 @@ export const RegistryEntry = {
 
   fromJSON(object: any): RegistryEntry {
     return {
-      decimals: isSet(object.decimals)
-        ? Long.fromValue(object.decimals)
-        : Long.ZERO,
+      decimals: isSet(object.decimals) ? Long.fromValue(object.decimals) : Long.ZERO,
       denom: isSet(object.denom) ? String(object.denom) : "",
       baseDenom: isSet(object.baseDenom) ? String(object.baseDenom) : "",
       path: isSet(object.path) ? String(object.path) : "",
-      ibcChannelId: isSet(object.ibcChannelId)
-        ? String(object.ibcChannelId)
-        : "",
-      ibcCounterpartyChannelId: isSet(object.ibcCounterpartyChannelId)
-        ? String(object.ibcCounterpartyChannelId)
-        : "",
+      ibcChannelId: isSet(object.ibcChannelId) ? String(object.ibcChannelId) : "",
+      ibcCounterpartyChannelId: isSet(object.ibcCounterpartyChannelId) ? String(object.ibcCounterpartyChannelId) : "",
       displayName: isSet(object.displayName) ? String(object.displayName) : "",
-      displaySymbol: isSet(object.displaySymbol)
-        ? String(object.displaySymbol)
-        : "",
+      displaySymbol: isSet(object.displaySymbol) ? String(object.displaySymbol) : "",
       network: isSet(object.network) ? String(object.network) : "",
       address: isSet(object.address) ? String(object.address) : "",
-      externalSymbol: isSet(object.externalSymbol)
-        ? String(object.externalSymbol)
-        : "",
-      transferLimit: isSet(object.transferLimit)
-        ? String(object.transferLimit)
-        : "",
-      permissions: Array.isArray(object?.permissions)
-        ? object.permissions.map((e: any) => permissionFromJSON(e))
-        : [],
+      externalSymbol: isSet(object.externalSymbol) ? String(object.externalSymbol) : "",
+      transferLimit: isSet(object.transferLimit) ? String(object.transferLimit) : "",
+      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => permissionFromJSON(e)) : [],
       unitDenom: isSet(object.unitDenom) ? String(object.unitDenom) : "",
-      ibcCounterpartyDenom: isSet(object.ibcCounterpartyDenom)
-        ? String(object.ibcCounterpartyDenom)
-        : "",
-      ibcCounterpartyChainId: isSet(object.ibcCounterpartyChainId)
-        ? String(object.ibcCounterpartyChainId)
-        : "",
+      ibcCounterpartyDenom: isSet(object.ibcCounterpartyDenom) ? String(object.ibcCounterpartyDenom) : "",
+      ibcCounterpartyChainId: isSet(object.ibcCounterpartyChainId) ? String(object.ibcCounterpartyChainId) : "",
     };
   },
 
   toJSON(message: RegistryEntry): unknown {
     const obj: any = {};
-    message.decimals !== undefined &&
-      (obj.decimals = (message.decimals || Long.ZERO).toString());
+    message.decimals !== undefined && (obj.decimals = (message.decimals || Long.ZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.baseDenom !== undefined && (obj.baseDenom = message.baseDenom);
     message.path !== undefined && (obj.path = message.path);
-    message.ibcChannelId !== undefined &&
-      (obj.ibcChannelId = message.ibcChannelId);
-    message.ibcCounterpartyChannelId !== undefined &&
-      (obj.ibcCounterpartyChannelId = message.ibcCounterpartyChannelId);
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
-    message.displaySymbol !== undefined &&
-      (obj.displaySymbol = message.displaySymbol);
+    message.ibcChannelId !== undefined && (obj.ibcChannelId = message.ibcChannelId);
+    message.ibcCounterpartyChannelId !== undefined && (obj.ibcCounterpartyChannelId = message.ibcCounterpartyChannelId);
+    message.displayName !== undefined && (obj.displayName = message.displayName);
+    message.displaySymbol !== undefined && (obj.displaySymbol = message.displaySymbol);
     message.network !== undefined && (obj.network = message.network);
     message.address !== undefined && (obj.address = message.address);
-    message.externalSymbol !== undefined &&
-      (obj.externalSymbol = message.externalSymbol);
-    message.transferLimit !== undefined &&
-      (obj.transferLimit = message.transferLimit);
+    message.externalSymbol !== undefined && (obj.externalSymbol = message.externalSymbol);
+    message.transferLimit !== undefined && (obj.transferLimit = message.transferLimit);
     if (message.permissions) {
       obj.permissions = message.permissions.map((e) => permissionToJSON(e));
     } else {
       obj.permissions = [];
     }
     message.unitDenom !== undefined && (obj.unitDenom = message.unitDenom);
-    message.ibcCounterpartyDenom !== undefined &&
-      (obj.ibcCounterpartyDenom = message.ibcCounterpartyDenom);
-    message.ibcCounterpartyChainId !== undefined &&
-      (obj.ibcCounterpartyChainId = message.ibcCounterpartyChainId);
+    message.ibcCounterpartyDenom !== undefined && (obj.ibcCounterpartyDenom = message.ibcCounterpartyDenom);
+    message.ibcCounterpartyChainId !== undefined && (obj.ibcCounterpartyChainId = message.ibcCounterpartyChainId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RegistryEntry>, I>>(
-    object: I,
-  ): RegistryEntry {
+  fromPartial<I extends Exact<DeepPartial<RegistryEntry>, I>>(object: I): RegistryEntry {
     const message = createBaseRegistryEntry();
     message.decimals =
-      object.decimals !== undefined && object.decimals !== null
-        ? Long.fromValue(object.decimals)
-        : Long.ZERO;
+      object.decimals !== undefined && object.decimals !== null ? Long.fromValue(object.decimals) : Long.ZERO;
     message.denom = object.denom ?? "";
     message.baseDenom = object.baseDenom ?? "";
     message.path = object.path ?? "";
@@ -479,14 +425,7 @@ export const RegistryEntry = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -503,9 +442,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
