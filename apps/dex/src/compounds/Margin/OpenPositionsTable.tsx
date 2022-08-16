@@ -1,17 +1,16 @@
-import { useRouter } from "next/router";
+import { Decimal } from "@cosmjs/math";
+import { ArrowDownIcon, Button, ChevronDownIcon, formatNumberAsCurrency, Modal } from "@sifchain/ui";
 import clsx from "clsx";
-import Link from "next/link";
-import { useState, SyntheticEvent, useCallback } from "react";
 import Long from "long";
-
-import { Button, formatNumberAsCurrency, ChevronDownIcon, Modal, ArrowDownIcon } from "@sifchain/ui";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { isNil } from "rambda";
+import { SyntheticEvent, useCallback, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { OpenPositionsQueryData, useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { useCloseMTPMutation } from "~/domains/margin/hooks";
-
-import { isNil } from "rambda";
-const isTruthy = (target: any) => !isNil(target);
+import { OpenPositionsQueryData, useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
 /**
  * ********************************************************************************************
@@ -23,11 +22,14 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
-import { formatNumberAsDecimal, formatNumberAsPercent, formatDateRelative, formatDateDistance } from "./_intl";
-import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
+
+import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { formatDateDistance, formatDateRelative, formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
 import { HtmlUnicode } from "./_trade";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
+
+const isTruthy = (target: any) => !isNil(target);
 
 /**
  * ********************************************************************************************
@@ -68,6 +70,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     orderBy: (router.query["orderBy"] as string) || "custody_amount",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
+
+  const { findBySymbolOrDenom } = useTokenRegistryQuery();
 
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
@@ -155,8 +159,23 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} message="You have no open positions." />}
               {results.map((item) => {
-                const amountSign = Math.sign(Number(item.custody_amount));
-                const unrealizedPLSign = Math.sign(Number(item.unrealized_pnl));
+                const custodyAsset = findBySymbolOrDenom(item.custody_asset);
+                const collateralAsset = findBySymbolOrDenom(item.collateral_asset);
+
+                if (!custodyAsset || !collateralAsset) {
+                  throw new Error("Asset not found");
+                }
+
+                const custodyAmount = Decimal.fromAtomics(
+                  item.custody_amount,
+                  custodyAsset.decimals,
+                ).toFloatApproximation();
+
+                // this is slightly hacky, only doing it bexause we're getting a float returned here
+                const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;
+
+                const amountSign = Math.sign(custodyAmount);
+                const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
                   <tr key={item.id}>
@@ -186,7 +205,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         })}
                       >
                         {isTruthy(item.custody_amount) ? (
-                          formatNumberAsCurrency(Number(item.custody_amount), 4)
+                          formatNumberAsDecimal(custodyAmount, 6)
                         ) : (
                           <HtmlUnicode name="EmDash" />
                         )}
@@ -210,7 +229,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         })}
                       >
                         {isTruthy(item.unrealized_pnl) ? (
-                          formatNumberAsCurrency(Number(item.unrealized_pnl), 2)
+                          formatNumberAsCurrency(unrealizedPnl, 6)
                         ) : (
                           <HtmlUnicode name="EmDash" />
                         )}

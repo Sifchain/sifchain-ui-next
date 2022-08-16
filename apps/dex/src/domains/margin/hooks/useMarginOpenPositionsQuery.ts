@@ -23,6 +23,8 @@ export type OpenPositionsQueryData = {
   pool: string;
   position: string;
   custody_amount: string;
+  collateral_asset: string;
+  collateral_amount: string;
   unrealized_pnl: string;
   custody_asset: string;
   unsettled_interest: string;
