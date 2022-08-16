@@ -5,7 +5,12 @@ import Head from "next/head";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
-import { FlashMessageLoading, FlashMessage5xxError, FlashMessageAccountNotWhitelisted } from "./_components";
+import {
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageAccountNotWhitelisted,
+  FlashMessageConnectSifChainWallet,
+} from "./_components";
 
 const PortfolioTab: NextPage = () => {
   const walletAddress = useSifSignerAddress();
@@ -17,7 +22,11 @@ const PortfolioTab: NextPage = () => {
     return <FlashMessage5xxError />;
   }
 
-  if (!isWhitelistedAccount.data || isWhitelistedAccount.data.isWhitelisted === false) {
+  if (!isWhitelistedAccount.data) {
+    return <FlashMessageConnectSifChainWallet />;
+  }
+
+  if (isWhitelistedAccount.data && isWhitelistedAccount.data.isWhitelisted === false) {
     return <FlashMessageAccountNotWhitelisted />;
   }
 

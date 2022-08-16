@@ -30,10 +30,11 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  */
 import { ROWAN } from "~/domains/assets";
 import {
-  PoolOverview,
-  FlashMessageLoading,
   FlashMessage5xxError,
   FlashMessageAccountNotWhitelisted,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageLoading,
+  PoolOverview,
 } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
@@ -86,7 +87,11 @@ const TradeCompound: NextPage = () => {
     return <FlashMessage5xxError />;
   }
 
-  if (!isWhitelistedAccount.data || isWhitelistedAccount.data.isWhitelisted === false) {
+  if (!isWhitelistedAccount.data) {
+    return <FlashMessageConnectSifChainWallet />;
+  }
+
+  if (isWhitelistedAccount.data && isWhitelistedAccount.data.isWhitelisted === false) {
     return <FlashMessageAccountNotWhitelisted />;
   }
 
