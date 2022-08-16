@@ -3,7 +3,7 @@ import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
 import { isNil } from "rambda";
 import { useMutation, useQueryClient } from "react-query";
-import useSifSigner from "~/hooks/useSifSigner";
+import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import {
   LIQUIDITY_PROVIDERS_QUERY_KEY,

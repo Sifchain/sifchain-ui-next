@@ -5,7 +5,7 @@ import { toast } from "@sifchain/ui";
 import { useMutation } from "react-query";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import useSifSigner from "~/hooks/useSifSigner";
+import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 export function useSwapMutation() {
