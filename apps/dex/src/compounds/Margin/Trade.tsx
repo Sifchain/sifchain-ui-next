@@ -86,7 +86,7 @@ const TradeCompound: NextPage = () => {
     return <FlashMessage5xxError />;
   }
 
-  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === false) {
+  if (!isWhitelistedAccount.data || isWhitelistedAccount.data.isWhitelisted === false) {
     return <FlashMessageAccountNotWhitelisted />;
   }
 
