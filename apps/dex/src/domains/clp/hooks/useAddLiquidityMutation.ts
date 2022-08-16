@@ -39,7 +39,7 @@ const useAddLiquidityMutation = () => {
             },
           },
         ],
-        DEFAULT_FEE,
+        DEFAULT_FEE
       );
     },
     {
@@ -66,7 +66,7 @@ const useAddLiquidityMutation = () => {
           queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
-    },
+    }
   );
 
   return {

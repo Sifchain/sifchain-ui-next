@@ -33,7 +33,7 @@ const TokenFigure = (props: {
         <AssetIcon network="sifchain" symbol={props.symbol ?? ""} size="md" />
       </figure>
       <div>
-        <h2 className="uppercase font-bold">{props.displaySymbol}</h2>
+        <h2 className="font-bold uppercase">{props.displaySymbol}</h2>
         <h3>{props.network}</h3>
       </div>
     </figcaption>
@@ -48,7 +48,7 @@ const BalancesPage: NextPage = () => {
   const [selectedDenom, setSelectedDenom] = useState<string | undefined>();
   const selectedBalance = useMemo(
     () => balances?.find((x) => x.denom === selectedDenom),
-    [balances, selectedDenom],
+    [balances, selectedDenom]
   );
 
   const [[sortByOrder, sortByProperty], setSortBy] = useState<
@@ -61,12 +61,12 @@ const BalancesPage: NextPage = () => {
       case "token":
         return sort(
           sortFunc((x) => x.displaySymbol ?? ""),
-          balances,
+          balances
         );
       case "available":
         return sort(
           sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
-          balances,
+          balances
         );
       case "balance":
         return sort(
@@ -74,16 +74,16 @@ const BalancesPage: NextPage = () => {
             (x) =>
               x.amount
                 ?.plus(
-                  x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits),
+                  x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits)
                 )
-                .toFloatApproximation() ?? 0,
+                .toFloatApproximation() ?? 0
           ),
-          balances,
+          balances
         );
       case "pooled":
         return sort(
           sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0),
-          balances,
+          balances
         );
       case undefined:
       default:
@@ -155,12 +155,12 @@ const BalancesPage: NextPage = () => {
         href: (denom: string) => `/swap?fromDenom=${encodeURIComponent(denom)}`,
       },
     ],
-    [],
+    []
   );
 
   return (
     <>
-      <section className="flex-1 w-full bg-black p-6 md:py-12 md:px-24">
+      <section className="w-full flex-1 bg-black p-6 md:py-12 md:px-24">
         <header className="mb-10 md:mb-12">
           <div className="flex items-center justify-between pb-6 md:pb-8">
             <h2 className="text-2xl font-bold text-white">Balances</h2>
@@ -172,7 +172,7 @@ const BalancesPage: NextPage = () => {
           </div>
           <div className="flex flex-wrap gap-4">
             {stats.map((stat, index) => (
-              <div key={index} className="flex-1 grid gap-1">
+              <div key={index} className="grid flex-1 gap-1">
                 <span className="opacity-80">{stat.label}</span>
                 <span className="font-semibold md:text-2xl">{stat.value}</span>
               </div>
@@ -185,7 +185,7 @@ const BalancesPage: NextPage = () => {
               key={balance.denom}
               className="[&[open]>summary>div>.marker]:rotate-180"
             >
-              <summary className="flex justify-between items-center mb-2">
+              <summary className="mb-2 flex items-center justify-between">
                 <TokenFigure
                   symbol={balance.symbol ?? ""}
                   displaySymbol={balance.displaySymbol ?? ""}
@@ -197,14 +197,14 @@ const BalancesPage: NextPage = () => {
                       balance.amount
                         ?.plus(
                           balance.pooledAmount ??
-                            Decimal.zero(balance.amount.fractionalDigits),
+                            Decimal.zero(balance.amount.fractionalDigits)
                         )
                         .toFloatApproximation() ?? 0
                     ).toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
                   </strong>
-                  <span className="marker p-2 cursor-pointer select-none">
+                  <span className="marker cursor-pointer select-none p-2">
                     ▼
                   </span>
                   <button
@@ -241,7 +241,7 @@ const BalancesPage: NextPage = () => {
           ))}
         </div>
         <table className="hidden w-full md:table">
-          <thead className="text-left uppercase text-xs [&>th]:font-normal [&>th]:opacity-80 [&>th]:pb-6">
+          <thead className="text-left text-xs uppercase [&>th]:pb-6 [&>th]:font-normal [&>th]:opacity-80">
             {(["token", "available", "pooled", "balance"] as const).map((x) => (
               <th
                 key={x}
@@ -292,7 +292,7 @@ const BalancesPage: NextPage = () => {
                     undefined,
                     {
                       maximumFractionDigits: 6,
-                    },
+                    }
                   )}
                 </td>
                 <td>
@@ -307,7 +307,7 @@ const BalancesPage: NextPage = () => {
                     balance.amount
                       ?.plus(
                         balance.pooledAmount ??
-                          Decimal.zero(balance.amount.fractionalDigits),
+                          Decimal.zero(balance.amount.fractionalDigits)
                       )
                       .toFloatApproximation() ?? 0
                   ).toLocaleString(undefined, {
@@ -318,7 +318,7 @@ const BalancesPage: NextPage = () => {
                   <div className="flex gap-3">
                     {actions.map(({ label, href }, index) => (
                       <Link key={index} href={href(balance.denom)}>
-                        <a className="flex-1 text-center h-full px-4 py-3 rounded first:bg-gray-750 hover:bg-gray-700">
+                        <a className="h-full flex-1 rounded px-4 py-3 text-center first:bg-gray-750 hover:bg-gray-700">
                           <span>{label}</span>
                         </a>
                       </Link>
@@ -337,7 +337,7 @@ const BalancesPage: NextPage = () => {
       >
         {actions.map(({ label, Icon, href }, index) => (
           <Link key={index} href={href(selectedDenom ?? "")}>
-            <a className="flex items-center gap-2 w-full px-2 py-3 rounded hover:bg-gray-700">
+            <a className="flex w-full items-center gap-2 rounded px-2 py-3 hover:bg-gray-700">
               <Icon />
               <span>{label}</span>
             </a>
@@ -351,9 +351,9 @@ const BalancesPage: NextPage = () => {
         onChangeDenom={useCallback(
           (denom) =>
             router.replace(
-              `balances?action=import&denom=${encodeURIComponent(denom ?? "")}`,
+              `balances?action=import&denom=${encodeURIComponent(denom ?? "")}`
             ),
-          [router],
+          [router]
         )}
       />
       <ExportModal

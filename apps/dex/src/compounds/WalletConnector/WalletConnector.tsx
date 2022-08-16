@@ -65,15 +65,15 @@ const WalletConnector: FC = () => {
         icon: (
           <figure
             className={clsx(
-              "h-6 w-6 bg-cover rounded-full bg-white -translate-x-1",
+              "h-6 w-6 -translate-x-1 rounded-full bg-white bg-cover",
               {
-                "invert border-black bg-black": ["ixo"].includes(id),
-              },
+                "border-black bg-black invert": ["ixo"].includes(id),
+              }
             )}
             style={{ backgroundImage: `url('/chains/${id}.png')` }}
           />
         ),
-      }),
+      })
     );
   }, [data?.chainConfigsByNetwork]);
 
@@ -97,7 +97,7 @@ const WalletConnector: FC = () => {
 
   const syncCosmosAccounts = useCallback(async () => {
     const enabledChains = chains.filter((x) =>
-      enabledChainsState.networks.includes(x.id),
+      enabledChainsState.networks.includes(x.id)
     );
 
     if (cosmosActiveConnector) {
@@ -107,7 +107,7 @@ const WalletConnector: FC = () => {
           .flatMap(async (chain) => {
             try {
               const signer = await cosmosActiveConnector.getSigner(
-                chain.chainId,
+                chain.chainId
               );
               const accounts = await signer.getAccounts();
 
@@ -124,11 +124,11 @@ const WalletConnector: FC = () => {
               console.log({ failed: (error as Error)?.message });
               return [chain.chainId, []] as const;
             }
-          }),
+          })
       );
 
       const cosmosAccounts = Object.fromEntries(
-        entries.filter(([, xs]) => xs.length),
+        entries.filter(([, xs]) => xs.length)
       );
 
       setAccounts((accounts) => ({
@@ -152,11 +152,11 @@ const WalletConnector: FC = () => {
             } catch (error) {
               return [chain.id, []] as const;
             }
-          }),
+          })
       );
 
       const ethAccounts = Object.fromEntries(
-        entries.filter(([, xs]) => xs.length),
+        entries.filter(([, xs]) => xs.length)
       );
 
       setAccounts((accounts) => ({
@@ -226,7 +226,7 @@ const WalletConnector: FC = () => {
               } catch (error) {
                 console.log(
                   `Error connecting to ${chainId} via ${walletId}`,
-                  error,
+                  error
                 );
               }
             }
@@ -265,7 +265,7 @@ const WalletConnector: FC = () => {
       connectCosmos,
       evmConnectors,
       connectEvm,
-    ],
+    ]
   );
 
   const handleDisconnectionRequest = useCallback(
@@ -289,7 +289,7 @@ const WalletConnector: FC = () => {
       setAccounts(omit([chainId]));
       actions.disableChain(selected.id);
     },
-    [actions, chains, disconnectEVM],
+    [actions, chains, disconnectEVM]
   );
 
   return (

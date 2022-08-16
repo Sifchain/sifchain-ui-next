@@ -14,7 +14,7 @@ describe("calculateSwapResult_pmtp", () => {
         IAmount,
         IAmount,
         IAmount,
-        IAmount,
+        IAmount
       ];
 
       const output = calculateSwapResult_pmtp(
@@ -22,7 +22,7 @@ describe("calculateSwapResult_pmtp", () => {
         $X, // External Balance
         $x, // Swap Amount
         $Y, // Native Balance,
-        $A, // PMTP adjustment (increased purchasing power)
+        $A // PMTP adjustment (increased purchasing power)
       );
       expect(output.toBigInt().toString()).toBe(expected);
     });

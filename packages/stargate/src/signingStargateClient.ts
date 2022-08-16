@@ -56,7 +56,7 @@ const MODULES = [clpTx, dispensationTx, ethBridgeTx, tokenRegistryTx, marginTx];
 const generateTypeUrlAndTypeRecords = (
   proto: Record<string, GeneratedType | unknown> & {
     protobufPackage: string;
-  },
+  }
 ) =>
   Object.entries(proto)
     .filter(([_, value]) => isTsProtoGeneratedType(value as GeneratedType))
@@ -74,7 +74,7 @@ const createSifchainAminoConverters = (): AminoConverters =>
         toAmino: (value) => convertToSnakeCaseDeep(value) as unknown,
         fromAmino: (value) => convertToCamelCaseDeep(value) as unknown,
       },
-    ]),
+    ])
   );
 
 export const createDefaultTypes = (prefix: string) =>
@@ -92,7 +92,7 @@ export const createDefaultTypes = (prefix: string) =>
 export const createDefaultRegistry = () => {
   const registry = new Registry(defaultStargateTypes);
   MODULES.flatMap(generateTypeUrlAndTypeRecords).forEach((x) =>
-    registry.register(x.typeUrl, x.type),
+    registry.register(x.typeUrl, x.type)
   );
   return registry;
 };
@@ -102,7 +102,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   // StargateClient & SigningStargateClient inheritance was implemented
   static override async connect(
     endpoint: string | HttpEndpoint,
-    options: StargateClientOptions = {},
+    options: StargateClientOptions = {}
   ) {
     const tmClient = await Tendermint34Client.connect(endpoint);
     return new this(tmClient, {} as OfflineSigner, options) as StargateClient &
@@ -112,7 +112,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   static override async connectWithSigner(
     endpoint: string | HttpEndpoint,
     signer: OfflineSigner,
-    options: SigningStargateClientOptions = {},
+    options: SigningStargateClientOptions = {}
   ) {
     const tmClient = await Tendermint34Client.connect(endpoint);
     return new this(tmClient, signer, options);
@@ -120,7 +120,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   static override offline(
     signer: OfflineSigner,
-    options: SigningStargateClientOptions = {},
+    options: SigningStargateClientOptions = {}
   ) {
     return Promise.resolve(new this(undefined, signer, options));
   }
@@ -130,7 +130,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   protected constructor(
     tmClient: Tendermint34Client | undefined,
     signer: OfflineSigner,
-    options: SigningStargateClientOptions,
+    options: SigningStargateClientOptions
   ) {
     super(tmClient, signer, {
       prefix: "sif",
@@ -147,7 +147,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   override simulate(
     signerAddress: string,
     messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
-    memo: string | undefined,
+    memo: string | undefined
   ) {
     return super.simulate(signerAddress, messages, memo);
   }
@@ -157,7 +157,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
     fee: StdFee,
     memo: string,
-    explicitSignerData?: SignerData,
+    explicitSignerData?: SignerData
   ): Promise<TxRaw> {
     return super.sign(signerAddress, messages, fee, memo, explicitSignerData);
   }
@@ -166,7 +166,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     signerAddress: string,
     messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
     fee: number | StdFee | "auto",
-    memo?: string,
+    memo?: string
   ) {
     return super.signAndBroadcast(signerAddress, messages, fee, memo);
   }
@@ -178,7 +178,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   protected override forceGetQueryClient() {
     if (this.#sifQueryClient === undefined) {
       throw new Error(
-        "Query client not available. You cannot use online functionality in offline mode.",
+        "Query client not available. You cannot use online functionality in offline mode."
       );
     }
 
@@ -193,10 +193,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
     timeoutHeight: Height | undefined,
     timeoutTimestamp: number | undefined,
     fee: StdFee | "auto" | number,
-    memo?: string,
+    memo?: string
   ) {
     const registry = await this.#forceGetTokenRegistryEntry(
-      transferAmount.denom,
+      transferAmount.denom
     );
 
     return this.sendIbcTokens(
@@ -208,7 +208,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       timeoutHeight,
       timeoutTimestamp,
       fee,
-      memo,
+      memo
     );
   }
 
@@ -221,10 +221,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
     timeoutHeight: Height | undefined,
     timeoutTimestamp: number | undefined,
     fee: StdFee | "auto" | number,
-    memo?: string,
+    memo?: string
   ) {
     const registry = await this.#forceGetTokenRegistryEntry(
-      transferAmount.denom,
+      transferAmount.denom
     );
 
     return counterPartySigningStargateClient.sendIbcTokens(
@@ -236,7 +236,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       timeoutHeight,
       timeoutTimestamp,
       fee,
-      memo,
+      memo
     );
   }
 
@@ -247,7 +247,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     ethChainId = 1,
     ethFee = "35370000000000000",
     fee: StdFee | "auto" | number,
-    memo?: string,
+    memo?: string
   ) {
     return this.signAndBroadcast(
       senderAddress,
@@ -267,7 +267,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         },
       ],
       fee,
-      memo,
+      memo
     );
   }
 
@@ -290,13 +290,13 @@ export class SifSigningStargateClient extends SigningStargateClient {
       poolNativeAssetBalance: string;
     },
     pmtpBlockRate?: string,
-    slippage?: number | string,
+    slippage?: number | string
   ) {
     const result = this.#simulateAutoCompositePoolSwap(
       fromCoin,
       toCoin,
       pmtpBlockRate,
-      slippage,
+      slippage
     );
     return {
       rawReceiving: result.rawReceiving.integerValue().toFixed(0),
@@ -319,7 +319,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   async simulateSwap(
     fromCoin: Coin,
     toCoin: Omit<Coin, "amount">,
-    slippage?: number | string,
+    slippage?: number | string
   ) {
     const queryClient = this.forceGetQueryClient();
 
@@ -367,7 +367,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
           secondPoolRes.pool?.externalAssetBalance ?? "0",
       },
       pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
-      slippage,
+      slippage
     );
 
     return this.#parseSwapResult(swapResult, toCoin.denom);
@@ -383,7 +383,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       poolNativeAssetBalance: string;
     },
     pmtpBlockRate?: string,
-    slippage?: number | string,
+    slippage?: number | string
   ) {
     if (fromCoin.denom === toCoin.denom) {
       throw new Error("Can't swap to the same coin");
@@ -398,7 +398,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         },
         { poolBalance: toCoin.poolExternalAssetBalance },
         pmtpBlockRate,
-        slippage,
+        slippage
       );
     }
 
@@ -411,7 +411,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         },
         { poolBalance: toCoin.poolNativeAssetBalance },
         pmtpBlockRate,
-        slippage,
+        slippage
       );
     }
 
@@ -422,7 +422,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolBalance: fromCoin.poolExternalAssetBalance,
       },
       { poolBalance: fromCoin.poolNativeAssetBalance },
-      pmtpBlockRate,
+      pmtpBlockRate
     );
 
     const firstSwapConvertedLpFee = this.#simulateSwap(
@@ -430,7 +430,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         amount: firstSwap.liquidityProviderFee.toString(),
         poolBalance: toCoin.poolNativeAssetBalance,
       },
-      { poolBalance: toCoin.poolExternalAssetBalance },
+      { poolBalance: toCoin.poolExternalAssetBalance }
     );
 
     const secondSwap = this.#simulateSwap(
@@ -440,14 +440,14 @@ export class SifSigningStargateClient extends SigningStargateClient {
       },
       { poolBalance: toCoin.poolExternalAssetBalance },
       pmtpBlockRate,
-      slippage,
+      slippage
     );
 
     return {
       ...secondSwap,
       priceImpact: firstSwap.priceImpact.plus(secondSwap.priceImpact),
       liquidityProviderFee: firstSwapConvertedLpFee.rawReceiving.plus(
-        secondSwap.liquidityProviderFee,
+        secondSwap.liquidityProviderFee
       ),
     };
   }
@@ -456,24 +456,24 @@ export class SifSigningStargateClient extends SigningStargateClient {
     fromCoin: { amount: string; poolBalance: string },
     toCoin: { poolBalance: string },
     pmtpBlockRate?: string,
-    slippage?: number | string,
+    slippage?: number | string
   ) {
     const swapResult = calculateSwapResult(
       fromCoin.amount,
       fromCoin.poolBalance,
       toCoin.poolBalance,
-      pmtpBlockRate,
+      pmtpBlockRate
     );
 
     const priceImpact = calculatePriceImpact(
       fromCoin.amount,
-      fromCoin.poolBalance,
+      fromCoin.poolBalance
     );
 
     const liquidityProviderFee = calculateLiquidityProviderFee(
       fromCoin.amount,
       fromCoin.poolBalance,
-      toCoin.poolBalance,
+      toCoin.poolBalance
     );
 
     return {
@@ -483,7 +483,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         swapResult
           .minus(liquidityProviderFee)
           .times(priceImpact.minus(1).abs())
-          .times(new BigNumber(1).minus(slippage ?? 0)),
+          .times(new BigNumber(1).minus(slippage ?? 0))
       ),
       priceImpact,
       liquidityProviderFee,
@@ -500,12 +500,12 @@ export class SifSigningStargateClient extends SigningStargateClient {
       priceImpact: BigNumber;
       liquidityProviderFee: BigNumber;
     },
-    toCoinDenom: string,
+    toCoinDenom: string
   ) {
     const queryClient = this.forceGetQueryClient();
     const tokenRegistryRes = await queryClient.tokenRegistry.entries({});
     const tokenRecord = tokenRegistryRes.registry?.entries.find(
-      (x) => x.denom === toCoinDenom,
+      (x) => x.denom === toCoinDenom
     );
 
     if (tokenRecord === undefined) {
@@ -515,7 +515,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const toCosmJsDecimal = (bn: BigNumber) =>
       Decimal.fromAtomics(
         bn.integerValue().toFixed(0).toString(),
-        tokenRecord.decimals.toNumber(),
+        tokenRecord.decimals.toNumber()
       );
 
     return {
@@ -531,7 +531,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       await this.forceGetQueryClient().tokenRegistry.entries({});
 
     const registry = tokenRegistryEntries.registry?.entries.find(
-      (x) => x.denom === denom || x.baseDenom === denom,
+      (x) => x.denom === denom || x.baseDenom === denom
     );
 
     if (registry === undefined) {

@@ -20,7 +20,7 @@
     width: 9px;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-600 rounded;
+    @apply rounded bg-gray-600;
   }
   ::-webkit-scrollbar-track {
     @apply rounded bg-transparent;
@@ -47,10 +47,10 @@
 
 @layer components {
   .input {
-    @apply bg-gray-700 rounded;
+    @apply rounded bg-gray-700;
   }
 
   .input-label {
-    @apply text-gray-200 text-sm font-normal;
+    @apply text-sm font-normal text-gray-200;
   }
 }

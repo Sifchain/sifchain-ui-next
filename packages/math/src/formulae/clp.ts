@@ -6,7 +6,7 @@ export const calculatePoolUnits = (
   externalAmount: BigNumber.Value,
   pooledNativeAmount: BigNumber.Value,
   pooledExternalAmount: BigNumber.Value,
-  poolUnits: BigNumber.Value,
+  poolUnits: BigNumber.Value
 ) => {
   const na = new BigNumber(nativeAmount);
   const ea = new BigNumber(externalAmount);
@@ -26,14 +26,14 @@ export const calculatePoolUnits = (
     nativeAmount,
     externalAmount,
     pooledNativeAmount,
-    pooledExternalAmount,
+    pooledExternalAmount
   );
 
   // ((P (a R + A r))
   const numerator = pu.times(
     ea
       .times(pooledNativeAmount)
-      .plus(new BigNumber(pooledExternalAmount).times(nativeAmount)),
+      .plus(new BigNumber(pooledExternalAmount).times(nativeAmount))
   );
   const denominator = new BigNumber(2)
     .times(pooledExternalAmount)

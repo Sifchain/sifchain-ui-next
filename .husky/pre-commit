@@ -3,4 +3,3 @@
 
 pnpm compile
 pnpm lint-staged
-pnpm pretty-quick --staged

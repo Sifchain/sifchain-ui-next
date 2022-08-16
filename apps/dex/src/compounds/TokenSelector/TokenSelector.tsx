@@ -14,7 +14,10 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
 export type TokenSelectorProps = Omit<
   BaseTokenSelectorProps,
   "tokens" | "value" | "onChange"
-> & { value?: string; onChange: (token?: EnhancedRegistryAsset) => unknown };
+> & {
+  value?: string;
+  onChange: (token?: EnhancedRegistryAsset) => unknown;
+};
 
 export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   id: x.denom,
@@ -45,12 +48,12 @@ export function useTokenEntriesWithBalance() {
           }
         : token;
     },
-    [findBySymbolOrDenom],
+    [findBySymbolOrDenom]
   );
 
   return useMemo(
     () => registry?.map(pipe(toTokenEntry, toTokenEntryWithBalance)),
-    [registry, toTokenEntryWithBalance],
+    [registry, toTokenEntryWithBalance]
   );
 }
 
@@ -59,7 +62,7 @@ const TokenSelector = (props: TokenSelectorProps) => {
 
   const handleChange = useCallback(
     (token: TokenEntry) => props.onChange(indexedByDenom[token.id ?? ""]),
-    [indexedByDenom, props],
+    [indexedByDenom, props]
   );
 
   const tokens = useTokenEntriesWithBalance();

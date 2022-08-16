@@ -39,13 +39,13 @@ export const COLLATERAL_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 const COLLATERAL_ERRORS = {
   INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
   INVALID_RANGE: `Collateral amount must be between ${formatNumberAsCurrency(
-    0,
+    0
   )} and ${formatNumberAsCurrency(COLLATERAL_MAX_VALUE)}`,
   INSUFFICIENT_BALANCE: "Insufficient balance",
 };
 export function inputValidatorCollateral(
   $input: HTMLInputElement,
-  event: "blur" | "change",
+  event: "blur" | "change"
 ) {
   const value = Number($input.value);
   const payload = {
@@ -92,14 +92,14 @@ export const POSITION_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 const POSITION_ERRORS = {
   INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
   INVALID_RANGE: `Position amount must be between ${formatNumberAsCurrency(
-    0,
+    0
   )} and ${formatNumberAsCurrency(POSITION_MAX_VALUE)}`,
   POSITION_SIZE_EXCEEDS_LEVERAGE_LIMITS:
     "Position size exceeds leverage limits",
 };
 export function inputValidatorPosition(
   $input: HTMLInputElement,
-  event: "blur" | "change",
+  event: "blur" | "change"
 ) {
   const value = Number($input.value);
   const payload = {
@@ -151,7 +151,7 @@ const LEVERAGE_ERRORS = {
 export function inputValidatorLeverage(
   $input: HTMLInputElement,
   event: "blur" | "change",
-  leverageMax: string,
+  leverageMax: string
 ) {
   const value = Number($input.value);
   const payload = {
@@ -162,7 +162,7 @@ export function inputValidatorLeverage(
   if ($input.value !== "" && Number.isNaN(value)) {
     payload.error = LEVERAGE_ERRORS.INVALID_NUMBER(
       LEVERAGE_MIN_VALUE,
-      leverageMax,
+      leverageMax
     );
   }
 
@@ -172,14 +172,14 @@ export function inputValidatorLeverage(
   ) {
     payload.error = LEVERAGE_ERRORS.INVALID_RANGE(
       LEVERAGE_MIN_VALUE,
-      leverageMax,
+      leverageMax
     );
   }
 
   if (event === "blur" && $input.value === "") {
     payload.error = LEVERAGE_ERRORS.INVALID_NUMBER(
       LEVERAGE_MIN_VALUE,
-      leverageMax,
+      leverageMax
     );
   }
 

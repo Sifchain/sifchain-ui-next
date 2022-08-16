@@ -23,7 +23,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
   return (
     <div
       role="button"
-      className={clsx("flex items-center py-1 px-8 gap-4 transition-colors", {
+      className={clsx("flex items-center gap-4 py-1 px-8 transition-colors", {
         "bg-gray-600": props.active || props.selected,
       })}
     >
@@ -33,23 +33,23 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
           hasDarkIcon={Boolean(props.hasDarkIcon)}
         />
         {props.homeNetworkUrl && (
-          <figure className="h-5 w-5 absolute top-4 ring-2 ring-gray-800 -right-2 rounded-full overflow-hidden bg-gray-800">
+          <figure className="absolute top-4 -right-2 h-5 w-5 overflow-hidden rounded-full bg-gray-800 ring-2 ring-gray-800">
             <AsyncImage
               src={props.homeNetworkUrl}
-              className="object-cover origin-center scale-[1.35] grayscale invert"
+              className="origin-center scale-[1.35] object-cover grayscale invert"
             />
           </figure>
         )}
       </div>
       <div className="grid flex-1">
-        <span className="text-white text-base font-semibold uppercase">
+        <span className="text-base font-semibold uppercase text-white">
           {props.displaySymbol}
         </span>
-        <span className="text-gray-300 text-sm font-normal">{props.name}</span>
+        <span className="text-sm font-normal text-gray-300">{props.name}</span>
       </div>
       {props.balance !== undefined && (
         <div>
-          <span className="text-white font-semibold text-sm">
+          <span className="text-sm font-semibold text-white">
             {props.balance.toLocaleString(undefined, {
               style: "decimal",
               maximumFractionDigits: 4,

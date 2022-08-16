@@ -17,12 +17,12 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
       { label: "Add liquidity", value: "add" },
       { label: "Remove liquidity", value: "unlock" },
     ],
-    [],
+    []
   );
 
   const selectedTabIndex = useMemo(
     () => Object.values(tabOptions).findIndex((x) => x.value === props.action),
-    [props.action, tabOptions],
+    [props.action, tabOptions]
   );
 
   const { indexedByDenom } = useTokenRegistryQuery();
@@ -60,7 +60,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
 
   return (
     <Modal {...props} title="Pool">
-      <div className="flex justify-between items-center gap-4 pb-4">
+      <div className="flex items-center justify-between gap-4 pb-4">
         <ButtonGroup
           className="flex-1 bg-black"
           options={tabOptions}
@@ -72,7 +72,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
                 props.onChangeAction(option.value);
               }
             },
-            [props, tabOptions],
+            [props, tabOptions]
           )}
         />
         <dl className="flex flex-col gap-1 uppercase [&>div]:flex [&>div]:justify-between [&>div]:gap-4">

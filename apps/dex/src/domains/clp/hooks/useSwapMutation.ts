@@ -35,7 +35,7 @@ export function useSwapMutation() {
             },
           },
         ],
-        DEFAULT_FEE,
+        DEFAULT_FEE
       );
     },
     {
@@ -53,18 +53,18 @@ export function useSwapMutation() {
 
           const fromDisplayAmount = Decimal.fromAtomics(
             variables.fromAmount,
-            fromCoin?.decimals ?? 0,
+            fromCoin?.decimals ?? 0
           ).toString();
           const toDisplayAmount = Decimal.fromAtomics(
             variables.minimumReceiving,
-            toCoin?.decimals ?? 0,
+            toCoin?.decimals ?? 0
           ).toString();
 
           toast.success(
-            `Successfully swapped ${fromDisplayAmount} ${fromSymbol} for >=${toDisplayAmount} ${toSymbol}`,
+            `Successfully swapped ${fromDisplayAmount} ${fromSymbol} for >=${toDisplayAmount} ${toSymbol}`
           );
         }
       },
-    },
+    }
   );
 }

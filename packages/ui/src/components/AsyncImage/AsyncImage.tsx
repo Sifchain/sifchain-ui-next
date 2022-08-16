@@ -30,7 +30,7 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
       style={{ height, width }}
       className={clsx(
         "relative grid place-items-center overflow-hidden",
-        containerClassName,
+        containerClassName
       )}
     >
       {shouldRenderPlaceholder && <>{placeholder}</>}
@@ -43,7 +43,7 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
           {
             "opacity-0": !loaded,
           },
-          className,
+          className
         )}
         {...props}
       />

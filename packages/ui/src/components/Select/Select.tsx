@@ -40,17 +40,17 @@ export type SelectProps = {
 export const Select: FC<SelectProps> = (props) => {
   const indexedById = useMemo(
     () => indexBy(prop("id"), props.options),
-    [props.options],
+    [props.options]
   );
   const selected = useMemo(
     () => indexedById[props.value?.id ?? ""],
-    [props.value, indexedById],
+    [props.value, indexedById]
   );
   return (
     <Listbox value={props.value} onChange={props.onChange}>
       <div className={clsx("relative", props.className)}>
         {props.label && (
-          <Listbox.Label className="text-gray-200 text-sm">
+          <Listbox.Label className="text-sm text-gray-200">
             {props.label}
           </Listbox.Label>
         )}

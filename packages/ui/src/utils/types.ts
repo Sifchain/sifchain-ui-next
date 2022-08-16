@@ -14,7 +14,7 @@ export type IndexableKeys<T extends StringIndexable, K = keyof T> = K extends
 
 export type ValidPaths<
   T extends StringIndexable,
-  TKeys = IndexableKeys<T>,
+  TKeys = IndexableKeys<T>
 > = TKeys extends string
   ? T[TKeys] extends StringIndexable
     ? `${TKeys}.${IndexableKeys<T[TKeys]>}`

@@ -4,7 +4,7 @@ export function slipAdjustment(
   r: IAmount, // Native amount added
   a: IAmount, // External amount added
   R: IAmount, // Native Balance (before)
-  A: IAmount, // External Balance (before)
+  A: IAmount // External Balance (before)
 ): IAmount {
   // slipAdjustment = ((R a - r A)/((r + R) (a + A)))
   const slipAdjDenominator = r.add(R).multiply(a.add(A));
@@ -37,7 +37,7 @@ export function calculatePoolUnits(
   a: IAmount, // External amount added
   R: IAmount, // Native Balance (before)
   A: IAmount, // External Balance (before)
-  P: IAmount, // existing Pool Units
+  P: IAmount // existing Pool Units
 ) {
   if (A.equalTo("0") || R.equalTo("0") || P.equalTo("0")) {
     return r;
@@ -92,11 +92,11 @@ export function calculateWithdrawal({
   let withdrawNativeAssetAmountPreSwap = Amount("0");
   if (!poolUnitsOverUnitsToClaim.equalTo("0")) {
     withdrawExternalAssetAmountPreSwap = externalAssetBalance.divide(
-      poolUnitsOverUnitsToClaim,
+      poolUnitsOverUnitsToClaim
     );
 
     withdrawNativeAssetAmountPreSwap = nativeAssetBalance.divide(
-      poolUnitsOverUnitsToClaim,
+      poolUnitsOverUnitsToClaim
     );
   }
 
@@ -108,22 +108,22 @@ export function calculateWithdrawal({
       : asymmetry.lessThan("0")
       ? externalAssetBalance.divide(
           poolUnits.divide(
-            unitsToClaim.divide(Amount("10000").divide(asymmetry)),
-          ),
+            unitsToClaim.divide(Amount("10000").divide(asymmetry))
+          )
         )
       : nativeAssetBalance.divide(
           poolUnits.divide(
-            unitsToClaim.divide(Amount("10000").divide(asymmetry)),
-          ),
-        ),
+            unitsToClaim.divide(Amount("10000").divide(asymmetry))
+          )
+        )
   );
 
   const newExternalAssetBalance = externalAssetBalance.subtract(
-    withdrawExternalAssetAmountPreSwap,
+    withdrawExternalAssetAmountPreSwap
   );
 
   const newNativeAssetBalance = nativeAssetBalance.subtract(
-    withdrawNativeAssetAmountPreSwap,
+    withdrawNativeAssetAmountPreSwap
   );
 
   const withdrawNativeAssetAmount = !asymmetry.lessThan("0")
@@ -132,8 +132,8 @@ export function calculateWithdrawal({
         calculateSwapResult(
           abs(swapAmount),
           newExternalAssetBalance,
-          newNativeAssetBalance,
-        ),
+          newNativeAssetBalance
+        )
       );
 
   const withdrawExternalAssetAmount = asymmetry.lessThan("0")
@@ -142,8 +142,8 @@ export function calculateWithdrawal({
         calculateSwapResult(
           abs(swapAmount),
           newNativeAssetBalance,
-          newExternalAssetBalance,
-        ),
+          newExternalAssetBalance
+        )
       );
 
   return {
@@ -181,18 +181,18 @@ export function calculateSwapResult_pmtp(
   x: IAmount,
   X: IAmount,
   Y: IAmount,
-  adjustment: IAmount,
+  adjustment: IAmount
 ) {
   if (x.equalTo("0") || X.equalTo("0") || Y.equalTo("0")) {
     return Amount("0");
   }
 
   const adjustmentPercentage = adjustment.divide(
-    Amount("100".concat("0".repeat(18))),
+    Amount("100".concat("0".repeat(18)))
   );
 
   return calculateSwapResult(x, X, Y).multiply(
-    Amount("1").add(adjustmentPercentage),
+    Amount("1").add(adjustmentPercentage)
   );
 }
 

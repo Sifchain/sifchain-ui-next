@@ -7,7 +7,7 @@ export function useRowanPriceQuery() {
 
   const rowanPrice = useMemo(
     () => Maybe.of(poolStats?.rowanUSD).mapOr(0, Number),
-    [poolStats?.rowanUSD],
+    [poolStats?.rowanUSD]
   );
 
   return {

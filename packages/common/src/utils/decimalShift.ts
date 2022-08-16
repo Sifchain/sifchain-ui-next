@@ -77,7 +77,7 @@ export function floorDecimal(decimal: string) {
  * @returns length of mantissa
  */
 export function getMantissaLength<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>,
+  amount: AmountNotAssetAmount<T>
 ): number {
   const number = format(amount, { mantissa: 18, trimMantissa: true });
   return number.length - number.indexOf(".") - 1;
@@ -85,7 +85,7 @@ export function getMantissaLength<T extends IAmount>(
 
 export function humanUnitsToAssetAmount(
   asset: IAsset,
-  amount: string | number,
+  amount: string | number
 ) {
   return AssetAmount(asset, toBaseUnits(String(amount), asset));
 }

@@ -11,15 +11,15 @@ export default {
 
 const Template: ComponentStory<IconType> = () => {
   const iconComponents = Object.keys(icons).map(
-    (key) => icons[key as keyof typeof icons],
+    (key) => icons[key as keyof typeof icons]
   );
   return (
-    <ul className="flex gap-2 flex-wrap">
+    <ul className="flex flex-wrap gap-2">
       {iconComponents.map((Icon) => (
         <>
           <li key={Icon.name}>
             <Tooltip content={Icon.name}>
-              <div className="grid place-items-center h-12 w-12 bg-gray-900/40 text-xl text-gray-50 rounded">
+              <div className="grid h-12 w-12 place-items-center rounded bg-gray-900/40 text-xl text-gray-50">
                 <Icon />
               </div>
             </Tooltip>

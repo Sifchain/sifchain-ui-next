@@ -30,7 +30,7 @@ export function useHistoryQuery(params: {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
       retry: false,
-    },
+    }
   ) as UseQueryResult<{
     pagination: Pagination;
     results: {

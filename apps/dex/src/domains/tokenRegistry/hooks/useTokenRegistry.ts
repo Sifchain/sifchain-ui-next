@@ -15,7 +15,7 @@ export type EnhancedRegistryAsset = IAsset & {
 };
 
 export default function useTokenRegistryQuery(
-  networkKind: NetworkKind | NetworkKind[] = "sifchain",
+  networkKind: NetworkKind | NetworkKind[] = "sifchain"
 ) {
   const { data: env } = useDexEnvironment();
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
@@ -49,7 +49,7 @@ export default function useTokenRegistryQuery(
                 entry.denom === env?.nativeAsset.symbol.toLowerCase()
                   ? env.sifChainId
                   : entry.ibcCounterpartyChainId,
-            }),
+            })
           );
         }, [])
     );
@@ -67,7 +67,7 @@ export default function useTokenRegistryQuery(
     const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), entries);
     const indexedByDisplaySymbol = indexBy(
       compose(toLower, prop("displaySymbol")),
-      entries,
+      entries
     );
     const indexedByDenom = indexBy(prop("denom"), entries);
 

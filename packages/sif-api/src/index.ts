@@ -1,7 +1,7 @@
-import * as typescriptFetch from "./generated/typescriptFetch";
-import { Configuration, FetchAPI } from "./generated/typescriptFetch";
+import * as typescriptFetch from './generated/typescriptFetch';
+import { Configuration, FetchAPI } from './generated/typescriptFetch';
 
-export * from "./generated/typescriptFetch";
+export * from './generated/typescriptFetch';
 
 type ApiFactoryKeyString = `${string}ApiFactory`;
 
@@ -20,18 +20,18 @@ type ApiFactories = {
 export const createClient = (
   configuration?: Configuration,
   fetch?: FetchAPI,
-  basePath?: string,
+  basePath?: string
 ) =>
   Object.fromEntries(
     Object.entries(typescriptFetch)
       .filter((entry): entry is [string, ApiFactories[keyof ApiFactories]] =>
-        entry[0].endsWith("ApiFactory"),
+        entry[0].endsWith('ApiFactory')
       )
-      .map(([key, value]) => [key.replace("ApiFactory", ""), value] as const)
+      .map(([key, value]) => [key.replace('ApiFactory', ''), value] as const)
       .map(([key, value]) => [
         key.charAt(0).toLowerCase() + key.slice(1),
         value(configuration, fetch, basePath),
-      ]),
+      ])
   ) as {
     [P in ApiFactoryKey as Uncapitalize<TrimApiFactoryKey<P>>]: ReturnType<
       typeof typescriptFetch[P]

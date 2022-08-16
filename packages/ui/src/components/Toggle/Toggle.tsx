@@ -14,22 +14,22 @@ export const Toggle: FC<ToggleProps> = (props) => {
       onChange={props.onChange}
       className={clsx(
         props.checked ? "bg-indigo-600" : "bg-gray-200",
-        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
       )}
     >
       <span className="sr-only">Use setting</span>
       <span
         className={clsx(
           props.checked ? "translate-x-5" : "translate-x-0",
-          "pointer-events-none relative inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200",
+          "pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
         )}
       >
         <span
           className={clsx(
             props.checked
-              ? "opacity-0 ease-out duration-100"
-              : "opacity-100 ease-in duration-200",
-            "absolute inset-0 h-full w-full flex items-center justify-center transition-opacity",
+              ? "opacity-0 duration-100 ease-out"
+              : "opacity-100 duration-200 ease-in",
+            "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
           )}
           aria-hidden="true"
         >
@@ -50,9 +50,9 @@ export const Toggle: FC<ToggleProps> = (props) => {
         <span
           className={clsx(
             props.checked
-              ? "opacity-100 ease-in duration-200"
-              : "opacity-0 ease-out duration-100",
-            "absolute inset-0 h-full w-full flex items-center justify-center transition-opacity",
+              ? "opacity-100 duration-200 ease-in"
+              : "opacity-0 duration-100 ease-out",
+            "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
           )}
           aria-hidden="true"
         >

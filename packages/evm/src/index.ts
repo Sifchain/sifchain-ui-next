@@ -15,7 +15,7 @@ const enhanceSdk = (sdk: MainnetSdk) => ({
     sendTokensToCosmos: async (
       recipient: BytesLike,
       token: string,
-      amount: BigNumberish,
+      amount: BigNumberish
     ) => {
       const isBridgedToken =
         await sdk.peggy.bridgeBank.getCosmosTokenInWhiteList(token);
@@ -38,7 +38,7 @@ export const getTestnetSdk = (defaultSigner: Signer) =>
       bridgeBank: getContract(
         "0x6CfD69783E3fFb44CBaaFF7F509a4fcF0d8e2835",
         mainnetPeggyBridgeBankAbi,
-        defaultSigner,
+        defaultSigner
       ),
     },
   });
@@ -49,21 +49,21 @@ export const getDevnetSdk = (defaultSigner: Signer) =>
       bridgeBank: getContract(
         "0x96DC6f02C66Bbf2dfbA934b8DafE7B2c08715A73",
         mainnetPeggyBridgeBankAbi,
-        defaultSigner,
+        defaultSigner
       ),
     },
   });
 
 export const getSdk = (
   defaultSigner: Signer,
-  options: { bridgeBankContractAddress: string },
+  options: { bridgeBankContractAddress: string }
 ) =>
   enhanceSdk({
     peggy: {
       bridgeBank: getContract(
         options.bridgeBankContractAddress,
         mainnetPeggyBridgeBankAbi,
-        defaultSigner,
+        defaultSigner
       ),
     },
   });

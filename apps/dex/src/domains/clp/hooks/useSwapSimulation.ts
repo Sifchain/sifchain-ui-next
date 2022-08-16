@@ -15,7 +15,7 @@ export function useSwapSimulation(
   fromDenom: string,
   toDenom: string,
   fromAmount: string,
-  slippage = 0.01,
+  slippage = 0.01
 ) {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, COMMON_OPTIONS);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
@@ -23,7 +23,7 @@ export function useSwapSimulation(
   const { data: pmtpParams } = useSifnodeQuery(
     "clp.getPmtpParams",
     [{}],
-    COMMON_OPTIONS,
+    COMMON_OPTIONS
   );
 
   const [result, setResult] = useState<
@@ -42,7 +42,7 @@ export function useSwapSimulation(
       const toPool = toToken?.pool ?? fromToken?.pool;
 
       const [_, fromAmountDecimal] = runCatching(() =>
-        Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
+        Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0)
       );
 
       const [__, result] = runCatching(() =>
@@ -59,8 +59,8 @@ export function useSwapSimulation(
             poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
           },
           pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate,
-          slippage,
-        ),
+          slippage
+        )
       );
 
       return result;
@@ -71,7 +71,7 @@ export function useSwapSimulation(
       stargateClient,
       pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate,
       slippage,
-    ],
+    ]
   );
 
   useEffect(() => {

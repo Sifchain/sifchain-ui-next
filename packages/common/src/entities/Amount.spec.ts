@@ -87,7 +87,7 @@ describe("Amount", () => {
 
     // Supports Negative Numbers
     expect(JSBI.equal(JSBI.BigInt("-1234"), Amount("-1234").toBigInt())).toBe(
-      true,
+      true
     );
 
     expect(JSBI.equal(JSBI.BigInt("1"), Amount("2").toBigInt())).toBe(false);
@@ -99,7 +99,7 @@ describe("Amount", () => {
 
   test("#add", () => {
     expect(Amount("1000").add(Amount("1000")).equalTo(Amount("2000"))).toBe(
-      true,
+      true
     );
   });
 
@@ -148,7 +148,7 @@ describe("Amount", () => {
 
   test("#multiply", () => {
     expect(
-      Amount("12345678").multiply(Amount("10")).equalTo(Amount("123456780")),
+      Amount("12345678").multiply(Amount("10")).equalTo(Amount("123456780"))
     ).toBe(true);
   });
 
@@ -156,7 +156,7 @@ describe("Amount", () => {
     expect(Amount("15241383936").sqrt().toBigInt().toString()).toBe("123456");
 
     expect(Amount("15241578750190521").sqrt().toBigInt().toString()).toBe(
-      "123456789",
+      "123456789"
     );
 
     // Floor
@@ -165,9 +165,7 @@ describe("Amount", () => {
 
   test("#subtract", () => {
     expect(
-      Amount("12345678")
-        .subtract(Amount("2345678"))
-        .equalTo(Amount("10000000")),
+      Amount("12345678").subtract(Amount("2345678")).equalTo(Amount("10000000"))
     ).toBe(true);
   });
 

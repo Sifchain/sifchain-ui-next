@@ -16,7 +16,7 @@ const ChangelogPage = () => {
       <>
         {isLoading && <div>Loading...</div>}
         {isSuccess && (
-          <ReactMarkdown className="prose dark:prose-invert prose-sm max-h-[calc(100vh-200px)] overflow-y-scroll no-scrollbar">
+          <ReactMarkdown className="no-scrollbar prose prose-sm max-h-[calc(100vh-200px)] overflow-y-scroll dark:prose-invert">
             {changelogRes ?? ""}
           </ReactMarkdown>
         )}

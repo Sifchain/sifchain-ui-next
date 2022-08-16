@@ -13,7 +13,7 @@ const Portfolio: NextPage = () => {
       <Head>
         <title>Sichain Dex - Margin - Portfolio</title>
       </Head>
-      <section className="mt-4 border border-gold-800 rounded overflow-hidden">
+      <section className="mt-4 overflow-hidden rounded border border-gold-800">
         {walletAddress.isLoading && (
           <div className="bg-gray-850 p-10 text-center text-gray-100">
             Loading...

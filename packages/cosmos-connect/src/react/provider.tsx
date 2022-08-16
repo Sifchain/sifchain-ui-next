@@ -30,7 +30,7 @@ export const CosmConnectContext = React.createContext<CosmConnectContextValue>({
 });
 
 export const CosmConnectProvider = (
-  props: PropsWithChildren<CosmConnectProviderProps>,
+  props: PropsWithChildren<CosmConnectProviderProps>
 ) => {
   const [activeConnectorId, setActiveConnectorId] = useStorageState<
     string | undefined
@@ -39,14 +39,14 @@ export const CosmConnectProvider = (
     undefined,
     props.autoConnect
       ? props.persistOptions?.storage ?? window.localStorage
-      : noopStorage,
+      : noopStorage
   );
   const activeConnector = props.connectors.find(
-    (x) => x.id === activeConnectorId,
+    (x) => x.id === activeConnectorId
   );
 
   const [initSuccessful, setIsInitSuccessful] = useState(
-    () => activeConnector?.connected ?? false,
+    () => activeConnector?.connected ?? false
   );
 
   useEffect(() => {
@@ -55,16 +55,16 @@ export const CosmConnectProvider = (
         [
           x,
           () => setActiveConnectorId((y) => (y === x.id ? undefined : y)),
-        ] as const,
+        ] as const
     );
 
     connectorAndListenerPairs.forEach(([connector, listener]) =>
-      connector.addListener("disconnect", listener),
+      connector.addListener("disconnect", listener)
     );
 
     return () =>
       connectorAndListenerPairs.forEach(([connector, listener]) =>
-        connector.removeListener("disconnect", listener),
+        connector.removeListener("disconnect", listener)
       );
   }, [props.connectors, setActiveConnectorId]);
 
@@ -88,14 +88,14 @@ export const CosmConnectProvider = (
             setActiveConnectorId(connector.id);
             setIsInitSuccessful(true);
           },
-          [setActiveConnectorId],
+          [setActiveConnectorId]
         ),
         disconnect: useCallback(
           async (connector: BaseCosmConnector) => {
             await connector.disconnect();
             setActiveConnectorId((x) => (x === connector.id ? undefined : x));
           },
-          [setActiveConnectorId],
+          [setActiveConnectorId]
         ),
       }}
     >

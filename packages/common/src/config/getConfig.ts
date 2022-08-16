@@ -30,7 +30,7 @@ const fetchConfig = async (network: NetworkKind, env: NetworkEnv) =>
 export async function getConfig(
   applicationNetworkEnv: NetworkEnv = "localnet",
   sifchainAssetTag: ChainNetwork = "sifchain.localnet",
-  ethereumAssetTag: ChainNetwork = "ethereum.localnet",
+  ethereumAssetTag: ChainNetwork = "ethereum.localnet"
 ): Promise<AppConfig> {
   const [, env] = sifchainAssetTag.split(".") as [NetworkKind, NetworkEnv];
 
@@ -48,7 +48,7 @@ export async function getConfig(
       {
         sifchainAssets,
         ethereumAssets,
-      },
+      }
     );
   }
 
@@ -61,7 +61,7 @@ export async function getConfig(
         ...sifchainAssets.map((a) => ({
           ...a,
           network: n,
-        })),
+        }))
       );
     });
 
@@ -87,31 +87,31 @@ export async function getConfig(
       localnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["localnet"],
-      peggyCompatibleCosmosBaseDenoms,
+      peggyCompatibleCosmosBaseDenoms
     ),
     devnet: parseConfig(
       devnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["devnet"],
-      peggyCompatibleCosmosBaseDenoms,
+      peggyCompatibleCosmosBaseDenoms
     ),
     testnet: parseConfig(
       testnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["testnet"],
-      peggyCompatibleCosmosBaseDenoms,
+      peggyCompatibleCosmosBaseDenoms
     ),
     tempnet: parseConfig(
       tempnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["tempnet"],
-      peggyCompatibleCosmosBaseDenoms,
+      peggyCompatibleCosmosBaseDenoms
     ),
     mainnet: parseConfig(
       mainnnetconfig as CoreConfig,
       allAssets,
       CHAINCONFIG_BY_NETWORK_ENV["mainnet"],
-      peggyCompatibleCosmosBaseDenoms,
+      peggyCompatibleCosmosBaseDenoms
     ),
   };
 

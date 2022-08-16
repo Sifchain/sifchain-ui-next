@@ -33,11 +33,11 @@ const Indicator: FC<IndicatorProps> = (props) => {
   return (
     <span
       className={clsx(
-        "absolute bg-gray-600 transition-all rounded-md translate-x-0 duration-200 scale-x-75 origin-center ring-2",
+        "absolute origin-center translate-x-0 scale-x-75 rounded-md bg-gray-600 ring-2 transition-all duration-200",
         {
           "opacity-0": props.selectedIndex === -1,
         },
-        props.className,
+        props.className
       )}
       style={{
         width: props.itemWidth - props.gap,
@@ -64,8 +64,8 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
         }
       }}
       className={clsx(
-        "relative p-1.5 rounded-lg bg-gray-800 flex overflow-hidden",
-        props.className,
+        "relative flex overflow-hidden rounded-lg bg-gray-800 p-1.5",
+        props.className
       )}
     >
       <Indicator
@@ -93,7 +93,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
             key={index}
             type="button"
             className={clsx(
-              "flex-1 py-2.5 rounded-xl font-semibold",
+              "flex-1 rounded-xl py-2.5 font-semibold",
               index === props.selectedIndex ? "text-gray-50" : "text-gray-300",
               typeof props.itemClassName === "function"
                 ? props.itemClassName(index)
@@ -101,7 +101,7 @@ export function ButtonGroup<T = any>(props: ButtonGroupProps<T>) {
               {
                 "text-sm": props.size === "md",
                 "text-xs": props.size === "sm",
-              },
+              }
             )}
             onClick={props.onChange.bind(null, index)}
             onMouseOver={setHoverIndex.bind(null, index)}

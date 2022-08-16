@@ -7,14 +7,14 @@ export class IxoChain extends BaseChain implements Chain {
     return urlJoin(
       this.chainConfig.blockExplorerUrl,
       "/cosmos/tx/v1beta1/txs/",
-      hash,
+      hash
     );
   }
   getBlockExplorerUrlForAddress(address: string) {
     return urlJoin(
       this.chainConfig.blockExplorerUrl,
       "/cosmos/bank/v1beta1/balances/",
-      address,
+      address
     );
   }
 }

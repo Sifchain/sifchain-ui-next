@@ -102,7 +102,7 @@ describe("format", () => {
         Amount("999999800000000000"),
         createMockAsset(18),
 
-        { mantissa: 7, shorthand: true, forceSign: true },
+        { mantissa: 7, shorthand: true, forceSign: true }
       ),
       expected: `+0.9999998`,
     },
@@ -192,7 +192,7 @@ describe("format", () => {
 
   test("float mode", () => {
     expect(format(Amount("100").divide(Amount("3")), { mantissa: 18 })).toBe(
-      "33.333333333333333333",
+      "33.333333333333333333"
     );
   });
 

@@ -42,11 +42,11 @@ const ProvidersSection: FC<{ title: string }> = (props) => {
             <li key={provider.id}>
               <GridCard>
                 <div className="flex items-center gap-2">
-                  <figure className="h-8 w-8 ring-2 ring-gray-750 rounded-full overflow-hidden">
+                  <figure className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-gray-750">
                     <AsyncImage
                       alt={`${provider.displayName} logo`}
                       className={clsx(
-                        "p-0.5 rounded-full overflow-hidden h-8 w-8",
+                        "h-8 w-8 overflow-hidden rounded-full p-0.5"
                       )}
                       src={provider.logoUrl}
                     />

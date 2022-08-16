@@ -64,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       fullWidth,
       ...props
     },
-    ref,
+    ref
   ) => {
     const id = useId();
     const inputRef = useSyncedRef<HTMLInputElement>(ref);
@@ -94,7 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         })}
       >
         {(label || secondaryLabel) && (
-          <label htmlFor={id} className="flex justify-between items-center">
+          <label htmlFor={id} className="flex items-center justify-between">
             {label && (
               <span
                 className={clsx("input-label", {
@@ -132,5 +132,5 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </StyledInputContainer>
       </div>
     );
-  },
+  }
 );

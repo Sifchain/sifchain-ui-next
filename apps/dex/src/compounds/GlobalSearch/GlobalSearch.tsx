@@ -44,7 +44,7 @@ const GlobalSearch: FC = () => {
             invertColor={asset.hasDarkIcon}
           />
         ),
-      }),
+      })
     );
 
     return {
@@ -62,7 +62,7 @@ const GlobalSearch: FC = () => {
         addRecentEntry(selected);
       }
     },
-    [addRecentEntry, indexedById],
+    [addRecentEntry, indexedById]
   );
 
   return (

@@ -10,7 +10,7 @@ export default {
 
 const Template: ComponentStory<typeof Tooltip> = (args) => {
   return (
-    <div className="grid place-items-center h-screen">
+    <div className="grid h-screen place-items-center">
       <Tooltip {...args} />
     </div>
   );

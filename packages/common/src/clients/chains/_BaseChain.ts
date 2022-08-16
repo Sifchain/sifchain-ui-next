@@ -24,7 +24,7 @@ export class BaseChain implements Chain {
     this.chainConfig = context.chainConfig;
 
     this.assets = context.assets.filter(
-      (a) => a.network === context.chainConfig.network,
+      (a) => a.network === context.chainConfig.network
     );
 
     this.assetMap = new Map();
@@ -34,7 +34,7 @@ export class BaseChain implements Chain {
     this.nativeAsset = this.assets.find(
       (a) =>
         a.symbol.toLowerCase() ===
-        context.chainConfig.nativeAssetSymbol.toLowerCase(),
+        context.chainConfig.nativeAssetSymbol.toLowerCase()
     ) as IAsset;
   }
 
@@ -46,7 +46,7 @@ export class BaseChain implements Chain {
     const asset = this.lookupAsset(symbol);
     if (!asset) {
       throw new Error(
-        `Asset with symbol ${symbol} not found in chain ${this.displayName}`,
+        `Asset with symbol ${symbol} not found in chain ${this.displayName}`
       );
     }
     return asset;
@@ -58,7 +58,7 @@ export class BaseChain implements Chain {
 
   findAssetWithLikeSymbolOrThrow(symbol: string) {
     const asset = this.assets.find((asset) =>
-      isLikeSymbol(asset.symbol, symbol),
+      isLikeSymbol(asset.symbol, symbol)
     );
     if (!asset)
       throw new Error(`Asset ${symbol} not found in chain ${this.displayName}`);

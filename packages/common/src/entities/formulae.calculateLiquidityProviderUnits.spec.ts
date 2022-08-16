@@ -32,7 +32,7 @@ tables.PoolUnitsAfterUpgrade.forEach(({ r, a, R, A, P, expected }, index) => {
         Amount(a),
         Amount(R),
         Amount(A),
-        Amount(P),
+        Amount(P)
       );
 
       expect(isAllowable(output, Amount(expected))).toBe(true);

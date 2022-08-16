@@ -16,7 +16,7 @@ type NoResultsTrProps = {
 export function NoResultsRow(props: NoResultsTrProps) {
   return (
     <tr>
-      <td colSpan={props.colSpan} className="text-gray-400 text-center p-20">
+      <td colSpan={props.colSpan} className="p-20 text-center text-gray-400">
         {props.message}
       </td>
     </tr>
@@ -35,7 +35,7 @@ export function PaginationShowItems({
 }: PaginationShowItemsProps) {
   const initial = offset + limit;
   return (
-    <p className="text-sm mx-4 py-3">
+    <p className="mx-4 py-3 text-sm">
       <span>Showing</span>
       <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
@@ -55,7 +55,7 @@ export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
       {Array.from({ length: pages }, (_, index) => {
         const page = ++index;
         return (
-          <li key={index} className="flex-1 flex flex-col">
+          <li key={index} className="flex flex-1 flex-col">
             {render(page)}
           </li>
         );
@@ -66,7 +66,7 @@ export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
 
 export function PillUpdating() {
   return (
-    <span className="bg-yellow-600 text-yellow-200 px-4 py-2 text-xs rounded">
+    <span className="rounded bg-yellow-600 px-4 py-2 text-xs text-yellow-200">
       Updating...
     </span>
   );
@@ -85,7 +85,7 @@ export function PoolOverview(props: PoolOverviewProps) {
 
   return (
     <ul className="grid grid-cols-7 gap-5">
-      <li className="col-span-2 pl-4 py-4">
+      <li className="col-span-2 py-4 pl-4">
         <BaseTokenSelector
           textPlaceholder="Search pools"
           modalTitle="Select Pool"
@@ -99,7 +99,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
-          <span className="font-semibold text-sm">
+          <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(poolTVL)}</span>
             <span className="text-green-400">(+2.8%)</span>
           </span>
@@ -108,7 +108,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Volume</span>
-          <span className="font-semibold text-sm">
+          <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
             <span className="text-green-400">(+2.8%)</span>
           </span>
@@ -117,7 +117,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">ROWAN Price</span>
-          <span className="font-semibold text-sm">
+          <span className="text-sm font-semibold">
             <span className="mr-1">
               {formatNumberAsCurrency(props.rowanPriceUsd, 4)}
             </span>
@@ -128,7 +128,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">{props.pool.asset.label} Price</span>
-          <span className="font-semibold text-sm">
+          <span className="text-sm font-semibold">
             <span className="mr-1">
               <span className="mr-1">
                 {formatNumberAsCurrency(Number(props.pool.stats.priceToken))}
@@ -141,7 +141,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="font-semibold text-sm">
+          <span className="text-sm font-semibold">
             {formatNumberAsPercent(health)}
           </span>
         </div>

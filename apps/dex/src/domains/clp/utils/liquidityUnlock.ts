@@ -5,7 +5,7 @@ export const getLiquidityUnlockStatus = (
   lockDuration: number,
   cancelDuration: number,
   currentHeight: number,
-  estimatedBlockTimeMs: number,
+  estimatedBlockTimeMs: number
 ) => {
   const unlockedAtHeight = requestHeight + lockDuration;
   const expiredAtHeight = unlockedAtHeight + cancelDuration;
@@ -25,7 +25,7 @@ export const getLiquidityUnlockStatus = (
       ? undefined
       : addMilliseconds(
           new Date(),
-          estimatedBlockTimeMs * blockUntilExpiration,
+          estimatedBlockTimeMs * blockUntilExpiration
         );
 
   return {

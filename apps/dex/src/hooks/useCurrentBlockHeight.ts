@@ -7,7 +7,9 @@ const useCurrentBlockHeight = () => {
   return useQuery(
     "current-block-height",
     () => sifStargateClient!.getHeight(),
-    { enabled: sifStargateClient !== undefined },
+    {
+      enabled: sifStargateClient !== undefined,
+    }
   );
 };
 

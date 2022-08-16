@@ -14,7 +14,7 @@ export class MetamaskConnectPage {
   async navigate() {
     this.page = await getExtensionPage(
       MM_CONFIG.id,
-      "/notification.html#connect",
+      "/notification.html#connect"
     );
     await this.page.waitForLoadState();
   }

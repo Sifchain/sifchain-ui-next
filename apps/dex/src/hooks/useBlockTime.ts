@@ -18,11 +18,11 @@ export const useBlockTimeQuery = () => {
 
       return differenceInMilliseconds(
         parseISO(currentBlock.header.time),
-        parseISO(prevBlock.header.time),
+        parseISO(prevBlock.header.time)
       );
     },
     {
       enabled: sifchainClients !== undefined,
-    },
+    }
   );
 };

@@ -51,7 +51,7 @@ export function withRedirectOnMount<T>(
     redirectTo: string;
     redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
     fallback?: ReactNode;
-  },
+  }
 ) {
   function RedirectOnMount(innerProps: T) {
     const router = useRouter();

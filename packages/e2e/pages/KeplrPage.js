@@ -22,12 +22,12 @@ export class KeplrPage {
 
   async importAccount() {
     await this.page.goto(
-      `chrome-extension://${this.config.id}/popup.html#/register`,
+      `chrome-extension://${this.config.id}/popup.html#/register`
     );
     await this.page.click("text=Import existing account");
     await this.page.fill(
       'textarea[name="words"]',
-      this.config.options.mnemonic,
+      this.config.options.mnemonic
     );
     await this.page.fill('input[name="name"]', this.config.options.name);
     await this.page.fill('input[name="password"]', "juniper21");
@@ -49,7 +49,7 @@ export class KeplrPage {
           status: 200,
           body: JSON.stringify({ cosmos: { usd: 12.75 } }),
         });
-      },
+      }
     );
   }
 }

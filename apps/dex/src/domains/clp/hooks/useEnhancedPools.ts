@@ -55,12 +55,12 @@ export function useEnhancedPoolsQuery() {
           descend((x) => x.stats.poolTVL ?? 0),
           ascend((x) => x.asset.displaySymbol ?? 0),
         ],
-        filtered,
+        filtered
       );
     },
     {
       enabled: isSuccess,
-    },
+    }
   );
 
   const indices = useMemo(() => {
@@ -76,7 +76,7 @@ export function useEnhancedPoolsQuery() {
 
     const indexedByDisplaySymbol = indexBy(
       ({ asset }) => asset.displaySymbol.toLowerCase(),
-      derivedQuery.data,
+      derivedQuery.data
     );
 
     return {

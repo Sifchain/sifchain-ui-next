@@ -36,7 +36,7 @@ const ImportModal = (
   props: ModalProps & {
     denom: string;
     onChangeDenom: (denom: string) => unknown;
-  },
+  }
 ) => {
   const importTokensMutation = useImportTokensMutation();
 
@@ -62,14 +62,14 @@ const ImportModal = (
     props.denom,
     {
       enabled: !isEvmBridgedCoin(props.denom) && token?.chainId !== undefined,
-    },
+    }
   );
   const walletBalance = isEvmBridgedCoin(props.denom)
     ? isNil(evmWalletBalance)
       ? undefined
       : Decimal.fromAtomics(
           evmWalletBalance.value.toString(),
-          evmWalletBalance.decimals,
+          evmWalletBalance.decimals
         )
     : importTokenWalletBalance.data?.amount;
 
@@ -85,9 +85,9 @@ const ImportModal = (
       runCatching(() =>
         token === undefined
           ? undefined
-          : Decimal.fromUserInput(amount, token.decimals),
+          : Decimal.fromUserInput(amount, token.decimals)
       )[1],
-    [amount, token],
+    [amount, token]
   );
 
   const error = useMemo(() => {
@@ -101,7 +101,7 @@ const ImportModal = (
 
     if (
       walletBalance?.isLessThan(
-        amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0),
+        amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0)
       )
     ) {
       return new Error("Insufficient fund");
@@ -180,7 +180,7 @@ const ImportModal = (
       recipientAddress,
       token?.address,
       token?.chainId,
-    ],
+    ]
   );
 
   useEffect(() => {
@@ -196,13 +196,13 @@ const ImportModal = (
       title={title}
     >
       <form onSubmit={onSubmit}>
-        <fieldset className="p-4 mb-4 bg-black rounded-lg">
+        <fieldset className="mb-4 rounded-lg bg-black p-4">
           <TokenSelector
             modalTitle="Import"
             value={props.denom}
             onChange={useCallback(
               (value) => props.onChangeDenom(value?.denom ?? ""),
-              [props],
+              [props]
             )}
           />
           <Input
@@ -211,11 +211,13 @@ const ImportModal = (
             label="Amount"
             secondaryLabel={`Balance: ${(
               walletBalance?.toFloatApproximation() ?? 0
-            ).toLocaleString(undefined, { maximumFractionDigits: 6 })}`}
+            ).toLocaleString(undefined, {
+              maximumFractionDigits: 6,
+            })}`}
             value={amount}
             onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
               (event) => setAmount(event.target.value),
-              [],
+              []
             )}
             leadingIcon={
               <div className="flex gap-1.5">
@@ -230,7 +232,7 @@ const ImportModal = (
                           minimumFractionDigits: 0,
                           maximumFractionDigits: walletBalance.fractionalDigits,
                           useGrouping: false,
-                        }),
+                        })
                       );
                     }
                   }, [walletBalance])}
@@ -241,7 +243,7 @@ const ImportModal = (
                   type="button"
                   onClick={useCallback(
                     () => setAmount((x) => walletBalance?.toString() ?? x),
-                    [walletBalance],
+                    [walletBalance]
                   )}
                 >
                   Max
@@ -258,7 +260,7 @@ const ImportModal = (
           fullWidth
           disabled
         />
-        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:font-semibold [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2">
+        <dl className="flex flex-col gap-4 p-6 [&>div]:flex [&>div]:justify-between [&_dt]:opacity-70 [&_dd]:flex [&_dd]:items-center [&_dd]:gap-2 [&_dd]:font-semibold">
           <div>
             <dt>Direction</dt>
             <dd>
@@ -279,8 +281,7 @@ const ImportModal = (
             <dd>
               {balance?.amount
                 ?.plus(
-                  amountDecimal ??
-                    Decimal.zero(balance.amount.fractionalDigits),
+                  amountDecimal ?? Decimal.zero(balance.amount.fractionalDigits)
                 )
                 .toFloatApproximation()
                 .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
@@ -289,9 +290,9 @@ const ImportModal = (
           </div>
         </dl>
         {isEvmBridgedCoin(props.denom) && (
-          <div className="flex items-center gap-4 p-4 bg-gray-750 rounded-lg">
+          <div className="flex items-center gap-4 rounded-lg bg-gray-750 p-4">
             <p className="text-lg">ℹ️</p>
-            <p className="text-gray-200 text-xs">
+            <p className="text-xs text-gray-200">
               Your funds will be available for use on Sifchain after about 10
               minutes. However in some cases, this action can take up to 60
               minutes.
@@ -302,7 +303,7 @@ const ImportModal = (
             </p>
           </div>
         )}
-        <Button className="w-full mt-6 " disabled={disabled}>
+        <Button className="mt-6 w-full " disabled={disabled}>
           {buttonMessage}
         </Button>
       </form>

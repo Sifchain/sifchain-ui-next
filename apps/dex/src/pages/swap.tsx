@@ -71,24 +71,24 @@ const SwapPage: NextPage = () => {
       allBalancesQuery.isSuccess &&
       isSifStargateClientQuerySuccess &&
       signerStatus === "resolved",
-    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
+    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus]
   );
 
   const fromDenom = decodeURIComponent(
-    getFirstQueryValue(router.query["fromDenom"]) ?? "rowan",
+    getFirstQueryValue(router.query["fromDenom"]) ?? "rowan"
   );
   const toDenom = decodeURIComponent(
-    getFirstQueryValue(router.query["toDenom"]) ?? "cusdt",
+    getFirstQueryValue(router.query["toDenom"]) ?? "cusdt"
   );
 
   const setDenomsPair = useCallback(
     (leftDenom: string | undefined, rightDenom: string | undefined) =>
       router.replace(
         `swap?fromDenom=${encodeURIComponent(
-          leftDenom ?? fromDenom,
-        )}&toDenom=${encodeURIComponent(rightDenom ?? toDenom)}`,
+          leftDenom ?? fromDenom
+        )}&toDenom=${encodeURIComponent(rightDenom ?? toDenom)}`
       ),
-    [fromDenom, router, toDenom],
+    [fromDenom, router, toDenom]
   );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -102,7 +102,7 @@ const SwapPage: NextPage = () => {
     { label: "1.5%", value: 0.015 },
   ];
   const selectedSlippageIndex = slippageOptions.findIndex(
-    (x) => x.value === slippage,
+    (x) => x.value === slippage
   );
 
   const [fromAmount, setFromAmount] = useState("");
@@ -116,14 +116,14 @@ const SwapPage: NextPage = () => {
   const { data: toToken } = useEnhancedTokenQuery(toDenom, commonOptions);
 
   const [_, fromAmountDecimal] = runCatching(() =>
-    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0),
+    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0)
   );
 
   const { data: swapSimulationResult } = useSwapSimulation(
     fromDenom,
     toDenom,
     fromAmount,
-    slippage,
+    slippage
   );
 
   const parsedSwapResult = useMemo(
@@ -131,7 +131,7 @@ const SwapPage: NextPage = () => {
       ...swapSimulationResult,
       rawReceiving: Decimal.fromAtomics(
         swapSimulationResult?.rawReceiving ?? "0",
-        toToken?.decimals ?? 0,
+        toToken?.decimals ?? 0
       ),
       receivingPreSlippage: Decimal.fromAtomics(
         BigNumber.max(
@@ -139,23 +139,23 @@ const SwapPage: NextPage = () => {
           new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
             .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
             .times(
-              new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0),
-            ),
+              new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0)
+            )
         )
           .integerValue()
           .toFixed(0),
-        toToken?.decimals ?? 0,
+        toToken?.decimals ?? 0
       ),
       minimumReceiving: Decimal.fromAtomics(
         swapSimulationResult?.minimumReceiving ?? "0",
-        toToken?.decimals ?? 0,
+        toToken?.decimals ?? 0
       ),
       liquidityProviderFee: Decimal.fromAtomics(
         swapSimulationResult?.liquidityProviderFee ?? "0",
-        toToken?.decimals ?? 0,
+        toToken?.decimals ?? 0
       ),
     }),
-    [swapSimulationResult, toToken?.decimals],
+    [swapSimulationResult, toToken?.decimals]
   );
 
   useEffect(
@@ -165,7 +165,7 @@ const SwapPage: NextPage = () => {
         swapMutation.reset();
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isConfirmationModalOpen],
+    [isConfirmationModalOpen]
   );
 
   const [isFlipped, setFlipped] = useState(false);
@@ -174,7 +174,7 @@ const SwapPage: NextPage = () => {
     setFromAmount((x) =>
       parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
         ? x
-        : parsedSwapResult.minimumReceiving.toString(),
+        : parsedSwapResult.minimumReceiving.toString()
     );
     setFlipped(!isFlipped);
   }, [
@@ -196,7 +196,7 @@ const SwapPage: NextPage = () => {
 
     if (
       fromAmountDecimal?.isGreaterThan(
-        fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits),
+        fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits)
       )
     ) {
       return new Error("Insufficient balance");
@@ -234,13 +234,13 @@ const SwapPage: NextPage = () => {
 
   return (
     <>
-      <div className="flex-1 flex flex-col justify-center items-center">
-        <section className="flex-1 flex flex-col w-full bg-gray-800 p-2 md:p-6 md:w-auto md:min-w-[32rem] md:rounded-xl md:flex-initial">
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <section className="flex w-full flex-1 flex-col bg-gray-800 p-2 md:w-auto md:min-w-[32rem] md:flex-initial md:rounded-xl md:p-6">
           <header className="flex items-center justify-between pb-2 md:pb-6">
             <h2 className="text-2xl font-bold text-white">Swap</h2>
           </header>
           <form
-            className="flex-1 flex flex-col justify-between"
+            className="flex flex-1 flex-col justify-between"
             onSubmit={(event) => {
               event.preventDefault();
               startTransition(() => setIsConfirmationModalOpen(true));
@@ -255,7 +255,7 @@ const SwapPage: NextPage = () => {
                 onChangeDenom={(denom) => setDenomsPair(denom, undefined)}
                 onChangeAmount={(amount) => setFromAmount(amount)}
               />
-              <div className="flex justify-center align-middle my-[-2em] z-10">
+              <div className="z-10 my-[-2em] flex justify-center align-middle">
                 <FlipButton
                   $flipped={isFlipped}
                   onClick={(e) => {
@@ -265,7 +265,7 @@ const SwapPage: NextPage = () => {
                         parsedSwapResult.minimumReceiving.toFloatApproximation() ===
                         0
                           ? x
-                          : parsedSwapResult.minimumReceiving.toString(),
+                          : parsedSwapResult.minimumReceiving.toString()
                       );
                       flip();
                     });
@@ -288,9 +288,9 @@ const SwapPage: NextPage = () => {
                 onChangeDenom={(denom) => setDenomsPair(undefined, denom)}
                 onChangeAmount={(amount) => setFromAmount(amount)}
               />
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <label className="pr-6">Slippage</label>
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                   <ButtonGroup
                     className="bg-black"
                     itemClassName="px-4"
@@ -302,7 +302,7 @@ const SwapPage: NextPage = () => {
                       setSlippageInput(
                         new BigNumber(slippageOptions[index]?.value ?? 0)
                           .times(100)
-                          .toString() ?? "0.5",
+                          .toString() ?? "0.5"
                       )
                     }
                   />
@@ -361,12 +361,12 @@ const SwapPage: NextPage = () => {
           amount: formatDecimal(parsedSwapResult.rawReceiving, 6),
           amountPreSlippage: formatDecimal(
             parsedSwapResult.receivingPreSlippage,
-            6,
+            6
           ),
           minimumAmount: formatDecimal(parsedSwapResult.minimumReceiving),
         }}
         liquidityProviderFee={formatDecimal(
-          parsedSwapResult.liquidityProviderFee,
+          parsedSwapResult.liquidityProviderFee
         )}
         priceImpact={formatPercent(parsedSwapResult.priceImpact ?? 0, 2)}
         slippage={formatPercent(slippage ?? 0, 2)}

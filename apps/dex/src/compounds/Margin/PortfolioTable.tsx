@@ -58,7 +58,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
 
   return (
     <div className="relative">
-      <ul className="flex flex-row text-sm bg-gray-800">
+      <ul className="flex flex-row bg-gray-800 text-sm">
         {Object.values(OPTIONS_ITEMS).map(({ slug, title }) => {
           const isTabActive = currentTab.slug === slug;
 
@@ -70,8 +70,8 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
               >
                 <a
                   className={clsx(
-                    "flex mx-4 py-3",
-                    isTabActive ? "text-white font-semibold" : "text-gray-400",
+                    "mx-4 flex py-3",
+                    isTabActive ? "font-semibold text-white" : "text-gray-400"
                   )}
                 >
                   {title}

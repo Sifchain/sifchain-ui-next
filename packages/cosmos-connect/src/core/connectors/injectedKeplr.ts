@@ -24,7 +24,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     super(options);
     window.addEventListener(
       "keplr_keystorechange",
-      this.#keystoreChangeListener,
+      this.#keystoreChangeListener
     );
   }
 
@@ -40,7 +40,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
     window.addEventListener(
       "keplr_keystorechange",
-      this.#keystoreChangeListener,
+      this.#keystoreChangeListener
     );
   }
 
@@ -50,7 +50,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
     window.removeEventListener(
       "keplr_keystorechange",
-      this.#keystoreChangeListener,
+      this.#keystoreChangeListener
     );
 
     return Promise.resolve();
@@ -62,7 +62,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     }
 
     await this.#keplr.experimentalSuggestChain(
-      this.#chainStore.getChain(chainId).raw,
+      this.#chainStore.getChain(chainId).raw
     );
     await this.#keplr.enable(chainId);
     return this.#keplr.getOfflineSignerAuto(chainId);
@@ -70,16 +70,16 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
     return SigningStargateClient.connect(
-      this.#chainStore.getChain(chainId).rpc,
+      this.#chainStore.getChain(chainId).rpc
     );
   }
 
   async getSigningStargateClient(
-    chainId: string,
+    chainId: string
   ): Promise<SigningStargateClient> {
     return SigningStargateClient.connectWithSigner(
       this.#chainStore.getChain(chainId).rpc,
-      await this.getSigner(chainId),
+      await this.getSigner(chainId)
     );
   }
 

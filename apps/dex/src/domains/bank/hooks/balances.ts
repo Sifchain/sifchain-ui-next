@@ -22,7 +22,7 @@ type Balance = {
 export const useBalanceQuery = (
   chainId: string,
   denom: string,
-  options: { enabled: boolean } = { enabled: true },
+  options: { enabled: boolean } = { enabled: true }
 ) => {
   const { client } = useStargateClient(chainId, options);
   const { accounts } = useAccounts(chainId, options);
@@ -34,7 +34,7 @@ export const useBalanceQuery = (
     async () => {
       const result = await client?.getBalance(
         accounts?.[0]?.address ?? "",
-        denom,
+        denom
       );
 
       return result === undefined
@@ -50,7 +50,7 @@ export const useBalanceQuery = (
         client !== undefined &&
         (accounts?.length ?? 0) > 0 &&
         token !== undefined,
-    },
+    }
   );
 };
 
@@ -71,7 +71,7 @@ export function useAllBalancesQuery() {
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(
-        accounts?.[0]?.address ?? "",
+        accounts?.[0]?.address ?? ""
       );
 
       return (
@@ -93,13 +93,13 @@ export function useAllBalancesQuery() {
         signer !== undefined &&
         stargateClient !== undefined &&
         isTokenRegistryQuerySuccess,
-    },
+    }
   );
 
   const indices = useMemo(() => {
     const indexedByDenom = indexBy(
       compose(toLower, prop("denom")),
-      baseQuery.data ?? [],
+      baseQuery.data ?? []
     );
 
     const indexedBySymbol =
@@ -112,7 +112,7 @@ export function useAllBalancesQuery() {
                 ...acc,
                 [x.symbol.toLowerCase()]: indexedByDenom[x.denom] as Balance,
               }),
-              {} as StringIndexed<Balance>,
+              {} as StringIndexed<Balance>
             );
 
     const indexedByDisplaySymbol =
@@ -127,7 +127,7 @@ export function useAllBalancesQuery() {
                   x.denom
                 ] as Balance,
               }),
-              {} as StringIndexed<Balance>,
+              {} as StringIndexed<Balance>
             );
 
     return {
@@ -166,7 +166,7 @@ export function useBalancesWithPool() {
       ? undefined
       : liquidityProviders?.liquidityProviderData.reduce(
           (prev, curr) => prev.plus(curr.nativeAssetBalance),
-          Decimal.zero(env.nativeAsset.decimals),
+          Decimal.zero(env.nativeAsset.decimals)
         );
 
   const denomSet = useMemo(
@@ -177,7 +177,7 @@ export function useBalancesWithPool() {
           .map((x) => x.liquidityProvider?.asset?.symbol as string)
           .filter((x) => x !== undefined) ?? []),
       ]),
-    [balances, liquidityProviders?.liquidityProviderData],
+    [balances, liquidityProviders?.liquidityProviderData]
   );
 
   return useMemo(
@@ -186,7 +186,7 @@ export function useBalancesWithPool() {
         const token = indexedByDenom[x];
         const balance = balances?.find((y) => y.denom === x);
         const pool = liquidityProviders?.liquidityProviderData.find(
-          (y) => y.liquidityProvider?.asset?.symbol === x,
+          (y) => y.liquidityProvider?.asset?.symbol === x
         );
 
         return {
@@ -208,7 +208,7 @@ export function useBalancesWithPool() {
       indexedByDenom,
       liquidityProviders?.liquidityProviderData,
       totalRowan,
-    ],
+    ]
   );
 }
 
@@ -235,7 +235,7 @@ export function useBalancesStats() {
             : await stargateClient
                 .simulateSwap(
                   { denom: x.denom, amount: x.amount?.atomics ?? "0" },
-                  { denom: "cusdc" },
+                  { denom: "cusdc" }
                 )
                 .catch(() => ({ rawReceiving: zeroUsdc })),
         pooled:
@@ -244,7 +244,7 @@ export function useBalancesStats() {
             : await stargateClient
                 .simulateSwap(
                   { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
-                  { denom: "cusdc" },
+                  { denom: "cusdc" }
                 )
                 .catch(() => ({ rawReceiving: zeroUsdc })),
       }));
@@ -257,7 +257,7 @@ export function useBalancesStats() {
             .plus(curr.available.rawReceiving)
             .plus(curr.pooled.rawReceiving),
           availableInUsdc: prev.availableInUsdc.plus(
-            curr.available.rawReceiving,
+            curr.available.rawReceiving
           ),
           pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
         }),
@@ -265,7 +265,7 @@ export function useBalancesStats() {
           totalInUsdc: zeroUsdc,
           availableInUsdc: zeroUsdc,
           pooledInUsdc: zeroUsdc,
-        },
+        }
       );
     },
     {
@@ -273,6 +273,6 @@ export function useBalancesStats() {
         stargateClient !== undefined &&
         balances !== undefined &&
         usdcToken !== undefined,
-    },
+    }
   );
 }

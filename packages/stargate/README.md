@@ -14,7 +14,7 @@ yarn add @sifchain/stargate@snapshot
 
 ```ts
 const queryClients = await createQueryClient(
-  "https://rpc-testnet.sifchain.finance",
+  "https://rpc-testnet.sifchain.finance"
 );
 
 const response = await queryClients.clp.getPools({});
@@ -38,7 +38,7 @@ const [firstAccount, secondAccount] = await wallet.getAccounts();
 
 const signingClient = await SifSigningStargateClient.connectWithSigner(
   "https://rpc-testnet.sifchain.finance",
-  wallet,
+  wallet
 );
 
 signingClient.signAndBroadcast(
@@ -50,11 +50,11 @@ signingClient.signAndBroadcast(
         signer: firstAccount!.address,
         nativeAssetAmount: Decimal.fromUserInput(
           "100",
-          rowan.decimals.toNumber(),
+          rowan.decimals.toNumber()
         ).toString(),
         externalAssetAmount: Decimal.fromUserInput(
           "100",
-          juno.decimals.toNumber(),
+          juno.decimals.toNumber()
         ).toString(),
       },
     },
@@ -68,14 +68,14 @@ signingClient.signAndBroadcast(
             denom: rowan.denom,
             amount: Decimal.fromUserInput(
               "100",
-              rowan.decimals.toNumber(),
+              rowan.decimals.toNumber()
             ).toString(),
           },
         ],
       },
     },
   ],
-  DEFAULT_FEE,
+  DEFAULT_FEE
 );
 ```
 
@@ -84,12 +84,12 @@ signingClient.signAndBroadcast(
 ```ts
 const sifClient = await SifSigningStargateClient.connectWithSigner(
   "https://rpc-testnet.sifchain.finance",
-  wallet,
+  wallet
 );
 
 const junoClient = await SigningStargateClient.connectWithSigner(
   "juno_rpc",
-  wallet,
+  wallet
 );
 
 await sifClient.importIBCTokens(
@@ -103,7 +103,7 @@ await sifClient.importIBCTokens(
   "transfer",
   undefined,
   undefined,
-  DEFAULT_FEE,
+  DEFAULT_FEE
 );
 
 await sifClient.exportIBCTokens(
@@ -116,7 +116,7 @@ await sifClient.exportIBCTokens(
   "transfer",
   undefined,
   undefined,
-  DEFAULT_FEE,
+  DEFAULT_FEE
 );
 
 await sifClient.sendTokensToEth(
@@ -129,6 +129,6 @@ await sifClient.sendTokensToEth(
   // ropsten chain id
   0x3,
   undefined,
-  DEFAULT_FEE,
+  DEFAULT_FEE
 );
 ```

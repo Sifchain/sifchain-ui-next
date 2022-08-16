@@ -3,7 +3,7 @@ import { createInterface } from "readline";
 
 export function arg(
   argObj,
-  usageMsg = `This command has no usage message set`,
+  usageMsg = `This command has no usage message set`
 ) {
   const args = argDep({ "--help": Boolean, ...argObj });
   if (args["--help"]) {
@@ -22,7 +22,7 @@ export function arg(
 export async function prompt(
   message = "",
   options = ["y", "n"],
-  defaultAnswer = "y",
+  defaultAnswer = "y"
 ) {
   const rl = createInterface({
     input: process.stdin,

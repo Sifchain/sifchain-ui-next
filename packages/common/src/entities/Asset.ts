@@ -59,7 +59,7 @@ function _Asset(assetOrSymbol: any): ReadonlyAsset {
 
   if (!found) {
     throw new Error(
-      `Attempt to retrieve the asset with key "${assetOrSymbol}" before it had been cached.`,
+      `Attempt to retrieve the asset with key "${assetOrSymbol}" before it had been cached.`
     );
   }
 

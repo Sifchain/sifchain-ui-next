@@ -11,6 +11,6 @@ export default function useSifApiClient() {
     () => createClient({ basePath: env?.vanirUrl ?? "" }),
     {
       enabled: isSuccess && typeof env?.vanirUrl === "string",
-    },
+    }
   );
 }

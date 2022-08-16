@@ -30,7 +30,7 @@ export function useDexEnvKind(): NetworkEnv {
 
   return useMemo(
     () => resolvedEnv ?? sif_dex_env ?? "mainnet",
-    [resolvedEnv, sif_dex_env],
+    [resolvedEnv, sif_dex_env]
   );
 }
 
@@ -49,6 +49,6 @@ export function useDexEnvironment() {
       staleTime: 3600_000,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-    },
+    }
   );
 }

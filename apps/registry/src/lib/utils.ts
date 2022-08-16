@@ -11,11 +11,11 @@ type ProviderList = {
 export async function readAssetList(
   baseUrl: string,
   network: string,
-  env: string,
+  env: string
 ) {
   const filePath = `${baseUrl}/config/networks/${network}/assets.${network}.${env}.json`;
   const response = await fetch(filePath).then(
-    (res) => res.json() as Promise<AssetList>,
+    (res) => res.json() as Promise<AssetList>
   );
 
   return response;
@@ -24,7 +24,7 @@ export async function readAssetList(
 export async function readProviderList(baseUrl?: string) {
   const filePath = `${baseUrl}/config/providers/providers.json`;
   const response = await fetch(filePath).then(
-    (res) => res.json() as Promise<ProviderList>,
+    (res) => res.json() as Promise<ProviderList>
   );
 
   return response;

@@ -21,7 +21,7 @@ const formatBalance = (amount: Decimal) =>
   }) ?? 0;
 
 export const UnlockLiquidityTokenFieldset = (
-  props: UnlockLiquidityTokenFieldsetProps,
+  props: UnlockLiquidityTokenFieldsetProps
 ) => {
   const { indexedByDenom } = useTokenRegistryQuery();
   const tokenLeft = indexedByDenom[props.coinLeft.denom];
@@ -34,7 +34,7 @@ export const UnlockLiquidityTokenFieldset = (
           minimumFractionDigits: 0,
           maximumFractionDigits: props.balance.fractionalDigits,
           useGrouping: false,
-        }),
+        })
       );
     }
   }, [props]);
@@ -46,12 +46,12 @@ export const UnlockLiquidityTokenFieldset = (
   }, [props]);
 
   return (
-    <fieldset className="bg-black rounded-md p-6 pb-10">
+    <fieldset className="rounded-md bg-black p-6 pb-10">
       <div className="mb-3">
         <legend className="contents opacity-90">
           <div className="flex justify-between gap-1">
             <div>{props.label}</div>
-            <span className="flex font-bold uppercase gap-2">
+            <span className="flex gap-2 font-bold uppercase">
               <span className="flex gap-1">
                 <AssetIcon symbol={props.coinLeft.denom} size="md" />{" "}
                 {tokenLeft?.displaySymbol}

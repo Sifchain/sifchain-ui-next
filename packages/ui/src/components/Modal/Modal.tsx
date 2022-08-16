@@ -35,8 +35,8 @@ export const Modal: FC<ModalProps> = (props) => {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+        <div className="fixed inset-0 z-10 overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -48,15 +48,15 @@ export const Modal: FC<ModalProps> = (props) => {
             >
               <Dialog.Panel
                 className={clsx(
-                  "relative w-full md:max-w-md bg-white dark:bg-gray-800 dark:text-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full",
-                  props.className,
+                  "relative w-full transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all dark:bg-gray-800 dark:text-white sm:my-8 sm:w-full sm:max-w-lg md:max-w-md",
+                  props.className
                 )}
               >
                 {!props.hideCloseButton && (
-                  <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4 z-10">
+                  <div className="absolute top-0 right-0 z-10 hidden pt-4 pr-4 sm:block">
                     <button
                       type="button"
-                      className="bg-white dark:bg-gray-800 rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                      className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none dark:bg-gray-800"
                       onClick={props.onClose.bind(null, false)}
                     >
                       <span className="sr-only">Close</span>
@@ -68,7 +68,7 @@ export const Modal: FC<ModalProps> = (props) => {
                   <div className="flex gap-2">
                     {typeof props.onGoBack === "function" && (
                       <button
-                        className="text-gray-50 p-4 -my-4 -mr-4"
+                        className="-my-4 -mr-4 p-4 text-gray-50"
                         onClick={props.onGoBack}
                       >
                         <ArrowLeftIcon className="h-6 w-6" />
@@ -76,13 +76,13 @@ export const Modal: FC<ModalProps> = (props) => {
                     )}
                     <Dialog.Title
                       as="h3"
-                      className="text-xl relative text-center px-4 leading-6 font-semibold text-gray-900 dark:text-gray-50"
+                      className="relative px-4 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50"
                     >
                       {props.title}
                     </Dialog.Title>
                   </div>
                   {props.subTitle && (
-                    <div className="p-4 pt-0 border-b border-gray-750 ">
+                    <div className="border-b border-gray-750 p-4 pt-0 ">
                       {props.subTitle}
                     </div>
                   )}

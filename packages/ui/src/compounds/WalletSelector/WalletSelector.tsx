@@ -79,19 +79,19 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
 
   const selectedNetwork = useMemo(
     () => props.chains.find((x) => x.id === networkId),
-    [networkId],
+    [networkId]
   );
 
   const selectedWallet = useMemo(
     () => props.wallets.find((x) => x.id === walletId),
-    [walletId],
+    [walletId]
   );
 
   const [subHeading, content] = useMemo(() => {
     switch (step) {
       case "choose-network":
         return [
-          <label className="flex justify-between items-center w-full">
+          <label className="flex w-full items-center justify-between">
             <span>Choose network</span>
             <SearchInput
               placeholder="Search network"
@@ -106,7 +106,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                   (x) =>
                     !(x.chainId in props.accounts) &&
                     !(x.id in props.accounts) &&
-                    x.name.toLowerCase().includes(search),
+                    x.name.toLowerCase().includes(search)
                 )
                 .map((x) => (
                   <ListItem
@@ -117,7 +117,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                       navigate("choose-wallet");
                     }}
                   >
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                       <figure className="h-5 w-5">{x.icon}</figure>
                       {x.name}
                     </div>
@@ -129,7 +129,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
         ];
       case "choose-wallet":
         return [
-          <label className="flex justify-between items-center w-full">
+          <label className="flex w-full items-center justify-between">
             <span>Choose wallet</span>
             <SearchInput
               placeholder="Search wallet"
@@ -143,7 +143,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                 .filter(
                   (x) =>
                     selectedNetwork?.type === x.type &&
-                    x.name.toLowerCase().includes(search),
+                    x.name.toLowerCase().includes(search)
                 )
                 .map((x) => (
                   <ListItem
@@ -162,7 +162,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                       }
                     }}
                   >
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                       <figure className="text-lg">{x.icon}</figure>
                       {x.name}{" "}
                     </div>
@@ -217,7 +217,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
   ]);
 
   const accountEntries = Object.entries(props.accounts).filter(
-    ([, x]) => x.length,
+    ([, x]) => x.length
   );
 
   return (

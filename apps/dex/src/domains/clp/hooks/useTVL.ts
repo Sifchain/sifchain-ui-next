@@ -10,9 +10,9 @@ export function useTVLQuery() {
     () =>
       Maybe.of(poolStats?.pools).mapOr(
         0,
-        compose(sum, map(propOr(0, "poolTVL"))),
+        compose(sum, map(propOr(0, "poolTVL")))
       ),
-    [poolStats],
+    [poolStats]
   );
 
   return {

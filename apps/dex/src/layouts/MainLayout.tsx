@@ -26,7 +26,7 @@ const MainLayout: FC<Props> = (props) => {
     <>
       <Shell>
         <Header />
-        <main className="flex-1 flex flex-col z-[1]">{props.children}</main>
+        <main className="z-[1] flex flex-1 flex-col">{props.children}</main>
       </Shell>
       <ToastContainer
         hideProgressBar
@@ -45,19 +45,19 @@ const MainLayout: FC<Props> = (props) => {
           switch (type) {
             case "success":
               return (
-                <CheckCircleIcon className="-translate-x-1 h-[17.5px] w-[17.5px] text-green-400" />
+                <CheckCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-green-400" />
               );
             case "info":
               return (
-                <InformationCircleIcon className="-translate-x-1 h-[17.5px] w-[17.5px] text-blue-600" />
+                <InformationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-blue-600" />
               );
             case "error":
               return (
-                <XCircleIcon className="-translate-x-1 h-[17.5px] w-[17.5px] text-red-400" />
+                <XCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-red-400" />
               );
             case "warning":
               return (
-                <ExclamationCircleIcon className="-translate-x-1 h-[17.5px] w-[17.5px] text-yellow-400" />
+                <ExclamationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-yellow-400" />
               );
             default:
               return null;

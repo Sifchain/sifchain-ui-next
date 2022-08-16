@@ -32,7 +32,7 @@ export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
       retry: false,
-    },
+    }
   ) as UseQueryResult<{
     pagination: Pagination;
     results: {

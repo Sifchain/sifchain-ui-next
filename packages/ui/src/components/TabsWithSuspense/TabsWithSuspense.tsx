@@ -37,11 +37,11 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
             <li
               key={slug}
               className={clsx(
-                "text-lg relative border-b-2 border-transparent -mb-0.5",
+                "relative -mb-0.5 border-b-2 border-transparent text-lg",
                 { "ml-4": index > 0 },
                 isTabActive
-                  ? "text-white font-bold border-current"
-                  : "text-gray-400",
+                  ? "border-current font-bold text-white"
+                  : "text-gray-400"
               )}
             >
               {renderItem(title, slug)}

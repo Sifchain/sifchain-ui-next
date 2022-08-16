@@ -75,7 +75,7 @@ export function useRecentEntries<TAdapter extends Storage>(
   storageOptions: {
     key: string;
     adapter: "localStorage" | "sessionStorage" | TAdapter;
-  },
+  }
 ) {
   const [state, setState] = useState(initialState ?? []);
 
@@ -112,7 +112,7 @@ export function useRecentEntries<TAdapter extends Storage>(
 
   const handleAddEntry = useCallback((newEntry: CommandPaletteEntry) => {
     setState((prevEntries) =>
-      uniqBy(prop("id"), [newEntry, ...prevEntries.slice(0, 9)]),
+      uniqBy(prop("id"), [newEntry, ...prevEntries.slice(0, 9)])
     );
   }, []);
 
@@ -129,7 +129,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
   useEffect(() => {
     setIsOpen((prev) =>
       // only if explicitlty
-      props.isOpen === true ? true : props.isOpen === false ? false : prev,
+      props.isOpen === true ? true : props.isOpen === false ? false : prev
     );
   }, []);
 
@@ -142,12 +142,12 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
               .toLowerCase()
               .includes(props.query.toLowerCase());
           }),
-    [props.query, props.entries],
+    [props.query, props.entries]
   );
 
   const inputClassName = clsx(
     "h-12 w-full border-0 bg-transparent pl-11 pr-4",
-    "text-white placeholder-gray-300 focus:ring-0 sm:text-sm",
+    "text-white placeholder-gray-300 focus:ring-0 sm:text-sm"
   );
 
   return (
@@ -196,8 +196,8 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
             >
               <Dialog.Panel
                 className={`
-                  m-auto mt-[10vh] md:mt-[25vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 
-                  overflow-hidden rounded-xl bg-gray-900 shadow-2xl transition-all
+                  m-auto mt-[10vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden 
+                  rounded-xl bg-gray-900 shadow-2xl transition-all md:mt-[25vh]
                 `}
               >
                 <Combobox onChange={props.onChange} value={props.value}>
@@ -235,7 +235,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                               className={({ active }) =>
                                 clsx(
                                   "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                  active && "bg-gray-800 text-white",
+                                  active && "bg-gray-800 text-white"
                                 )
                               }
                             >
@@ -250,7 +250,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                       {props.entryActions(entry).map((link) => (
                                         <button
                                           key={link.label}
-                                          className="ring-1 ring-slate-700 hover:bg-slate-900 px-1.5 rounded flex-none text-gray-400"
+                                          className="flex-none rounded px-1.5 text-gray-400 ring-1 ring-slate-700 hover:bg-slate-900"
                                           onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
@@ -279,7 +279,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                 className={({ active }) =>
                                   clsx(
                                     "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                    active && "bg-gray-800 text-white",
+                                    active && "bg-gray-800 text-white"
                                   )
                                 }
                               >
@@ -291,7 +291,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
                                           "h-6 w-6 flex-none",
                                           active
                                             ? "text-white"
-                                            : "text-gray-300",
+                                            : "text-gray-300"
                                         )}
                                         aria-hidden="true"
                                       />

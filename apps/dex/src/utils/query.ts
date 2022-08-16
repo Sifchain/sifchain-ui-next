@@ -1,5 +1,5 @@
 export const getFirstQueryValue = <T extends string = string>(
-  query: T | T[] | undefined,
+  query: T | T[] | undefined
 ) =>
   query === undefined
     ? undefined

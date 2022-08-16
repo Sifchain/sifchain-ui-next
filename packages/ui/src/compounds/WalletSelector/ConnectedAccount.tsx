@@ -136,15 +136,15 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
   return (
     <li
       role="button"
-      className="flex items-center justify-between p-2 transition-colors hover:bg-gray-750 rounded"
+      className="flex items-center justify-between rounded p-2 transition-colors hover:bg-gray-750"
     >
-      <Menu as="div" className="relative w-full grid">
+      <Menu as="div" className="relative grid w-full">
         {({ open }) => (
           <>
             <Menu.Button className="flex items-center justify-between">
-              <div className="flex gap-2.5 items-center w-full">
+              <div className="flex w-full items-center gap-2.5">
                 <Identicon diameter={32} address={account} />
-                <div className="grid gap-1 flex-1 text-left">
+                <div className="grid flex-1 gap-1 text-left">
                   <div className="text-gray-200">
                     {maskWalletAddress(account)}
                   </div>
@@ -153,17 +153,17 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
               </div>
               <div className="grid gap-1 pr-4 text-right">
                 {props.nativeAssetDollarValue && (
-                  <span className="text-sm text-gray-200 font-semibold">
+                  <span className="text-sm font-semibold text-gray-200">
                     {props.nativeAssetDollarValue}
                   </span>
                 )}
-                <span className="text-xs text-gray-300 whitespace-nowrap">
+                <span className="whitespace-nowrap text-xs text-gray-300">
                   {props.nativeAssetBalance} {props.nativeAssetSymbol}
                 </span>
               </div>
               <div
                 className={clsx("", {
-                  "ring-1 ring-gray-50 ring-offset-gray-800 rounded-full ring-offset-4 bg-gray-700":
+                  "rounded-full bg-gray-700 ring-1 ring-gray-50 ring-offset-4 ring-offset-gray-800":
                     open,
                 })}
               >
@@ -173,7 +173,7 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
             <AppearTransition>
               <Menu.Items
                 as={SurfaceA}
-                className="absolute -right-2 top-10 p-2 grid gap-2 z-20"
+                className="absolute -right-2 top-10 z-20 grid gap-2 p-2"
               >
                 {actions.map((action) => {
                   const copied = isCopied && action.kind === "copy-address";
@@ -182,7 +182,7 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
                     <Menu.Item
                       key={action.kind}
                       as={Button}
-                      className="w-full min-w-max overflow-hidden bg-transparent flex items-center justify-start"
+                      className="flex w-full min-w-max items-center justify-start overflow-hidden bg-transparent"
                       variant="secondary"
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.preventDefault();

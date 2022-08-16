@@ -3,7 +3,7 @@ import type { BaseStorage } from "../storage";
 
 export const useAsyncFunc = <T extends Function>(
   asyncFunc: T,
-  deps?: DependencyList,
+  deps?: DependencyList
 ) => {
   type TReturn = T extends (...args: any[]) => Promise<infer R> ? R : unknown;
   const [data, setData] = useState<TReturn | undefined>();
@@ -27,7 +27,7 @@ export const useAsyncFunc = <T extends Function>(
         throw error;
       }
     },
-    deps,
+    deps
   );
 
   return {
@@ -41,7 +41,7 @@ export const useAsyncFunc = <T extends Function>(
 export const useStorageState = <T>(
   key: string,
   initialValue: T,
-  storage?: BaseStorage,
+  storage?: BaseStorage
 ) => {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {

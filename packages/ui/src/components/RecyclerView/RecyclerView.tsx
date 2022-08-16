@@ -12,7 +12,7 @@ import type { StringIndexable } from "../../utils";
 
 export type RecyclerViewProps<
   T extends StringIndexable,
-  U extends keyof ReactHTML = "div",
+  U extends keyof ReactHTML = "div"
 > = JSX.IntrinsicElements[U] & {
   data: T[];
   visibleRows: number;
@@ -25,9 +25,9 @@ export type RecyclerViewProps<
 
 export const RecyclerView = <
   T extends StringIndexable,
-  U extends keyof ReactHTML = "div",
+  U extends keyof ReactHTML = "div"
 >(
-  props: RecyclerViewProps<T, U>,
+  props: RecyclerViewProps<T, U>
 ) => {
   const {
     data,
@@ -56,7 +56,7 @@ export const RecyclerView = <
       entries
         .slice(startIndex, endIndex + 1)
         .map((item) => ({ key: keyExtractor(item), value: item })),
-    [startIndex, endIndex, entries, keyExtractor],
+    [startIndex, endIndex, entries, keyExtractor]
   );
 
   const handleScroll = useCallback(
@@ -69,7 +69,7 @@ export const RecyclerView = <
         setStartIndex(index);
       }
     },
-    [startIndex, setStartIndex, rowHeight],
+    [startIndex, setStartIndex, rowHeight]
   );
 
   const debouncedHandleScroll = useMemo(() => {
@@ -85,7 +85,7 @@ export const RecyclerView = <
         children,
       ]);
     },
-    [as],
+    [as]
   );
 
   return (

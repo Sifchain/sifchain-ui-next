@@ -91,7 +91,7 @@ export const Tooltip: FC<TooltipProps> = (props) => {
     <>
       {cloneElement(
         props.children,
-        getReferenceProps({ ref: reference, ...props.children.props }),
+        getReferenceProps({ ref: reference, ...props.children.props })
       )}
       <Transition
         show={open}
@@ -102,15 +102,15 @@ export const Tooltip: FC<TooltipProps> = (props) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         as="div"
-        className="bg-gray-700 text-gray-200 font-normal rounded p-2 px-3 text-xs grid gap-1"
+        className="grid gap-1 rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
         {...floatingProps}
       >
         {props.title && (
-          <div className="flex text-gray-100 font-semibold">{props.title}</div>
+          <div className="flex font-semibold text-gray-100">{props.title}</div>
         )}
         {props.content}
         <span
-          className="absolute w-2 h-2 bg-gray-700 rotate-45"
+          className="absolute h-2 w-2 rotate-45 bg-gray-700"
           ref={arrowRef}
           style={arrowStyle}
         />

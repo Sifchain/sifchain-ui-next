@@ -20,20 +20,20 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
           <title>Sichain Dex - {props.title ?? props.heading}</title>
         </Head>
       )}
-      <SurfaceB className="rounded-2xl flex-1 max-w-6xl mx-auto w-full my-8">
-        <header className="md:flex items-center p-2 gap-2">
+      <SurfaceB className="mx-auto my-8 w-full max-w-6xl flex-1 rounded-2xl">
+        <header className="items-center gap-2 p-2 md:flex">
           {props.heading && (
             <nav className="flex items-center gap-2">
               {props.withBackNavigation && (
                 <BackButton onClick={() => router.back()} />
               )}
-              <span className="py-0.5 px-2 rounded text-gray-300 before:content-['/_']">
+              <span className="rounded py-0.5 px-2 text-gray-300 before:content-['/_']">
                 {props.heading}
               </span>
             </nav>
           )}
         </header>
-        <div className="p-6 max-h-[calc(100vh-200px)] overflow-y-scroll">
+        <div className="max-h-[calc(100vh-200px)] overflow-y-scroll p-6">
           {props.children}
         </div>
       </SurfaceB>
