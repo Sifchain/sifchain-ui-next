@@ -3,7 +3,7 @@ import { invariant } from "@sifchain/ui";
 import { useQuery } from "react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 
-function useSifSigner() {
+export function useSifSigner() {
   const { data: env } = useDexEnvironment();
   return useSigner(env?.sifChainId ?? "", { enabled: env !== undefined });
 }
