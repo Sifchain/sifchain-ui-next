@@ -2,21 +2,22 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
+import { Button, formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import Head from "next/head";
 
-import { Button, formatNumberAsCurrency, Maybe, Modal, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
-import BigNumber from "bignumber.js";
-
-import AssetIcon from "~/compounds/AssetIcon";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginParamsQuery, useOpenMTPMutation } from "~/domains/margin/hooks";
+import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
+import { useMarginParamsQuery } from "~/domains/margin/hooks";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
 /**
  * ********************************************************************************************
@@ -28,7 +29,12 @@ import { useMarginParamsQuery, useOpenMTPMutation } from "~/domains/margin/hooks
  * ********************************************************************************************
  */
 import { ROWAN } from "~/domains/assets";
-import { PoolOverview } from "./_components";
+import {
+  PoolOverview,
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageAccountNotWhitelisted,
+} from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -41,8 +47,7 @@ import {
   inputValidatorLeverage,
   inputValidatorPosition,
 } from "./_trade";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
-import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
+import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
 
 const calculateOpenPosition = (positionTokenAmount: number, positionPriceUsd: number) => {
   return positionTokenAmount / positionPriceUsd;
@@ -78,24 +83,11 @@ const TradeCompound: NextPage = () => {
   });
 
   if ([enhancedPools, enhancedRowan, rowanPrice, govParams, isWhitelistedAccount].some((query) => query.isError)) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
+    return <FlashMessage5xxError />;
   }
 
   if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === false) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        <span className="mr-1">
-          You account is not part of the private Margin Beta. Please reach out to Sifchain Community on
-        </span>
-        <a
-          className="text-blue-300 underline hover:text-blue-400"
-          href="https://discord.gg/sifchain"
-          rel="noopener noreferrer"
-        >
-          Discord.
-        </a>
-      </div>
-    );
+    return <FlashMessageAccountNotWhitelisted />;
   }
 
   if (
@@ -129,7 +121,7 @@ const TradeCompound: NextPage = () => {
     );
   }
 
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <FlashMessageLoading />;
 };
 
 export default TradeCompound;
@@ -323,41 +315,9 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const [checkbox01, setCheckbox01] = useState(false);
-  const [checkbox02, setCheckbox02] = useState(false);
   const computedBorrowAmount = useMemo(() => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
-
-  const confirmOpenPositionMutation = useOpenMTPMutation();
-  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
-    isOpen: false,
-  });
-
-  const isDisabledConfirmOpenPosition = useMemo(() => {
-    return checkbox01 === false || checkbox02 === false;
-  }, [checkbox01, checkbox02]);
-
-  const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    try {
-      const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
-      const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
-
-      await confirmOpenPositionMutation.mutateAsync({
-        collateralAsset: selectedCollateral.symbol.toLowerCase(),
-        borrowAsset: selectedPosition.symbol.toLowerCase(),
-        position: 1, // LONG
-        collateralAmount,
-        leverage: leverage,
-      });
-      if (modalConfirmOpenPosition.isOpen) {
-        setModalConfirmOpenPosition({ isOpen: false });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
     selectedCollateral.denom ?? selectedCollateral.symbol,
@@ -490,6 +450,11 @@ const Trade = (props: TradeProps) => {
     });
   };
 
+  const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
+  const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
+  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
+    isOpen: false,
+  });
   const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
@@ -814,119 +779,30 @@ const Trade = (props: TradeProps) => {
           <OpenPositionsTable hideColumns={["Pool", "Paid Interest"]} />
         </section>
       </section>
-      <Modal
-        className="text-sm"
-        isOpen={modalConfirmOpenPosition.isOpen}
-        onTransitionEnd={() => {
-          setCheckbox01(false);
-          setCheckbox02(false);
+
+      <ModalReviewOpenPosition
+        data={{
+          collateralAmount: collateralAmount,
+          fromDenom: selectedCollateral.symbol.toLowerCase(),
+          leverage: leverage,
+          poolInterestRate: poolActive ? poolActive.stats.interestRate : 0,
+          positionPriceUsd: selectedPosition.priceUsd,
+          positionTokenAmount:
+            Number(inputPosition.value) > 0
+              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd))
+              : 0,
+          toDenom: selectedPosition.symbol.toLowerCase(),
         }}
+        isOpen={modalConfirmOpenPosition.isOpen}
         onClose={() => {
           if (modalConfirmOpenPosition.isOpen) {
             setModalConfirmOpenPosition({ isOpen: false });
-            confirmOpenPositionMutation.reset();
           }
         }}
-      >
-        <>
-          <h1 className="text-center text-lg font-bold">Review opening trade</h1>
-          {selectedPosition ? (
-            <ul className="mt-6 flex flex-col gap-3">
-              <li>
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">
-                      {formatNumberAsDecimal(
-                        Number(inputPosition.value) > 0
-                          ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd))
-                          : 0,
-                      )}
-                    </span>
-                    {selectedPosition.denom ? (
-                      <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                    ) : null}
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-                  <span>{formatNumberAsCurrency(selectedPosition.priceUsd, 4)}</span>
-                </div>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                  {poolActive ? <span>{formatNumberAsPercent(Number(poolActive.stats.interestRate))}</span> : null}
-                </div>
-              </li>
-            </ul>
-          ) : (
-            <div className="bg-gray-850 mt-6 flex items-center justify-center rounded p-2 text-4xl">
-              <RacetrackSpinnerIcon />
-            </div>
-          )}
-          <ul className="mt-6">
-            <li>
-              <label htmlFor="checkbox01" className="flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-                <input
-                  id="checkbox01"
-                  name="checkbox01"
-                  type="checkbox"
-                  checked={checkbox01}
-                  onChange={() => {
-                    setCheckbox01(!checkbox01);
-                  }}
-                />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                  eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam
-                  quae saepe quaerat.
-                </p>
-              </label>
-            </li>
-            <li>
-              <label htmlFor="checkbox02" className="mt-4 flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-                <input
-                  id="checkbox02"
-                  name="checkbox02"
-                  type="checkbox"
-                  checked={checkbox02}
-                  onChange={() => {
-                    setCheckbox02(!checkbox02);
-                  }}
-                />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                  eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam
-                  quae saepe quaerat.
-                </p>
-              </label>
-            </li>
-          </ul>
-          {confirmOpenPositionMutation.isLoading ? (
-            <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
-          ) : (
-            <Button
-              variant="primary"
-              as="button"
-              size="md"
-              className="mt-6 w-full"
-              disabled={isDisabledConfirmOpenPosition}
-              onClick={onClickConfirmOpenPosition}
-            >
-              Confirm open position
-            </Button>
-          )}
-          {confirmOpenPositionMutation.isError ? (
-            <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-              <b className="mr-1">Failed to open margin position:</b>
-              <span>{(confirmOpenPositionMutation.error as Error).message}</span>
-            </p>
-          ) : null}
-        </>
-      </Modal>
+        onMutationSuccess={() => {
+          setModalConfirmOpenPosition({ isOpen: false });
+        }}
+      />
     </>
   );
 };

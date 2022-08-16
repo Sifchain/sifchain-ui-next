@@ -4,6 +4,7 @@ import type { useEnhancedPoolsQuery } from "~/domains/clp";
 import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
+import type { PropsWithChildren } from "react";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -130,4 +131,44 @@ export function PoolOverview(props: PoolOverviewProps) {
       </li>
     </ul>
   );
+}
+
+export function FlashMessageAccountNotWhitelisted() {
+  return (
+    <FlashMessage>
+      Sorry! Your account has not yet been approved for margin trading. Please reach out to us on
+      <a
+        className="mx-1 text-blue-300 underline hover:text-blue-400"
+        href="https://discord.gg/sifchain"
+        rel="noopener noreferrer"
+      >
+        Discord
+      </a>
+      to get started
+    </FlashMessage>
+  );
+}
+
+export function FlashMessage5xxError() {
+  return <FlashMessage>Ooops! Something wrong happened, try again later.</FlashMessage>;
+}
+
+export function FlashMessageLoading() {
+  return <FlashMessage>Loading...</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWallet() {
+  return <FlashMessage>Connect your Sifchain wallet</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWalletError() {
+  return <FlashMessage>Unable to connect your Sifchain wallet. Try again later.</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWalletLoading() {
+  return <FlashMessage>Sifchain wallet connecting...</FlashMessage>;
+}
+
+export function FlashMessage({ children }: PropsWithChildren) {
+  return <div className="bg-gray-850 p-10 text-center text-gray-100">{children}</div>;
 }

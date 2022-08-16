@@ -18,7 +18,17 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
+import {
+  NoResultsRow,
+  PaginationShowItems,
+  PaginationButtons,
+  PillUpdating,
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+} from "./_components";
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode } from "./_trade";
@@ -66,17 +76,17 @@ const HistoryTable = (props: HistoryTableProps) => {
   const headers = HISTORY_HEADER_ITEMS;
 
   if (walletAddress.isIdle) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Connect your Sifchain wallet</div>;
+    return <FlashMessageConnectSifChainWallet />;
   }
   if (walletAddress.isError) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        Unable to connect your Sifchain wallet. Try again later.
-      </div>
-    );
+    return <FlashMessageConnectSifChainWalletError />;
   }
   if (walletAddress.isLoading) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading your Sifchain wallet...</div>;
+    return <FlashMessageConnectSifChainWalletLoading />;
+  }
+
+  if (historyQuery.isLoading) {
+    return <FlashMessageLoading />;
   }
 
   if (historyQuery.isSuccess) {
@@ -266,11 +276,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
 
-  if (historyQuery.isError) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
-  }
-
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <FlashMessage5xxError />;
 };
 
 export default HistoryTable;

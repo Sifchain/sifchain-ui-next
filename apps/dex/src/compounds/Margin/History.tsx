@@ -5,6 +5,7 @@ import Head from "next/head";
 import HistoryTable from "~/compounds/Margin/HistoryTable";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
+import { FlashMessageLoading, FlashMessage5xxError, FlashMessageAccountNotWhitelisted } from "./_components";
 
 const HistoryTab: NextPage = () => {
   const walletAddress = useSifSignerAddress();
@@ -13,24 +14,11 @@ const HistoryTab: NextPage = () => {
   });
 
   if ([isWhitelistedAccount].some((query) => query.isError)) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
+    return <FlashMessage5xxError />;
   }
 
   if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === false) {
-    return (
-      <div className="bg-gray-850 p-10 text-center text-gray-100">
-        <span className="mr-1">
-          You account is not part of the private Margin Beta. Please reach out to Sifchain Community on
-        </span>
-        <a
-          className="text-blue-300 underline hover:text-blue-400"
-          href="https://discord.gg/sifchain"
-          rel="noopener noreferrer"
-        >
-          Discord.
-        </a>
-      </div>
-    );
+    return <FlashMessageAccountNotWhitelisted />;
   }
 
   if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === true) {
@@ -46,7 +34,7 @@ const HistoryTab: NextPage = () => {
     );
   }
 
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <FlashMessageLoading />;
 };
 
 export default HistoryTab;
