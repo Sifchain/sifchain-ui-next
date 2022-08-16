@@ -132,7 +132,7 @@ const PoolsPage: NextPage = () => {
             )}
           />
         </header>
-        <header className="flex px-3 pb-6 text-left text-xs uppercase opacity-80">
+        <header className="hidden px-3 pb-6 text-left text-xs uppercase opacity-80 md:flex">
           {[
             ...COLUMNS,
             // dummy column for flex alignment
@@ -157,12 +157,12 @@ const PoolsPage: NextPage = () => {
           {filteredAndSortedPools?.map((x, index) => (
             <details
               key={index}
-              className="[&[open]_.marker]:rotate-180 overflow-hidden rounded-md border-2 border-stone-800"
+              className="overflow-hidden rounded-md border-2 border-stone-800 [&[open]_.marker]:rotate-180"
             >
               <summary className="flex flex-col bg-gray-800 p-3 md:flex-row">
                 <header className="mb-2 flex items-center justify-between md:mb-0 md:flex-1">
                   <div className="flex items-center gap-2">
-                    <div className="[&>*:first-child]:-mr-4 flex items-center">
+                    <div className="flex items-center [&>*:first-child]:-mr-4">
                       <AssetIcon network="sifchain" symbol={env?.nativeAsset.symbol ?? ""} size="md" />
                       <AssetIcon network="sifchain" symbol={x.symbol ?? ""} size="md" />
                     </div>
@@ -172,11 +172,13 @@ const PoolsPage: NextPage = () => {
                     <ChevronDownIcon />
                   </button>
                 </header>
-                <dl className="[&>dt]:col-start-1 [&>dd]:col-start-2 [&>dd]:font-semibold [&>dd]:text-right md:[&>dt]:hidden md:[&>dd]:flex-1 grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center">
+                <dl className="grid auto-cols-auto gap-y-1 md:flex md:flex-[8] md:items-center [&>dt]:col-start-1 md:[&>dt]:hidden [&>dd]:col-start-2 [&>dd]:text-right [&>dd]:font-semibold md:[&>dd]:flex-1">
                   <dt className="hidden md:inline">TVL</dt>
                   <dd className="hidden md:inline">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
                   <dt className="hidden md:inline">APR</dt>
-                  <dd className="hidden md:inline">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                  <dd className="hidden md:inline">
+                    {Maybe.of(x.poolApr).mapOr("...", (apr) => percentFormat.format(apr / 100))}
+                  </dd>
                   <dt>My pool value</dt>
                   <dd>{Maybe.of(x.liquidityProviderPoolValue).mapOr("...", currencyFormat.format)}</dd>
                   <dt>My pool share</dt>
@@ -198,7 +200,9 @@ const PoolsPage: NextPage = () => {
                     <dt className="md:hidden">TVL</dt>
                     <dd className="md:hidden">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
                     <dt className="md:hidden">APR</dt>
-                    <dd className="md:hidden">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                    <dd className="md:hidden">
+                      {Maybe.of(x.poolApr).mapOr("...", (apr) => percentFormat.format(apr / 100))}
+                    </dd>
                     <dt className="hidden md:inline">Your liquidity</dt>
                     <dd className="hidden items-center justify-end gap-1 md:flex">
                       {x.externalAssetBalance.toLocaleString()}
