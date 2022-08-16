@@ -11,7 +11,7 @@
     "dev:registry": "turbo run dev --filter=@sifchain/registry",
     "lint": "turbo run lint",
     "compile": "turbo run compile",
-    "format": "prettier --config .prettier.config.cjs --write .",
+    "format": "prettier --write .",
     "storybook": "pnpm -C ./packages/ui run storybook ",
     "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
