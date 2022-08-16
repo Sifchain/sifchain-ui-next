@@ -77,22 +77,23 @@ const TradeCompound: NextPage = () => {
     walletAddress: walletAddress.data ?? "",
   });
 
-  if (
-    [
-      enhancedPools,
-      enhancedRowan,
-      rowanPrice,
-      govParams,
-      // addressList
-    ].some((query) => query.isError)
-  ) {
+  if ([enhancedPools, enhancedRowan, rowanPrice, govParams, isWhitelistedAccount].some((query) => query.isError)) {
     return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
   }
 
-  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === true) {
+  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === false) {
     return (
       <div className="bg-gray-850 p-10 text-center text-gray-100">
-        You account is not part of the private Margin Beta. Please reach out to Sifchain Community on Discord.
+        <span className="mr-1">
+          You account is not part of the private Margin Beta. Please reach out to Sifchain Community on
+        </span>
+        <a
+          className="text-blue-300 underline hover:text-blue-400"
+          href="https://discord.gg/sifchain"
+          rel="noopener noreferrer"
+        >
+          Discord.
+        </a>
       </div>
     );
   }
@@ -102,13 +103,14 @@ const TradeCompound: NextPage = () => {
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
-    // addressList.isSuccess &&
+    isWhitelistedAccount.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
-    // addressList.data &&
-    govParams.data.params
+    govParams.data.params &&
+    isWhitelistedAccount.data &&
+    isWhitelistedAccount.data.isWhitelisted === true
   ) {
     const { params } = govParams.data;
     const allowedPools = params.pools;
@@ -116,7 +118,6 @@ const TradeCompound: NextPage = () => {
       allowedPools.includes(pool.asset.symbol.toLowerCase()),
     );
     enhancedRowan.data.priceUsd = rowanPrice.data;
-    // console.log(addressList);
     return (
       <Trade
         enhancedPools={filteredEnhancedPools}

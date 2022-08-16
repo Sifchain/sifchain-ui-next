@@ -12,24 +12,41 @@ const PortfolioTab: NextPage = () => {
     walletAddress: walletAddress.data ?? "",
   });
 
-  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === true) {
+  if ([isWhitelistedAccount].some((query) => query.isError)) {
+    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
+  }
+
+  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === false) {
     return (
       <div className="bg-gray-850 p-10 text-center text-gray-100">
-        You account is not part of the private Margin Beta. Please reach out to Sifchain Community on Discord.
+        <span className="mr-1">
+          You account is not part of the private Margin Beta. Please reach out to Sifchain Community on
+        </span>
+        <a
+          className="text-blue-300 underline hover:text-blue-400"
+          href="https://discord.gg/sifchain"
+          rel="noopener noreferrer"
+        >
+          Discord.
+        </a>
       </div>
     );
   }
 
-  return (
-    <>
-      <Head>
-        <title>Sichain Dex - Margin - Positions</title>
-      </Head>
-      <section className="border-gold-800 mt-4 overflow-hidden rounded border">
-        <OpenPositionsTable />
-      </section>
-    </>
-  );
+  if (isWhitelistedAccount.isSuccess && isWhitelistedAccount.data.isWhitelisted === true) {
+    return (
+      <>
+        <Head>
+          <title>Sichain Dex - Margin - Positions</title>
+        </Head>
+        <section className="border-gold-800 mt-4 overflow-hidden rounded border">
+          <OpenPositionsTable />
+        </section>
+      </>
+    );
+  }
+
+  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
 };
 
 export default PortfolioTab;
