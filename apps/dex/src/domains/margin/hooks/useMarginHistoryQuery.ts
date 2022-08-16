@@ -1,4 +1,3 @@
-import type { GetMarginOpenPositionResponse } from "@sifchain/sif-api";
 import type { UseQueryResult } from "react-query";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
@@ -19,19 +18,14 @@ export function useHistoryQuery(params: {
 }) {
   return useSifApiQuery(
     "margin.getMarginHistory",
-    [
-      params.walletAddress,
-      Number(params.offset),
-      Number(params.limit),
-      params.orderBy,
-      params.sortBy,
-    ],
+    [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
-      refetchInterval: 6000,
       keepPreviousData: true,
+      queryHash: JSON.stringify(params),
+      refetchInterval: 6000,
       retry: false,
-    }
+    },
   ) as UseQueryResult<{
     pagination: Pagination;
     results: {
