@@ -34,7 +34,7 @@ const AssetIcon: FC<Props> = memo((props) => {
       indexedBySymbol[props.symbol.toLowerCase()] ||
       indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
       indexedByDisplaySymbol[props.symbol.toLowerCase()],
-    [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol]
+    [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol],
   );
 
   if (!asset) {
@@ -42,14 +42,8 @@ const AssetIcon: FC<Props> = memo((props) => {
   }
 
   const placeholder = useMemo(
-    () => (
-      <RacetrackSpinnerIcon
-        className={
-          (clsx(CLASS_MAP[props.size]), "h-full w-full place-self-center")
-        }
-      />
-    ),
-    [props.size]
+    () => <RacetrackSpinnerIcon className={(clsx(CLASS_MAP[props.size]), "h-full w-full place-self-center")} />,
+    [props.size],
   );
 
   return (
@@ -60,7 +54,7 @@ const AssetIcon: FC<Props> = memo((props) => {
           CLASS_MAP[props.size],
           {
             "!bg-white": asset?.hasDarkIcon,
-          }
+          },
         )}
       >
         {isLoadingAsset ? (
@@ -69,7 +63,7 @@ const AssetIcon: FC<Props> = memo((props) => {
           <AsyncImage
             src={asset?.imageUrl ?? ""}
             placeholder={placeholder}
-            className="absolute inset-0 z-10 h-full w-full"
+            className="absolute inset-0 h-full w-full"
           />
         )}
       </figure>
