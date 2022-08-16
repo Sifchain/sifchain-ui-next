@@ -176,7 +176,9 @@ const PoolsPage: NextPage = () => {
                   <dt className="hidden md:inline">TVL</dt>
                   <dd className="hidden md:inline">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
                   <dt className="hidden md:inline">APR</dt>
-                  <dd className="hidden md:inline">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                  <dd className="hidden md:inline">
+                    {Maybe.of(x.poolApr).mapOr("...", (apr) => percentFormat.format(apr / 100))}
+                  </dd>
                   <dt>My pool value</dt>
                   <dd>{Maybe.of(x.liquidityProviderPoolValue).mapOr("...", currencyFormat.format)}</dd>
                   <dt>My pool share</dt>
@@ -198,7 +200,9 @@ const PoolsPage: NextPage = () => {
                     <dt className="md:hidden">TVL</dt>
                     <dd className="md:hidden">{Maybe.of(x.poolTVL).mapOr("...", currencyFormat.format)}</dd>
                     <dt className="md:hidden">APR</dt>
-                    <dd className="md:hidden">{Maybe.of(x.poolApr).mapOr("...", percentFormat.format)}</dd>
+                    <dd className="md:hidden">
+                      {Maybe.of(x.poolApr).mapOr("...", (apr) => percentFormat.format(apr / 100))}
+                    </dd>
                     <dt className="hidden md:inline">Your liquidity</dt>
                     <dd className="hidden items-center justify-end gap-1 md:flex">
                       {x.externalAssetBalance.toLocaleString()}
