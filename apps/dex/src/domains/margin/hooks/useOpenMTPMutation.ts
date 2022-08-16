@@ -34,11 +34,7 @@ export function useOpenMTPMutation() {
       DEFAULT_FEE,
     );
 
-    if (
-      req?.rawLog?.includes(
-        "user does not have enough balance of the required coin",
-      )
-    ) {
+    if (req?.rawLog?.includes("user does not have enough balance of the required coin")) {
       throw new Error(OPEN_MTP_ERRORS.NOT_ENOUGH_BALANCE);
     }
 
@@ -59,7 +55,7 @@ export function useOpenMTPMutation() {
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
-          ? `Failed to open margin position: ${error.message}`
+          ? `Failed to open margin position: ${transformOpenMTPMutationError(error.message)}`
           : data?.rawLog ?? "Failed to open margin position";
 
         toast.error(errorMessage);
@@ -68,4 +64,10 @@ export function useOpenMTPMutation() {
       }
     },
   });
+}
+
+export function transformOpenMTPMutationError(error: string) {
+  if (error.includes("unauthorized")) {
+    return "Your account has not yet been approved for margin trading.";
+  }
 }
