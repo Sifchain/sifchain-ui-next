@@ -100,6 +100,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   async getSigningStargateClient(
     chainId: string
   ): Promise<SigningStargateClient> {
+    console.log({ chainStore: this.#chainStore });
     return SigningStargateClient.connectWithSigner(
       this.#chainStore.getChain(chainId).rpc,
       await this.getSigner(chainId)

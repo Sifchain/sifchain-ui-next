@@ -26,14 +26,18 @@ export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOption
   async connect() {
     this.#connectedSim = true;
     this.emit("connect");
+
+    return Promise.resolve();
   }
 
   async disconnect() {
     this.#connectedSim = false;
     this.emit("disconnect");
+
+    return Promise.resolve();
   }
 
-  getSigner(chainId: string) {
+  async getSigner(chainId: string) {
     return DirectSecp256k1HdWallet.fromMnemonic(this.options.mnemonic, {
       prefix:
         this.#chainStore.getChain(chainId).bech32Config.bech32PrefixAccAddr,

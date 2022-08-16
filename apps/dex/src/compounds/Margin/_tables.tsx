@@ -30,7 +30,7 @@ export const MARGIN_POSITION = {
   UNSPECIFIED: "UNSPECIFIED",
   LONG: "LONG",
   SHORT: "SHORT",
-};
+} as const;
 
 type FindNextOrderAndSortByProps = {
   itemActive: boolean;
