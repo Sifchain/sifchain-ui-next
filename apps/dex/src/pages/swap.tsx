@@ -28,7 +28,7 @@ import {
   useSwapMutation,
   useSwapSimulation,
 } from "~/domains/clp";
-import useSifSigner from "~/hooks/useSifSigner";
+import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
 
