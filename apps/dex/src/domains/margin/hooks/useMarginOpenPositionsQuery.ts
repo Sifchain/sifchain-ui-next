@@ -18,23 +18,24 @@ type OpenPositionsQueryParams = {
 };
 
 export type OpenPositionsQueryData = {
-  id: string;
   address: string;
+  collateral_amount: string;
+  collateral_asset: string;
+  current_price: string;
+  custody_amount: string;
+  custody_asset: string;
+  date_opened: string;
+  health: string;
+  id: string;
+  interest_rate: string;
+  leverage: string;
+  next_payment: string;
+  paid_interest: string;
   pool: string;
   position: string;
-  custody_amount: string;
-  collateral_asset: string;
-  collateral_amount: string;
-  unrealized_pnl: string;
-  custody_asset: string;
-  unsettled_interest: string;
-  next_payment: string;
-  date_opened: string;
   time_open: string;
-  interest_rate: string;
-  paid_interest: string;
-  health: string;
-  leverage: string;
+  unrealized_pnl: string;
+  unsettled_interest: string;
 };
 
 export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
