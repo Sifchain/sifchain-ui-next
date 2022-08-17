@@ -14,11 +14,9 @@ export function useEnhancedPoolsQuery() {
   const statsQuery = usePoolStatsQuery();
   const registryQuery = useTokenRegistryQuery();
 
-  const isSuccess =
-    poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess;
+  const isSuccess = poolsQuery.isSuccess && statsQuery.isSuccess && registryQuery.isSuccess;
 
-  const isLoading =
-    poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading;
+  const isLoading = poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading;
 
   const derivedQuery = useQuery(
     "enhanced-pools",
@@ -30,9 +28,7 @@ export function useEnhancedPoolsQuery() {
       const filtered = poolsRes.pools
         .map((pool) => {
           const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
-          const asset = externalAssetSymbol
-            ? registryQuery.indexedBySymbol[externalAssetSymbol]
-            : undefined;
+          const asset = externalAssetSymbol ? registryQuery.indexedBySymbol[externalAssetSymbol] : undefined;
 
           const stats = asset
             ? statsQuery.indexedBySymbol[asset?.symbol.toLowerCase()] ??
@@ -44,23 +40,21 @@ export function useEnhancedPoolsQuery() {
             stats: stats as GetTokenStatsResponsePools & {
               health: number;
               interestRate: number;
+              tvl_24h_average: number;
+              volume_24h_average: number;
+              rowan_24h_average: number;
+              asset_24h_average: number;
             },
             asset: asset as IAsset,
           };
         })
         .filter((pool) => Boolean(pool.asset) && Boolean(pool.stats));
 
-      return sortWith(
-        [
-          descend((x) => x.stats.poolTVL ?? 0),
-          ascend((x) => x.asset.displaySymbol ?? 0),
-        ],
-        filtered
-      );
+      return sortWith([descend((x) => x.stats.poolTVL ?? 0), ascend((x) => x.asset.displaySymbol ?? 0)], filtered);
     },
     {
       enabled: isSuccess,
-    }
+    },
   );
 
   const indices = useMemo(() => {
@@ -68,16 +62,13 @@ export function useEnhancedPoolsQuery() {
       return {
         indexedBySymbol: {},
         indexedByDisplaySymbol: {},
-        findBySymbolOrDenom: (symbolOrDenom: string) => undefined,
+        findBySymbolOrDenom: () => undefined,
       };
     }
 
     const indexedBySymbol = indexBy((x) => x.asset.symbol, derivedQuery.data);
 
-    const indexedByDisplaySymbol = indexBy(
-      ({ asset }) => asset.displaySymbol.toLowerCase(),
-      derivedQuery.data
-    );
+    const indexedByDisplaySymbol = indexBy(({ asset }) => asset.displaySymbol.toLowerCase(), derivedQuery.data);
 
     return {
       indexedBySymbol,
