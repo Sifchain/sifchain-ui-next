@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
@@ -169,6 +170,11 @@ export function FlashMessageConnectSifChainWalletLoading() {
   return <FlashMessage>Sifchain wallet connecting...</FlashMessage>;
 }
 
-export function FlashMessage({ children }: PropsWithChildren) {
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">{children}</div>;
+type FlashMessageProps = PropsWithChildren & { className?: string; size?: "small" };
+export function FlashMessage({ children, className, size }: FlashMessageProps) {
+  return (
+    <div className={clsx(className ?? "bg-gray-850 text-center text-gray-100", size === "small" ? "p-4" : "p-10")}>
+      {children}
+    </div>
+  );
 }

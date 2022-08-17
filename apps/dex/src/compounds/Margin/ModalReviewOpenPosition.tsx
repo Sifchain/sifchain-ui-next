@@ -1,12 +1,13 @@
 import type { SyntheticEvent } from "react";
 
 import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
-import { useMemo, useState, useCallback } from "react";
+import { useCallback } from "react";
 
 import { useOpenMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { FlashMessage } from "./_components";
 
 type ModalReviewOpenPositionProps = {
   data: {
@@ -26,12 +27,6 @@ type ModalReviewOpenPositionProps = {
 };
 export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
   const confirmOpenPositionMutation = useOpenMTPMutation();
-  const [checkbox01, setCheckbox01] = useState(false);
-  const [checkbox02, setCheckbox02] = useState(false);
-
-  const isDisabledConfirmOpenPosition = useMemo(() => {
-    return checkbox01 === false || checkbox02 === false;
-  }, [checkbox01, checkbox02]);
 
   const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -58,8 +53,6 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
       props.onTransitionEnd();
     }
     confirmOpenPositionMutation.reset();
-    setCheckbox01(false);
-    setCheckbox02(false);
   }, [confirmOpenPositionMutation, props]);
 
   return (
@@ -98,55 +91,14 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
             <RacetrackSpinnerIcon />
           </div>
         )}
-        <ul className="mt-6">
-          <li>
-            <label htmlFor="checkbox01" className="flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-              <input
-                id="checkbox01"
-                name="checkbox01"
-                type="checkbox"
-                checked={checkbox01}
-                onChange={() => {
-                  setCheckbox01(!checkbox01);
-                }}
-              />
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae
-                saepe quaerat.
-              </p>
-            </label>
-          </li>
-          <li>
-            <label htmlFor="checkbox02" className="mt-4 flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-              <input
-                id="checkbox02"
-                name="checkbox02"
-                type="checkbox"
-                checked={checkbox02}
-                onChange={() => {
-                  setCheckbox02(!checkbox02);
-                }}
-              />
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae
-                saepe quaerat.
-              </p>
-            </label>
-          </li>
-        </ul>
+        <FlashMessage className="my-4 rounded bg-gray-700" size="small">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet eligendi
+          vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae saepe quaerat.
+        </FlashMessage>
         {confirmOpenPositionMutation.isLoading ? (
           <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
         ) : (
-          <Button
-            variant="primary"
-            as="button"
-            size="md"
-            className="mt-6 w-full"
-            disabled={isDisabledConfirmOpenPosition}
-            onClick={onClickConfirmOpenPosition}
-          >
+          <Button variant="primary" as="button" size="md" className="mt-6 w-full" onClick={onClickConfirmOpenPosition}>
             Confirm open position
           </Button>
         )}
