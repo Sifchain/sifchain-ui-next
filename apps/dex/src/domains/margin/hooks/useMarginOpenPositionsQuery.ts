@@ -34,11 +34,7 @@ export type OpenPositionsQueryData = {
   paid_interest: string;
   pool: string;
   position: string;
-  time_open: {
-    hours: number;
-    minutes: number;
-    seconds: number;
-  };
+  time_open: { hours: number; minutes: number; seconds: number };
   unrealized_pnl: string;
   unsettled_interest: string;
 };

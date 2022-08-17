@@ -31,7 +31,7 @@ import {
 } from "./_components";
 import { formatDateRelative, formatDateDistance } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
-import { HtmlUnicode } from "./_trade";
+import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
 /**
@@ -157,11 +157,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.open_custody_asset) ? (
-                        item.open_custody_asset.toUpperCase()
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.pool) ? removeFirstCharC(item.pool.toUpperCase()) : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? (
@@ -180,7 +176,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_asset) ? (
-                        item.open_custody_asset.toUpperCase()
+                        removeFirstCharC(item.open_custody_asset.toUpperCase())
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
