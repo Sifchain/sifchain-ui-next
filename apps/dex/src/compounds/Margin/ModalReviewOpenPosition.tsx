@@ -16,7 +16,7 @@ type ModalReviewOpenPositionProps = {
     leverage: string;
     poolInterestRate: number;
     positionPriceUsd: number;
-    positionTokenAmount: number;
+    positionTokenAmount: string;
     toDenom: string;
   };
   isOpen: boolean;
@@ -82,7 +82,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
             <li>
               <div className="flex flex-row">
                 <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                <span>{formatNumberAsPercent(Number(props.data.poolInterestRate))}</span>
+                <span>{formatNumberAsPercent(Number(props.data.poolInterestRate), 10)}</span>
               </div>
             </li>
           </ul>
