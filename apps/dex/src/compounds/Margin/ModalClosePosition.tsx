@@ -1,6 +1,6 @@
 import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 
-import { ArrowDownIcon, Button, Modal } from "@sifchain/ui";
+import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
@@ -9,6 +9,7 @@ import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import { useCloseMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import AssetIcon from "~/compounds/AssetIcon";
+import { Decimal } from "@cosmjs/math";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -51,7 +52,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
 
   let content = <FlashMessageLoading />;
 
-  if (collateralTokenQuery.isSuccess && positionTokenQuery.isSuccess && collateralToPositionSwap.data) {
+  if (
+    collateralTokenQuery.isSuccess &&
+    positionTokenQuery.data &&
+    positionTokenQuery.isSuccess &&
+    positionTokenQuery.data &&
+    collateralToPositionSwap.data
+  ) {
     content = (
       <>
         <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">
@@ -67,14 +74,22 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-              <span>{props.data.custody_entry_price}</span>
+              <span>{formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.custody_amount}</span>
+                <span className="mr-1">
+                  {formatNumberAsDecimal(
+                    Decimal.fromAtomics(
+                      props.data.custody_amount,
+                      positionTokenQuery.data.decimals,
+                    ).toFloatApproximation(),
+                    4,
+                  )}
+                </span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>

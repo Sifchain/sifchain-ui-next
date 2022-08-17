@@ -6,7 +6,6 @@ import { useCallback } from "react";
 import { useOpenMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 
-import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import { FlashMessage } from "./_components";
 
 type ModalReviewOpenPositionProps = {
@@ -14,7 +13,7 @@ type ModalReviewOpenPositionProps = {
     collateralAmount: string;
     fromDenom: string;
     leverage: string;
-    poolInterestRate: number;
+    poolInterestRate: string;
     positionPriceUsd: number;
     positionTokenAmount: string;
     toDenom: string;
@@ -58,7 +57,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
   return (
     <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
       <>
-        <h1 className="text-center text-lg font-bold">Review opening trade</h1>
+        <h1 className="text-center text-lg font-bold">Review trade</h1>
         {props.data.positionTokenAmount &&
         props.data.toDenom &&
         props.data.positionPriceUsd &&
@@ -68,7 +67,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
               <div className="flex flex-row items-center">
                 <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
                 <div className="flex flex-row items-center">
-                  <span className="mr-1">{formatNumberAsDecimal(props.data.positionTokenAmount)}</span>
+                  <span className="mr-1">{props.data.positionTokenAmount}</span>
                   <AssetIcon symbol={props.data.toDenom} network="sifchain" size="sm" />
                 </div>
               </div>
@@ -82,7 +81,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
             <li>
               <div className="flex flex-row">
                 <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                <span>{formatNumberAsPercent(Number(props.data.poolInterestRate), 10)}</span>
+                <span>{props.data.poolInterestRate}</span>
               </div>
             </li>
           </ul>
@@ -99,7 +98,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
           <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
         ) : (
           <Button variant="primary" as="button" size="md" className="mt-6 w-full" onClick={onClickConfirmOpenPosition}>
-            Confirm open position
+            Open trade
           </Button>
         )}
         {confirmOpenPositionMutation.isError ? (

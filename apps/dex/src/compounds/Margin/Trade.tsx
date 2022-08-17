@@ -772,7 +772,7 @@ const Trade = (props: TradeProps) => {
                   disabled={isDisabledOpenPosition}
                   onClick={onClickOpenPosition}
                 >
-                  Open position
+                  Open trade
                 </Button>
               </div>
             </>
@@ -792,7 +792,7 @@ const Trade = (props: TradeProps) => {
           collateralAmount: collateralAmount,
           fromDenom: selectedCollateral.symbol.toLowerCase(),
           leverage: leverage,
-          poolInterestRate: poolActive ? poolActive.stats.interestRate : 0,
+          poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: formatNumberAsDecimal(
             Number(inputPosition.value) > 0

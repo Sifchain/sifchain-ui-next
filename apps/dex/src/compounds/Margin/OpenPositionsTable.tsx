@@ -61,15 +61,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Time Open", order_by: "" },
   { title: "Close Position", order_by: "" },
 ];
-type CreateTimeOpenLabelParams = {
-  years: number;
-  months: number;
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
-const createTimeOpenLabel = (timeOpen: CreateTimeOpenLabelParams) => {
+const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
   const yearsLabel = years ? `${years} years` : null;
   const monthsLabel = months ? `${months} months` : null;
@@ -140,9 +132,17 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  if (header.title === "Close Position") {
+                    return <th key={header.title} />;
+                  }
+
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                      <th
+                        key={header.title}
+                        className="cursor-not-allowed px-4 py-3 font-normal"
+                        hidden={hideColumns?.includes(header.title)}
+                      >
                         {header.title}
                       </th>
                     );
@@ -160,33 +160,31 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       className="px-4 py-3 font-normal"
                       hidden={hideColumns?.includes(header.title)}
                     >
-                      {header.title === "Close Position" ? null : (
-                        <Link
-                          href={{
-                            query: {
-                              ...router.query,
-                              orderBy: nextOrderBy,
-                              sortBy: nextSortBy,
-                            },
-                          }}
-                          scroll={false}
+                      <Link
+                        href={{
+                          query: {
+                            ...router.query,
+                            orderBy: nextOrderBy,
+                            sortBy: nextSortBy,
+                          },
+                        }}
+                        scroll={false}
+                      >
+                        <a
+                          className={clsx("flex flex-row items-center", {
+                            "font-semibold text-white": itemActive,
+                          })}
                         >
-                          <a
-                            className={clsx("flex flex-row items-center", {
-                              "font-semibold text-white": itemActive,
-                            })}
-                          >
-                            {header.title}
-                            {itemActive && (
-                              <ChevronDownIcon
-                                className={clsx("ml-1 transition-transform", {
-                                  "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                                })}
-                              />
-                            )}
-                          </a>
-                        </Link>
-                      )}
+                          {header.title}
+                          {itemActive && (
+                            <ChevronDownIcon
+                              className={clsx("ml-1 transition-transform", {
+                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                              })}
+                            />
+                          )}
+                        </a>
+                      </Link>
                     </th>
                   );
                 })}
