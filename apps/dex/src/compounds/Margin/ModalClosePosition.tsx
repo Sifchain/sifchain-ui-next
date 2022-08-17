@@ -6,8 +6,7 @@ import Long from "long";
 
 import { FlashMessageLoading } from "./_components";
 import { HtmlUnicode } from "./_trade";
-import { transformMTPMutationErrors } from "~/domains/margin/transformMTPMutationErrors";
-import { useCloseMTPMutation } from "~/domains/margin/hooks";
+import { useCloseMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import AssetIcon from "~/compounds/AssetIcon";
 
@@ -20,7 +19,7 @@ type ModalClosePositionProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalClosePosition(props: ModalClosePositionProps) {
-  const positionToCloseMutation = useCloseMTPMutation();
+  const confirmClosePosition = useCloseMTPMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
   const positionToCollateralSwap = useSwapSimulation(
@@ -31,7 +30,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      await positionToCloseMutation.mutateAsync({
+      await confirmClosePosition.mutateAsync({
         id: Long.fromNumber(Number(props.data.id)),
       });
       if (props.onMutationSuccess) {
@@ -47,8 +46,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     if (props.onTransitionEnd) {
       props.onTransitionEnd();
     }
-    positionToCloseMutation.reset();
-  }, [positionToCloseMutation, props]);
+    confirmClosePosition.reset();
+  }, [confirmClosePosition, props]);
 
   let content = <FlashMessageLoading />;
 
@@ -169,17 +168,17 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             </div>
           </li>
         </ul>
-        {positionToCloseMutation.isLoading ? (
+        {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
           <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
             Confirm close
           </Button>
         )}
-        {positionToCloseMutation.isError ? (
+        {confirmClosePosition.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
             <b className="mr-1">Failed to close margin position:</b>
-            <span>{transformMTPMutationErrors((confirmOpenPositionMutation.error as Error).message)}</span>
+            <span>{transformMTPMutationErrors((confirmClosePosition.error as Error).message)}</span>
           </p>
         ) : null}
       </>

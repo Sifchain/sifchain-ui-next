@@ -3,8 +3,7 @@ import type { SyntheticEvent } from "react";
 import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useMemo, useState, useCallback } from "react";
 
-import { useOpenMTPMutation } from "~/domains/margin/hooks";
-import { transformMTPMutationErrors } from "~/domains/margin/transformMTPMutationErrors";
+import { useOpenMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
