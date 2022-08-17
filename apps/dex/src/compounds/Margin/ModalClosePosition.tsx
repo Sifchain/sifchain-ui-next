@@ -6,7 +6,7 @@ import Long from "long";
 
 import { useCloseMTPMutation } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
-import { useEnhancedTokenQuery } from "~/domains/clp";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import { FlashMessageLoading } from "./_components";
 
 type ModalClosePositionProps = {
@@ -21,6 +21,11 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const positionToCloseMutation = useCloseMTPMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
+  const positionToCollateralSwap = useSwapSimulation(
+    props.data.custody_asset,
+    props.data.collateral_asset,
+    props.data.custody_amount,
+  );
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
@@ -44,12 +49,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   }, [positionToCloseMutation, props]);
 
   let content = <FlashMessageLoading />;
-  if (collateralTokenQuery.isSuccess && positionTokenQuery.isSuccess) {
+
+  if (collateralTokenQuery.isSuccess && positionTokenQuery.isSuccess && positionToCollateralSwap.data) {
     content = (
       <>
         <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">
-          <span className="font-medium">Warning:</span> The data used below are mocked values, but the action to close a
-          position is functional.
+          <span className="font-medium">Warning:</span> Some data points are still missing while we finish this flow.
+          However, the action to close a trade position is functional.
         </div>
         <h1 className="text-center text-lg font-bold">Review closing trade</h1>
         <ul className="mt-4 flex flex-col gap-3">
@@ -132,7 +138,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">&mdash;</span>
+                <span className="mr-1">{positionToCollateralSwap.data.liquidityProviderFee}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -140,14 +146,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              <span>&mdash;</span>
+              <span>{positionToCollateralSwap.data.priceImpact}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">&mdash;</span>
+                <span className="mr-1">{positionToCollateralSwap.data.rawReceiving}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
