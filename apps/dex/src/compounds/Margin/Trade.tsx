@@ -524,7 +524,7 @@ const Trade = (props: TradeProps) => {
       </section>
 
       <section className="mt-4 grid grid-cols-7 gap-x-5">
-        <aside className="border-gold-800 col-span-2 flex flex-col rounded border bg-gray-800 text-xs">
+        <article className="border-gold-800 col-span-2 flex flex-col rounded border bg-gray-800 text-xs">
           <ul className="border-gold-800 flex flex-col gap-0 border-b p-4">
             <li className="flex flex-col">
               <div className="mb-1 flex flex-row text-xs">
@@ -781,10 +781,10 @@ const Trade = (props: TradeProps) => {
               <RacetrackSpinnerIcon />
             </div>
           )}
-        </aside>
-        <section className="border-gold-800 col-span-5 rounded border">
+        </article>
+        <article className="border-gold-800 col-span-5 rounded border">
           <OpenPositionsTable hideColumns={["Pool", "Paid Interest"]} />
-        </section>
+        </article>
       </section>
 
       <ModalReviewOpenPosition
