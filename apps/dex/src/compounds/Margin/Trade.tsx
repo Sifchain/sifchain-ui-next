@@ -182,7 +182,7 @@ const Trade = (props: TradeProps) => {
         const modifiedPool = { ...pool };
         modifiedPool.asset = {
           ...pool.asset,
-          displaySymbol: mutateDisplaySymbol(pool.asset.denom),
+          displaySymbol: mutateDisplaySymbol(pool.asset.symbol),
           priceUsd: pool.stats.priceToken,
         } as IAsset & { priceUsd: number };
         return modifiedPool;
@@ -536,10 +536,10 @@ const Trade = (props: TradeProps) => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedCollateral && selectedCollateral.denom ? (
+                  {selectedCollateral && selectedCollateral.symbol ? (
                     <>
-                      <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                      <span>{selectedCollateral.denom.toUpperCase()}</span>
+                      <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                      <span>{selectedCollateral.symbol}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -596,10 +596,10 @@ const Trade = (props: TradeProps) => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedPosition && selectedPosition.denom ? (
+                  {selectedPosition && selectedPosition.symbol ? (
                     <>
-                      <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                      <span>{selectedPosition.denom.toUpperCase()}</span>
+                      <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                      <span>{selectedPosition.symbol}</span>
                     </>
                   ) : null}
                 </div>
@@ -662,24 +662,24 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           {selectedCollateral &&
-          selectedCollateral.denom &&
+          selectedCollateral.symbol &&
           selectedPosition &&
-          selectedPosition.denom &&
+          selectedPosition.symbol &&
           selectedPosition.priceUsd ? (
             <>
               <div className="p-4">
                 <p className="text-center text-base">Review trade</p>
                 <ul className="mt-4 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedCollateral.denom.toUpperCase()}</span>
+                    <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                    <span className="ml-1">{selectedCollateral.symbol}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
-                        <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -688,15 +688,15 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
-                        <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
                 </ul>
                 <ul className="mt-8 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedPosition.denom.toUpperCase()}</span>
+                    <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                    <span className="ml-1">{selectedPosition.symbol.toUpperCase()}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -709,7 +709,7 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Position size</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
-                        <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -733,7 +733,7 @@ const Trade = (props: TradeProps) => {
                               : 0,
                           )}
                         </span>
-                        <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
