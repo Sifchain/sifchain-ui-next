@@ -8,6 +8,7 @@ import { useCloseMTPMutation } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import { FlashMessageLoading } from "./_components";
+import { HtmlUnicode } from "./_trade";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -66,7 +67,9 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-              <span>&mdash;</span>
+              <span>
+                <HtmlUnicode name="EmDash" />
+              </span>
             </div>
           </li>
           <li className="px-4">
@@ -81,14 +84,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span>&mdash;</span>
+              <span className="mr-1">{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">&mdash;</span>
+                <span className="mr-1">{props.data.paid_interest ?? <HtmlUnicode name="EmDash" />}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -97,7 +100,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">&mdash;</span>
+                <span className="mr-1">{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -105,13 +108,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>&mdash;</span>
+              <span>{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>&mdash;</span>
+              <span>{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
@@ -160,8 +163,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">PnL</span>
-              <span>&mdash;</span>
+              <span className="mr-auto min-w-fit text-gray-300">Unrealized P&L</span>
+              <span>{props.data.unrealized_pnl ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
