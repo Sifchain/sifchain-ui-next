@@ -70,8 +70,12 @@ type PoolOverviewProps = {
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
+  const poolTVL24hAverage = props.pool.stats.tvl_24h_average || 0;
   const volume = props.pool.stats.volume || 0;
+  const volume24hAverage = props.pool.stats.volume_24h_average || 0;
   const health = props.pool.stats.health || 0;
+  const rowan24hAverage = props.pool.stats.rowan_24h_average || 0;
+  const asset24hAverage = props.pool.stats.asset_24h_average || 0;
 
   return (
     <ul className="grid grid-cols-7 gap-5">
@@ -91,7 +95,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(poolTVL)}</span>
-            <span className="text-green-400">(+2.8%)</span>
+            <Average24hPercent value={poolTVL24hAverage} />
           </span>
         </div>
       </li>
@@ -100,7 +104,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool Volume</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
-            <span className="text-green-400">(+2.8%)</span>
+            <Average24hPercent value={volume24hAverage} />
           </span>
         </div>
       </li>
@@ -109,7 +113,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">ROWAN Price</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(props.rowanPriceUsd, 4)}</span>
-            <span className="text-red-400">(-2.8%)</span>
+            <Average24hPercent value={rowan24hAverage} />
           </span>
         </div>
       </li>
@@ -120,7 +124,7 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">
               <span className="mr-1">{formatNumberAsCurrency(Number(props.pool.stats.priceToken))}</span>
             </span>
-            <span className="text-red-400">(-1.3%)</span>
+            <Average24hPercent value={asset24hAverage} />
           </span>
         </div>
       </li>
@@ -132,6 +136,16 @@ export function PoolOverview(props: PoolOverviewProps) {
       </li>
     </ul>
   );
+}
+
+function Average24hPercent({ value }: { value: number }) {
+  const sign = Math.sign(value);
+  const cls = clsx({
+    "text-green-400": sign === 1,
+    "text-red-400": sign === -1,
+    "text-cyan-400": sign === 0,
+  });
+  return <span className={cls}>({formatNumberAsPercent(value)})</span>;
 }
 
 export function FlashMessageAccountNotWhitelisted() {
