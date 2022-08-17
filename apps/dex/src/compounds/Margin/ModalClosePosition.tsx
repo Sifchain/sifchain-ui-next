@@ -55,8 +55,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     content = (
       <>
         <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">
-          <span className="font-medium">Warning:</span> Some data points are still missing while we finish this flow.
-          However, the action to close a trade position is functional.
+          <span className="font-medium">Warning:</span> Calculations and data points are missing in this flow. We are
+          working on it. However, the action to close a trade position is functional.
         </div>
         <h1 className="text-center text-lg font-bold">Review closing trade</h1>
         <ul className="mt-4 flex flex-col gap-3">
