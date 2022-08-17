@@ -23,8 +23,8 @@ import { ModalClosePosition } from "./ModalClosePosition";
  * ********************************************************************************************
  */
 
-import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
-import { formatDateRelative, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
+import { findNextOrderAndSortBy, QS_DEFAULTS, SORT_BY } from "./_tables";
+import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import {
   NoResultsRow,
@@ -48,6 +48,7 @@ const isTruthy = (target: any) => !isNil(target);
  * ********************************************************************************************
  */
 const OPEN_POSITIONS_HEADER_ITEMS = [
+  { title: "Date Opened", order_by: "date_opened" },
   { title: "Pool", order_by: "" },
   { title: "Side", order_by: "position" },
   { title: "Position", order_by: "custody_amount" },
@@ -56,20 +57,21 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Unrealized P&L", order_by: "unrealized_pnl" },
   { title: "Interest Rate", order_by: "interest_rate" },
   { title: "Paid Interest", order_by: "paid_interest" },
-  { title: "Health", order_by: "health" },
-  { title: "Date Opened", order_by: "date_opened" },
-  { title: "Time Open", order_by: "" },
+  { title: "Liquidation ratio", order_by: "health" },
+  { title: "Duration", order_by: "" },
   { title: "Close Position", order_by: "" },
 ];
 const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
-  const yearsLabel = years ? `${years} years` : null;
-  const monthsLabel = months ? `${months} months` : null;
-  const daysLabel = days ? `${days} days` : null;
-  const hoursLabel = hours ? `${hours} hours` : null;
-  const minutesLabel = minutes ? `${minutes} minutes` : null;
-  const secondsLabel = seconds ? `${seconds} seconds` : null;
-  return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel]
+  const yearsLabel = years ? `${years} ${years > 1 ? "years" : "year"}` : null;
+  const monthsLabel = months ? `${months} ${months > 1 ? "months" : "month"}` : null;
+  const daysLabel = days ? `${days} ${days > 1 ? "days" : "day"}` : null;
+  const hoursLabel = hours ? `${hours} ${hours > 1 ? "hours" : "hour"}` : null;
+  const minutesLabel = minutes ? `${minutes} ${minutes > 1 ? "minutes" : "minute"}` : null;
+  const secondsLabel = seconds ? `${seconds} ${seconds > 1 ? "seconds" : "second"}` : null;
+  const isSeconds = [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel].every((item) => item === null);
+  const maybeSecondsLabel = isSeconds ? secondsLabel : null;
+  return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, maybeSecondsLabel]
     .filter((label) => Boolean(label))
     .join(", ");
 };
@@ -88,7 +90,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "custody_amount",
+    orderBy: (router.query["orderBy"] as string) || "date_opened",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
 
@@ -207,43 +209,29 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
                 // this is slightly hacky, only doing it bexause we're getting a float returned here
                 const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;
-
-                const amountSign = Math.sign(custodyAmount);
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
                   <tr key={item.id} data-testid={item.id}>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? removeFirstCharC(item.pool).toUpperCase() : <HtmlUnicode name="EmDash" />}
-                    </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.position) ? (
-                        <span
-                          className={clsx({
-                            "text-cyan-400": item.position === MARGIN_POSITION.UNSPECIFIED,
-                            "text-green-400": item.position === MARGIN_POSITION.LONG,
-                            "text-red-400": item.position === MARGIN_POSITION.SHORT,
-                          })}
-                        >
-                          {item.position}
-                        </span>
+                      {isTruthy(item.date_opened) ? (
+                        formatDateISO(new Date(item.date_opened))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
+                      {isTruthy(item.pool) ? removeFirstCharC(item.pool).toUpperCase() : <HtmlUnicode name="EmDash" />}
+                    </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-green-400": amountSign === 1,
-                          "text-red-400": amountSign === -1,
-                        })}
-                      >
-                        {isTruthy(item.custody_amount) ? (
-                          formatNumberAsDecimal(custodyAmount, 6)
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </span>
+                      {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.custody_amount) ? (
+                        formatNumberAsDecimal(custodyAmount, 6)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.custody_asset) ? (
@@ -290,13 +278,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     <td className="px-4 py-3">
                       {isTruthy(item.health) ? (
                         formatNumberAsDecimal(Number(item.health))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      {isTruthy(item.date_opened) ? (
-                        formatDateRelative(new Date(item.date_opened))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

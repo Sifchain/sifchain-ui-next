@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
+import { ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
 import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
 import { isNil } from "rambda";
@@ -29,10 +29,12 @@ import {
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
 } from "./_components";
-import { formatDateRelative, formatDateDistance } from "./_intl";
-import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
+import { formatDateDistance, formatDateISO } from "./_intl";
+import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { Decimal } from "@cosmjs/math";
 
 /**
  * ********************************************************************************************
@@ -43,11 +45,11 @@ import { useSifSignerAddress } from "~/hooks/useSifSigner";
  */
 const HISTORY_HEADER_ITEMS = [
   { title: "Date Closed", order_by: "" },
-  { title: "Time Open", order_by: "open_date_time" },
+  { title: "Duration", order_by: "open_date_time" },
   { title: "Pool", order_by: "" },
   { title: "Side", order_by: "position" },
   { title: "Asset", order_by: "open_custody_asset" },
-  { title: "Amount", order_by: "open_custody_amount" },
+  { title: "Position", order_by: "open_custody_amount" },
   { title: "Realized P&L", order_by: "" },
 ];
 export type HistoryTableProps = {
@@ -55,6 +57,7 @@ export type HistoryTableProps = {
 };
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
+  const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
@@ -82,7 +85,8 @@ const HistoryTable = (props: HistoryTableProps) => {
     return <FlashMessageLoading />;
   }
 
-  if (historyQuery.isSuccess) {
+  if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+    const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = historyQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
@@ -144,14 +148,23 @@ const HistoryTable = (props: HistoryTableProps) => {
                 <NoResultsRow colSpan={headers.length} message="History not available. Try again later." />
               )}
               {results.map((item) => {
-                const amountSign = Math.sign(Number(item.open_custody_amount));
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
+                const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+
+                if (!custodyAsset) {
+                  throw new Error("Asset not found");
+                }
+
+                const custodyAmount = Decimal.fromAtomics(
+                  item.open_custody_amount,
+                  custodyAsset.decimals,
+                ).toFloatApproximation();
 
                 return (
                   <tr key={item.id} data-testid={item.id}>
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
-                        formatDateRelative(new Date(item.closed_date_time))
+                        formatDateISO(new Date(item.closed_date_time))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -167,19 +180,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                       {isTruthy(item.pool) ? removeFirstCharC(item.pool.toUpperCase()) : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.position) ? (
-                        <span
-                          className={clsx({
-                            "text-cyan-400": item.position === MARGIN_POSITION.UNSPECIFIED,
-                            "text-green-400": item.position === MARGIN_POSITION.LONG,
-                            "text-red-400": item.position === MARGIN_POSITION.SHORT,
-                          })}
-                        >
-                          {item.position}
-                        </span>
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_asset) ? (
@@ -190,14 +191,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        <span
-                          className={clsx({
-                            "text-green-400": amountSign === 1,
-                            "text-red-400": amountSign === -1,
-                          })}
-                        >
-                          {formatNumberAsCurrency(Number(item.open_custody_amount), 4)}
-                        </span>
+                        formatNumberAsDecimal(custodyAmount, 6)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
