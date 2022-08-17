@@ -40,10 +40,10 @@ export function useEnhancedPoolsQuery() {
             stats: stats as GetTokenStatsResponsePools & {
               health: number;
               interestRate: number;
-              tvl_24h_average: number;
-              volume_24h_average: number;
-              rowan_24h_average: number;
-              asset_24h_average: number;
+              tvl_24h_change: number;
+              volume_24h_change: number;
+              rowan_24h_change: number;
+              asset_24h_change: number;
             },
             asset: asset as IAsset,
           };

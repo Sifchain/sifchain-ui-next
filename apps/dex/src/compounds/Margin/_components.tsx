@@ -70,12 +70,12 @@ type PoolOverviewProps = {
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
-  const poolTVL24hAverage = props.pool.stats.tvl_24h_average || 0;
+  const poolTVL24hChange = props.pool.stats.tvl_24h_change || 0;
   const volume = props.pool.stats.volume || 0;
-  const volume24hAverage = props.pool.stats.volume_24h_average || 0;
+  const volume24hChange = props.pool.stats.volume_24h_change || 0;
   const health = props.pool.stats.health || 0;
-  const rowan24hAverage = props.pool.stats.rowan_24h_average || 0;
-  const asset24hAverage = props.pool.stats.asset_24h_average || 0;
+  const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
+  const asset24hChange = props.pool.stats.asset_24h_change || 0;
 
   return (
     <ul className="grid grid-cols-7 gap-5">
@@ -95,7 +95,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(poolTVL)}</span>
-            <Average24hPercent value={poolTVL24hAverage} />
+            <Average24hPercent value={poolTVL24hChange} />
           </span>
         </div>
       </li>
@@ -104,7 +104,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool Volume</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
-            <Average24hPercent value={volume24hAverage} />
+            <Average24hPercent value={volume24hChange} />
           </span>
         </div>
       </li>
@@ -113,7 +113,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">ROWAN Price</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(props.rowanPriceUsd, 4)}</span>
-            <Average24hPercent value={rowan24hAverage} />
+            <Average24hPercent value={rowan24hChange} />
           </span>
         </div>
       </li>
@@ -124,7 +124,7 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">
               <span className="mr-1">{formatNumberAsCurrency(Number(props.pool.stats.priceToken))}</span>
             </span>
-            <Average24hPercent value={asset24hAverage} />
+            <Average24hPercent value={asset24hChange} />
           </span>
         </div>
       </li>

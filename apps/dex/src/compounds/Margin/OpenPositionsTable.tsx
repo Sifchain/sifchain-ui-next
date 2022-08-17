@@ -24,7 +24,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
  */
 
 import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
-import { formatDateDistance, formatDateRelative, formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { formatDateRelative, formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode } from "./_trade";
 import {
   NoResultsRow,
@@ -61,6 +61,18 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Time Open", order_by: "" },
   { title: "Close Position", order_by: "" },
 ];
+type CreateTimeOpenLabelParams = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+const createTimeOpenLabel = (timeOpen: CreateTimeOpenLabelParams) => {
+  const { hours, minutes, seconds } = timeOpen;
+  const hoursLabel = hours ? `${hours} hours` : null;
+  const minutesLabel = minutes ? `${minutes} minutes` : null;
+  const secondsLabel = seconds ? `${seconds} seconds` : null;
+  return [hoursLabel, minutesLabel, secondsLabel].filter((label) => Boolean(label)).join(", ");
+};
 
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
@@ -273,11 +285,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.time_open) ? (
-                        formatDateDistance(new Date(item.time_open))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.time_open) ? createTimeOpenLabel(item.time_open) : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4">
                       <Button

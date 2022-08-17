@@ -42,7 +42,6 @@ import { useSifSignerAddress } from "~/hooks/useSifSigner";
  * ********************************************************************************************
  */
 const HISTORY_HEADER_ITEMS = [
-  { title: "Status", order_by: "" },
   { title: "Date Closed", order_by: "" },
   { title: "Time Open", order_by: "open_date_time" },
   { title: "Pool", order_by: "" },
