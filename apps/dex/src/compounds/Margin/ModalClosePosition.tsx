@@ -4,11 +4,12 @@ import { ArrowDownIcon, Button, Modal } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
-import { useCloseMTPMutation } from "~/domains/margin/hooks";
-import AssetIcon from "~/compounds/AssetIcon";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import { FlashMessageLoading } from "./_components";
 import { HtmlUnicode } from "./_trade";
+import { transformMTPMutationErrors } from "~/domains/margin/transformMTPMutationErrors";
+import { useCloseMTPMutation } from "~/domains/margin/hooks";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
+import AssetIcon from "~/compounds/AssetIcon";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -177,8 +178,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         )}
         {positionToCloseMutation.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to open margin position:</b>
-            <span>{(positionToCloseMutation.error as Error).message}</span>
+            <b className="mr-1">Failed to close margin position:</b>
+            <span>{transformMTPMutationErrors((confirmOpenPositionMutation.error as Error).message)}</span>
           </p>
         ) : null}
       </>

@@ -6,6 +6,7 @@ import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import { transformMTPMutationErrors } from "./transformMTPMutationErrors";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
@@ -55,7 +56,7 @@ export function useOpenMTPMutation() {
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
-          ? `Failed to open margin position: ${transformOpenMTPMutationError(error.message)}`
+          ? `Failed to open margin position: ${transformMTPMutationErrors(error.message)}`
           : data?.rawLog ?? "Failed to open margin position";
 
         toast.error(errorMessage);
@@ -64,12 +65,4 @@ export function useOpenMTPMutation() {
       }
     },
   });
-}
-
-export function transformOpenMTPMutationError(error: string) {
-  if (error.includes("unauthorized")) {
-    return "Your account has not yet been approved for margin trading.";
-  }
-
-  return error;
 }
