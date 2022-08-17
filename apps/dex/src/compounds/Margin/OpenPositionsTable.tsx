@@ -140,6 +140,14 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  if (header.order_by === "") {
+                    return (
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                        {header.title}
+                      </th>
+                    );
+                  }
+
                   const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
                     itemKey: header.order_by,
@@ -166,7 +174,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           <a
                             className={clsx("flex flex-row items-center", {
                               "font-semibold text-white": itemActive,
-                              "cursor-not-allowed": header.order_by === "",
                             })}
                           >
                             {header.title}
