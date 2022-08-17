@@ -182,7 +182,7 @@ const Trade = (props: TradeProps) => {
         const modifiedPool = { ...pool };
         modifiedPool.asset = {
           ...pool.asset,
-          displaySymbol: mutateDisplaySymbol(pool.asset.displaySymbol),
+          displaySymbol: mutateDisplaySymbol(pool.asset.denom),
           priceUsd: pool.stats.priceToken,
         } as IAsset & { priceUsd: number };
         return modifiedPool;
@@ -539,7 +539,7 @@ const Trade = (props: TradeProps) => {
                   {selectedCollateral && selectedCollateral.denom ? (
                     <>
                       <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                      <span>{selectedCollateral.name}</span>
+                      <span>{selectedCollateral.denom.toUpperCase()}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -599,7 +599,7 @@ const Trade = (props: TradeProps) => {
                   {selectedPosition && selectedPosition.denom ? (
                     <>
                       <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                      <span>{selectedPosition.name}</span>
+                      <span>{selectedPosition.denom.toUpperCase()}</span>
                     </>
                   ) : null}
                 </div>
@@ -672,7 +672,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-4 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedCollateral.name.toUpperCase()}</span>
+                    <span className="ml-1">{selectedCollateral.denom.toUpperCase()}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -696,7 +696,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-8 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedPosition.name.toUpperCase()}</span>
+                    <span className="ml-1">{selectedPosition.denom.toUpperCase()}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
