@@ -18,6 +18,7 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import WalletConnector from "~/compounds/WalletConnector";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
@@ -58,33 +59,34 @@ export function useMenuItems() {
 const Header = () => {
   const windowSize = useWindowSize();
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+  const [linkLogo, setLinkLogo] = useState(isMarginStandaloneOn ? "/margin" : "/");
+
+  useEffect(() => {
+    if (isMarginStandaloneOn && document.referrer) {
+      setLinkLogo(document.referrer);
+    }
+  }, [isMarginStandaloneOn, setLinkLogo]);
 
   return (
     <header className="grid bg-black md:p-4">
       {Boolean(windowSize.width) && (
         <Disclosure
           as="div"
-          className="block justify-between shadow-none md:flex md:items-center md:gap-8 md:pb-2 md:shadow-inset-border"
+          className="md:shadow-inset-border block justify-between shadow-none md:flex md:items-center md:gap-8 md:pb-2"
           defaultOpen={windowSize.width >= 768}
         >
           {({ open }) => (
             <>
-              <section className="flex items-center justify-between shadow-inset-border md:grid md:place-items-center md:shadow-none">
-                <Link href={isMarginStandaloneOn ? "/margin" : "/"}>
+              <section className="shadow-inset-border flex items-center justify-between md:grid md:place-items-center md:shadow-none">
+                <Link href={linkLogo}>
                   <a className="flex items-center gap-4 p-2 md:p-1">
                     <SifchainLogoSmall className="inline-block text-[44px]" />
-                    {isMarginStandaloneOn && (
-                      <h1 className="pl-3 text-2xl font-semibold">Margin</h1>
-                    )}
+                    {isMarginStandaloneOn && <h1 className="pl-3 text-2xl font-semibold">Margin</h1>}
                   </a>
                 </Link>
                 <div className="md:hidden">
                   <Disclosure.Button className="p-4">
-                    {open ? (
-                      <XIcon className="h-6 w-6" />
-                    ) : (
-                      <ChevronDownIcon className="h-6 w-6" />
-                    )}
+                    {open ? <XIcon className="h-6 w-6" /> : <ChevronDownIcon className="h-6 w-6" />}
                   </Disclosure.Button>
                 </div>
               </section>
@@ -94,11 +96,7 @@ const Header = () => {
                   static={windowSize.width >= 768}
                 >
                   <div className="4xl:gap-8 grid gap-4 p-4 md:flex md:w-full md:p-0 xl:gap-6">
-                    {!isMarginStandaloneOn ? (
-                      <Nav />
-                    ) : (
-                      <div className="flex-1" />
-                    )}
+                    {!isMarginStandaloneOn ? <Nav /> : <div className="flex-1" />}
                     <RowanStats />
                     <WalletConnector />
                   </div>
@@ -130,12 +128,10 @@ const Nav = ({ visibleItems = 3 }) => {
                   "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
                   {
                     "bg-gray-600": currentPath === href,
-                  }
+                  },
                 )}
               >
-                <span className="text-sm font-semibold text-gray-200">
-                  {title}
-                </span>
+                <span className="text-sm font-semibold text-gray-200">{title}</span>
               </a>
             </Link>
           </li>
@@ -146,16 +142,12 @@ const Nav = ({ visibleItems = 3 }) => {
               <>
                 <Menu.Button
                   className={clsx("rotate-90", {
-                    "rounded-full ring-1 ring-gray-50 ring-offset-4 ring-offset-gray-800":
-                      open,
+                    "rounded-full ring-1 ring-gray-50 ring-offset-4 ring-offset-gray-800": open,
                   })}
                 >
                   <DotsVerticalIcon className="h-4 w-4" />
                 </Menu.Button>
-                <Menu.Items
-                  as={SurfaceB}
-                  className="absolute top-7 right-0 z-10 grid gap-2 p-2"
-                >
+                <Menu.Items as={SurfaceB} className="absolute top-7 right-0 z-10 grid gap-2 p-2">
                   {menuItems.slice(visibleItems).map(({ title, href }) => (
                     <Menu.Item key={title}>
                       <Link href={href}>
@@ -165,12 +157,10 @@ const Nav = ({ visibleItems = 3 }) => {
                             "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
                             {
                               "bg-gray-600": currentPath === href,
-                            }
+                            },
                           )}
                         >
-                          <span className="text-sm font-semibold text-gray-200">
-                            {title}
-                          </span>
+                          <span className="text-sm font-semibold text-gray-200">{title}</span>
                         </a>
                       </Link>
                     </Menu.Item>
@@ -187,8 +177,7 @@ const Nav = ({ visibleItems = 3 }) => {
 
 const RowanStats = () => {
   const { data: TVL, isLoading: isLoadingTVL } = useTVLQuery();
-  const { data: rowanPrice, isLoading: isLoadingRowanPrice } =
-    useRowanPriceQuery();
+  const { data: rowanPrice, isLoading: isLoadingRowanPrice } = useRowanPriceQuery();
 
   const rowanStats = [
     {
@@ -196,9 +185,7 @@ const RowanStats = () => {
       icon: <RowanIcon />,
       label: (
         <>
-          {isLoadingRowanPrice || isNaN(rowanPrice)
-            ? "..."
-            : formatNumberAsCurrency(rowanPrice, 4)}
+          {isLoadingRowanPrice || isNaN(rowanPrice) ? "..." : formatNumberAsCurrency(rowanPrice, 4)}
           <span className="ml-3">/</span>
         </>
       ),
@@ -206,21 +193,14 @@ const RowanStats = () => {
     {
       id: "tvl",
       icon: <LockIcon />,
-      label: (
-        <>
-          {isLoadingTVL || isNaN(TVL) ? "..." : formatNumberAsCurrency(TVL)} TVL
-        </>
-      ),
+      label: <>{isLoadingTVL || isNaN(TVL) ? "..." : formatNumberAsCurrency(TVL)} TVL</>,
     },
   ];
 
   return (
     <section className="md:max-w-auto m-auto flex max-w-min flex-nowrap justify-center gap-2 rounded px-1.5 py-1 md:items-center">
       {rowanStats.map(({ id, icon, label }) => (
-        <div
-          key={id}
-          className="flex items-center gap-1 whitespace-nowrap font-normal text-gray-300"
-        >
+        <div key={id} className="flex items-center gap-1 whitespace-nowrap font-normal text-gray-300">
           <span className="grid h-6 w-6 place-items-center">{icon}</span>
           <span className="text-xs font-semibold">{label}</span>
         </div>
