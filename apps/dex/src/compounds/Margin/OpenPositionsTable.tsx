@@ -1,4 +1,4 @@
-import { Button, ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
+import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
@@ -24,7 +24,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
  */
 
 import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
-import { formatDateRelative, formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { formatDateRelative, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode } from "./_trade";
 import {
   NoResultsRow,
@@ -272,7 +272,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.health) ? (
-                        formatNumberAsPercent(Number(item.health))
+                        formatNumberAsDecimal(Number(item.health))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

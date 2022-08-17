@@ -2,7 +2,12 @@ import clsx from "clsx";
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
-import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+  TokenEntry,
+  TokenSelector as BaseTokenSelector,
+} from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
 import type { PropsWithChildren } from "react";
@@ -131,7 +136,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
+          <span className="text-sm font-semibold">{formatNumberAsDecimal(health)}</span>
         </div>
       </li>
     </ul>
