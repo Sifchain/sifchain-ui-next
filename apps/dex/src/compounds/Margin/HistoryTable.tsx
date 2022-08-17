@@ -141,7 +141,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
                 return (
-                  <tr key={item.id}>
+                  <tr key={item.id} data-testid={item.id}>
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
                         formatDateRelative(new Date(item.closed_date_time))

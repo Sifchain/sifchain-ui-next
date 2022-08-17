@@ -24,6 +24,7 @@ export type OpenPositionsQueryData = {
   current_price: string;
   custody_amount: string;
   custody_asset: string;
+  custody_entry_price: string;
   date_opened: string;
   health: string;
   id: string;

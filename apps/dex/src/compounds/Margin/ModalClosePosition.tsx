@@ -22,10 +22,10 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const confirmClosePosition = useCloseMTPMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
-  const positionToCollateralSwap = useSwapSimulation(
-    props.data.custody_asset,
+  const collateralToPositionSwap = useSwapSimulation(
     props.data.collateral_asset,
-    props.data.custody_amount,
+    props.data.custody_asset,
+    props.data.collateral_amount,
   );
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -51,7 +51,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
 
   let content = <FlashMessageLoading />;
 
-  if (collateralTokenQuery.isSuccess && positionTokenQuery.isSuccess && positionToCollateralSwap.data) {
+  if (collateralTokenQuery.isSuccess && positionTokenQuery.isSuccess && collateralToPositionSwap.data) {
     content = (
       <>
         <div className="mb-4 rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">
@@ -67,9 +67,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-              <span>
-                <HtmlUnicode name="EmDash" />
-              </span>
+              <span>{props.data.custody_entry_price}</span>
             </div>
           </li>
           <li className="px-4">
@@ -84,7 +82,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span className="mr-1">{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span className="mr-1">{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
@@ -100,7 +98,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
+                <span className="mr-1">{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -108,13 +106,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>{props.data.current_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
@@ -141,7 +139,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{positionToCollateralSwap.data.liquidityProviderFee}</span>
+                <span className="mr-1">{collateralToPositionSwap.data.liquidityProviderFee}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -149,14 +147,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              <span>{positionToCollateralSwap.data.priceImpact}</span>
+              <span>{collateralToPositionSwap.data.priceImpact}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{positionToCollateralSwap.data.rawReceiving}</span>
+                <span className="mr-1">{collateralToPositionSwap.data.rawReceiving}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>

@@ -199,9 +199,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
-                  <tr key={item.id}>
+                  <tr key={item.id} data-testid={item.id}>
                     <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? removeFirstCharC(item.pool) : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? removeFirstCharC(item.pool).toUpperCase() : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? (
@@ -262,7 +262,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
-                        formatNumberAsPercent(Number(item.interest_rate))
+                        formatNumberAsPercent(Number(item.interest_rate), 10)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
