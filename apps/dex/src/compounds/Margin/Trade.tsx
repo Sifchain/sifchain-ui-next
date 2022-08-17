@@ -47,6 +47,7 @@ import {
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
+  removeFirstCharC,
 } from "./_trade";
 import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
 
@@ -151,7 +152,8 @@ type TradeProps = {
 };
 
 const ROWAN_DENOM = "rowan";
-const mutateDisplaySymbol = (displaySymbol: string) => `${displaySymbol.toUpperCase()} · ${ROWAN_DENOM.toUpperCase()}`;
+const mutateDisplaySymbol = (displaySymbol: string) =>
+  `${removeFirstCharC(displaySymbol.toUpperCase())} · ${ROWAN_DENOM.toUpperCase()}`;
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
@@ -539,7 +541,7 @@ const Trade = (props: TradeProps) => {
                   {selectedCollateral && selectedCollateral.symbol ? (
                     <>
                       <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                      <span>{selectedCollateral.symbol}</span>
+                      <span>{removeFirstCharC(selectedCollateral.symbol)}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -599,7 +601,7 @@ const Trade = (props: TradeProps) => {
                   {selectedPosition && selectedPosition.symbol ? (
                     <>
                       <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                      <span>{selectedPosition.symbol}</span>
+                      <span>{removeFirstCharC(selectedPosition.symbol)}</span>
                     </>
                   ) : null}
                 </div>
@@ -672,7 +674,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-4 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedCollateral.symbol}</span>
+                    <span className="ml-1">{removeFirstCharC(selectedCollateral.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -696,7 +698,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-8 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedPosition.symbol.toUpperCase()}</span>
+                    <span className="ml-1">{removeFirstCharC(selectedPosition.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">

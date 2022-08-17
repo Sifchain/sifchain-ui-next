@@ -25,7 +25,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
 
 import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
 import { formatDateRelative, formatNumberAsPercent } from "./_intl";
-import { HtmlUnicode } from "./_trade";
+import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import {
   NoResultsRow,
   PaginationButtons,
@@ -201,7 +201,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 return (
                   <tr key={item.id}>
                     <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? item.pool : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? removeFirstCharC(item.pool) : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? (
@@ -233,7 +233,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.custody_asset) ? item.custody_asset.toUpperCase() : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.custody_asset) ? (
+                        removeFirstCharC(item.custody_asset.toUpperCase())
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.leverage) ? (
