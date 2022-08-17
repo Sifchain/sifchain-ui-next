@@ -1,4 +1,11 @@
-import { formatDistance, formatRelative } from "date-fns";
+import { formatDistance, formatRelative, intervalToDuration } from "date-fns";
+
+export function formatIntervalToDuration(start: Date, end: Date) {
+  return intervalToDuration({
+    start,
+    end,
+  });
+}
 
 export function formatDateRelative(date: Date): string {
   return formatRelative(date, new Date());

@@ -24,7 +24,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
  */
 
 import { findNextOrderAndSortBy, MARGIN_POSITION, QS_DEFAULTS, SORT_BY } from "./_tables";
-import { formatDateRelative, formatNumberAsPercent } from "./_intl";
+import { formatDateRelative, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharC } from "./_trade";
 import {
   NoResultsRow,
@@ -62,16 +62,24 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: "Close Position", order_by: "" },
 ];
 type CreateTimeOpenLabelParams = {
+  years: number;
+  months: number;
+  days: number;
   hours: number;
   minutes: number;
   seconds: number;
 };
 const createTimeOpenLabel = (timeOpen: CreateTimeOpenLabelParams) => {
-  const { hours, minutes, seconds } = timeOpen;
+  const { years, months, days, hours, minutes, seconds } = timeOpen;
+  const yearsLabel = years ? `${years} years` : null;
+  const monthsLabel = months ? `${months} months` : null;
+  const daysLabel = days ? `${days} days` : null;
   const hoursLabel = hours ? `${hours} hours` : null;
   const minutesLabel = minutes ? `${minutes} minutes` : null;
   const secondsLabel = seconds ? `${seconds} seconds` : null;
-  return [hoursLabel, minutesLabel, secondsLabel].filter((label) => Boolean(label)).join(", ");
+  return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel]
+    .filter((label) => Boolean(label))
+    .join(", ");
 };
 
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
@@ -289,7 +297,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.time_open) ? createTimeOpenLabel(item.time_open) : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.date_opened) ? (
+                        createTimeOpenLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4">
                       <Button
