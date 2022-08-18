@@ -251,12 +251,12 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [inputCollateral, setInputCollateral] = useState({
-    value: String(COLLATERAL_MIN_VALUE),
+    value: "",
     error: "",
   });
 
   const [inputPosition, setInputPosition] = useState({
-    value: String(POSITION_MIN_VALUE),
+    value: "",
     error: "",
   });
 
@@ -547,14 +547,14 @@ const Trade = (props: TradeProps) => {
                 </div>
                 <input
                   type="number"
-                  placeholder="Collateral amount"
+                  placeholder="0"
                   step="0.01"
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
                   onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold", {
+                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
                   })}
                 />
@@ -604,14 +604,14 @@ const Trade = (props: TradeProps) => {
                 </div>
                 <input
                   type="number"
-                  placeholder="Position amount"
+                  placeholder="0"
                   step="0.01"
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
                   onBlur={onBlurPosition}
                   onChange={onChangePosition}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold", {
+                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
                   })}
                 />
