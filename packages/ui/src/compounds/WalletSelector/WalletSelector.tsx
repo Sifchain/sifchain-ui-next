@@ -122,17 +122,13 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                   <ListItem
                     key={x.id}
                     role="button"
-                    onClick={async () => {
+                    onClick={() => {
                       setWalletId(x.id);
                       navigate("await-confirmation");
-                      try {
-                        await props.onConnect?.({
-                          chainId: networkId ?? "",
-                          walletId: x.id,
-                        });
-                      } catch (error) {
-                        console.log("failed to connect", error);
-                      }
+                      props.onConnect?.({
+                        chainId: networkId ?? "",
+                        walletId: x.id,
+                      });
                     }}
                   >
                     <div className="flex items-center gap-2">
