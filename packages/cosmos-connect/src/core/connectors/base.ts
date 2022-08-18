@@ -9,7 +9,7 @@ export type ConnectorEvents = {
   enable(chainIds: string | string[]): void;
 };
 
-export abstract class BaseCosmConnector<Options = any> extends EventEmitter<ConnectorEvents> {
+export abstract class BaseCosmConnector<Options = unknown> extends EventEmitter<ConnectorEvents> {
   /** Unique connector id */
   abstract readonly id: string;
   /** Connector name */
