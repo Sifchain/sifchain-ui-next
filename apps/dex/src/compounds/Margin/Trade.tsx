@@ -335,9 +335,9 @@ const Trade = (props: TradeProps) => {
   const openPositionFee = useMemo(
     () =>
       Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation(),
+        Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
       ),
-    [swapSimulation],
+    [swapSimulation, selectedPosition],
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
@@ -716,7 +716,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
-                        <span>{formatNumberAsCurrency(openPositionFee * selectedPosition.priceUsd)}</span>
+                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -726,10 +727,8 @@ const Trade = (props: TradeProps) => {
                       <div className="flex flex-row items-center">
                         <span className="mr-1">
                           {formatNumberAsDecimal(
-                            Number(inputPosition.value) > 0
-                              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd)) -
-                                  openPositionFee * selectedPosition.priceUsd
-                              : 0,
+                            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+                            4,
                           )}
                         </span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
