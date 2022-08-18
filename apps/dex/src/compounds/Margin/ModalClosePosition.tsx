@@ -152,6 +152,15 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
+              <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">{collateralToPositionSwap.data.liquidityProviderFee}</span>
+                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
+              </div>
+            </div>
+          </li>
+          <li className="px-4">
+            <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">{collateralToPositionSwap.data.liquidityProviderFee}</span>
