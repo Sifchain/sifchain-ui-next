@@ -798,9 +798,7 @@ const Trade = (props: TradeProps) => {
         }}
         isOpen={modalConfirmOpenPosition.isOpen}
         onClose={() => {
-          if (modalConfirmOpenPosition.isOpen) {
-            setModalConfirmOpenPosition({ isOpen: false });
-          }
+          setModalConfirmOpenPosition({ isOpen: false });
         }}
         onMutationSuccess={() => {
           setModalConfirmOpenPosition({ isOpen: false });
