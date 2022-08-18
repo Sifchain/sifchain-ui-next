@@ -791,10 +791,8 @@ const Trade = (props: TradeProps) => {
           poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: formatNumberAsDecimal(
-            Number(inputPosition.value) > 0
-              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd)) -
-                  openPositionFee * selectedPosition.priceUsd
-              : 0,
+            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+            4,
           ),
           toDenom: selectedPosition.symbol.toLowerCase(),
         }}
