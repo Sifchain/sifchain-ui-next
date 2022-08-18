@@ -1,8 +1,4 @@
-import {
-  CommandPalette,
-  CommandPaletteEntry,
-  useRecentEntries,
-} from "@sifchain/ui";
+import { CommandPalette, CommandPaletteEntry, useRecentEntries } from "@sifchain/ui";
 import { useRouter } from "next/router";
 import { indexBy, prop } from "rambda";
 import React, { useCallback, useMemo, useState, type FC } from "react";
@@ -33,18 +29,9 @@ const GlobalSearch: FC = () => {
     const entries = pools.map(
       (asset): CommandPaletteEntry => ({
         id: asset.symbol,
-        label: `${asset.name}  (${(
-          asset.displaySymbol ?? asset.symbol
-        ).toUpperCase()})`,
-        icon: (
-          <AssetIcon
-            symbol={asset.symbol}
-            network="sifchain"
-            size="sm"
-            invertColor={asset.hasDarkIcon}
-          />
-        ),
-      })
+        label: `${asset.name}  (${(asset.displaySymbol ?? asset.symbol).toUpperCase()})`,
+        icon: <AssetIcon symbol={asset.symbol} network="sifchain" size="sm" invertColor={asset.hasDarkIcon} />,
+      }),
     );
 
     return {
@@ -62,7 +49,7 @@ const GlobalSearch: FC = () => {
         addRecentEntry(selected);
       }
     },
-    [addRecentEntry, indexedById]
+    [addRecentEntry, indexedById],
   );
 
   return (

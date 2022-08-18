@@ -26,17 +26,8 @@ export type SwapConfirmationModalProps = {
   slippage: string;
 };
 
-export const ConfirmationLineItem = (
-  props: PropsWithChildren<{ className?: string }>
-) => (
-  <li
-    className={clsx(
-      "flex justify-between rounded-lg px-4 py-3 align-middle",
-      props.className
-    )}
-  >
-    {props.children}
-  </li>
+export const ConfirmationLineItem = (props: PropsWithChildren<{ className?: string }>) => (
+  <li className={clsx("flex justify-between rounded-lg px-4 py-3 align-middle", props.className)}>{props.children}</li>
 );
 
 export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
@@ -45,11 +36,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
       <ul>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
           <div className="flex gap-1 align-middle">
-            <AssetIcon
-              network="sifchain"
-              symbol={props.fromCoin.denom}
-              size="md"
-            />
+            <AssetIcon network="sifchain" symbol={props.fromCoin.denom} size="md" />
             {props.fromCoin.denom}
           </div>
           <span>{props.fromCoin.amount}</span>
@@ -70,11 +57,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
               <span>Swap result</span>
               <div className="flex gap-1 align-middle font-bold">
                 {props.toCoin.amount}
-                <AssetIcon
-                  network="sifchain"
-                  symbol={props.toCoin.denom}
-                  size="md"
-                />
+                <AssetIcon network="sifchain" symbol={props.toCoin.denom} size="md" />
               </div>
             </ConfirmationLineItem>
             <ConfirmationLineItem>
@@ -89,11 +72,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
         </div>
         <ConfirmationLineItem className="bg-black font-bold uppercase">
           <div className="flex gap-1 align-middle">
-            <AssetIcon
-              network="sifchain"
-              symbol={props.toCoin.denom}
-              size="md"
-            />
+            <AssetIcon network="sifchain" symbol={props.toCoin.denom} size="md" />
             {props.toCoin.denom}
           </div>
           <span>{props.toCoin.amountPreSlippage}</span>
@@ -106,11 +85,7 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           <span>Minimum received</span>
           <div className="flex gap-1 align-middle font-bold">
             {props.toCoin.minimumAmount}
-            <AssetIcon
-              network="sifchain"
-              symbol={props.toCoin.denom}
-              size="md"
-            />
+            <AssetIcon network="sifchain" symbol={props.toCoin.denom} size="md" />
           </div>
         </ConfirmationLineItem>
       </ul>

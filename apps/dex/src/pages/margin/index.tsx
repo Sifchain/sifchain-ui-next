@@ -86,9 +86,7 @@ const Margin: NextPage = () => {
             )}
           />
         ) : (
-          <div className="bg-gray-850 p-10 text-center text-gray-100">
-            Loading...
-          </div>
+          <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
         )}
       </section>
     </>

@@ -21,20 +21,14 @@ export function usePoolsQuery() {
           ...x,
           externalAssetBalance: Decimal.fromAtomics(
             x.externalAssetBalance,
-            indexedByDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0
+            indexedByDenom[x.externalAsset?.symbol ?? ""]?.decimals ?? 0,
           ),
-          nativeAssetBalance: Decimal.fromAtomics(
-            x.nativeAssetBalance,
-            env?.nativeAsset.decimals ?? 0
-          ),
+          nativeAssetBalance: Decimal.fromAtomics(x.nativeAssetBalance, env?.nativeAsset.decimals ?? 0),
         })),
       };
     },
     {
-      enabled:
-        tokenRegistryRes !== undefined &&
-        poolsRes !== undefined &&
-        env !== undefined,
-    }
+      enabled: tokenRegistryRes !== undefined && poolsRes !== undefined && env !== undefined,
+    },
   );
 }

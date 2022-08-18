@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         defaultOptions: {
           queries: { refetchOnWindowFocus: false },
         },
-      })
+      }),
   );
 
   return (
@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Sifchain Registry</title>
       </Head>
       <QueryClientProvider client={queryClient}>
-        <div className="flex min-h-screen flex-col gap-8 bg-gradient-to-b from-gray-900 to-gray-850 text-gray-50 antialiased">
+        <div className="to-gray-850 flex min-h-screen flex-col gap-8 bg-gradient-to-b from-gray-900 text-gray-50 antialiased">
           <header className="bg-black/90 p-6">
             <div className="mx-auto flex max-w-6xl items-center gap-8">
               <Link href="/">
@@ -54,12 +54,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className={clsx(
-                        "bg-gray-900 transition-all duration-300 hover:opacity-80",
-                        {
-                          "bg-gray-700": currentPath === href,
-                        }
-                      )}
+                      className={clsx("bg-gray-900 transition-all duration-300 hover:opacity-80", {
+                        "bg-gray-700": currentPath === href,
+                      })}
                     >
                       {label}
                     </Button>

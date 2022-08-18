@@ -19,18 +19,12 @@ export function useHistoryQuery(params: {
 }) {
   return useSifApiQuery(
     "margin.getMarginHistory",
-    [
-      params.walletAddress,
-      Number(params.offset),
-      Number(params.limit),
-      params.orderBy,
-      params.sortBy,
-    ],
+    [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
       retry: false,
-    }
+    },
   ) as UseQueryResult<{
     pagination: Pagination;
     results: {

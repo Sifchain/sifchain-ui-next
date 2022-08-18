@@ -27,13 +27,7 @@ function isAllowable(a: IAmount, b: IAmount) {
 tables.PoolUnitsAfterUpgrade.forEach(({ r, a, R, A, P, expected }, index) => {
   if (filterList.length === 0 || filterList.includes(index)) {
     test(`#${index} => (r:${r}, a:${a}, R:${R}, A:${A}, P:${P}) => ${expected}`, () => {
-      const output = calculatePoolUnits(
-        Amount(r),
-        Amount(a),
-        Amount(R),
-        Amount(A),
-        Amount(P)
-      );
+      const output = calculatePoolUnits(Amount(r), Amount(a), Amount(R), Amount(A), Amount(P));
 
       expect(isAllowable(output, Amount(expected))).toBe(true);
     });

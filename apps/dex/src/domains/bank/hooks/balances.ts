@@ -1,9 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import {
-  useAccounts,
-  useSigner,
-  useStargateClient,
-} from "@sifchain/cosmos-connect";
+import { useAccounts, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "ramda";
@@ -19,11 +15,7 @@ type Balance = {
   denom: string;
 };
 
-export const useBalanceQuery = (
-  chainId: string,
-  denom: string,
-  options: { enabled: boolean } = { enabled: true }
-) => {
+export const useBalanceQuery = (chainId: string, denom: string, options: { enabled: boolean } = { enabled: true }) => {
   const { client } = useStargateClient(chainId, options);
   const { accounts } = useAccounts(chainId, options);
   const { indexedByDenom } = useTokenRegistryQuery();
@@ -32,10 +24,7 @@ export const useBalanceQuery = (
   return useQuery(
     ["cosm-balance", chainId, denom],
     async () => {
-      const result = await client?.getBalance(
-        accounts?.[0]?.address ?? "",
-        denom
-      );
+      const result = await client?.getBalance(accounts?.[0]?.address ?? "", denom);
 
       return result === undefined
         ? undefined
@@ -45,12 +34,8 @@ export const useBalanceQuery = (
           };
     },
     {
-      enabled:
-        options.enabled &&
-        client !== undefined &&
-        (accounts?.length ?? 0) > 0 &&
-        token !== undefined,
-    }
+      enabled: options.enabled && client !== undefined && (accounts?.length ?? 0) > 0 && token !== undefined,
+    },
   );
 };
 
@@ -60,47 +45,32 @@ export function useAllBalancesQuery() {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: stargateClient } = useSifStargateClient();
-  const {
-    data: registry,
-    indexedByDenom,
-    isSuccess: isTokenRegistryQuerySuccess,
-  } = useTokenRegistryQuery();
+  const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
   const baseQuery = useQuery(
     "all-balances",
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
-      const balances = await stargateClient?.getAllBalances(
-        accounts?.[0]?.address ?? ""
-      );
+      const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
 
       return (
         balances?.map((x) => {
           const token = indexedByDenom[x.denom];
           return {
             ...x,
-            amount:
-              token === undefined
-                ? undefined
-                : Decimal.fromAtomics(x.amount, token.decimals),
+            amount: token === undefined ? undefined : Decimal.fromAtomics(x.amount, token.decimals),
           };
         }) ?? []
       );
     },
     {
       staleTime: 60000, // 1 minute
-      enabled:
-        signer !== undefined &&
-        stargateClient !== undefined &&
-        isTokenRegistryQuerySuccess,
-    }
+      enabled: signer !== undefined && stargateClient !== undefined && isTokenRegistryQuerySuccess,
+    },
   );
 
   const indices = useMemo(() => {
-    const indexedByDenom = indexBy(
-      compose(toLower, prop("denom")),
-      baseQuery.data ?? []
-    );
+    const indexedByDenom = indexBy(compose(toLower, prop("denom")), baseQuery.data ?? []);
 
     const indexedBySymbol =
       baseQuery.data === undefined || registry === undefined
@@ -112,7 +82,7 @@ export function useAllBalancesQuery() {
                 ...acc,
                 [x.symbol.toLowerCase()]: indexedByDenom[x.denom] as Balance,
               }),
-              {} as StringIndexed<Balance>
+              {} as StringIndexed<Balance>,
             );
 
     const indexedByDisplaySymbol =
@@ -123,11 +93,9 @@ export function useAllBalancesQuery() {
             .reduce(
               (acc, x) => ({
                 ...acc,
-                [x.displaySymbol.toLowerCase()]: indexedByDenom[
-                  x.denom
-                ] as Balance,
+                [x.displaySymbol.toLowerCase()]: indexedByDenom[x.denom] as Balance,
               }),
-              {} as StringIndexed<Balance>
+              {} as StringIndexed<Balance>,
             );
 
     return {
@@ -166,7 +134,7 @@ export function useBalancesWithPool() {
       ? undefined
       : liquidityProviders?.liquidityProviderData.reduce(
           (prev, curr) => prev.plus(curr.nativeAssetBalance),
-          Decimal.zero(env.nativeAsset.decimals)
+          Decimal.zero(env.nativeAsset.decimals),
         );
 
   const denomSet = useMemo(
@@ -177,7 +145,7 @@ export function useBalancesWithPool() {
           .map((x) => x.liquidityProvider?.asset?.symbol as string)
           .filter((x) => x !== undefined) ?? []),
       ]),
-    [balances, liquidityProviders?.liquidityProviderData]
+    [balances, liquidityProviders?.liquidityProviderData],
   );
 
   return useMemo(
@@ -185,9 +153,7 @@ export function useBalancesWithPool() {
       Array.from(denomSet).map((x) => {
         const token = indexedByDenom[x];
         const balance = balances?.find((y) => y.denom === x);
-        const pool = liquidityProviders?.liquidityProviderData.find(
-          (y) => y.liquidityProvider?.asset?.symbol === x
-        );
+        const pool = liquidityProviders?.liquidityProviderData.find((y) => y.liquidityProvider?.asset?.symbol === x);
 
         return {
           denom: x,
@@ -195,10 +161,7 @@ export function useBalancesWithPool() {
           displaySymbol: token?.displaySymbol,
           network: token?.network,
           amount: balance?.amount,
-          pooledAmount:
-            x === env?.nativeAsset.symbol.toLowerCase()
-              ? totalRowan
-              : pool?.externalAssetBalance,
+          pooledAmount: x === env?.nativeAsset.symbol.toLowerCase() ? totalRowan : pool?.externalAssetBalance,
         };
       }),
     [
@@ -208,7 +171,7 @@ export function useBalancesWithPool() {
       indexedByDenom,
       liquidityProviders?.liquidityProviderData,
       totalRowan,
-    ]
+    ],
   );
 }
 
@@ -233,19 +196,13 @@ export function useBalancesStats() {
           x.denom === "cusdc"
             ? { rawReceiving: x.amount ?? zeroUsdc }
             : await stargateClient
-                .simulateSwap(
-                  { denom: x.denom, amount: x.amount?.atomics ?? "0" },
-                  { denom: "cusdc" }
-                )
+                .simulateSwap({ denom: x.denom, amount: x.amount?.atomics ?? "0" }, { denom: "cusdc" })
                 .catch(() => ({ rawReceiving: zeroUsdc })),
         pooled:
           x.denom === "cusdc"
             ? { rawReceiving: x.amount ?? zeroUsdc }
             : await stargateClient
-                .simulateSwap(
-                  { denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" },
-                  { denom: "cusdc" }
-                )
+                .simulateSwap({ denom: x.denom, amount: x.pooledAmount?.atomics ?? "0" }, { denom: "cusdc" })
                 .catch(() => ({ rawReceiving: zeroUsdc })),
       }));
 
@@ -253,26 +210,19 @@ export function useBalancesStats() {
 
       return results.reduce(
         (prev, curr) => ({
-          totalInUsdc: prev.totalInUsdc
-            .plus(curr.available.rawReceiving)
-            .plus(curr.pooled.rawReceiving),
-          availableInUsdc: prev.availableInUsdc.plus(
-            curr.available.rawReceiving
-          ),
+          totalInUsdc: prev.totalInUsdc.plus(curr.available.rawReceiving).plus(curr.pooled.rawReceiving),
+          availableInUsdc: prev.availableInUsdc.plus(curr.available.rawReceiving),
           pooledInUsdc: prev.pooledInUsdc.plus(curr.pooled.rawReceiving),
         }),
         {
           totalInUsdc: zeroUsdc,
           availableInUsdc: zeroUsdc,
           pooledInUsdc: zeroUsdc,
-        }
+        },
       );
     },
     {
-      enabled:
-        stargateClient !== undefined &&
-        balances !== undefined &&
-        usdcToken !== undefined,
-    }
+      enabled: stargateClient !== undefined && balances !== undefined && usdcToken !== undefined,
+    },
   );
 }

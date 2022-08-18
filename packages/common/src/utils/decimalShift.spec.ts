@@ -95,15 +95,13 @@ describe("decimalShift", () => {
     },
   ];
 
-  decimalShiftTests.forEach(
-    ({ skip, only, input: [decimal, shift], expected }) => {
-      const tester = only ? test.only : skip ? test.skip : test;
+  decimalShiftTests.forEach(({ skip, only, input: [decimal, shift], expected }) => {
+    const tester = only ? test.only : skip ? test.skip : test;
 
-      tester(`${[decimal, shift].join("\t")}\t=> ${expected}`, () => {
-        expect(decimalShift(decimal, shift)).toBe(expected);
-      });
-    }
-  );
+    tester(`${[decimal, shift].join("\t")}\t=> ${expected}`, () => {
+      expect(decimalShift(decimal, shift)).toBe(expected);
+    });
+  });
 });
 
 describe("floorDecimal", () => {

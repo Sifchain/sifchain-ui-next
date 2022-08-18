@@ -6,12 +6,7 @@ import { AssetAmount } from "./AssetAmount";
 import { CompositePool, Pool } from "./Pool";
 
 describe("Pool", () => {
-  const [ATK, BTK, ETH, ROWAN] = getTestingTokens([
-    "ATK",
-    "BTK",
-    "ETH",
-    "ROWAN",
-  ]) as [IAsset, IAsset, IAsset, IAsset];
+  const [ATK, BTK, ETH, ROWAN] = getTestingTokens(["ATK", "BTK", "ETH", "ROWAN"]) as [IAsset, IAsset, IAsset, IAsset];
 
   // TODO: Confirm with Blockscience
   // x = Sent Asset Amount, X = Sent Asset Pool Balance, Y = Received Asset Pool Balance
@@ -21,22 +16,15 @@ describe("Pool", () => {
   // Swap Result = ( x * X * Y ) / ( x + X )^2
 
   test("It calculates the correct swap amount", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "10000000000000000000"),
-      AssetAmount(BTK, "10000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "10000000000000000000"), AssetAmount(BTK, "10000000000000000000"));
 
-    expect(
-      pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()
-    ).toEqual(
-      "826446280991735537 BTK"
+    expect(pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()).toEqual(
+      "826446280991735537 BTK",
       // 0.826446280991735537 = (1 * 10 * 10) / ((1 + 10) * (1 + 10));
     );
 
-    expect(
-      pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()
-    ).toEqual(
-      "826446280991735537 ATK"
+    expect(pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()).toEqual(
+      "826446280991735537 ATK",
       // 0.826446280991735537 = (1 * 10 * 10) / ((1 + 10) * (1 + 10));
     );
   });
@@ -44,84 +32,58 @@ describe("Pool", () => {
   test("calculate swap amount 1:1", () => {
     const pair = new Pool(
       AssetAmount(ATK, "1000000000000000000000000000000"),
-      AssetAmount(BTK, "1000000000000000000000000000000")
+      AssetAmount(BTK, "1000000000000000000000000000000"),
     );
 
-    expect(
-      pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()
-    ).toEqual(
-      "999999999998000000 BTK"
+    expect(pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()).toEqual(
+      "999999999998000000 BTK",
       // 0.826446280991735537 = (1 * 1000000000000 * 1000000000000) / ((1 + 1000000000000) * (1 + 1000000000000));
     );
 
-    expect(
-      pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()
-    ).toEqual(
-      "999999999998000000 ATK"
+    expect(pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()).toEqual(
+      "999999999998000000 ATK",
       // 0.826446280991735537 = (1 * 1000000000000 * 1000000000000) / ((1 + 1000000000000) * (1 + 1000000000000));
     );
   });
   test("calculate swap amount 2:1", () => {
     const pair = new Pool(
       AssetAmount(ATK, "2000000000000000000000000000000"),
-      AssetAmount(BTK, "1000000000000000000000000000000")
+      AssetAmount(BTK, "1000000000000000000000000000000"),
     );
 
-    expect(
-      pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()
-    ).toEqual(
-      "499999999999500000 BTK"
+    expect(pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()).toEqual(
+      "499999999999500000 BTK",
       // 0.826446280991735537 = (1 * 1000000000000 * 1000000000000) / ((1 + 1000000000000) * (1 + 1000000000000));
     );
 
-    expect(
-      pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()
-    ).toEqual(
-      "1999999999996000000 ATK"
+    expect(pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()).toEqual(
+      "1999999999996000000 ATK",
       // 0.826446280991735537 = (1 * 1000000000000 * 1000000000000) / ((1 + 1000000000000) * (1 + 1000000000000));
     );
   });
 
   test("swap of 0", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "10000000000000000000"),
-      AssetAmount(BTK, "10000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "10000000000000000000"), AssetAmount(BTK, "10000000000000000000"));
 
-    expect(pair.calcSwapResult(AssetAmount(ATK, "0")).toString()).toEqual(
-      "0 BTK"
-    );
+    expect(pair.calcSwapResult(AssetAmount(ATK, "0")).toString()).toEqual("0 BTK");
   });
 
   test("Reverse swap", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "1000000000000000000000000"),
-      AssetAmount(BTK, "1000000000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "1000000000000000000000000"), AssetAmount(BTK, "1000000000000000000000000"));
 
-    expect(
-      pair
-        .calcReverseSwapResult(AssetAmount(BTK, "100000000000000000000"))
-        .toString()
-    ).toEqual("100020005001400420132 ATK");
+    expect(pair.calcReverseSwapResult(AssetAmount(BTK, "100000000000000000000")).toString()).toEqual(
+      "100020005001400420132 ATK",
+    );
   });
 
   test("Reverse swap of 0", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "10000000000000000000"),
-      AssetAmount(BTK, "10000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "10000000000000000000"), AssetAmount(BTK, "10000000000000000000"));
 
-    expect(
-      pair.calcReverseSwapResult(AssetAmount(BTK, "0")).toString()
-    ).toEqual("0 ATK");
+    expect(pair.calcReverseSwapResult(AssetAmount(BTK, "0")).toString()).toEqual("0 ATK");
   });
 
   test("Cannot calulate swap result for an asset that does not exist within the pair", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "10000000000000000000"),
-      AssetAmount(BTK, "10000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "10000000000000000000"), AssetAmount(BTK, "10000000000000000000"));
 
     expect(() => {
       pair.calcSwapResult(AssetAmount(ROWAN, "10000000000000000000"));
@@ -136,26 +98,19 @@ describe("Pool", () => {
   });
 
   describe("when half", () => {
-    const pair = new Pool(
-      AssetAmount(ATK, "5000000000000000000"),
-      AssetAmount(BTK, "10000000000000000000")
-    );
+    const pair = new Pool(AssetAmount(ATK, "5000000000000000000"), AssetAmount(BTK, "10000000000000000000"));
 
     test("pair has symbol", () => {
       expect(pair.symbol()).toEqual("atk_btk");
     });
 
     test("calcSwapResult should be 1388..", () => {
-      expect(
-        pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()
-      ).toEqual(
-        "1388888888888888889 BTK"
+      expect(pair.calcSwapResult(AssetAmount(ATK, "1000000000000000000")).toString()).toEqual(
+        "1388888888888888889 BTK",
         // 1.388888888888888889 = (1 * 5 * 10) / ((1 + 5) * (1 + 5));
       );
-      expect(
-        pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()
-      ).toEqual(
-        "413223140495867769 ATK"
+      expect(pair.calcSwapResult(AssetAmount(BTK, "1000000000000000000")).toString()).toEqual(
+        "413223140495867769 ATK",
         // 0.413223140495867769 = (1 * 10 * 5) / ((1 + 10) * (1 + 10));
       );
     });
@@ -163,56 +118,33 @@ describe("Pool", () => {
 
   describe("poolUnits", () => {
     test("poolUnits", () => {
-      const pool = new Pool(
-        AssetAmount(ATK, "1000000"),
-        AssetAmount(BTK, "1000000")
-      );
+      const pool = new Pool(AssetAmount(ATK, "1000000"), AssetAmount(BTK, "1000000"));
 
       expect(pool.poolUnits.toString(false)).toBe("1000000");
     });
 
     test("addLiquidity:calculate pool units", () => {
-      const pool = new Pool(
-        AssetAmount(ATK, "1000000"),
-        AssetAmount(BTK, "1000000")
-      );
-      const [units, lpunits] = pool.calculatePoolUnits(
-        AssetAmount(ATK, "10000"),
-        AssetAmount(BTK, "14000")
-      );
+      const pool = new Pool(AssetAmount(ATK, "1000000"), AssetAmount(BTK, "1000000"));
+      const [units, lpunits] = pool.calculatePoolUnits(AssetAmount(ATK, "10000"), AssetAmount(BTK, "14000"));
       expect(units.toString(false)).toBe("1011953");
-      expect(lpunits.divide(units).multiply("10000").toString(false)).toBe(
-        "118"
-      );
+      expect(lpunits.divide(units).multiply("10000").toString(false)).toBe("118");
     });
   });
 
   describe("CompositePool", () => {
     test("Cannot create composite pair with pairs that have no shared asset", () => {
-      const pair1 = new Pool(
-        AssetAmount(ATK, "1000000"),
-        AssetAmount(BTK, "1000000")
-      );
+      const pair1 = new Pool(AssetAmount(ATK, "1000000"), AssetAmount(BTK, "1000000"));
 
-      const pair2 = new Pool(
-        AssetAmount(ROWAN, "1000000"),
-        AssetAmount(ETH, "1000000")
-      );
+      const pair2 = new Pool(AssetAmount(ROWAN, "1000000"), AssetAmount(ETH, "1000000"));
       expect(() => {
         CompositePool(pair1, pair2);
       }).toThrow();
     });
 
     test("CompositePool contains", () => {
-      const pair1 = new Pool(
-        AssetAmount(ATK, "1000000000000"),
-        AssetAmount(ROWAN, "1000000000000")
-      );
+      const pair1 = new Pool(AssetAmount(ATK, "1000000000000"), AssetAmount(ROWAN, "1000000000000"));
 
-      const pair2 = new Pool(
-        AssetAmount(ROWAN, "1000000000000"),
-        AssetAmount(BTK, "1000000000000")
-      );
+      const pair2 = new Pool(AssetAmount(ROWAN, "1000000000000"), AssetAmount(BTK, "1000000000000"));
 
       const compositePool = CompositePool(pair1, pair2);
 
@@ -222,25 +154,15 @@ describe("Pool", () => {
     });
 
     test("CompositePool getAmount()", () => {
-      const pair1 = new Pool(
-        AssetAmount(ATK, "2000000000000"),
-        AssetAmount(ROWAN, "1000000000000")
-      );
+      const pair1 = new Pool(AssetAmount(ATK, "2000000000000"), AssetAmount(ROWAN, "1000000000000"));
 
-      const pair2 = new Pool(
-        AssetAmount(ROWAN, "1000000000000"),
-        AssetAmount(BTK, "1000000000000")
-      );
+      const pair2 = new Pool(AssetAmount(ROWAN, "1000000000000"), AssetAmount(BTK, "1000000000000"));
 
       const compositePool = CompositePool(pair1, pair2);
 
-      expect(compositePool.getAmount("atk").toString()).toBe(
-        "2000000000000 ATK"
-      );
+      expect(compositePool.getAmount("atk").toString()).toBe("2000000000000 ATK");
       expect(compositePool.getAmount(ATK).toString()).toBe("2000000000000 ATK");
-      expect(compositePool.getAmount("btk").toString()).toBe(
-        "1000000000000 BTK"
-      );
+      expect(compositePool.getAmount("btk").toString()).toBe("1000000000000 BTK");
 
       expect(() => {
         compositePool.getAmount("rowan");
@@ -250,12 +172,12 @@ describe("Pool", () => {
     test("CompositePool does two swaps", () => {
       const pair1 = new Pool(
         AssetAmount(ATK, "1000000000000000000000000000000"),
-        AssetAmount(ROWAN, "1000000000000000000000000000000")
+        AssetAmount(ROWAN, "1000000000000000000000000000000"),
       );
 
       const pair2 = new Pool(
         AssetAmount(ROWAN, "1000000000000000000000000000000"),
-        AssetAmount(BTK, "1000000000000000000000000000000")
+        AssetAmount(BTK, "1000000000000000000000000000000"),
       );
 
       const compositePool = CompositePool(pair1, pair2);
@@ -266,9 +188,7 @@ describe("Pool", () => {
 
       expect(compositeSwapAmount.toString()).toEqual("9999999999600000000 BTK"); // Adjustment for fees
 
-      const output = pair2
-        .calcSwapResult(pair1.calcSwapResult(inputAmount))
-        .toString();
+      const output = pair2.calcSwapResult(pair1.calcSwapResult(inputAmount)).toString();
 
       expect(compositeSwapAmount.toString()).toEqual(output.toString()); // Adjustment for fees
     });
@@ -276,12 +196,12 @@ describe("Pool", () => {
     test("CompositePool 2:1", () => {
       const pair1 = new Pool(
         AssetAmount(ATK, "2000000000000000000000000000000"),
-        AssetAmount(ROWAN, "1000000000000000000000000000000")
+        AssetAmount(ROWAN, "1000000000000000000000000000000"),
       );
 
       const pair2 = new Pool(
         AssetAmount(ROWAN, "1000000000000000000000000000000"),
-        AssetAmount(BTK, "1000000000000000000000000000000")
+        AssetAmount(BTK, "1000000000000000000000000000000"),
       );
 
       const compositePool = CompositePool(pair1, pair2);
@@ -336,27 +256,21 @@ describe("Pool", () => {
       };
       const pair1 = new Pool(
         AssetAmount(TOKENS.atk, "2000000000000000000000000000000"),
-        AssetAmount(TOKENS.rowan, "1000000000000000000000000000000")
+        AssetAmount(TOKENS.rowan, "1000000000000000000000000000000"),
       );
 
       const pair2 = new Pool(
         AssetAmount(TOKENS.btk, "1000000000000000000000000000000"),
-        AssetAmount(TOKENS.rowan, "1000000000000000000000000000000")
+        AssetAmount(TOKENS.rowan, "1000000000000000000000000000000"),
       );
       const compositePool = CompositePool(pair1, pair2);
-      expect(
-        compositePool
-          .calcSwapResult(AssetAmount(TOKENS.atk, "100000000000000000000"))
-          .toString()
-      ).toEqual("49999999990000000002 BTK");
+      expect(compositePool.calcSwapResult(AssetAmount(TOKENS.atk, "100000000000000000000")).toString()).toEqual(
+        "49999999990000000002 BTK",
+      );
 
-      expect(
-        compositePool
-          .calcReverseSwapResult(
-            AssetAmount(TOKENS.btk, "50000000000000000000")
-          )
-          .toString()
-      ).toEqual("100000000020000000005 ATK");
+      expect(compositePool.calcReverseSwapResult(AssetAmount(TOKENS.btk, "50000000000000000000")).toString()).toEqual(
+        "100000000020000000005 ATK",
+      );
     });
   });
 });

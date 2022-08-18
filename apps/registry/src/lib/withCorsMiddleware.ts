@@ -14,10 +14,7 @@ export const DEFAULT_CORS_OPTIONS: CorsOptions = {
  * @param options
  * @returns
  */
-export default function withCorsMiddleware(
-  handler: NextApiHandler,
-  options = DEFAULT_CORS_OPTIONS
-): NextApiHandler {
+export default function withCorsMiddleware(handler: NextApiHandler, options = DEFAULT_CORS_OPTIONS): NextApiHandler {
   const corsMiddleware = initMiddleware(Cors(options));
 
   return async (req, res) => {

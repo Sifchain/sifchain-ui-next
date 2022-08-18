@@ -23,9 +23,7 @@ const TEST_CASES: TestCase[] = [
 describe("parseDynamicMantissa", () => {
   TEST_CASES.forEach(([amount, expected]) => {
     test("getMantissaFromDynamicMantissa", () => {
-      expect(
-        getMantissaFromDynamicMantissa(Amount(amount), mantissaRange)
-      ).toBe(expected);
+      expect(getMantissaFromDynamicMantissa(Amount(amount), mantissaRange)).toBe(expected);
     });
   });
 });

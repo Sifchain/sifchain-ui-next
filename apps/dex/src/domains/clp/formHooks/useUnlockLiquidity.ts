@@ -7,33 +7,24 @@ const useUnlockLiquidity = (denom: string) => {
   const { data: liquidityProviderRes } = useLiquidityProviderQuery(denom);
 
   const [unlockPercentage, setUnlockPercentage] = useState("0");
-  const [_, parsedUnlockPercentage] = runCatching(() =>
-    parseFloat(unlockPercentage)
-  );
+  const [_, parsedUnlockPercentage] = runCatching(() => parseFloat(unlockPercentage));
 
   const units = useMemo(
     () =>
-      new BigNumber(
-        liquidityProviderRes?.liquidityProvider?.liquidityProviderUnits ?? 0
-      ).times(parsedUnlockPercentage ?? 0),
-    [
-      liquidityProviderRes?.liquidityProvider?.liquidityProviderUnits,
-      parsedUnlockPercentage,
-    ]
+      new BigNumber(liquidityProviderRes?.liquidityProvider?.liquidityProviderUnits ?? 0).times(
+        parsedUnlockPercentage ?? 0,
+      ),
+    [liquidityProviderRes?.liquidityProvider?.liquidityProviderUnits, parsedUnlockPercentage],
   );
 
   const nativeAssetAmount = useMemo(
-    () =>
-      (liquidityProviderRes?.nativeAssetBalance.toFloatApproximation() ?? 0) *
-      (parsedUnlockPercentage ?? 0),
-    [liquidityProviderRes?.nativeAssetBalance, parsedUnlockPercentage]
+    () => (liquidityProviderRes?.nativeAssetBalance.toFloatApproximation() ?? 0) * (parsedUnlockPercentage ?? 0),
+    [liquidityProviderRes?.nativeAssetBalance, parsedUnlockPercentage],
   );
 
   const externalAssetAmount = useMemo(
-    () =>
-      (liquidityProviderRes?.externalAssetBalance.toFloatApproximation() ?? 0) *
-      (parsedUnlockPercentage ?? 0),
-    [liquidityProviderRes?.externalAssetBalance, parsedUnlockPercentage]
+    () => (liquidityProviderRes?.externalAssetBalance.toFloatApproximation() ?? 0) * (parsedUnlockPercentage ?? 0),
+    [liquidityProviderRes?.externalAssetBalance, parsedUnlockPercentage],
   );
 
   return {

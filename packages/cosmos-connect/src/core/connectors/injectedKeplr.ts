@@ -22,10 +22,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
   constructor(options: InjectedKeplrConnectorOptions) {
     super(options);
-    window.addEventListener(
-      "keplr_keystorechange",
-      this.#keystoreChangeListener
-    );
+    window.addEventListener("keplr_keystorechange", this.#keystoreChangeListener);
   }
 
   async connect() {
@@ -38,20 +35,14 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     this.#keplr = windowKeplr;
     this.emit("connect");
 
-    window.addEventListener(
-      "keplr_keystorechange",
-      this.#keystoreChangeListener
-    );
+    window.addEventListener("keplr_keystorechange", this.#keystoreChangeListener);
   }
 
   disconnect() {
     this.#keplr = undefined;
     this.emit("disconnect");
 
-    window.removeEventListener(
-      "keplr_keystorechange",
-      this.#keystoreChangeListener
-    );
+    window.removeEventListener("keplr_keystorechange", this.#keystoreChangeListener);
 
     return Promise.resolve();
   }
@@ -61,25 +52,19 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
       throw new Error("Keplr instance is undefined");
     }
 
-    await this.#keplr.experimentalSuggestChain(
-      this.#chainStore.getChain(chainId).raw
-    );
+    await this.#keplr.experimentalSuggestChain(this.#chainStore.getChain(chainId).raw);
     await this.#keplr.enable(chainId);
     return this.#keplr.getOfflineSignerAuto(chainId);
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
-    return SigningStargateClient.connect(
-      this.#chainStore.getChain(chainId).rpc
-    );
+    return SigningStargateClient.connect(this.#chainStore.getChain(chainId).rpc);
   }
 
-  async getSigningStargateClient(
-    chainId: string
-  ): Promise<SigningStargateClient> {
+  async getSigningStargateClient(chainId: string): Promise<SigningStargateClient> {
     return SigningStargateClient.connectWithSigner(
       this.#chainStore.getChain(chainId).rpc,
-      await this.getSigner(chainId)
+      await this.getSigner(chainId),
     );
   }
 

@@ -38,27 +38,17 @@ const MainLayout: FC<Props> = (props) => {
         position="top-right"
         limit={4}
         draggablePercent={60}
-        closeButton={
-          <XIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />
-        }
+        closeButton={<XIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />}
         icon={({ type }) => {
           switch (type) {
             case "success":
-              return (
-                <CheckCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-green-400" />
-              );
+              return <CheckCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-green-400" />;
             case "info":
-              return (
-                <InformationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-blue-600" />
-              );
+              return <InformationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-blue-600" />;
             case "error":
-              return (
-                <XCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-red-400" />
-              );
+              return <XCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-red-400" />;
             case "warning":
-              return (
-                <ExclamationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-yellow-400" />
-              );
+              return <ExclamationCircleIcon className="h-[17.5px] w-[17.5px] -translate-x-1 text-yellow-400" />;
             default:
               return null;
           }

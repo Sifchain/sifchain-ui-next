@@ -8,16 +8,11 @@ import { prompt } from "./lib.mjs";
 
 const program = new Command();
 
-program
-  .name("codegen")
-  .description("CLI to scaffold mew UI components")
-  .version("0.8.0");
+program.name("codegen").description("CLI to scaffold mew UI components").version("0.8.0");
 
 program
   .command("component")
-  .description(
-    "Scaffold a new component under src/components with a stories file"
-  )
+  .description("Scaffold a new component under src/components with a stories file")
   .argument("<componentName>", "component name")
   .action(codegenComponent);
 
@@ -48,18 +43,14 @@ Do you want to continue?
    * @param {string} content
    * @returns
    */
-  const replaceName = (content) =>
-    content.replace(/ReactComponent/gi, component);
+  const replaceName = (content) => content.replace(/ReactComponent/gi, component);
 
   if (answer === "y") {
     $.verbose = false;
 
-    const { stdout: indexContent } =
-      await $`cat scripts/templates/ReactComponent/index.ts`;
-    const { stdout: componentContent } =
-      await $`cat scripts/templates/ReactComponent/ReactComponent.tsx`;
-    const { stdout: storiesContent } =
-      await $`cat scripts/templates/ReactComponent/ReactComponent.stories.tsx`;
+    const { stdout: indexContent } = await $`cat scripts/templates/ReactComponent/index.ts`;
+    const { stdout: componentContent } = await $`cat scripts/templates/ReactComponent/ReactComponent.tsx`;
+    const { stdout: storiesContent } = await $`cat scripts/templates/ReactComponent/ReactComponent.stories.tsx`;
 
     try {
       console.log("Creating component...\n");
@@ -72,18 +63,14 @@ Do you want to continue?
             storiesContent,
           })
             .filter((x) => !x)
-            .join(", ")})`
+            .join(", ")})`,
         );
       }
 
       await $`mkdir ${targetDir}`;
       await $`echo ${replaceName(indexContent)} > ${targetDir}/index.ts`;
-      await $`echo ${replaceName(
-        componentContent
-      )} > ${targetDir}/${component}.tsx`;
-      await $`echo ${replaceName(
-        storiesContent
-      )} > ${targetDir}/${component}.stories.tsx`;
+      await $`echo ${replaceName(componentContent)} > ${targetDir}/${component}.tsx`;
+      await $`echo ${replaceName(storiesContent)} > ${targetDir}/${component}.stories.tsx`;
 
       process.exit(0);
     } catch (error) {

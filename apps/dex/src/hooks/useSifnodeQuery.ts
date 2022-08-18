@@ -9,13 +9,7 @@ export type SifnodeClient = Awaited<ReturnType<typeof createQueryClient>>;
 
 export type PublicSifnodeClient = Pick<
   SifnodeClient,
-  | "clp"
-  | "ethBridge"
-  | "bank"
-  | "dispensation"
-  | "staking"
-  | "tokenRegistry"
-  | "margin"
+  "clp" | "ethBridge" | "bank" | "dispensation" | "staking" | "tokenRegistry" | "margin"
 >;
 
 type PublicModuleKey = keyof PublicSifnodeClient;
@@ -34,13 +28,13 @@ export default function useSifnodeQuery<
   P extends keyof PublicSifnodeClient[T],
   M = PublicSifnodeClient[T][P],
   F = M extends () => any ? ReturnType<M> : never,
-  Res = Awaited<F>
+  Res = Awaited<F>,
 >(
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<PublicSifnodeClient[T][P]>,
-  options: Omit<UseQueryOptions<Res, unknown, Res>, "queryKey" | "queryFn"> = {}
+  options: Omit<UseQueryOptions<Res, unknown, Res>, "queryKey" | "queryFn"> = {},
 ) {
   const { data: client } = useQueryClient();
 
@@ -55,25 +49,18 @@ export default function useSifnodeQuery<
 
       const [moduleName, methodName] = query.split(".") as [T, P];
 
-      const method = client[moduleName][
-        methodName
-      ] as PublicSifnodeClient[T][P];
+      const method = client[moduleName][methodName] as PublicSifnodeClient[T][P];
 
       if (typeof method !== "function") {
-        throw new Error(
-          `[useSifnodeQuery] Method ${String(methodName)} is not a function`
-        );
+        throw new Error(`[useSifnodeQuery] Method ${String(methodName)} is not a function`);
       }
 
       return await method(...args);
     },
     {
-      enabled:
-        "enabled" in options
-          ? options.enabled && Boolean(client)
-          : Boolean(client),
+      enabled: "enabled" in options ? options.enabled && Boolean(client) : Boolean(client),
       // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
-    }
+    },
   );
 }

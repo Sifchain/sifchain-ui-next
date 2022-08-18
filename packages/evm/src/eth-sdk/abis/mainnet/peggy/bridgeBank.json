@@ -228,9 +228,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
     "name": "addPauser",
     "outputs": [],
     "payable": false,
@@ -241,9 +239,7 @@
     "constant": true,
     "inputs": [],
     "name": "blocklist",
-    "outputs": [
-      { "internalType": "contract IBlocklist", "name": "", "type": "address" }
-    ],
+    "outputs": [{ "internalType": "contract IBlocklist", "name": "", "type": "address" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
@@ -287,9 +283,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      { "internalType": "address", "name": "_newOperator", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_newOperator", "type": "address" }],
     "name": "changeOperator",
     "outputs": [],
     "payable": false,
@@ -298,9 +292,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      { "internalType": "address", "name": "_newOwner", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_newOwner", "type": "address" }],
     "name": "changeOwner",
     "outputs": [],
     "payable": false,
@@ -327,9 +319,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      { "internalType": "string", "name": "_symbol", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "string", "name": "_symbol", "type": "string" }],
     "name": "createNewBridgeToken",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "payable": false,
@@ -338,9 +328,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "string", "name": "_symbol", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "string", "name": "_symbol", "type": "string" }],
     "name": "getBridgeToken",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "payable": false,
@@ -349,9 +337,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "address", "name": "_token", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_token", "type": "address" }],
     "name": "getCosmosTokenInWhiteList",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "payable": false,
@@ -360,9 +346,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "string", "name": "_symbol", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "string", "name": "_symbol", "type": "string" }],
     "name": "getLockedFunds",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
@@ -371,9 +355,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "string", "name": "_symbol", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "string", "name": "_symbol", "type": "string" }],
     "name": "getLockedTokenAddress",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "payable": false,
@@ -382,9 +364,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "address", "name": "_token", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_token", "type": "address" }],
     "name": "getTokenInEthWhiteList",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "payable": false,
@@ -571,9 +551,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "string", "name": "_symbol", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "string", "name": "_symbol", "type": "string" }],
     "name": "safeLowerToUpperTokens",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "payable": false,
@@ -657,9 +635,7 @@
   },
   {
     "constant": true,
-    "inputs": [
-      { "internalType": "bytes", "name": "_sifAddress", "type": "bytes" }
-    ],
+    "inputs": [{ "internalType": "bytes", "name": "_sifAddress", "type": "bytes" }],
     "name": "verifySifPrefix",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "payable": false,

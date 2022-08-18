@@ -17,8 +17,7 @@ export type SortOptions<T> = {
 };
 
 export function useSortedArray<T>(tokens: T[], defaultOptions: SortOptions<T>) {
-  const [{ sortAs, sortKey, sortDirection }, setSortOptions] =
-    useState(defaultOptions);
+  const [{ sortAs, sortKey, sortDirection }, setSortOptions] = useState(defaultOptions);
 
   const sorted = useMemo(() => {
     const sorted = [...tokens].sort((a, b) => {
@@ -51,7 +50,7 @@ export function useSortedArray<T>(tokens: T[], defaultOptions: SortOptions<T>) {
         setSortOptions(options);
       }
     },
-    [sortKey]
+    [sortKey],
   );
 
   return { sorted, sortKey, sortDirection, sort: handleSortClick };

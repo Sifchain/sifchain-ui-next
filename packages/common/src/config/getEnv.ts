@@ -1,12 +1,7 @@
 import { NetworkKind } from "~/entities";
 import { AppCookies } from "./AppCookies";
 
-export type NetworkEnv =
-  | "localnet"
-  | "devnet"
-  | "testnet"
-  | "mainnet"
-  | "tempnet";
+export type NetworkEnv = "localnet" | "devnet" | "testnet" | "mainnet" | "tempnet";
 
 export const NETWORK_ENVS: Set<NetworkEnv> = new Set<NetworkEnv>([
   "localnet",
@@ -91,15 +86,10 @@ type GetEnvArgs = {
   cookies?: Pick<AppCookies, "getEnv">;
 };
 
-export function getEnv({
-  location: { hostname },
-  cookies = AppCookies(),
-}: GetEnvArgs) {
+export function getEnv({ location: { hostname }, cookies = AppCookies() }: GetEnvArgs) {
   const cookieEnv = cookies.getEnv();
 
-  const sifEnv = isNetworkEnvSymbol(cookieEnv)
-    ? cookieEnv
-    : getNetworkEnv(hostname);
+  const sifEnv = isNetworkEnvSymbol(cookieEnv) ? cookieEnv : getNetworkEnv(hostname);
 
   if (sifEnv != null && PROFILE_LOOKUP[sifEnv]) {
     return PROFILE_LOOKUP[sifEnv];

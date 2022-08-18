@@ -6,14 +6,7 @@ import { usePoolStatsQuery } from "./usePoolStats";
 export function useTVLQuery() {
   const { data: poolStats, ...poolStatsQuery } = usePoolStatsQuery();
 
-  const tvl = useMemo(
-    () =>
-      Maybe.of(poolStats?.pools).mapOr(
-        0,
-        compose(sum, map(propOr(0, "poolTVL")))
-      ),
-    [poolStats]
-  );
+  const tvl = useMemo(() => Maybe.of(poolStats?.pools).mapOr(0, compose(sum, map(propOr(0, "poolTVL")))), [poolStats]);
 
   return {
     ...poolStatsQuery,

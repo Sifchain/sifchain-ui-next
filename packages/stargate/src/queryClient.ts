@@ -15,10 +15,7 @@ import { QueryClientImpl as MarginQueryClient } from "@sifchain/proto-types/sifn
 import type { Rpc, StringLiteral } from "./types";
 
 const setupBareExtension =
-  <TModule, TClient>(
-    moduleName: StringLiteral<TModule>,
-    client: { new (rpc: Rpc): TClient }
-  ) =>
+  <TModule, TClient>(moduleName: StringLiteral<TModule>, client: { new (rpc: Rpc): TClient }) =>
   (base: QueryClient) => {
     const rpc = createProtobufRpcClient(base);
     const baseClient = new client(rpc);
@@ -27,14 +24,9 @@ const setupBareExtension =
       Object.getOwnPropertyNames(Object.getPrototypeOf(baseClient))
         .filter((x) => x !== "constructor")
         .filter((x) => typeof (baseClient as any)[x] === "function")
-        .map((x) => [
-          x[0]?.toLowerCase() + x.slice(1),
-          ((baseClient as any)[x] as Function).bind(baseClient),
-        ])
+        .map((x) => [x[0]?.toLowerCase() + x.slice(1), ((baseClient as any)[x] as Function).bind(baseClient)]),
     ) as {
-      [P in keyof TClient as P extends string
-        ? Uncapitalize<P>
-        : P]: TClient[P];
+      [P in keyof TClient as P extends string ? Uncapitalize<P> : P]: TClient[P];
     };
 
     return {
@@ -55,7 +47,7 @@ const createQueryClientFromTmClient = (tmClient: Tendermint34Client) =>
     setupBareExtension("dispensation", DispensationQueryClient),
     setupBareExtension("ethBridge", EthBridgeQueryClient),
     setupBareExtension("tokenRegistry", TokenRegistryQueryClient),
-    setupBareExtension("margin", MarginQueryClient)
+    setupBareExtension("margin", MarginQueryClient),
   );
 
 const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>
@@ -63,13 +55,9 @@ const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>
 
 export type SifQueryClient = ReturnType<typeof createQueryClientFromTmClient>;
 
-export function createQueryClient(
-  endpoint: string | HttpEndpoint
-): Promise<SifQueryClient>;
+export function createQueryClient(endpoint: string | HttpEndpoint): Promise<SifQueryClient>;
 export function createQueryClient(tmClient: Tendermint34Client): SifQueryClient;
-export function createQueryClient(
-  endpointOrTmClient: string | HttpEndpoint | Tendermint34Client
-): any {
+export function createQueryClient(endpointOrTmClient: string | HttpEndpoint | Tendermint34Client): any {
   return endpointOrTmClient instanceof Tendermint34Client
     ? createQueryClientFromTmClient(endpointOrTmClient)
     : createQueryClientFromEndpoint(endpointOrTmClient);

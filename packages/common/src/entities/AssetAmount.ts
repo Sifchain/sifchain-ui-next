@@ -65,10 +65,7 @@ export type IAssetAmount = Readonly<IAsset> & {
   subtract(other: IAmount | string | number): IAmount;
 };
 
-export function AssetAmount(
-  asset: IAsset | string,
-  amount: IAmount | string
-): IAssetAmount {
+export function AssetAmount(asset: IAsset | string, amount: IAmount | string): IAssetAmount {
   type _IAssetAmount = _ExposeInternal<IAssetAmount>;
 
   const _asset = (asset as IAssetAmount)?.asset || Asset(asset);

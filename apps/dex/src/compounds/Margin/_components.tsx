@@ -1,11 +1,7 @@
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
-import {
-  formatNumberAsCurrency,
-  TokenEntry,
-  TokenSelector as BaseTokenSelector,
-} from "@sifchain/ui";
+import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
 
@@ -28,11 +24,7 @@ type PaginationShowItemsProps = {
   offset: number;
   total: number;
 };
-export function PaginationShowItems({
-  limit,
-  offset,
-  total,
-}: PaginationShowItemsProps) {
+export function PaginationShowItems({ limit, offset, total }: PaginationShowItemsProps) {
   const initial = offset + limit;
   return (
     <p className="mx-4 py-3 text-sm">
@@ -65,11 +57,7 @@ export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
 }
 
 export function PillUpdating() {
-  return (
-    <span className="rounded bg-yellow-600 px-4 py-2 text-xs text-yellow-200">
-      Updating...
-    </span>
-  );
+  return <span className="rounded bg-yellow-600 px-4 py-2 text-xs text-yellow-200">Updating...</span>;
 }
 
 type PoolOverviewProps = {
@@ -118,9 +106,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="text-gray-300">ROWAN Price</span>
           <span className="text-sm font-semibold">
-            <span className="mr-1">
-              {formatNumberAsCurrency(props.rowanPriceUsd, 4)}
-            </span>
+            <span className="mr-1">{formatNumberAsCurrency(props.rowanPriceUsd, 4)}</span>
             <span className="text-red-400">(-2.8%)</span>
           </span>
         </div>
@@ -130,9 +116,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">{props.pool.asset.label} Price</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">
-              <span className="mr-1">
-                {formatNumberAsCurrency(Number(props.pool.stats.priceToken))}
-              </span>
+              <span className="mr-1">{formatNumberAsCurrency(Number(props.pool.stats.priceToken))}</span>
             </span>
             <span className="text-red-400">(-1.3%)</span>
           </span>
@@ -141,9 +125,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="text-sm font-semibold">
-            {formatNumberAsPercent(health)}
-          </span>
+          <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
         </div>
       </li>
     </ul>

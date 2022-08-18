@@ -22,10 +22,7 @@ export type TokenAmountFieldsetProps = {
   disabled?: boolean;
 };
 
-const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
-  responsive = true,
-  ...props
-}) => {
+const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({ responsive = true, ...props }) => {
   const handleHalfClick = useCallback(() => {
     if (props.balance) {
       props.onChangeAmount(
@@ -33,7 +30,7 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
           minimumFractionDigits: 0,
           maximumFractionDigits: props.balance.fractionalDigits,
           useGrouping: false,
-        })
+        }),
       );
     }
   }, [props]);
@@ -68,9 +65,7 @@ const TokenAmountFieldset: FC<TokenAmountFieldsetProps> = ({
           inputClassName="text-right"
           type="number"
           label="Amount"
-          secondaryLabel={`Balance: ${
-            props.balance ? formatBalance(props.balance) : 0
-          }`}
+          secondaryLabel={`Balance: ${props.balance ? formatBalance(props.balance) : 0}`}
           placeholder="Swap amount"
           value={props.amount}
           onChange={(event) => props.onChangeAmount(event.target.value)}

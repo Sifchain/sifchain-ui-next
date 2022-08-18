@@ -1,9 +1,4 @@
-import {
-  NetworkChainConfigLookup,
-  IAsset,
-  Asset,
-  NetworkKind,
-} from "~/entities";
+import { NetworkChainConfigLookup, IAsset, Asset, NetworkKind } from "~/entities";
 
 type BaseAssetConfig = {
   name: string;
@@ -29,9 +24,7 @@ export type AssetConfig = CoinConfig | TokenConfig;
  */
 function parseLabel(a: AssetConfig) {
   if (a.network === "sifchain") {
-    return a.symbol.indexOf("c") === 0
-      ? "c" + a.symbol.slice(1).toUpperCase()
-      : a.symbol.toUpperCase();
+    return a.symbol.indexOf("c") === 0 ? "c" + a.symbol.slice(1).toUpperCase() : a.symbol.toUpperCase();
   }
 
   // network is ethereum
@@ -107,20 +100,13 @@ export function parseConfig(
   config: CoreConfig,
   assets: IAsset[],
   chainConfigsByNetwork: NetworkChainConfigLookup,
-  peggyCompatibleCosmosBaseDenoms: Set<string>
+  peggyCompatibleCosmosBaseDenoms: Set<string>,
 ) {
-  const nativeAsset = assets.find(
-    (a) => a.symbol.toLowerCase() === config.nativeAsset.toLowerCase()
-  );
+  const nativeAsset = assets.find((a) => a.symbol.toLowerCase() === config.nativeAsset.toLowerCase());
 
-  if (!nativeAsset)
-    throw new Error(
-      "No nativeAsset defined for chain config:" + JSON.stringify(config)
-    );
+  if (!nativeAsset) throw new Error("No nativeAsset defined for chain config:" + JSON.stringify(config));
 
-  const bridgetokenContractAddress = assets.find(
-    (token) => token.symbol === "erowan"
-  )?.address;
+  const bridgetokenContractAddress = assets.find((token) => token.symbol === "erowan")?.address;
 
   const sifAssets = assets
     .filter((asset) => asset.network === "sifchain")

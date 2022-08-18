@@ -6,10 +6,7 @@ export type TransitionProps = PropsWithChildren<{
   show?: boolean;
 }>;
 
-export const AppearTransition: FC<TransitionProps> = ({
-  children,
-  ...props
-}) => (
+export const AppearTransition: FC<TransitionProps> = ({ children, ...props }) => (
   <Transition
     as={Fragment}
     enter="transition ease-out duration-200"

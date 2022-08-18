@@ -5,10 +5,7 @@ import { isNil } from "rambda";
 import { useMutation, useQueryClient } from "react-query";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
-import {
-  LIQUIDITY_PROVIDERS_QUERY_KEY,
-  LIQUIDITY_PROVIDER_QUERY_KEY,
-} from "./liquidityProvider";
+import { LIQUIDITY_PROVIDERS_QUERY_KEY, LIQUIDITY_PROVIDER_QUERY_KEY } from "./liquidityProvider";
 
 const useUnlockLiquidityMutation = () => {
   const queryClient = useQueryClient();
@@ -34,7 +31,7 @@ const useUnlockLiquidityMutation = () => {
             },
           },
         ],
-        DEFAULT_FEE
+        DEFAULT_FEE,
       );
     },
     {
@@ -61,7 +58,7 @@ const useUnlockLiquidityMutation = () => {
           queryClient.invalidateQueries(LIQUIDITY_PROVIDERS_QUERY_KEY);
         }
       },
-    }
+    },
   );
 
   return {

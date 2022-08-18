@@ -21,18 +21,12 @@ type OpenPositionsQueryParams = {
 export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
   return useSifApiQuery(
     "margin.getMarginOpenPosition",
-    [
-      params.walletAddress,
-      Number(params.offset),
-      Number(params.limit),
-      params.orderBy,
-      params.sortBy,
-    ],
+    [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
       retry: false,
-    }
+    },
   ) as UseQueryResult<{
     pagination: Pagination;
     results: {

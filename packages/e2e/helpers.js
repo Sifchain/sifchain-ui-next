@@ -45,9 +45,7 @@ export async function connectKeplrAccount() {
   // new page opens
   await context.waitForEvent("page");
 
-  await keplrNotificationPopup.navigate(
-    urls.keplr.notificationPopup.signinApprove
-  );
+  await keplrNotificationPopup.navigate(urls.keplr.notificationPopup.signinApprove);
   await keplrNotificationPopup.clickApprove();
 }
 

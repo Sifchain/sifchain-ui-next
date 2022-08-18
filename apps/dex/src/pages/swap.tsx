@@ -1,33 +1,17 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
-import {
-  Button,
-  ButtonGroup,
-  Input,
-  RacetrackSpinnerIcon,
-  SwapIcon,
-} from "@sifchain/ui";
+import { Button, ButtonGroup, Input, RacetrackSpinnerIcon, SwapIcon } from "@sifchain/ui";
 import { isNilOrWhitespace } from "@sifchain/utils";
 import BigNumber from "bignumber.js";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import {
-  startTransition,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
 import { SwapConfirmationModal } from "~/compounds/Swap";
 import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import {
-  useEnhancedTokenQuery,
-  useSwapMutation,
-  useSwapSimulation,
-} from "~/domains/clp";
+import { useEnhancedTokenQuery, useSwapMutation, useSwapSimulation } from "~/domains/clp";
 import useSifSigner from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
@@ -40,8 +24,7 @@ const FlipButton = tw.button<{
 `;
 
 function formatDecimal(value: Decimal | number, maximumFractionDigits = 6) {
-  const asNumber =
-    typeof value === "number" ? value : value.toFloatApproximation();
+  const asNumber = typeof value === "number" ? value : value.toFloatApproximation();
 
   return asNumber.toLocaleString(undefined, {
     maximumFractionDigits,
@@ -49,8 +32,7 @@ function formatDecimal(value: Decimal | number, maximumFractionDigits = 6) {
 }
 
 function formatPercent(value: Decimal | number, maximumFractionDigits = 6) {
-  const asNumber =
-    typeof value === "number" ? value : value.toFloatApproximation();
+  const asNumber = typeof value === "number" ? value : value.toFloatApproximation();
 
   return asNumber.toLocaleString(undefined, {
     style: "percent",
@@ -67,28 +49,21 @@ const SwapPage: NextPage = () => {
   const { signer, status: signerStatus } = useSifSigner();
 
   const isReady = useMemo(
-    () =>
-      allBalancesQuery.isSuccess &&
-      isSifStargateClientQuerySuccess &&
-      signerStatus === "resolved",
-    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus]
+    () => allBalancesQuery.isSuccess && isSifStargateClientQuerySuccess && signerStatus === "resolved",
+    [allBalancesQuery.isSuccess, isSifStargateClientQuerySuccess, signerStatus],
   );
 
-  const fromDenom = decodeURIComponent(
-    getFirstQueryValue(router.query["fromDenom"]) ?? "rowan"
-  );
-  const toDenom = decodeURIComponent(
-    getFirstQueryValue(router.query["toDenom"]) ?? "cusdt"
-  );
+  const fromDenom = decodeURIComponent(getFirstQueryValue(router.query["fromDenom"]) ?? "rowan");
+  const toDenom = decodeURIComponent(getFirstQueryValue(router.query["toDenom"]) ?? "cusdt");
 
   const setDenomsPair = useCallback(
     (leftDenom: string | undefined, rightDenom: string | undefined) =>
       router.replace(
-        `swap?fromDenom=${encodeURIComponent(
-          leftDenom ?? fromDenom
-        )}&toDenom=${encodeURIComponent(rightDenom ?? toDenom)}`
+        `swap?fromDenom=${encodeURIComponent(leftDenom ?? fromDenom)}&toDenom=${encodeURIComponent(
+          rightDenom ?? toDenom,
+        )}`,
       ),
-    [fromDenom, router, toDenom]
+    [fromDenom, router, toDenom],
   );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -101,9 +76,7 @@ const SwapPage: NextPage = () => {
     { label: "1%", value: 0.001 },
     { label: "1.5%", value: 0.015 },
   ];
-  const selectedSlippageIndex = slippageOptions.findIndex(
-    (x) => x.value === slippage
-  );
+  const selectedSlippageIndex = slippageOptions.findIndex((x) => x.value === slippage);
 
   const [fromAmount, setFromAmount] = useState("");
 
@@ -115,47 +88,32 @@ const SwapPage: NextPage = () => {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, commonOptions);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, commonOptions);
 
-  const [_, fromAmountDecimal] = runCatching(() =>
-    Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0)
-  );
+  const [_, fromAmountDecimal] = runCatching(() => Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0));
 
-  const { data: swapSimulationResult } = useSwapSimulation(
-    fromDenom,
-    toDenom,
-    fromAmount,
-    slippage
-  );
+  const { data: swapSimulationResult } = useSwapSimulation(fromDenom, toDenom, fromAmount, slippage);
 
   const parsedSwapResult = useMemo(
     () => ({
       ...swapSimulationResult,
-      rawReceiving: Decimal.fromAtomics(
-        swapSimulationResult?.rawReceiving ?? "0",
-        toToken?.decimals ?? 0
-      ),
+      rawReceiving: Decimal.fromAtomics(swapSimulationResult?.rawReceiving ?? "0", toToken?.decimals ?? 0),
       receivingPreSlippage: Decimal.fromAtomics(
         BigNumber.max(
           0,
           new BigNumber(swapSimulationResult?.rawReceiving ?? 0)
             .minus(swapSimulationResult?.liquidityProviderFee ?? 0)
-            .times(
-              new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0)
-            )
+            .times(new BigNumber(1).minus(swapSimulationResult?.priceImpact ?? 0)),
         )
           .integerValue()
           .toFixed(0),
-        toToken?.decimals ?? 0
+        toToken?.decimals ?? 0,
       ),
-      minimumReceiving: Decimal.fromAtomics(
-        swapSimulationResult?.minimumReceiving ?? "0",
-        toToken?.decimals ?? 0
-      ),
+      minimumReceiving: Decimal.fromAtomics(swapSimulationResult?.minimumReceiving ?? "0", toToken?.decimals ?? 0),
       liquidityProviderFee: Decimal.fromAtomics(
         swapSimulationResult?.liquidityProviderFee ?? "0",
-        toToken?.decimals ?? 0
+        toToken?.decimals ?? 0,
       ),
     }),
-    [swapSimulationResult, toToken?.decimals]
+    [swapSimulationResult, toToken?.decimals],
   );
 
   useEffect(
@@ -165,25 +123,17 @@ const SwapPage: NextPage = () => {
         swapMutation.reset();
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isConfirmationModalOpen]
+    [isConfirmationModalOpen],
   );
 
   const [isFlipped, setFlipped] = useState(false);
   const flip = useCallback(() => {
     setDenomsPair(toDenom, fromDenom);
     setFromAmount((x) =>
-      parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
-        ? x
-        : parsedSwapResult.minimumReceiving.toString()
+      parsedSwapResult.minimumReceiving.toFloatApproximation() === 0 ? x : parsedSwapResult.minimumReceiving.toString(),
     );
     setFlipped(!isFlipped);
-  }, [
-    fromDenom,
-    isFlipped,
-    parsedSwapResult.minimumReceiving,
-    setDenomsPair,
-    toDenom,
-  ]);
+  }, [fromDenom, isFlipped, parsedSwapResult.minimumReceiving, setDenomsPair, toDenom]);
 
   const validationError = useMemo(() => {
     if (signerStatus === "resolved" && signer === undefined) {
@@ -194,11 +144,7 @@ const SwapPage: NextPage = () => {
       return new Error();
     }
 
-    if (
-      fromAmountDecimal?.isGreaterThan(
-        fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits)
-      )
-    ) {
+    if (fromAmountDecimal?.isGreaterThan(fromToken?.balance ?? Decimal.zero(fromAmountDecimal.fractionalDigits))) {
       return new Error("Insufficient balance");
     }
 
@@ -210,8 +156,7 @@ const SwapPage: NextPage = () => {
       return "Loading";
     }
 
-    if (!isNilOrWhitespace(validationError?.message))
-      return validationError?.message;
+    if (!isNilOrWhitespace(validationError?.message)) return validationError?.message;
 
     return "Swap";
   }, [isReady, validationError?.message]);
@@ -221,10 +166,7 @@ const SwapPage: NextPage = () => {
       case "idle":
         return ["Review swap", "Confirm"];
       case "loading":
-        return [
-          "Waiting for confirmation",
-          <RacetrackSpinnerIcon key="spinner-icon" />,
-        ];
+        return ["Waiting for confirmation", <RacetrackSpinnerIcon key="spinner-icon" />];
       case "success":
         return ["Transaction submitted", "Close"];
       case "error":
@@ -262,10 +204,9 @@ const SwapPage: NextPage = () => {
                     e.preventDefault();
                     startTransition(() => {
                       setFromAmount((x) =>
-                        parsedSwapResult.minimumReceiving.toFloatApproximation() ===
-                        0
+                        parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
                           ? x
-                          : parsedSwapResult.minimumReceiving.toString()
+                          : parsedSwapResult.minimumReceiving.toString(),
                       );
                       flip();
                     });
@@ -281,9 +222,7 @@ const SwapPage: NextPage = () => {
                 amount={
                   parsedSwapResult.minimumReceiving.toFloatApproximation() === 0
                     ? "0"
-                    : parsedSwapResult.minimumReceiving
-                        .toFloatApproximation()
-                        .toFixed(10)
+                    : parsedSwapResult.minimumReceiving.toFloatApproximation().toFixed(10)
                 }
                 onChangeDenom={(denom) => setDenomsPair(undefined, denom)}
                 onChangeAmount={(amount) => setFromAmount(amount)}
@@ -299,11 +238,7 @@ const SwapPage: NextPage = () => {
                     selectedIndex={selectedSlippageIndex}
                     options={slippageOptions}
                     onChange={(index) =>
-                      setSlippageInput(
-                        new BigNumber(slippageOptions[index]?.value ?? 0)
-                          .times(100)
-                          .toString() ?? "0.5"
-                      )
+                      setSlippageInput(new BigNumber(slippageOptions[index]?.value ?? 0).times(100).toString() ?? "0.5")
                     }
                   />
                   <Input
@@ -317,10 +252,7 @@ const SwapPage: NextPage = () => {
                 </div>
               </div>
             </div>
-            <Button
-              className="mt-8"
-              disabled={!isReady || validationError !== undefined}
-            >
+            <Button className="mt-8" disabled={!isReady || validationError !== undefined}>
               {swapButtonText}
             </Button>
           </form>
@@ -341,8 +273,7 @@ const SwapPage: NextPage = () => {
                   fromDenom: fromToken?.denom ?? "",
                   toDenom: toToken?.denom ?? "",
                   fromAmount: fromAmountDecimal?.atomics ?? "0",
-                  minimumReceiving:
-                    swapSimulationResult?.minimumReceiving ?? "0",
+                  minimumReceiving: swapSimulationResult?.minimumReceiving ?? "0",
                 });
                 break;
               case "loading":
@@ -359,15 +290,10 @@ const SwapPage: NextPage = () => {
         toCoin={{
           denom: toToken?.displaySymbol ?? "",
           amount: formatDecimal(parsedSwapResult.rawReceiving, 6),
-          amountPreSlippage: formatDecimal(
-            parsedSwapResult.receivingPreSlippage,
-            6
-          ),
+          amountPreSlippage: formatDecimal(parsedSwapResult.receivingPreSlippage, 6),
           minimumAmount: formatDecimal(parsedSwapResult.minimumReceiving),
         }}
-        liquidityProviderFee={formatDecimal(
-          parsedSwapResult.liquidityProviderFee
-        )}
+        liquidityProviderFee={formatDecimal(parsedSwapResult.liquidityProviderFee)}
         priceImpact={formatPercent(parsedSwapResult.priceImpact ?? 0, 2)}
         slippage={formatPercent(slippage ?? 0, 2)}
       />

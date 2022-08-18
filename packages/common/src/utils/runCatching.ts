@@ -1,14 +1,12 @@
 export function runCatching<TValue, TError = unknown>(
-  func: () => TValue
+  func: () => TValue,
 ): [undefined, Awaited<TValue>] | [TError, undefined];
 export function runCatching<TValue, TError = unknown>(
-  asyncFunc: () => PromiseLike<TValue>
+  asyncFunc: () => PromiseLike<TValue>,
 ): Promise<[undefined, Awaited<TValue>] | [TError, undefined]>;
 export function runCatching<TValue, TError = unknown>(
-  func: () => TValue
-):
-  | ([undefined, TValue] | [TError, undefined])
-  | Promise<[undefined, Awaited<TValue>] | [TError, undefined]> {
+  func: () => TValue,
+): ([undefined, TValue] | [TError, undefined]) | Promise<[undefined, Awaited<TValue>] | [TError, undefined]> {
   try {
     const returnValue = func();
 

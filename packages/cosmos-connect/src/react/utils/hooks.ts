@@ -1,16 +1,11 @@
 import { DependencyList, useCallback, useState } from "react";
 import type { BaseStorage } from "../storage";
 
-export const useAsyncFunc = <T extends Function>(
-  asyncFunc: T,
-  deps?: DependencyList
-) => {
+export const useAsyncFunc = <T extends Function>(asyncFunc: T, deps?: DependencyList) => {
   type TReturn = T extends (...args: any[]) => Promise<infer R> ? R : unknown;
   const [data, setData] = useState<TReturn | undefined>();
   const [error, setError] = useState<any>();
-  const [status, setStatus] = useState<
-    "idle" | "pending" | "resolved" | "rejected"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "pending" | "resolved" | "rejected">("idle");
 
   const fetch = useCallback<T>(
     // @ts-ignore
@@ -27,7 +22,7 @@ export const useAsyncFunc = <T extends Function>(
         throw error;
       }
     },
-    deps
+    deps,
   );
 
   return {
@@ -38,11 +33,7 @@ export const useAsyncFunc = <T extends Function>(
   };
 };
 
-export const useStorageState = <T>(
-  key: string,
-  initialValue: T,
-  storage?: BaseStorage
-) => {
+export const useStorageState = <T>(key: string, initialValue: T, storage?: BaseStorage) => {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = storage?.getItem(key);

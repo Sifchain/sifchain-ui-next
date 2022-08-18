@@ -1,13 +1,7 @@
 import type { SVGProps } from "react";
 
 const SvgKeplrIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 200 200"
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    {...props}
-  >
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <defs>
       <radialGradient
         cx="90.867%"
@@ -58,47 +52,17 @@ const SvgKeplrIcon = (props: SVGProps<SVGSVGElement>) => (
         <stop stopOpacity={0.185} offset="0%" />
         <stop stopColor="#101010" offset="100%" />
       </radialGradient>
-      <linearGradient
-        x1="94.238%"
-        y1="58.966%"
-        x2="0%"
-        y2="0%"
-        id="keplr-icon_svg__e"
-      >
+      <linearGradient x1="94.238%" y1="58.966%" x2="0%" y2="0%" id="keplr-icon_svg__e">
         <stop stopColor="#FFF" stopOpacity={0.185} offset="0%" />
         <stop stopColor="#FFF" offset="100%" />
       </linearGradient>
     </defs>
     <g fill="none" fillRule="evenodd">
       <rect fill="url(#keplr-icon_svg__a)" width={200} height={200} rx={16} />
-      <rect
-        fillOpacity={0.57}
-        fill="url(#keplr-icon_svg__b)"
-        width={200}
-        height={200}
-        rx={16}
-      />
-      <rect
-        fillOpacity={0.68}
-        fill="url(#keplr-icon_svg__c)"
-        width={200}
-        height={200}
-        rx={16}
-      />
-      <rect
-        fillOpacity={0.08}
-        fill="url(#keplr-icon_svg__d)"
-        width={200}
-        height={200}
-        rx={16}
-      />
-      <rect
-        fillOpacity={0.03}
-        fill="url(#keplr-icon_svg__e)"
-        width={200}
-        height={200}
-        rx={16}
-      />
+      <rect fillOpacity={0.57} fill="url(#keplr-icon_svg__b)" width={200} height={200} rx={16} />
+      <rect fillOpacity={0.68} fill="url(#keplr-icon_svg__c)" width={200} height={200} rx={16} />
+      <rect fillOpacity={0.08} fill="url(#keplr-icon_svg__d)" width={200} height={200} rx={16} />
+      <rect fillOpacity={0.03} fill="url(#keplr-icon_svg__e)" width={200} height={200} rx={16} />
       <path
         fill="#FFF"
         fillRule="nonzero"

@@ -20,9 +20,7 @@ const formatBalance = (amount: Decimal) =>
     maximumFractionDigits: 6,
   }) ?? 0;
 
-export const UnlockLiquidityTokenFieldset = (
-  props: UnlockLiquidityTokenFieldsetProps
-) => {
+export const UnlockLiquidityTokenFieldset = (props: UnlockLiquidityTokenFieldsetProps) => {
   const { indexedByDenom } = useTokenRegistryQuery();
   const tokenLeft = indexedByDenom[props.coinLeft.denom];
   const tokenRight = indexedByDenom[props.coinRight.denom];
@@ -34,7 +32,7 @@ export const UnlockLiquidityTokenFieldset = (
           minimumFractionDigits: 0,
           maximumFractionDigits: props.balance.fractionalDigits,
           useGrouping: false,
-        })
+        }),
       );
     }
   }, [props]);
@@ -53,8 +51,7 @@ export const UnlockLiquidityTokenFieldset = (
             <div>{props.label}</div>
             <span className="flex gap-2 font-bold uppercase">
               <span className="flex gap-1">
-                <AssetIcon symbol={props.coinLeft.denom} size="md" />{" "}
-                {tokenLeft?.displaySymbol}
+                <AssetIcon symbol={props.coinLeft.denom} size="md" /> {tokenLeft?.displaySymbol}
               </span>
               –
               <span className="flex gap-1">
@@ -69,9 +66,7 @@ export const UnlockLiquidityTokenFieldset = (
         inputClassName="text-right"
         type="number"
         label="Amount"
-        secondaryLabel={`Balance: ${
-          props.balance ? formatBalance(props.balance) : 0
-        }`}
+        secondaryLabel={`Balance: ${props.balance ? formatBalance(props.balance) : 0}`}
         placeholder="Swap amount"
         value={props.amount}
         onChange={(event) => props.onChangeAmount?.(event.target.value)}

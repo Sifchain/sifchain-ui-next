@@ -104,11 +104,9 @@ function useOverflowActions(options: {
           }
 
           // hide wc logo
-          document
-            .querySelectorAll("#walletconnect-qrcode-modal img")
-            .forEach((el) => {
-              el.remove();
-            });
+          document.querySelectorAll("#walletconnect-qrcode-modal img").forEach((el) => {
+            el.remove();
+          });
         }
         break;
       case "connect-another":
@@ -134,10 +132,7 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
   });
 
   return (
-    <li
-      role="button"
-      className="flex items-center justify-between rounded p-2 transition-colors hover:bg-gray-750"
-    >
+    <li role="button" className="hover:bg-gray-750 flex items-center justify-between rounded p-2 transition-colors">
       <Menu as="div" className="relative grid w-full">
         {({ open }) => (
           <>
@@ -145,17 +140,13 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
               <div className="flex w-full items-center gap-2.5">
                 <Identicon diameter={32} address={account} />
                 <div className="grid flex-1 gap-1 text-left">
-                  <div className="text-gray-200">
-                    {maskWalletAddress(account)}
-                  </div>
+                  <div className="text-gray-200">{maskWalletAddress(account)}</div>
                   <div className="text-xs text-gray-300">{props.chainName}</div>
                 </div>
               </div>
               <div className="grid gap-1 pr-4 text-right">
                 {props.nativeAssetDollarValue && (
-                  <span className="text-sm font-semibold text-gray-200">
-                    {props.nativeAssetDollarValue}
-                  </span>
+                  <span className="text-sm font-semibold text-gray-200">{props.nativeAssetDollarValue}</span>
                 )}
                 <span className="whitespace-nowrap text-xs text-gray-300">
                   {props.nativeAssetBalance} {props.nativeAssetSymbol}
@@ -163,18 +154,14 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
               </div>
               <div
                 className={clsx("", {
-                  "rounded-full bg-gray-700 ring-1 ring-gray-50 ring-offset-4 ring-offset-gray-800":
-                    open,
+                  "rounded-full bg-gray-700 ring-1 ring-gray-50 ring-offset-4 ring-offset-gray-800": open,
                 })}
               >
                 <DotsVerticalIcon className="h-4 w-4" />
               </div>
             </Menu.Button>
             <AppearTransition>
-              <Menu.Items
-                as={SurfaceA}
-                className="absolute -right-2 top-10 z-20 grid gap-2 p-2"
-              >
+              <Menu.Items as={SurfaceA} className="absolute -right-2 top-10 z-20 grid gap-2 p-2">
                 {actions.map((action) => {
                   const copied = isCopied && action.kind === "copy-address";
 
