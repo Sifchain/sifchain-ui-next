@@ -1,7 +1,7 @@
 import type { IAsset } from "@sifchain/common";
 import type { GetTokenStatsResponsePools } from "@sifchain/sif-api";
 import { indexBy } from "rambda";
-import { ascend, descend, sortWith } from "ramda";
+import { ascend, descend, sortWith } from "@sifchain/utils";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 

@@ -89,7 +89,6 @@ export const SwapConfirmationModal = (props: SwapConfirmationModalProps) => {
           </div>
         </ConfirmationLineItem>
       </ul>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
       <Button className="mt-8 w-full" {...props.confirmationButtonProps} />
     </Modal>

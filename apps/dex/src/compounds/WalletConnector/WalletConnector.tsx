@@ -103,7 +103,6 @@ const WalletConnector: FC = () => {
           .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
           .flatMap(async (chain) => {
             try {
-              console.info(`Attempting connecting to ${chain.id} on chainId: ${chain.chainId}`);
               const signer = await cosmosActiveConnector.getSigner(chain.chainId);
               const accounts = await signer.getAccounts();
 

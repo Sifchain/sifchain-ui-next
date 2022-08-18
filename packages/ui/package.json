@@ -26,11 +26,10 @@
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "rambda": "^7.2.1",
-    "ramda": "^0.28.0",
     "react-jazzicon": "^1.0.4",
     "react-toastify": "^9.0.8",
     "walletconnect-qrcode-modal": "^0.7.28",
-    "zustand": "4.0.0-rc.1"
+    "zustand": "4.0.0"
   },
   "peerDependencies": {
     "react": "^18.1.0",

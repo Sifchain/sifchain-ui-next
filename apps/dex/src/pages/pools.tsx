@@ -4,10 +4,10 @@ import clsx from "clsx";
 import { formatDistanceToNow } from "date-fns";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { sort } from "rambda";
-import { ascend, descend } from "ramda";
+import { ascend, descend } from "@sifchain/utils";
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
+
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
 import { useCurrentRewardPeriodQuery } from "~/domains/clp/hooks/rewardPeriod";
@@ -56,37 +56,22 @@ const PoolsPage: NextPage = () => {
 
   const filteredAndSortedPools = useMemo(() => {
     const sortFunc = sortByOrder === "asc" ? ascend : descend;
+
+    const pools = filteredPools ?? [];
+
     switch (sortByProperty) {
       case "token":
-        return sort(
-          sortFunc((x) => x.displaySymbol ?? ""),
-          filteredPools ?? [],
-        );
+        return pools.sort(sortFunc((x) => x.displaySymbol ?? ""));
       case "tvl":
-        return sort(
-          sortFunc((x) => x.poolTVL ?? 0),
-          filteredPools ?? [],
-        );
+        return pools.sort(sortFunc((x) => x.poolTVL ?? 0));
       case "apr":
-        return sort(
-          sortFunc((x) => x.poolApr ?? 0),
-          filteredPools ?? [],
-        );
+        return pools.sort(sortFunc((x) => x.poolApr ?? 0));
       case "my value":
-        return sort(
-          sortFunc((x) => x.liquidityProviderPoolValue ?? 0),
-          filteredPools ?? [],
-        );
+        return pools.sort(sortFunc((x) => x.liquidityProviderPoolValue ?? 0));
       case "my share":
-        return sort(
-          sortFunc((x) => x.liquidityProviderPoolShare ?? 0),
-          filteredPools ?? [],
-        );
+        return pools.sort(sortFunc((x) => x.liquidityProviderPoolShare ?? 0));
       default:
-        return sort(
-          descend((x) => x.liquidityProviderPoolValue),
-          filteredPools ?? [],
-        );
+        return pools.sort(descend((x) => x.liquidityProviderPoolValue));
     }
   }, [filteredPools, sortByOrder, sortByProperty]);
 

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { pathOr } from "ramda";
+import { pathOr } from "rambda";
 import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
