@@ -288,11 +288,11 @@ importers:
     specifiers:
       '@cosmjs/proto-signing': ^0.28.11
       '@cosmjs/stargate': ^0.28.11
-      '@keplr-wallet/common': ^0.10.16
-      '@keplr-wallet/stores': ^0.10.16
-      '@keplr-wallet/types': ^0.10.16
-      '@keplr-wallet/wc-client': ^0.10.16
-      '@keplr-wallet/wc-qrcode-modal': ^0.10.16
+      '@keplr-wallet/common': ^0.10.17
+      '@keplr-wallet/stores': ^0.10.17
+      '@keplr-wallet/types': ^0.10.17
+      '@keplr-wallet/wc-client': ^0.10.17
+      '@keplr-wallet/wc-qrcode-modal': ^0.10.17
       '@tsconfig/node16-strictest-esm': ^1.0.3
       '@types/react': ^18.0.17
       '@walletconnect/client': ^1.8.0
@@ -304,15 +304,15 @@ importers:
     dependencies:
       '@cosmjs/proto-signing': 0.28.11
       '@cosmjs/stargate': 0.28.11
-      '@keplr-wallet/common': 0.10.16
-      '@keplr-wallet/stores': 0.10.16
-      '@keplr-wallet/wc-client': 0.10.16
-      '@keplr-wallet/wc-qrcode-modal': 0.10.16
+      '@keplr-wallet/common': 0.10.17
+      '@keplr-wallet/stores': 0.10.17
+      '@keplr-wallet/wc-client': 0.10.17
+      '@keplr-wallet/wc-qrcode-modal': 0.10.17
       '@walletconnect/client': 1.8.0
       eventemitter3: 4.0.7
       react: 18.2.0
     devDependencies:
-      '@keplr-wallet/types': 0.10.16
+      '@keplr-wallet/types': 0.10.17
       '@tsconfig/node16-strictest-esm': 1.0.3
       '@types/react': 18.0.17
       '@walletconnect/types': 1.8.0
@@ -3742,22 +3742,22 @@ packages:
       '@pedrouid/environment': 1.0.1
     dev: false
 
-  /@keplr-wallet/background/0.10.16:
-    resolution: {integrity: sha512-DbdzxsDc5FaPnmUT7RvymXyvqQktPONooi8gT89He/u0Nh5DE1/lI7EC2ZzXcebcSdVZwpr4hB3plTm/Q/VrOg==}
+  /@keplr-wallet/background/0.10.17:
+    resolution: {integrity: sha512-rUmweKXTPvf0IYMF0Di2C4PvMC8OrSUTnzr0zpggeJZsC4e2olLLQ/2BAVYCtwX7Ifp68JMDODwe2dPXZ2lttw==}
     dependencies:
       '@cosmjs/launchpad': 0.24.1
       '@cosmjs/proto-signing': 0.24.1
       '@ethersproject/bytes': 5.6.1
       '@ethersproject/keccak256': 5.6.1
       '@ethersproject/wallet': 5.6.2
-      '@keplr-wallet/common': 0.10.16
-      '@keplr-wallet/cosmos': 0.10.16
-      '@keplr-wallet/crypto': 0.10.16
-      '@keplr-wallet/popup': 0.10.16
-      '@keplr-wallet/proto-types': 0.10.16
-      '@keplr-wallet/router': 0.10.16
-      '@keplr-wallet/types': 0.10.16
-      '@keplr-wallet/unit': 0.10.16
+      '@keplr-wallet/common': 0.10.17
+      '@keplr-wallet/cosmos': 0.10.17
+      '@keplr-wallet/crypto': 0.10.17
+      '@keplr-wallet/popup': 0.10.17
+      '@keplr-wallet/proto-types': 0.10.17
+      '@keplr-wallet/router': 0.10.17
+      '@keplr-wallet/types': 0.10.17
+      '@keplr-wallet/unit': 0.10.17
       '@ledgerhq/hw-transport': 6.27.2
       '@ledgerhq/hw-transport-webhid': 6.27.2
       '@ledgerhq/hw-transport-webusb': 6.27.2
@@ -3779,22 +3779,22 @@ packages:
       - debug
     dev: false
 
-  /@keplr-wallet/common/0.10.16:
-    resolution: {integrity: sha512-yAMkCmcX8NC5OuPw7Clw/xBrGnLVyPDO4SVQ/Vmlc9YBoLAyOY7mbX8F8+AlsiIO3Q0oV8BsnDIR6iwSgsrOLA==}
+  /@keplr-wallet/common/0.10.17:
+    resolution: {integrity: sha512-7tWTg0cWnjaWabLcZblGlzisMUDDM21WB4GGnALm1G8oRIGuKNWK47vbLuQByoTXt8x0fajzkWQUz/hIxX0ySg==}
     dependencies:
-      '@keplr-wallet/crypto': 0.10.16
+      '@keplr-wallet/crypto': 0.10.17
       buffer: 6.0.3
       delay: 4.4.1
     dev: false
 
-  /@keplr-wallet/cosmos/0.10.16:
-    resolution: {integrity: sha512-hEA/UgjzrBaf755bBzybtqo5hNAOrHRrQrcnng/cKZM9b6pYCLy0q1a885xYtVEfNeXQp8z3KLE3G/rmPvt9YA==}
+  /@keplr-wallet/cosmos/0.10.17:
+    resolution: {integrity: sha512-InQiFxvPhdzPkaFOHbctpcFDCPVq7YNH7Fxtfs5VdB/Wu4yPf9Vf78MkBFQtkHgRvq8jjj3/22Ljo9KRkCmP2A==}
     dependencies:
       '@cosmjs/launchpad': 0.24.1
-      '@keplr-wallet/crypto': 0.10.16
-      '@keplr-wallet/proto-types': 0.10.16
-      '@keplr-wallet/types': 0.10.16
-      '@keplr-wallet/unit': 0.10.16
+      '@keplr-wallet/crypto': 0.10.17
+      '@keplr-wallet/proto-types': 0.10.17
+      '@keplr-wallet/types': 0.10.17
+      '@keplr-wallet/unit': 0.10.17
       axios: 0.21.4
       bech32: 1.1.4
       buffer: 6.0.3
@@ -3804,8 +3804,8 @@ packages:
       - debug
     dev: false
 
-  /@keplr-wallet/crypto/0.10.16:
-    resolution: {integrity: sha512-djH3buPHo52TFWXz40z7HKTy54ox4diZVK32RM5U4b6lsudnSgcM3+PuQfCtN4Q29+mg9NagbHkMfcVaTbtUBA==}
+  /@keplr-wallet/crypto/0.10.17:
+    resolution: {integrity: sha512-Ary7oCDOHUUiPJf8ORB9kKQ73ddv6wMZ5h+acuNU5ffr4nRTPORqA/n6Cdhy2+hDLahdHr9nSaH83ulfLZuJ/Q==}
     dependencies:
       bip32: 2.0.6
       bip39: 3.0.4
@@ -3816,24 +3816,24 @@ packages:
       sha.js: 2.4.11
     dev: false
 
-  /@keplr-wallet/popup/0.10.16:
-    resolution: {integrity: sha512-JeMXU6Djz0WaqSAjlCf8praqyeCSkxO/iFPjyWfKXcyB5zmoJtS5mjlMUh140C7jYUb3lI0rPs1SfrayC0nybQ==}
+  /@keplr-wallet/popup/0.10.17:
+    resolution: {integrity: sha512-gXMVYiomM9JX2IOamQUzJ+Sg75GRNo8m+pX0Xqm2ssRd9Hq8ybbs8BXlhLGdI1rtF/RqQsxNGAPBOS2wWMqIxw==}
     dev: false
 
-  /@keplr-wallet/proto-types/0.10.16:
-    resolution: {integrity: sha512-SpiCsjVH9nO6Hbi3mogw0bjj8MAuhSoPC3JCmm4ooMcCd+/29VeoNbCm/5RQ8GcoX0ZR9dQLK89G+W39MyUyVw==}
+  /@keplr-wallet/proto-types/0.10.17:
+    resolution: {integrity: sha512-zaMROMaj49f5eYvoBxiyw6+XJ7FVj8+jTBrCwyz2wZKDa+8zMKKXwPThQq/eAzUVYTcAQd/MWaSexk1uEjggXQ==}
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.3
     dev: false
 
-  /@keplr-wallet/provider/0.10.16:
-    resolution: {integrity: sha512-5KjnFszxlQJNQip/JontS0N43qAoHHCz1CRtIA21L0kBsxfhla02A5WUz0UxYVTHoMrlTTEb1MPYHQdXL4U6gA==}
+  /@keplr-wallet/provider/0.10.17:
+    resolution: {integrity: sha512-heT+GmQmKyvFVdhyvtuvh6BKGfqRaKfJc+Gv7ghOEAbAWSwFbxiTXarGq9zy3aFz9OtzOzcLeE2YhXgJlRbTHA==}
     dependencies:
       '@cosmjs/launchpad': 0.24.1
       '@cosmjs/proto-signing': 0.24.1
-      '@keplr-wallet/router': 0.10.16
-      '@keplr-wallet/types': 0.10.16
+      '@keplr-wallet/router': 0.10.17
+      '@keplr-wallet/types': 0.10.17
       buffer: 6.0.3
       deepmerge: 4.2.2
       long: 4.0.0
@@ -3842,25 +3842,25 @@ packages:
       - debug
     dev: false
 
-  /@keplr-wallet/router/0.10.16:
-    resolution: {integrity: sha512-bSkE1XLxjDaWeE8HvMaoG9GNbMcjJwjoHmY/WQqXv1SAolNb10JLi6h3DJyWl1CPKS9PywkSIGTNOsNzoxBt6g==}
+  /@keplr-wallet/router/0.10.17:
+    resolution: {integrity: sha512-pXUSMo+hRZ+7ppuR37zuQA3GfSGbphjhOXz2baglzSD2Ex5AlFa4JEeMb4yaUV7pUtTCmn95u0BkiF32TAK0DQ==}
     dev: false
 
-  /@keplr-wallet/stores/0.10.16:
-    resolution: {integrity: sha512-byo49nI9d6ySzvw1vbUhA+73dTb6cLoROAuPXAiq2niDBnf0RBF5gxbo1XKb1KDWaE6t1ZFe9C0NAVi95ixvfA==}
+  /@keplr-wallet/stores/0.10.17:
+    resolution: {integrity: sha512-v4/2TGkyuHgQN5tuPqHhAZY4R4VmvvZ5CUVytuLpvf1NmIKuLoQr9Hn7Be6tWSNWg0LwKVoFSNI3J83Er6n7ng==}
     dependencies:
       '@cosmjs/encoding': 0.24.1
       '@cosmjs/launchpad': 0.24.1
       '@cosmjs/tendermint-rpc': 0.24.1
       '@ethersproject/address': 5.6.1
-      '@keplr-wallet/background': 0.10.16
-      '@keplr-wallet/common': 0.10.16
-      '@keplr-wallet/cosmos': 0.10.16
-      '@keplr-wallet/crypto': 0.10.16
-      '@keplr-wallet/proto-types': 0.10.16
-      '@keplr-wallet/router': 0.10.16
-      '@keplr-wallet/types': 0.10.16
-      '@keplr-wallet/unit': 0.10.16
+      '@keplr-wallet/background': 0.10.17
+      '@keplr-wallet/common': 0.10.17
+      '@keplr-wallet/cosmos': 0.10.17
+      '@keplr-wallet/crypto': 0.10.17
+      '@keplr-wallet/proto-types': 0.10.17
+      '@keplr-wallet/router': 0.10.17
+      '@keplr-wallet/types': 0.10.17
+      '@keplr-wallet/unit': 0.10.17
       '@tharsis/address-converter': 0.1.8
       axios: 0.21.4
       buffer: 6.0.3
@@ -3886,25 +3886,37 @@ packages:
       secretjs: 0.17.5
     transitivePeerDependencies:
       - debug
+    dev: true
 
-  /@keplr-wallet/unit/0.10.16:
-    resolution: {integrity: sha512-zX7sGPK2Q7tDlqDfSsjMa/pP4i7XcnjVMVOG0pe5yEohXJ1j7jeRg6ptE+A2FffO0bD+ICc9xRz59lFMAEvHrA==}
+  /@keplr-wallet/types/0.10.17:
+    resolution: {integrity: sha512-22YVPUjCsaHcxfiMMzmBvP58mh2ms56refegxAvk6XJnzuZ89GUlgPdMoJGgux210P+Frj4Bd2wJgU+V5tL/Ug==}
     dependencies:
-      '@keplr-wallet/types': 0.10.16
+      '@cosmjs/launchpad': 0.24.1
+      '@cosmjs/proto-signing': 0.24.1
+      axios: 0.21.4
+      long: 4.0.0
+      secretjs: 0.17.5
+    transitivePeerDependencies:
+      - debug
+
+  /@keplr-wallet/unit/0.10.17:
+    resolution: {integrity: sha512-jM7lqkZ/AVJPjp66vJGCljHiYo0G5pVCyJVa1/ZablmyZemu9cNvTYNzFtOAsV4mGRvHglst9LMmFJ4ucPYeng==}
+    dependencies:
+      '@keplr-wallet/types': 0.10.17
       big-integer: 1.6.51
       utility-types: 3.10.0
     transitivePeerDependencies:
       - debug
     dev: false
 
-  /@keplr-wallet/wc-client/0.10.16:
-    resolution: {integrity: sha512-EAFLEh4lq9+uEBariGWb9rAKaLfnIqSUr0yEktotCkXCl0URhFgyKZL8REsc8dBN0wRAe3hnSoAW5pwlX9A0CA==}
+  /@keplr-wallet/wc-client/0.10.17:
+    resolution: {integrity: sha512-mv0azJaMWeAA6lRDBQb6moNIbTqMGpj+w8ZVn6dDECgiRM6iyDJ+KPQjilSkBQ9du+WGbxH+y8LuRanfeVFTXQ==}
     dependencies:
       '@cosmjs/launchpad': 0.24.1
       '@cosmjs/proto-signing': 0.24.1
-      '@keplr-wallet/common': 0.10.16
-      '@keplr-wallet/provider': 0.10.16
-      '@keplr-wallet/types': 0.10.16
+      '@keplr-wallet/common': 0.10.17
+      '@keplr-wallet/provider': 0.10.17
+      '@keplr-wallet/types': 0.10.17
       '@walletconnect/types': 1.8.0
       '@walletconnect/utils': 1.8.0
       buffer: 6.0.3
@@ -3914,8 +3926,8 @@ packages:
       - debug
     dev: false
 
-  /@keplr-wallet/wc-qrcode-modal/0.10.16:
-    resolution: {integrity: sha512-ntL4GjRY1UMCAEDkRU+C17hHVunwfaKlB3RWOwC4PEY/Il3ew5e/uJjjc45amNf1fDrS8lS6Vos0t8VQBKY3og==}
+  /@keplr-wallet/wc-qrcode-modal/0.10.17:
+    resolution: {integrity: sha512-cw/m67FMU1FoqjKeURNWOm4oFtDEcvNH7htYwAx/MUi1Hu0d+EaqO56fID88dADbMl+XAXCTURQbpf7Wua4tAQ==}
     dependencies:
       '@walletconnect/browser-utils': 1.8.0
       '@walletconnect/types': 1.8.0
@@ -6203,7 +6215,7 @@ packages:
   /@types/fs-extra/9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 18.7.1
+      '@types/node': 18.7.6
     dev: true
 
   /@types/glob/7.2.0:
@@ -6383,6 +6395,9 @@ packages:
 
   /@types/node/18.7.1:
     resolution: {integrity: sha512-GKX1Qnqxo4S+Z/+Z8KKPLpH282LD7jLHWJcVryOflnsnH+BtSDfieR6ObwBMwpnNws0bUK8GI7z0unQf9bARNQ==}
+
+  /@types/node/18.7.6:
+    resolution: {integrity: sha512-EdxgKRXgYsNITy5mjjXjVE/CS8YENSdhiagGrLqjG0pvA2owgJ6i4l7wy/PFZGC0B1/H20lWKN7ONVDNYDZm7A==}
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -17883,7 +17898,7 @@ packages:
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
       '@types/long': 4.0.2
-      '@types/node': 18.7.1
+      '@types/node': 18.7.6
       long: 4.0.0
 
   /protobufjs/7.0.0:
@@ -22747,7 +22762,7 @@ packages:
     dependencies:
       '@types/fs-extra': 9.0.13
       '@types/minimist': 1.2.2
-      '@types/node': 18.7.1
+      '@types/node': 18.7.6
       '@types/ps-tree': 1.1.2
       '@types/which': 2.0.1
       chalk: 5.0.1
