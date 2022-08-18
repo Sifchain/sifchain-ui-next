@@ -136,7 +136,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="text-sm font-semibold">{formatNumberAsDecimal(health)}</span>
+          <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
         </div>
       </li>
     </ul>
