@@ -2,7 +2,7 @@ import type { OpenPositionsTableProps } from "~/compounds/Margin/OpenPositionsTa
 
 import { Suspense, useMemo } from "react";
 import { useRouter } from "next/router";
-import { pathOr, path } from "ramda";
+import { pathOr, path } from "rambda";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";

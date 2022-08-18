@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { useAccounts, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
-import { memoizeWith } from "ramda";
+import { memoizeWith } from "@sifchain/utils";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useLiquidityProvidersQuery } from "~/domains/clp";

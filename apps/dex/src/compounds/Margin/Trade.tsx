@@ -4,7 +4,7 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { pathOr } from "ramda";
+import { pathOr } from "rambda";
 import type { ChangeEvent, SyntheticEvent } from "react";
 import { useMemo, useState } from "react";
 
