@@ -1,6 +1,7 @@
 import type { BigNumberish, BytesLike, Signer } from "ethers";
 import mainnetPeggyBridgeBankAbi from "./eth-sdk/abis/mainnet/peggy/bridgeBank.json";
 import { getContract, getMainnetSdk as getBaseMainnetSdk, MainnetSdk } from "./generated";
+import type { BridgeBank } from "./generated/esm/types";
 
 export * from "./generated";
 
@@ -25,20 +26,32 @@ export const getMainnetSdk = (defaultSigner: Signer) => enhanceSdk(getBaseMainne
 export const getTestnetSdk = (defaultSigner: Signer) =>
   enhanceSdk({
     peggy: {
-      bridgeBank: getContract("0x6CfD69783E3fFb44CBaaFF7F509a4fcF0d8e2835", mainnetPeggyBridgeBankAbi, defaultSigner),
+      bridgeBank: getContract(
+        "0x6CfD69783E3fFb44CBaaFF7F509a4fcF0d8e2835",
+        mainnetPeggyBridgeBankAbi,
+        defaultSigner,
+      ) as BridgeBank,
     },
   });
 
 export const getDevnetSdk = (defaultSigner: Signer) =>
   enhanceSdk({
     peggy: {
-      bridgeBank: getContract("0x96DC6f02C66Bbf2dfbA934b8DafE7B2c08715A73", mainnetPeggyBridgeBankAbi, defaultSigner),
+      bridgeBank: getContract(
+        "0x96DC6f02C66Bbf2dfbA934b8DafE7B2c08715A73",
+        mainnetPeggyBridgeBankAbi,
+        defaultSigner,
+      ) as BridgeBank,
     },
   });
 
 export const getSdk = (defaultSigner: Signer, options: { bridgeBankContractAddress: string }) =>
   enhanceSdk({
     peggy: {
-      bridgeBank: getContract(options.bridgeBankContractAddress, mainnetPeggyBridgeBankAbi, defaultSigner),
+      bridgeBank: getContract(
+        options.bridgeBankContractAddress,
+        mainnetPeggyBridgeBankAbi,
+        defaultSigner,
+      ) as BridgeBank,
     },
   });
