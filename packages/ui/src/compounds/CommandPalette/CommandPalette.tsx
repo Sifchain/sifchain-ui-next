@@ -2,7 +2,7 @@ import { Combobox, Dialog, Transition } from "@headlessui/react";
 import { FolderIcon, SearchIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import { prop } from "rambda";
-import { uniqBy } from "ramda";
+import { uniqBy } from "rambda";
 import { ComponentProps, FC, Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 import { SearchInput } from "../../components";
@@ -48,7 +48,7 @@ export type CommandPaletteProps = {
 };
 
 function useBrowserStorages() {
-  const [storages, setStorages] = useState<{
+  const [storages] = useState<{
     localStorage: Storage;
     sessionStorage: Storage;
   }>();
@@ -171,11 +171,11 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
             >
               <Dialog.Panel
                 className={`
-                  m-auto mt-[10vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden 
+                  m-auto mt-[10vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden
                   rounded-xl bg-gray-900 shadow-2xl transition-all md:mt-[25vh]
                 `}
               >
-                <Combobox onChange={props.onChange} value={props.value}>
+                <Combobox onChange={props.onChange.bind(null)} value={props.value}>
                   <label className="relative">
                     <TwSearchIcon className="top-0" aria-hidden="true" />
                     <Combobox.Input

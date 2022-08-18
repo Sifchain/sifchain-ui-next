@@ -4,7 +4,7 @@ import {
   TokenSelector as BaseTokenSelector,
   TokenSelectorProps as BaseTokenSelectorProps,
 } from "@sifchain/ui";
-import { pipe } from "ramda";
+import { pipe } from "rambda";
 import { useCallback, useMemo } from "react";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -13,6 +13,7 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
 
 export type TokenSelectorProps = Omit<BaseTokenSelectorProps, "tokens" | "value" | "onChange"> & {
   value?: string;
+  // eslint-disable-next-line no-unused-vars
   onChange: (token?: EnhancedRegistryAsset) => unknown;
 };
 

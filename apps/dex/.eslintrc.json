@@ -1,15 +1,4 @@
 {
   "root": true,
-  "extends": "next/core-web-vitals",
-  "rules": {
-    // https://typescript-eslint.io/rules/no-unused-vars/
-    "no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
-      }
-    ]
-  }
+  "extends": "next/core-web-vitals"
 }
