@@ -158,6 +158,20 @@ const WalletConnector: FC = () => {
     syncCosmosAccounts();
   }, [syncCosmosAccounts]);
 
+  useEffect(() => {
+    const listener = (chainIds: string | string[]) => {
+      if (typeof chainIds === "string") {
+        actions.enableNetwork(chainIds);
+      } else {
+        chainIds.forEach(actions.enableNetwork);
+      }
+    };
+
+    cosmosActiveConnector?.addListener("enable", listener);
+
+    return () => void cosmosActiveConnector?.removeListener("enable", listener);
+  }, [actions, cosmosActiveConnector]);
+
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [
       ...cosmosConnectors.map(assoc("type", "ibc" as ChainConfig["chainType"])),
