@@ -76,7 +76,7 @@ const ManageLiquidityModal = (props: ManageLiquidityModalProps) => {
             [props, tabOptions],
           )}
         />
-        <dl className="[&>div]:flex [&>div]:justify-between [&>div]:gap-4 flex flex-col gap-1 uppercase">
+        <dl className="flex flex-col gap-1 uppercase [&>div]:flex [&>div]:justify-between [&>div]:gap-4">
           <div>
             <dt className="uppercase">{token?.displaySymbol}</dt>
             <dd>{Maybe.of(externalRatio).mapOr("...", percentageFormat.format)}</dd>

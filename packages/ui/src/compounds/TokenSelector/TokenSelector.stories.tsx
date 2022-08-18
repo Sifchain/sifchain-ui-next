@@ -38,9 +38,7 @@ Inline.args = {
   tokens: [...tokens],
 };
 
-export const WithConstrainedParent: ComponentStory<typeof TokenSelector> = (
-  args
-) => {
+export const WithConstrainedParent: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
       <ol className="mb-4 list-decimal pl-4">
@@ -81,9 +79,7 @@ WithMaxWidth.args = {
   buttonClassName: "max-w-[140px]",
 };
 
-export const SizeAndButtonCustomization: ComponentStory<
-  typeof TokenSelector
-> = (args) => {
+export const SizeAndButtonCustomization: ComponentStory<typeof TokenSelector> = (args) => {
   return (
     <div className="text-gray-200">
       <ol className="mb-4 list-decimal pl-4">

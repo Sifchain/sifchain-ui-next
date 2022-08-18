@@ -16,12 +16,11 @@ type IFormatOptionsBase = {
   zeroFormat?: string; // could be something like `N/A`
 };
 
-type IFormatOptionsMantissa<M = number | DynamicMantissa> =
-  IFormatOptionsBase & {
-    shorthand?: boolean;
-    mantissa?: M; // number of decimals after point default is exponent
-    trimMantissa?: boolean | "integer"; // Remove 0s from the mantissa default false
-  };
+type IFormatOptionsMantissa<M = number | DynamicMantissa> = IFormatOptionsBase & {
+  shorthand?: boolean;
+  mantissa?: M; // number of decimals after point default is exponent
+  trimMantissa?: boolean | "integer"; // Remove 0s from the mantissa default false
+};
 
 type IFormatOptionsShorthandTotalLength = IFormatOptionsBase & {
   shorthand: true;
@@ -30,13 +29,9 @@ type IFormatOptionsShorthandTotalLength = IFormatOptionsBase & {
 
 export type DynamicMantissa = Record<number | "infinity", number>;
 
-export type IFormatOptions =
-  | IFormatOptionsMantissa
-  | IFormatOptionsShorthandTotalLength;
+export type IFormatOptions = IFormatOptionsMantissa | IFormatOptionsShorthandTotalLength;
 
-type IFormatOptionsFixedMantissa =
-  | IFormatOptionsMantissa<number>
-  | IFormatOptionsShorthandTotalLength;
+type IFormatOptionsFixedMantissa = IFormatOptionsMantissa<number> | IFormatOptionsShorthandTotalLength;
 
 function isAsset(val: any): val is IAsset {
   return !!val && typeof val?.symbol === "string";
@@ -48,10 +43,7 @@ function isAsset(val: any): val is IAsset {
  * @param hash dynamic value hash to calculate mantissa from
  * @returns number of mantissa to send to formatter
  */
-export function getMantissaFromDynamicMantissa(
-  amount: IAmount,
-  hash: DynamicMantissa
-) {
+export function getMantissaFromDynamicMantissa(amount: IAmount, hash: DynamicMantissa) {
   const { infinity, ...numHash } = hash;
 
   const entries = Object.entries(numHash);
@@ -81,18 +73,16 @@ export function round(decimal: string, places: number) {
       .multiply(Amount(decimalShift("1", places)))
       .toBigInt() // apply rounding
       .toString(),
-    -1 * places
+    -1 * places,
   );
 }
 
-function isDynamicMantissa(
-  value: undefined | number | DynamicMantissa
-): value is DynamicMantissa {
+function isDynamicMantissa(value: undefined | number | DynamicMantissa): value is DynamicMantissa {
   return typeof value !== "number";
 }
 
 function isOptionsWithFixedMantissa(
-  options: IFormatOptionsFixedMantissa | IFormatOptions
+  options: IFormatOptionsFixedMantissa | IFormatOptions,
 ): options is IFormatOptionsFixedMantissa {
   return options.shorthand || !isDynamicMantissa(options["mantissa"]);
 }
@@ -103,14 +93,8 @@ function isOptionsWithFixedMantissa(
  * @param options
  * @returns
  */
-function convertDynamicMantissaToFixedMantissa(
-  amount: IAmount,
-  options: IFormatOptions
-): IFormatOptionsFixedMantissa {
-  if (
-    !isOptionsWithFixedMantissa(options) &&
-    typeof options.mantissa === "object"
-  ) {
+function convertDynamicMantissaToFixedMantissa(amount: IAmount, options: IFormatOptions): IFormatOptionsFixedMantissa {
+  if (!isOptionsWithFixedMantissa(options) && typeof options.mantissa === "object") {
     return {
       ...options,
       mantissa: getMantissaFromDynamicMantissa(amount, options.mantissa),
@@ -119,9 +103,7 @@ function convertDynamicMantissaToFixedMantissa(
   return options as IFormatOptionsFixedMantissa;
 }
 
-export type AmountNotAssetAmount<T extends IAmount> = T extends IAssetAmount
-  ? never
-  : T;
+export type AmountNotAssetAmount<T extends IAmount> = T extends IAssetAmount ? never : T;
 
 export function formatAssetAmount(value: IAssetAmount) {
   if (!value || value.equalTo("0")) return "0";
@@ -131,36 +113,27 @@ export function formatAssetAmount(value: IAssetAmount) {
     : format(amount, asset, { mantissa: 6 });
 }
 
-export function format<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>
-): string;
-export function format<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>,
-  asset: Exclude<IAsset, IAssetAmount>
-): string;
-export function format<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>,
-  options: IFormatOptions
-): string;
+export function format<T extends IAmount>(amount: AmountNotAssetAmount<T>): string;
 export function format<T extends IAmount>(
   amount: AmountNotAssetAmount<T>,
   asset: Exclude<IAsset, IAssetAmount>,
-  options: IFormatOptions
+): string;
+export function format<T extends IAmount>(amount: AmountNotAssetAmount<T>, options: IFormatOptions): string;
+export function format<T extends IAmount>(
+  amount: AmountNotAssetAmount<T>,
+  asset: Exclude<IAsset, IAssetAmount>,
+  options: IFormatOptions,
 ): string;
 export function format<T extends IAmount>(
   _amount: AmountNotAssetAmount<T>,
   _asset?: Exclude<IAsset, IAssetAmount> | IFormatOptions,
-  _options?: IFormatOptions
+  _options?: IFormatOptions,
 ): string {
   const amount = _amount;
-  const _optionsWithDynamicMantissa =
-    (isAsset(_asset) ? _options : _asset) || {};
+  const _optionsWithDynamicMantissa = (isAsset(_asset) ? _options : _asset) || {};
   const asset = isAsset(_asset) ? _asset : undefined;
 
-  const options = convertDynamicMantissaToFixedMantissa(
-    amount,
-    _optionsWithDynamicMantissa
-  );
+  const options = convertDynamicMantissaToFixedMantissa(amount, _optionsWithDynamicMantissa);
 
   // This should not happen in typed parts of the codebase
   if (typeof amount === "string") {
@@ -179,7 +152,7 @@ export function format<T extends IAmount>(
     //
     // Once JSX is used throughout the codebase it might be time to revisit this
     throw new Error(
-      "Amount can only take an IAmount and must NOT be a string. If you have a string and need to format it you should first convert it to an IAmount. Eg. format(Amount('100'), myformat)"
+      "Amount can only take an IAmount and must NOT be a string. If you have a string and need to format it you should first convert it to an IAmount. Eg. format(Amount('100'), myformat)",
     );
   }
 
@@ -191,9 +164,7 @@ export function format<T extends IAmount>(
     return ""; // return empty string if there is an error
   }
 
-  let decimal = asset
-    ? decimalShift(amount.toBigInt().toString(), -1 * asset.decimals)
-    : amount.toString();
+  let decimal = asset ? decimalShift(amount.toBigInt().toString(), -1 * asset.decimals) : amount.toString();
 
   let postfix = options.prefix ?? "";
   const prefix = options.postfix ?? "";
@@ -247,9 +218,7 @@ function applyMantissa(decimal: string, mantissa: number) {
   return round(decimal, mantissa);
 }
 
-function isShorthandWithTotalLength(
-  val: any
-): val is IFormatOptionsShorthandTotalLength {
+function isShorthandWithTotalLength(val: any): val is IFormatOptionsShorthandTotalLength {
   return val?.shorthand && val?.totalLength;
 }
 

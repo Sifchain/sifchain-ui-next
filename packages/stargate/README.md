@@ -13,9 +13,7 @@ yarn add @sifchain/stargate@snapshot
 ### Query the blockchain
 
 ```ts
-const queryClients = await createQueryClient(
-  "https://rpc-testnet.sifchain.finance"
-);
+const queryClients = await createQueryClient("https://rpc-testnet.sifchain.finance");
 
 const response = await queryClients.clp.getPools({});
 
@@ -25,9 +23,7 @@ response.pools.forEach((pool) => console.log(pool));
 ### Sign and broadcast transactions
 
 ```ts
-const tokenEntries = await queryClients.tokenRegistry
-  .entries({})
-  .then((x) => x.registry?.entries);
+const tokenEntries = await queryClients.tokenRegistry.entries({}).then((x) => x.registry?.entries);
 
 const rowan = tokenEntries?.find((x) => x.baseDenom === "rowan")!;
 const juno = tokenEntries?.find((x) => x.baseDenom === "ujuno")!;
@@ -36,10 +32,7 @@ const mnemonic = "some 24 words mnemonic";
 const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
 const [firstAccount, secondAccount] = await wallet.getAccounts();
 
-const signingClient = await SifSigningStargateClient.connectWithSigner(
-  "https://rpc-testnet.sifchain.finance",
-  wallet
-);
+const signingClient = await SifSigningStargateClient.connectWithSigner("https://rpc-testnet.sifchain.finance", wallet);
 
 signingClient.signAndBroadcast(
   firstAccount!.address,
@@ -48,14 +41,8 @@ signingClient.signAndBroadcast(
       typeUrl: "/sifnode.clp.v1.MsgAddLiquidity",
       value: {
         signer: firstAccount!.address,
-        nativeAssetAmount: Decimal.fromUserInput(
-          "100",
-          rowan.decimals.toNumber()
-        ).toString(),
-        externalAssetAmount: Decimal.fromUserInput(
-          "100",
-          juno.decimals.toNumber()
-        ).toString(),
+        nativeAssetAmount: Decimal.fromUserInput("100", rowan.decimals.toNumber()).toString(),
+        externalAssetAmount: Decimal.fromUserInput("100", juno.decimals.toNumber()).toString(),
       },
     },
     {
@@ -66,31 +53,22 @@ signingClient.signAndBroadcast(
         amount: [
           {
             denom: rowan.denom,
-            amount: Decimal.fromUserInput(
-              "100",
-              rowan.decimals.toNumber()
-            ).toString(),
+            amount: Decimal.fromUserInput("100", rowan.decimals.toNumber()).toString(),
           },
         ],
       },
     },
   ],
-  DEFAULT_FEE
+  DEFAULT_FEE,
 );
 ```
 
 ### Import & export tokens
 
 ```ts
-const sifClient = await SifSigningStargateClient.connectWithSigner(
-  "https://rpc-testnet.sifchain.finance",
-  wallet
-);
+const sifClient = await SifSigningStargateClient.connectWithSigner("https://rpc-testnet.sifchain.finance", wallet);
 
-const junoClient = await SigningStargateClient.connectWithSigner(
-  "juno_rpc",
-  wallet
-);
+const junoClient = await SigningStargateClient.connectWithSigner("juno_rpc", wallet);
 
 await sifClient.importIBCTokens(
   junoClient,
@@ -103,7 +81,7 @@ await sifClient.importIBCTokens(
   "transfer",
   undefined,
   undefined,
-  DEFAULT_FEE
+  DEFAULT_FEE,
 );
 
 await sifClient.exportIBCTokens(
@@ -116,7 +94,7 @@ await sifClient.exportIBCTokens(
   "transfer",
   undefined,
   undefined,
-  DEFAULT_FEE
+  DEFAULT_FEE,
 );
 
 await sifClient.sendTokensToEth(
@@ -129,6 +107,6 @@ await sifClient.sendTokensToEth(
   // ropsten chain id
   0x3,
   undefined,
-  DEFAULT_FEE
+  DEFAULT_FEE,
 );
 ```

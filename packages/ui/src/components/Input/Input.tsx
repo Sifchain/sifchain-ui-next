@@ -33,10 +33,7 @@ export const HotKey = tw.span`
   absolute text-xs right-3 px-1.5 py-0.5 font-normal rounded-sm bg-gray-700 text-gray-300
 `;
 
-export type InputProps = Omit<
-  JSX.IntrinsicElements["input"],
-  "ref" | "children" | "className"
-> & {
+export type InputProps = Omit<JSX.IntrinsicElements["input"], "ref" | "children" | "className"> & {
   label?: ReactNode | string;
   secondaryLabel?: ReactNode | string;
   hideLabel?: boolean;
@@ -64,7 +61,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       fullWidth,
       ...props
     },
-    ref
+    ref,
   ) => {
     const id = useId();
     const inputRef = useSyncedRef<HTMLInputElement>(ref);
@@ -115,9 +112,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </label>
         )}
-        <StyledInputContainer
-          className={clsx(containerClassName, SIZE_CLASSES[size ?? "md"])}
-        >
+        <StyledInputContainer className={clsx(containerClassName, SIZE_CLASSES[size ?? "md"])}>
           {leadingIcon}
           <StyledInput
             aria-label={typeof label === "string" ? label : ""}
@@ -132,5 +127,5 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </StyledInputContainer>
       </div>
     );
-  }
+  },
 );

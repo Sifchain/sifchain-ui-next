@@ -10,9 +10,7 @@ export default {
 
 const Template: ComponentStory<typeof ButtonGroup> = (args) => {
   const [activeTab, setActiveTab] = useState(0);
-  return (
-    <ButtonGroup {...args} selectedIndex={activeTab} onChange={setActiveTab} />
-  );
+  return <ButtonGroup {...args} selectedIndex={activeTab} onChange={setActiveTab} />;
 };
 
 export const Default = Template.bind({});

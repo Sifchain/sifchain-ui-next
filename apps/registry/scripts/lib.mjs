@@ -1,10 +1,7 @@
 import argDep from "arg";
 import { createInterface } from "readline";
 
-export function arg(
-  argObj,
-  usageMsg = `This command has no usage message set`
-) {
+export function arg(argObj, usageMsg = `This command has no usage message set`) {
   const args = argDep({ "--help": Boolean, ...argObj });
   if (args["--help"]) {
     console.log(usageMsg);
@@ -19,11 +16,7 @@ export function arg(
  * @param {string} message
  * @returns {Promise<string>}
  */
-export async function prompt(
-  message = "",
-  options = ["y", "n"],
-  defaultAnswer = "y"
-) {
+export async function prompt(message = "", options = ["y", "n"], defaultAnswer = "y") {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,

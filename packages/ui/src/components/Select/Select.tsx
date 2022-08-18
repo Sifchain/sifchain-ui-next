@@ -38,39 +38,19 @@ export type SelectProps = {
 };
 
 export const Select: FC<SelectProps> = (props) => {
-  const indexedById = useMemo(
-    () => indexBy(prop("id"), props.options),
-    [props.options]
-  );
-  const selected = useMemo(
-    () => indexedById[props.value?.id ?? ""],
-    [props.value, indexedById]
-  );
+  const indexedById = useMemo(() => indexBy(prop("id"), props.options), [props.options]);
+  const selected = useMemo(() => indexedById[props.value?.id ?? ""], [props.value, indexedById]);
   return (
     <Listbox value={props.value} onChange={props.onChange}>
       <div className={clsx("relative", props.className)}>
-        {props.label && (
-          <Listbox.Label className="text-sm text-gray-200">
-            {props.label}
-          </Listbox.Label>
-        )}
+        {props.label && <Listbox.Label className="text-sm text-gray-200">{props.label}</Listbox.Label>}
         <Listbox.Button as={StyledListboxButton} onClick={props.onClick}>
-          <span className="block truncate">
-            {selected?.label ?? <span className="opacity-0">.</span>}
-          </span>
+          <span className="block truncate">{selected?.label ?? <span className="opacity-0">.</span>}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-            <ChevronDownIcon
-              className="h-4 w-4 text-gray-400"
-              aria-hidden="true"
-            />
+            <ChevronDownIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
           </span>
         </Listbox.Button>
-        <Transition
-          as={Fragment}
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
+        <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
           <Listbox.Options as={StyledOptionsContainer}>
             {props.options.map((option, optionIdx) => (
               <Listbox.Option
@@ -84,13 +64,7 @@ export const Select: FC<SelectProps> = (props) => {
               >
                 {({ selected }) => (
                   <>
-                    <span
-                      className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
-                      }`}
-                    >
-                      {option.body}
-                    </span>
+                    <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>{option.body}</span>
                     {selected ? (
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                         <CheckIcon className="h-5 w-5" aria-hidden="true" />

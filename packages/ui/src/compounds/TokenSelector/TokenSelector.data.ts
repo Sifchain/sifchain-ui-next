@@ -3,8 +3,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "rowan",
     homeNetwork: "sifchain",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
+    imageUrl: "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",
     name: "Rowan",
     network: "sifchain",
     symbol: "ROWAN",
@@ -13,8 +12,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "usdt",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707",
+    imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707",
     name: "Tether USDT",
     network: "sifchain",
     symbol: "CUSDT",
@@ -23,8 +21,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "eth",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     name: "Ethereum",
     network: "sifchain",
     symbol: "CETH",
@@ -33,8 +30,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "bat",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/677/small/basic-attention-token.png?1547034427",
+    imageUrl: "https://assets.coingecko.com/coins/images/677/small/basic-attention-token.png?1547034427",
     name: "Basic Attention Token",
     network: "sifchain",
     symbol: "CBAT",
@@ -43,8 +39,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ant",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653",
+    imageUrl: "https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653",
     name: "Aragon",
     network: "sifchain",
     symbol: "CANT",
@@ -54,8 +49,7 @@ export const tokens = [
     displaySymbol: "bnt",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/736/small/bancor.png?1547034477",
+    imageUrl: "https://assets.coingecko.com/coins/images/736/small/bancor.png?1547034477",
     name: "Bancor Network Token",
     network: "sifchain",
     symbol: "CBNT",
@@ -65,8 +59,7 @@ export const tokens = [
     displaySymbol: "zrx",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/863/small/0x.png?1547034672",
+    imageUrl: "https://assets.coingecko.com/coins/images/863/small/0x.png?1547034672",
     name: "0x",
     network: "sifchain",
     symbol: "CZRX",
@@ -75,8 +68,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "link",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
+    imageUrl: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
     name: "Chainlink",
     network: "sifchain",
     symbol: "CLINK",
@@ -85,8 +77,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "mana",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/878/small/decentraland-mana.png?1550108745",
+    imageUrl: "https://assets.coingecko.com/coins/images/878/small/decentraland-mana.png?1550108745",
     name: "Decentraland",
     network: "sifchain",
     symbol: "CMANA",
@@ -95,8 +86,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "lrc",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/913/small/LRC.png?1572852344",
+    imageUrl: "https://assets.coingecko.com/coins/images/913/small/LRC.png?1572852344",
     name: "Loopring",
     network: "sifchain",
     symbol: "CLRC",
@@ -105,8 +95,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "enj",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/1102/small/enjin-coin-logo.png?1547035078",
+    imageUrl: "https://assets.coingecko.com/coins/images/1102/small/enjin-coin-logo.png?1547035078",
     name: "Enjin Coin",
     network: "sifchain",
     symbol: "CENJ",
@@ -115,8 +104,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "snx",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3406/small/SNX.png?1598631139",
+    imageUrl: "https://assets.coingecko.com/coins/images/3406/small/SNX.png?1598631139",
     name: "Synthetix Network Token",
     network: "sifchain",
     symbol: "CSNX",
@@ -125,8 +113,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "tusd",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3449/small/TUSD.png?1559172762",
+    imageUrl: "https://assets.coingecko.com/coins/images/3449/small/TUSD.png?1559172762",
     name: "TrueUSD",
     network: "sifchain",
     symbol: "CTUSD",
@@ -136,8 +123,7 @@ export const tokens = [
     displaySymbol: "ocean",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3687/small/ocean-protocol-logo.jpg?1547038686",
+    imageUrl: "https://assets.coingecko.com/coins/images/3687/small/ocean-protocol-logo.jpg?1547038686",
     name: "Ocean Protocol",
     network: "sifchain",
     symbol: "COCEAN",
@@ -146,8 +132,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ftm",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/4001/small/Fantom.png?1558015016",
+    imageUrl: "https://assets.coingecko.com/coins/images/4001/small/Fantom.png?1558015016",
     name: "Fantom",
     network: "sifchain",
     symbol: "CFTM",
@@ -156,8 +141,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "susd",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/5013/small/sUSD.png?1562212426",
+    imageUrl: "https://assets.coingecko.com/coins/images/5013/small/sUSD.png?1562212426",
     name: "sUSD",
     network: "sifchain",
     symbol: "CSUSD",
@@ -166,8 +150,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "usdc",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389",
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389",
     name: "USD Coin",
     network: "sifchain",
     symbol: "CUSDC",
@@ -179,8 +162,7 @@ export const tokens = [
       "Crypto.org's ERC-20 token has been decommissioned on Sifchain in favor of the Cosmos CRO token. Please export all CRO (ERC-20) off of Sifchain.",
     displaySymbol: "CRO (ERC-20)",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/7310/small/cypto.png?1547043960",
+    imageUrl: "https://assets.coingecko.com/coins/images/7310/small/cypto.png?1547043960",
     name: "Crypto com Coin",
     network: "sifchain",
     symbol: "CCRO",
@@ -189,8 +171,7 @@ export const tokens = [
     decimals: 8,
     displaySymbol: "wbtc",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+    imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
     name: "Wrapped Bitcoin",
     network: "sifchain",
     symbol: "CWBTC",
@@ -199,8 +180,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "sxp",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/9368/small/swipe.png?1566792311",
+    imageUrl: "https://assets.coingecko.com/coins/images/9368/small/swipe.png?1566792311",
     name: "Swipe",
     network: "sifchain",
     symbol: "CSXP",
@@ -209,8 +189,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "Band",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/9545/small/band-protocol.png?1568730326",
+    imageUrl: "https://assets.coingecko.com/coins/images/9545/small/band-protocol.png?1568730326",
     name: "Band Protocol",
     network: "sifchain",
     symbol: "CBAND",
@@ -219,8 +198,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "dai",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png?1574218774",
+    imageUrl: "https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png?1574218774",
     name: "Dai Stablecoin",
     network: "sifchain",
     symbol: "CDAI",
@@ -229,8 +207,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "comp",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/10775/small/COMP.png?1592625425",
+    imageUrl: "https://assets.coingecko.com/coins/images/10775/small/COMP.png?1592625425",
     name: "Compound",
     network: "sifchain",
     symbol: "CCOMP",
@@ -239,8 +216,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "uma",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/10951/small/UMA.png?1586307916",
+    imageUrl: "https://assets.coingecko.com/coins/images/10951/small/UMA.png?1586307916",
     name: "UMA",
     network: "sifchain",
     symbol: "CUMA",
@@ -250,8 +226,7 @@ export const tokens = [
     displaySymbol: "bal",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11683/small/Balancer.png?1592792958",
+    imageUrl: "https://assets.coingecko.com/coins/images/11683/small/Balancer.png?1592792958",
     name: "Balancer",
     network: "sifchain",
     symbol: "CBAL",
@@ -260,8 +235,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "yfi",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11849/small/yfi-192x192.png?1598325330",
+    imageUrl: "https://assets.coingecko.com/coins/images/11849/small/yfi-192x192.png?1598325330",
     name: "yearn finance",
     network: "sifchain",
     symbol: "CYFI",
@@ -270,8 +244,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "srm",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11970/small/serum-logo.png?1597121577",
+    imageUrl: "https://assets.coingecko.com/coins/images/11970/small/serum-logo.png?1597121577",
     name: "Serum",
     network: "sifchain",
     symbol: "CSRM",
@@ -280,8 +253,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "cream",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11976/small/Cream.png?1596593418",
+    imageUrl: "https://assets.coingecko.com/coins/images/11976/small/Cream.png?1596593418",
     name: "Cream",
     network: "sifchain",
     symbol: "CCREAM",
@@ -290,8 +262,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "sand",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12129/small/sandbox_logo.jpg?1597397942",
+    imageUrl: "https://assets.coingecko.com/coins/images/12129/small/sandbox_logo.jpg?1597397942",
     name: "SAND",
     network: "sifchain",
     symbol: "CSAND",
@@ -300,8 +271,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "sushi",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688",
+    imageUrl: "https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688",
     name: "Sushi",
     network: "sifchain",
     symbol: "CSUSHI",
@@ -310,8 +280,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "esd",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12440/small/esd_logo_circle.png?1603676421",
+    imageUrl: "https://assets.coingecko.com/coins/images/12440/small/esd_logo_circle.png?1603676421",
     name: "Empty Set Dollar",
     network: "sifchain",
     symbol: "CESD",
@@ -320,8 +289,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "uni",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604",
+    imageUrl: "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604",
     name: "Uniswap",
     network: "sifchain",
     symbol: "CUNI",
@@ -330,8 +298,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "aave",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12645/small/AAVE.png?1601374110",
+    imageUrl: "https://assets.coingecko.com/coins/images/12645/small/AAVE.png?1601374110",
     name: "Aave",
     network: "sifchain",
     symbol: "CAAVE",
@@ -340,8 +307,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "bond",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12811/small/barnbridge.jpg?1602728853",
+    imageUrl: "https://assets.coingecko.com/coins/images/12811/small/barnbridge.jpg?1602728853",
     name: "BarnBridge",
     network: "sifchain",
     symbol: "CBOND",
@@ -350,8 +316,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "wfil",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13238/small/WFIL-Icon.png?1606630561",
+    imageUrl: "https://assets.coingecko.com/coins/images/13238/small/WFIL-Icon.png?1606630561",
     name: "Wrapped Filecoin",
     network: "sifchain",
     symbol: "CWFIL",
@@ -360,8 +325,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "grt",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566",
+    imageUrl: "https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566",
     name: "The Graph",
     network: "sifchain",
     symbol: "CGRT",
@@ -370,8 +334,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "lon",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13454/small/lon_logo.png?1608701720",
+    imageUrl: "https://assets.coingecko.com/coins/images/13454/small/lon_logo.png?1608701720",
     name: "Tokenlon",
     network: "sifchain",
     symbol: "CLON",
@@ -380,8 +343,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "1inch",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13469/small/1inch-token.png?1608803028",
+    imageUrl: "https://assets.coingecko.com/coins/images/13469/small/1inch-token.png?1608803028",
     name: "1inch",
     network: "sifchain",
     symbol: "C1INCH",
@@ -390,8 +352,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "rune",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13677/small/BrMhBTr8_400x400.jpg?1610723303",
+    imageUrl: "https://assets.coingecko.com/coins/images/13677/small/BrMhBTr8_400x400.jpg?1610723303",
     name: "THORChain ERC20",
     network: "sifchain",
     symbol: "CRUNE",
@@ -400,8 +361,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "wscrt",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13767/small/Secret_S_Black_Coingecko.png?1611667298",
+    imageUrl: "https://assets.coingecko.com/coins/images/13767/small/Secret_S_Black_Coingecko.png?1611667298",
     name: "Secret ERC20",
     network: "sifchain",
     symbol: "CWSCRT",
@@ -410,8 +370,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "iotx",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3334/small/iotex-logo.png?1547037941",
+    imageUrl: "https://assets.coingecko.com/coins/images/3334/small/iotex-logo.png?1547037941",
     name: "IoTeX",
     network: "sifchain",
     symbol: "CIOTX",
@@ -420,8 +379,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "reef",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png?1610534130",
+    imageUrl: "https://assets.coingecko.com/coins/images/13504/small/Group_10572.png?1610534130",
     name: "Reef Finance",
     network: "sifchain",
     symbol: "CREEF",
@@ -430,8 +388,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "cocos",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/4932/small/_QPpjoUi_400x400.jpg?1566430520",
+    imageUrl: "https://assets.coingecko.com/coins/images/4932/small/_QPpjoUi_400x400.jpg?1566430520",
     name: "COCOS BCX",
     network: "sifchain",
     symbol: "CCOCOS",
@@ -440,8 +397,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "keep",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3373/small/IuNzUb5b_400x400.jpg?1589526336",
+    imageUrl: "https://assets.coingecko.com/coins/images/3373/small/IuNzUb5b_400x400.jpg?1589526336",
     name: "Keep Network",
     network: "sifchain",
     symbol: "CKEEP",
@@ -450,8 +406,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ogn",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3296/small/op.jpg?1547037878",
+    imageUrl: "https://assets.coingecko.com/coins/images/3296/small/op.jpg?1547037878",
     name: "Origin Protocol",
     network: "sifchain",
     symbol: "COGN",
@@ -461,8 +416,7 @@ export const tokens = [
     displaySymbol: "daofi",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12782/small/logocircle.png?1611944557",
+    imageUrl: "https://assets.coingecko.com/coins/images/12782/small/logocircle.png?1611944557",
     name: "DAOfi",
     network: "sifchain",
     symbol: "CDAOFI",
@@ -471,8 +425,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "lina",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12509/small/linear.jpg?1606884470",
+    imageUrl: "https://assets.coingecko.com/coins/images/12509/small/linear.jpg?1606884470",
     name: "Linear",
     network: "sifchain",
     symbol: "CLINA",
@@ -482,8 +435,7 @@ export const tokens = [
     displaySymbol: "tshp",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/9351/small/12ships.png?1566485390",
+    imageUrl: "https://assets.coingecko.com/coins/images/9351/small/12ships.png?1566485390",
     name: "12Ships",
     network: "sifchain",
     symbol: "CTSHP",
@@ -492,8 +444,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "b20",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13803/small/b20.png?1611996305",
+    imageUrl: "https://assets.coingecko.com/coins/images/13803/small/b20.png?1611996305",
     name: "B.20",
     network: "sifchain",
     symbol: "CB20",
@@ -502,8 +453,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "akro",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/3328/small/Akropolis.png?1547037929",
+    imageUrl: "https://assets.coingecko.com/coins/images/3328/small/Akropolis.png?1547037929",
     name: "Akropolis",
     network: "sifchain",
     symbol: "CAKRO",
@@ -513,8 +463,7 @@ export const tokens = [
     displaySymbol: "rfuel",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12623/small/RFUEL_SQR.png?1602481093",
+    imageUrl: "https://assets.coingecko.com/coins/images/12623/small/RFUEL_SQR.png?1602481093",
     name: "Rio Fuel Token",
     network: "sifchain",
     symbol: "CRFUEL",
@@ -523,8 +472,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "rly",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12843/small/image.png?1611212077",
+    imageUrl: "https://assets.coingecko.com/coins/images/12843/small/image.png?1611212077",
     name: "Rally",
     network: "sifchain",
     symbol: "CRLY",
@@ -561,8 +509,7 @@ export const tokens = [
     displaySymbol: "tidal",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14460/small/Tidal-mono.png?1616233894",
+    imageUrl: "https://assets.coingecko.com/coins/images/14460/small/Tidal-mono.png?1616233894",
     name: "Tidal",
     network: "sifchain",
     symbol: "CTIDAL",
@@ -571,8 +518,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "shib",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11939/small/SHIBLOGO.png?1600752116",
+    imageUrl: "https://assets.coingecko.com/coins/images/11939/small/SHIBLOGO.png?1600752116",
     name: "SHIBA INU",
     network: "sifchain",
     symbol: "CSHIB",
@@ -590,8 +536,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "atom",
     homeNetwork: "cosmoshub",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png?1555657960",
+    imageUrl: "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png?1555657960",
     label: "Atom",
     name: "Atom",
     network: "sifchain",
@@ -601,8 +546,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "akt",
     homeNetwork: "akash",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12785/small/akash-logo.png?1615447676",
+    imageUrl: "https://assets.coingecko.com/coins/images/12785/small/akash-logo.png?1615447676",
     label: "AKT",
     name: "Akash Token",
     network: "sifchain",
@@ -612,8 +556,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "dvpn",
     homeNetwork: "sentinel",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14879/small/Sentinel_512X512.png?1622174499",
+    imageUrl: "https://assets.coingecko.com/coins/images/14879/small/Sentinel_512X512.png?1622174499",
     label: "Sentinel",
     name: "Sentinel",
     network: "sifchain",
@@ -623,8 +566,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "iris",
     homeNetwork: "iris",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/5135/small/IRIS.png?1557999365",
+    imageUrl: "https://assets.coingecko.com/coins/images/5135/small/IRIS.png?1557999365",
     label: "IRIS",
     name: "IRIS",
     network: "sifchain",
@@ -634,8 +576,7 @@ export const tokens = [
     decimals: 8,
     displaySymbol: "cro",
     homeNetwork: "crypto-org",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/7310/small/cypto.png?1547043960",
+    imageUrl: "https://assets.coingecko.com/coins/images/7310/small/cypto.png?1547043960",
     label: "CRO",
     name: "CRO",
     network: "sifchain",
@@ -655,8 +596,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "regen",
     homeNetwork: "regen",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/16733/small/REGEN.png?1624861317",
+    imageUrl: "https://assets.coingecko.com/coins/images/16733/small/REGEN.png?1624861317",
     label: "regen",
     name: "regen",
     network: "sifchain",
@@ -666,8 +606,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "osmo",
     homeNetwork: "osmosis",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/16724/small/osmosis.jpeg?1624849879",
+    imageUrl: "https://assets.coingecko.com/coins/images/16724/small/osmosis.jpeg?1624849879",
     label: "osmo",
     name: "osmo",
     network: "sifchain",
@@ -679,8 +618,7 @@ export const tokens = [
     decommissionReason: "Temporarily disabled due to Terra instability",
     displaySymbol: "UST",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12681/small/UST.png?1601612407",
+    imageUrl: "https://assets.coingecko.com/coins/images/12681/small/UST.png?1601612407",
     label: "Terra USD",
     name: "Terra USD",
     network: "sifchain",
@@ -691,8 +629,7 @@ export const tokens = [
     displaySymbol: "FRAX",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13422/small/frax_logo.png?1608476506",
+    imageUrl: "https://assets.coingecko.com/coins/images/13422/small/frax_logo.png?1608476506",
     label: "Frax",
     name: "Frax",
     network: "sifchain",
@@ -702,8 +639,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ZCX",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14830/small/7xjpHaG.png?1618564961",
+    imageUrl: "https://assets.coingecko.com/coins/images/14830/small/7xjpHaG.png?1618564961",
     label: "Unizen",
     name: "Unizen",
     network: "sifchain",
@@ -713,8 +649,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "DON",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/15482/small/donkey_logo.jpg?1621012824",
+    imageUrl: "https://assets.coingecko.com/coins/images/15482/small/donkey_logo.jpg?1621012824",
     label: "Don-key",
     name: "Don-key",
     network: "sifchain",
@@ -724,8 +659,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "Metis",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/15595/small/metis.PNG?1621298076",
+    imageUrl: "https://assets.coingecko.com/coins/images/15595/small/metis.PNG?1621298076",
     label: "Metis Token",
     name: "Metis Token",
     network: "sifchain",
@@ -736,8 +670,7 @@ export const tokens = [
     displaySymbol: "FXS",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13423/small/frax_share.png?1608478989",
+    imageUrl: "https://assets.coingecko.com/coins/images/13423/small/frax_share.png?1608478989",
     label: "Frax Share",
     name: "Frax Share",
     network: "sifchain",
@@ -747,8 +680,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "KFT",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/15632/small/knit.jpg?1621396114",
+    imageUrl: "https://assets.coingecko.com/coins/images/15632/small/knit.jpg?1621396114",
     label: "Knit Finance",
     name: "Knit Finance",
     network: "sifchain",
@@ -759,8 +691,7 @@ export const tokens = [
     displaySymbol: "ZCN",
     hasDarkIcon: true,
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/4934/small/0_Black-svg.png?1600757954",
+    imageUrl: "https://assets.coingecko.com/coins/images/4934/small/0_Black-svg.png?1600757954",
     label: "0chain",
     name: "0chain",
     network: "sifchain",
@@ -770,8 +701,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "SAITO",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14750/small/SAITO.png?1626857406",
+    imageUrl: "https://assets.coingecko.com/coins/images/14750/small/SAITO.png?1626857406",
     label: "SAITO",
     name: "SAITO",
     network: "sifchain",
@@ -781,8 +711,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "DFYN",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/15368/small/SgqhfWz4_400x400_%281%29.jpg?1620666919",
+    imageUrl: "https://assets.coingecko.com/coins/images/15368/small/SgqhfWz4_400x400_%281%29.jpg?1620666919",
     label: "DFYN Token",
     name: "DFYN Token",
     network: "sifchain",
@@ -792,8 +721,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "DNXC",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/17321/small/asset_icon_dnxc_200.png?1627292452",
+    imageUrl: "https://assets.coingecko.com/coins/images/17321/small/asset_icon_dnxc_200.png?1627292452",
     label: "DinoX Coin",
     name: "DinoX Coin",
     network: "sifchain",
@@ -803,8 +731,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ERN",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/14238/small/ethernity_logo.png?1615189750",
+    imageUrl: "https://assets.coingecko.com/coins/images/14238/small/ethernity_logo.png?1615189750",
     label: "@EthernityChain $ERN Token",
     name: "@EthernityChain $ERN Token",
     network: "sifchain",
@@ -814,8 +741,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "POLS",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12648/small/polkastarter.png?1609813702",
+    imageUrl: "https://assets.coingecko.com/coins/images/12648/small/polkastarter.png?1609813702",
     label: "PolkastarterToken",
     name: "PolkastarterToken",
     network: "sifchain",
@@ -825,8 +751,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "AXS",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13029/small/axie_infinity_logo.png?1604471082",
+    imageUrl: "https://assets.coingecko.com/coins/images/13029/small/axie_infinity_logo.png?1604471082",
     label: "Axie Infinity Shard",
     name: "Axie Infinity Shard",
     network: "sifchain",
@@ -836,8 +761,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "MATIC",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912",
+    imageUrl: "https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912",
     label: "Matic Token",
     name: "Matic Token",
     network: "sifchain",
@@ -847,8 +771,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "TOKE",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/17495/small/tokemak-avatar-200px-black.png?1628131614",
+    imageUrl: "https://assets.coingecko.com/coins/images/17495/small/tokemak-avatar-200px-black.png?1628131614",
     label: "Tokemak",
     name: "Tokemak",
     network: "sifchain",
@@ -860,8 +783,7 @@ export const tokens = [
     decommissionReason: "Temporarily disabled due to Terra instability",
     displaySymbol: "luna",
     homeNetwork: "terra",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/8284/small/luna1557227471663.png?1567147072",
+    imageUrl: "https://assets.coingecko.com/coins/images/8284/small/luna1557227471663.png?1567147072",
     label: "luna",
     name: "luna",
     network: "sifchain",
@@ -873,8 +795,7 @@ export const tokens = [
     decommissionReason: "Temporarily disabled due to Terra instability",
     displaySymbol: "UST",
     homeNetwork: "terra",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12681/small/UST.png?1601612407",
+    imageUrl: "https://assets.coingecko.com/coins/images/12681/small/UST.png?1601612407",
     label: "TerraUSD",
     name: "TerraUSD",
     network: "sifchain",
@@ -884,8 +805,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "BTSG (ERC-20)",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/5041/small/logo_-_2021-01-10T210801.390.png?1610284134",
+    imageUrl: "https://assets.coingecko.com/coins/images/5041/small/logo_-_2021-01-10T210801.390.png?1610284134",
     name: "BitSong",
     network: "sifchain",
     symbol: "CBTSG",
@@ -894,8 +814,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "QUICK",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13970/small/1_pOU6pBMEmiL-ZJVb0CYRjQ.png?1613386659",
+    imageUrl: "https://assets.coingecko.com/coins/images/13970/small/1_pOU6pBMEmiL-ZJVb0CYRjQ.png?1613386659",
     name: "QuickSwap",
     network: "sifchain",
     symbol: "CQUICK",
@@ -904,8 +823,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "LDO",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13573/small/Lido_DAO.png?1609873644",
+    imageUrl: "https://assets.coingecko.com/coins/images/13573/small/Lido_DAO.png?1609873644",
     name: "Lido DAO",
     network: "sifchain",
     symbol: "CLDO",
@@ -914,8 +832,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "RAIL",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/16840/small/railgun.jpeg?1625322775",
+    imageUrl: "https://assets.coingecko.com/coins/images/16840/small/railgun.jpeg?1625322775",
     name: "Railgun",
     network: "sifchain",
     symbol: "CRAIL",
@@ -924,8 +841,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "POND",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/8903/small/POND_200x200.png?1622515451",
+    imageUrl: "https://assets.coingecko.com/coins/images/8903/small/POND_200x200.png?1622515451",
     name: "Marlin",
     network: "sifchain",
     symbol: "CPOND",
@@ -934,8 +850,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "DINO",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/17103/small/DINO.png?1626244014",
+    imageUrl: "https://assets.coingecko.com/coins/images/17103/small/DINO.png?1626244014",
     name: "DinoSwap",
     network: "sifchain",
     symbol: "CDINO",
@@ -944,8 +859,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "UFO",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/16801/small/ufo_logo.jpg?1630078847",
+    imageUrl: "https://assets.coingecko.com/coins/images/16801/small/ufo_logo.jpg?1630078847",
     name: "UFO Gaming",
     network: "sifchain",
     symbol: "CUFO",
@@ -954,8 +868,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "csms",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/19875/small/cosmosstarter.PNG?1636083064",
+    imageUrl: "https://assets.coingecko.com/coins/images/19875/small/cosmosstarter.PNG?1636083064",
     label: "Cosmostarter",
     name: "Cosmostarter",
     network: "sifchain",
@@ -965,8 +878,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "lgcy",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12181/small/LGCY_network.jpg?1597926587",
+    imageUrl: "https://assets.coingecko.com/coins/images/12181/small/LGCY_network.jpg?1597926587",
     label: "LGCY Network",
     name: "LGCY Network",
     network: "sifchain",
@@ -976,8 +888,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "juno",
     homeNetwork: "juno",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/19249/small/juno.png?1642838082",
+    imageUrl: "https://assets.coingecko.com/coins/images/19249/small/juno.png?1642838082",
     label: "juno",
     name: "juno",
     network: "sifchain",
@@ -997,8 +908,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "band",
     homeNetwork: "band",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/9545/small/Band_token_blue_violet_token.png?1625881431",
+    imageUrl: "https://assets.coingecko.com/coins/images/9545/small/Band_token_blue_violet_token.png?1625881431",
     label: "band",
     name: "band",
     network: "sifchain",
@@ -1008,8 +918,7 @@ export const tokens = [
     decimals: 9,
     displaySymbol: "like",
     homeNetwork: "likecoin",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/10212/small/likecoin.png?1576640519",
+    imageUrl: "https://assets.coingecko.com/coins/images/10212/small/likecoin.png?1576640519",
     label: "like",
     name: "likecoin",
     network: "sifchain",
@@ -1019,8 +928,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "ratom",
     homeNetwork: "ethereum",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png?1555657960",
+    imageUrl: "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png?1555657960",
     label: "ratom",
     lowercasePrefixLength: 1,
     name: "ratom",
@@ -1041,8 +949,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "ngm",
     homeNetwork: "emoney",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/13722/small/logo-200x200.jpg?1626095888",
+    imageUrl: "https://assets.coingecko.com/coins/images/13722/small/logo-200x200.jpg?1626095888",
     label: "ngm",
     name: "ngm",
     network: "sifchain",
@@ -1052,8 +959,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "iov",
     homeNetwork: "starname",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/12660/small/iov.png?1601862353",
+    imageUrl: "https://assets.coingecko.com/coins/images/12660/small/iov.png?1601862353",
     label: "iov",
     name: "iov",
     network: "sifchain",
@@ -1063,8 +969,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "eeur",
     homeNetwork: "emoney",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/18817/small/eeur.jpg?1633508407",
+    imageUrl: "https://assets.coingecko.com/coins/images/18817/small/eeur.jpg?1633508407",
     label: "e-Money EUR",
     name: "e-Money EUR",
     network: "sifchain",
@@ -1074,8 +979,7 @@ export const tokens = [
     decimals: 18,
     displaySymbol: "evmos",
     homeNetwork: "evmos",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/24023/small/Evmos_Token_Orange_RGB.png?1651162025",
+    imageUrl: "https://assets.coingecko.com/coins/images/24023/small/Evmos_Token_Orange_RGB.png?1651162025",
     label: "evmos",
     name: "EVMOS",
     network: "sifchain",
@@ -1085,8 +989,7 @@ export const tokens = [
     decimals: 6,
     displaySymbol: "scrt",
     homeNetwork: "secret",
-    imageUrl:
-      "https://assets.coingecko.com/coins/images/11871/small/Secret.png?1595520186",
+    imageUrl: "https://assets.coingecko.com/coins/images/11871/small/Secret.png?1595520186",
     label: "scrt",
     name: "scrt",
     network: "sifchain",

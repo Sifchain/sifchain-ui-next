@@ -26,22 +26,13 @@ const args = arg(
 Usage: 
 
   npm run add-or-update-token [--address|-a <address>] [--envs <envs>]
-`
+`,
 );
 
-const VALID_ENVS = [
-  "localnet",
-  "devnet",
-  "testnet",
-  "mainnet",
-  "sifchain-devnet",
-  "sifchain-mainnet",
-];
+const VALID_ENVS = ["localnet", "devnet", "testnet", "mainnet", "sifchain-devnet", "sifchain-mainnet"];
 
 const { eth } = new Web3(
-  new Web3.providers.HttpProvider(
-    "https://mainnet.infura.io/v3/93cd052103fd44bd9cf855654e5804ac"
-  )
+  new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/93cd052103fd44bd9cf855654e5804ac"),
 );
 
 async function getERC20Info(address = "") {
@@ -98,17 +89,13 @@ async function updateAssetByNetwork(network, env, assetConfig) {
    */
   const { assets } = JSON.parse(assetRaw);
 
-  const existingAsset = assets.find(
-    (asset) => asset.address === assetConfig.address
-  );
+  const existingAsset = assets.find((asset) => asset.address === assetConfig.address);
 
   if (existingAsset) {
     const answer = await prompt(
-      chalk.red(
-        `asset already exists for (${network}, ${env}). \r\n Would you like to replace the config?`
-      ),
+      chalk.red(`asset already exists for (${network}, ${env}). \r\n Would you like to replace the config?`),
       ["y", "n"],
-      "y"
+      "y",
     );
     if (answer === "n") {
       console.log("skipping asset update");
@@ -122,13 +109,10 @@ async function updateAssetByNetwork(network, env, assetConfig) {
 
   await fs.writeFile(filePath, encodedFile);
 
-  console.log(
-    chalk.green(`Successfully ${existingAsset ? "updated" : "added"} asset`),
-    {
-      network,
-      env,
-    }
-  );
+  console.log(chalk.green(`Successfully ${existingAsset ? "updated" : "added"} asset`), {
+    network,
+    env,
+  });
 
   process.exit(0);
 }
@@ -197,11 +181,9 @@ async function addOrUpdateToken({ address = "", envs = [] }) {
     const { name, symbol } = ethAssetConfig;
 
     const answer = await prompt(
-      chalk.blue(
-        `Add "${name}" (${symbol.toUpperCase()}) to envs (${envs.join(", ")})?`
-      ),
+      chalk.blue(`Add "${name}" (${symbol.toUpperCase()}) to envs (${envs.join(", ")})?`),
       ["y", "n"],
-      "y"
+      "y",
     );
 
     if (answer !== "y") {
@@ -211,8 +193,7 @@ async function addOrUpdateToken({ address = "", envs = [] }) {
 
     for (let env of envs) {
       const promises = ["ethereum", "sifchain"].map((network) => {
-        const assetConfig =
-          network === "ethereum" ? ethAssetConfig : sifAssetConfig;
+        const assetConfig = network === "ethereum" ? ethAssetConfig : sifAssetConfig;
 
         return updateAssetByNetwork(network, env, assetConfig);
       });
@@ -230,6 +211,6 @@ await addOrUpdateToken({
      * @param {string} env
      * @returns
      */
-    (env) => VALID_ENVS.includes(env)
+    (env) => VALID_ENVS.includes(env),
   ),
 });

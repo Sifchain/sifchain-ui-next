@@ -1,10 +1,5 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
-import {
-  DocumentAddIcon,
-  FolderAddIcon,
-  HashtagIcon,
-  TagIcon,
-} from "@heroicons/react/outline";
+import { DocumentAddIcon, FolderAddIcon, HashtagIcon, TagIcon } from "@heroicons/react/outline";
 
 import { CommandPalette } from "./";
 import type { CommandPaletteEntry, QuickActionEntry } from "./CommandPalette";

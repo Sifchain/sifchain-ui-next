@@ -429,7 +429,6 @@ const Trade = (props: TradeProps) => {
 
   const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
     const $input = event.currentTarget;
-
     const payload = inputValidatorLeverage($input, "blur", maxLeverageDecimal.toString());
     setInputLeverage(payload);
   };
@@ -507,7 +506,6 @@ const Trade = (props: TradeProps) => {
       <Head>
         <title>Sichain Dex - Margin - Trade</title>
       </Head>
-
       <section className="border-gold-800 mt-4 rounded border bg-gray-800 text-xs">
         {poolActive ? (
           <PoolOverview
@@ -579,7 +577,6 @@ const Trade = (props: TradeProps) => {
                 onClick={onClickSwitch}
                 className={clsx(
                   "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
-
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
                 )}
               >

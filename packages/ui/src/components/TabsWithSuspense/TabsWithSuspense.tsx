@@ -22,9 +22,7 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
   activeTab,
   items,
   renderItem,
-  fallbackSuspense = (
-    <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
-  ),
+  fallbackSuspense = <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>,
 }) => {
   const currentTab = items.find((item) => item.slug === activeTab);
   const TabContent = currentTab?.content || null;
@@ -39,9 +37,7 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
               className={clsx(
                 "relative -mb-0.5 border-b-2 border-transparent text-lg",
                 { "ml-4": index > 0 },
-                isTabActive
-                  ? "border-current font-bold text-white"
-                  : "text-gray-400"
+                isTabActive ? "border-current font-bold text-white" : "text-gray-400",
               )}
             >
               {renderItem(title, slug)}

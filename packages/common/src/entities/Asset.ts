@@ -21,9 +21,7 @@ export type IAsset = {
 type ReadonlyAsset = Readonly<IAsset>;
 
 function isAsset(value: any): value is IAsset {
-  return (
-    typeof value?.symbol === "string" && typeof value?.decimals === "number"
-  );
+  return typeof value?.symbol === "string" && typeof value?.decimals === "number";
 }
 
 const ASSET_MAP = new Map<string, ReadonlyAsset>();
@@ -53,14 +51,10 @@ function _Asset(assetOrSymbol: any): ReadonlyAsset {
   }
 
   // Return it from cache
-  const found = assetOrSymbol
-    ? ASSET_MAP.get(assetOrSymbol.toLowerCase())
-    : false;
+  const found = assetOrSymbol ? ASSET_MAP.get(assetOrSymbol.toLowerCase()) : false;
 
   if (!found) {
-    throw new Error(
-      `Attempt to retrieve the asset with key "${assetOrSymbol}" before it had been cached.`
-    );
+    throw new Error(`Attempt to retrieve the asset with key "${assetOrSymbol}" before it had been cached.`);
   }
 
   return found;

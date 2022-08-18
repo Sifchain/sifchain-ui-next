@@ -3,10 +3,7 @@ import { useState, memo } from "react";
 
 export type ImageDecoding = "auto" | "sync" | "async";
 
-export type AsyncImageProps = Omit<
-  JSX.IntrinsicElements["img"],
-  "placeholder"
-> & {
+export type AsyncImageProps = Omit<JSX.IntrinsicElements["img"], "placeholder"> & {
   placeholder?: JSX.Element;
   containerClassName?: string;
 };
@@ -28,10 +25,7 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
   return (
     <picture
       style={{ height, width }}
-      className={clsx(
-        "relative grid place-items-center overflow-hidden",
-        containerClassName
-      )}
+      className={clsx("relative grid place-items-center overflow-hidden", containerClassName)}
     >
       {shouldRenderPlaceholder && <>{placeholder}</>}
       <img
@@ -43,7 +37,7 @@ export const AsyncImage = memo<AsyncImageProps>(function AsyncImage({
           {
             "opacity-0": !loaded,
           },
-          className
+          className,
         )}
         {...props}
       />

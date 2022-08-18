@@ -1,24 +1,9 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
 import { useAccounts } from "@sifchain/cosmos-connect";
-import {
-  ArrowDownIcon,
-  Button,
-  Input,
-  Label,
-  Modal,
-  ModalProps,
-  RacetrackSpinnerIcon,
-} from "@sifchain/ui";
+import { ArrowDownIcon, Button, Input, Label, Modal, ModalProps, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { isNil } from "rambda";
-import {
-  ChangeEventHandler,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ChangeEventHandler, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -43,19 +28,12 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
     enabled: token !== undefined && !isEthToken,
   });
   const ethAccount = useAccount();
-  const recipientAddress = isEthToken
-    ? ethAccount?.address
-    : cosmAccounts?.[0]?.address;
+  const recipientAddress = isEthToken ? ethAccount?.address : cosmAccounts?.[0]?.address;
 
   const [amount, setAmount] = useState("");
   const amountDecimal = useMemo(
-    () =>
-      runCatching(() =>
-        token === undefined
-          ? undefined
-          : Decimal.fromUserInput(amount, token?.decimals)
-      )[1],
-    [amount, token]
+    () => runCatching(() => (token === undefined ? undefined : Decimal.fromUserInput(amount, token?.decimals)))[1],
+    [amount, token],
   );
 
   const error = useMemo(() => {
@@ -67,11 +45,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
       return new Error("Please connect Sifchain wallet");
     }
 
-    if (
-      amountDecimal?.isGreaterThan(
-        balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits)
-      )
-    ) {
+    if (amountDecimal?.isGreaterThan(balance?.amount ?? Decimal.zero(amountDecimal.fractionalDigits))) {
       return new Error("Insufficient fund");
     }
 
@@ -90,9 +64,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
         return "Transaction failed";
       case "idle":
       default:
-        return `Export ${indexedByDenom[
-          props.denom
-        ]?.displaySymbol.toUpperCase()} from Sifchain`;
+        return `Export ${indexedByDenom[props.denom]?.displaySymbol.toUpperCase()} from Sifchain`;
     }
   }, [exportTokensMutation.status, indexedByDenom, props.denom]);
 
@@ -107,20 +79,11 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
 
     return (
       <>
-        {exportTokensMutation.isLoading ? (
-          <RacetrackSpinnerIcon />
-        ) : (
-          <ArrowDownIcon className="rotate-180" />
-        )}
+        {exportTokensMutation.isLoading ? <RacetrackSpinnerIcon /> : <ArrowDownIcon className="rotate-180" />}
         Export
       </>
     );
-  }, [
-    error,
-    exportTokensMutation.isError,
-    exportTokensMutation.isLoading,
-    exportTokensMutation.isSuccess,
-  ]);
+  }, [error, exportTokensMutation.isError, exportTokensMutation.isLoading, exportTokensMutation.isSuccess]);
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLElement>) => {
@@ -140,13 +103,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
         },
       });
     },
-    [
-      amountDecimal?.atomics,
-      exportTokensMutation,
-      props,
-      recipientAddress,
-      sifAccounts,
-    ]
+    [amountDecimal?.atomics, exportTokensMutation, props, recipientAddress, sifAccounts],
   );
 
   useEffect(() => {
@@ -156,27 +113,18 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
   }, [props.isOpen]);
 
   return (
-    <Modal
-      {...props}
-      title={title}
-      onTransitionEnd={() => exportTokensMutation.reset()}
-    >
+    <Modal {...props} title={title} onTransitionEnd={() => exportTokensMutation.reset()}>
       <form onSubmit={onSubmit}>
         <fieldset className="mb-4 rounded-lg bg-black p-4">
           <Input
             inputClassName="text-right"
             type="number"
             label="Amount"
-            secondaryLabel={`Balance: ${(
-              balance?.amount?.toFloatApproximation() ?? 0
-            ).toLocaleString(undefined, {
+            secondaryLabel={`Balance: ${(balance?.amount?.toFloatApproximation() ?? 0).toLocaleString(undefined, {
               maximumFractionDigits: 6,
             })}`}
             value={amount}
-            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
-              (event) => setAmount(event.target.value),
-              []
-            )}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>((event) => setAmount(event.target.value), [])}
             leadingIcon={
               <div className="flex gap-1.5">
                 <Label
@@ -184,14 +132,11 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                   onClick={useCallback(() => {
                     if (balance?.amount !== undefined) {
                       setAmount(
-                        (
-                          balance.amount.toFloatApproximation() / 2
-                        ).toLocaleString(undefined, {
+                        (balance.amount.toFloatApproximation() / 2).toLocaleString(undefined, {
                           minimumFractionDigits: 0,
-                          maximumFractionDigits:
-                            balance.amount.fractionalDigits,
+                          maximumFractionDigits: balance.amount.fractionalDigits,
                           useGrouping: false,
-                        })
+                        }),
                       );
                     }
                   }, [balance?.amount])}
@@ -200,10 +145,7 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
                 </Label>
                 <Label
                   type="button"
-                  onClick={useCallback(
-                    () => setAmount((x) => balance?.amount?.toString() ?? x),
-                    [balance?.amount]
-                  )}
+                  onClick={useCallback(() => setAmount((x) => balance?.amount?.toString() ?? x), [balance?.amount])}
                 >
                   Max
                 </Label>
@@ -225,22 +167,16 @@ const ExportModal = (props: ModalProps & { denom: string }) => {
           <div>
             <dt>Export amount</dt>
             <dd>
-              {amountDecimal
-                ?.toFloatApproximation()
-                .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              {amountDecimal?.toFloatApproximation().toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
               <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
             </dd>
           </div>
           <div>
             <dt>New Sifchain Balance</dt>
             <dd>
-              {(amountDecimal !== undefined &&
-              balance?.amount?.isGreaterThanOrEqual(amountDecimal)
+              {(amountDecimal !== undefined && balance?.amount?.isGreaterThanOrEqual(amountDecimal)
                 ? balance.amount
-                    .minus(
-                      amountDecimal ??
-                        Decimal.zero(balance.amount.fractionalDigits)
-                    )
+                    .minus(amountDecimal ?? Decimal.zero(balance.amount.fractionalDigits))
                     .toFloatApproximation()
                 : 0
               ).toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}

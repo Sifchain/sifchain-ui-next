@@ -29,25 +29,11 @@ export const Tooltip: FC<TooltipProps> = (props) => {
 
   const arrowRef = useRef<HTMLDivElement>(null);
 
-  const {
-    x,
-    y,
-    reference,
-    floating,
-    strategy,
-    context,
-    middlewareData,
-    placement,
-  } = useFloating({
+  const { x, y, reference, floating, strategy, context, middlewareData, placement } = useFloating({
     placement: props.placement ?? "top",
     open,
     onOpenChange: setOpen,
-    middleware: [
-      offset(5),
-      flip(),
-      shift({ padding: 8 }),
-      arrow({ element: arrowRef }),
-    ],
+    middleware: [offset(5), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
     whileElementsMounted: autoUpdate,
   });
 
@@ -89,10 +75,7 @@ export const Tooltip: FC<TooltipProps> = (props) => {
 
   return (
     <>
-      {cloneElement(
-        props.children,
-        getReferenceProps({ ref: reference, ...props.children.props })
-      )}
+      {cloneElement(props.children, getReferenceProps({ ref: reference, ...props.children.props }))}
       <Transition
         show={open}
         enter="transition-all duration-75 ease-in-out"
@@ -105,15 +88,9 @@ export const Tooltip: FC<TooltipProps> = (props) => {
         className="grid gap-1 rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
         {...floatingProps}
       >
-        {props.title && (
-          <div className="flex font-semibold text-gray-100">{props.title}</div>
-        )}
+        {props.title && <div className="flex font-semibold text-gray-100">{props.title}</div>}
         {props.content}
-        <span
-          className="absolute h-2 w-2 rotate-45 bg-gray-700"
-          ref={arrowRef}
-          style={arrowStyle}
-        />
+        <span className="absolute h-2 w-2 rotate-45 bg-gray-700" ref={arrowRef} style={arrowStyle} />
       </Transition>
     </>
   );

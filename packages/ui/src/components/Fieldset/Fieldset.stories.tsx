@@ -32,18 +32,8 @@ const Template: ComponentStory<typeof Fieldset> = (args) => {
 
   return (
     <Fieldset {...args} className="flex gap-2">
-      <Select
-        className="flex-1"
-        value={selectedOption}
-        onChange={setSelectedOption}
-        options={options}
-      />
-      <Select
-        className="flex-1"
-        value={selectedOption}
-        onChange={setSelectedOption}
-        options={options}
-      />
+      <Select className="flex-1" value={selectedOption} onChange={setSelectedOption} options={options} />
+      <Select className="flex-1" value={selectedOption} onChange={setSelectedOption} options={options} />
     </Fieldset>
   );
 };

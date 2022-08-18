@@ -11,11 +11,8 @@ type AssetIconProps = {
 export const AssetIcon: FC<AssetIconProps> = (props) => (
   <AsyncImage
     src={props.imageUrl}
-    className={clsx(
-      "relative grid h-8 w-8 place-items-center rounded-full border-4 border-black/70 bg-black p-px",
-      {
-        "!bg-white": props.hasDarkIcon,
-      }
-    )}
+    className={clsx("relative grid h-8 w-8 place-items-center rounded-full border-4 border-black/70 bg-black p-px", {
+      "!bg-white": props.hasDarkIcon,
+    })}
   />
 );

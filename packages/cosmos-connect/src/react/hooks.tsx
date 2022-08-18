@@ -7,8 +7,7 @@ export type HookOptions = {
 };
 
 export const useConnect = () => {
-  const { connectors, activeConnector, connect, disconnect } =
-    useContext(CosmConnectContext);
+  const { connectors, activeConnector, connect, disconnect } = useContext(CosmConnectContext);
 
   const connectAsyncFunc = useAsyncFunc(connect);
   const disconnectAsyncFunc = useAsyncFunc(disconnect);
@@ -24,20 +23,14 @@ export const useConnect = () => {
   };
 };
 
-export const useSigner = (
-  chainId: string,
-  options: HookOptions = { enabled: true }
-) => {
+export const useSigner = (chainId: string, options: HookOptions = { enabled: true }) => {
   const { activeConnector } = useConnect();
 
   const {
     data: signer,
     fetch,
     status,
-  } = useAsyncFunc(
-    async () => activeConnector?.getSigner(chainId),
-    [activeConnector, chainId]
-  );
+  } = useAsyncFunc(async () => activeConnector?.getSigner(chainId), [activeConnector, chainId]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -58,20 +51,14 @@ export const useSigner = (
   return { signer, status };
 };
 
-export const useStargateClient = (
-  chainId: string,
-  options: HookOptions = { enabled: true }
-) => {
+export const useStargateClient = (chainId: string, options: HookOptions = { enabled: true }) => {
   const { activeConnector } = useConnect();
 
   const {
     data: client,
     fetch,
     status,
-  } = useAsyncFunc(
-    async () => activeConnector?.getStargateClient(chainId),
-    [activeConnector, chainId]
-  );
+  } = useAsyncFunc(async () => activeConnector?.getStargateClient(chainId), [activeConnector, chainId]);
 
   useEffect(() => {
     if (options.enabled) {
@@ -82,20 +69,14 @@ export const useStargateClient = (
   return { client, status };
 };
 
-export const useSigningStargateClient = (
-  chainId: string,
-  options: HookOptions = { enabled: true }
-) => {
+export const useSigningStargateClient = (chainId: string, options: HookOptions = { enabled: true }) => {
   const { activeConnector } = useConnect();
 
   const {
     data: client,
     fetch,
     status,
-  } = useAsyncFunc(
-    async () => activeConnector?.getSigningStargateClient(chainId),
-    [activeConnector, chainId]
-  );
+  } = useAsyncFunc(async () => activeConnector?.getSigningStargateClient(chainId), [activeConnector, chainId]);
 
   useEffect(() => {
     if (options.enabled) {
@@ -106,17 +87,10 @@ export const useSigningStargateClient = (
   return { client, status };
 };
 
-export const useAccounts = (
-  chainId: string,
-  options: HookOptions = { enabled: true }
-) => {
+export const useAccounts = (chainId: string, options: HookOptions = { enabled: true }) => {
   const { signer } = useSigner(chainId, options);
 
-  const {
-    data: accounts,
-    fetch,
-    status,
-  } = useAsyncFunc(async () => signer?.getAccounts(), [signer, chainId]);
+  const { data: accounts, fetch, status } = useAsyncFunc(async () => signer?.getAccounts(), [signer, chainId]);
 
   useEffect(() => {
     if (options.enabled) {

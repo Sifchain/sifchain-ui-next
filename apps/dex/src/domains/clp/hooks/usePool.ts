@@ -10,8 +10,7 @@ export function usePoolQuery(denom: string) {
   const { data: poolRes } = useSifnodeQuery("clp.getPool", [{ symbol: denom }]);
   const { data: env } = useDexEnvironment();
 
-  const externalToken =
-    indexedByDenom[poolRes?.pool?.externalAsset?.symbol ?? ""];
+  const externalToken = indexedByDenom[poolRes?.pool?.externalAsset?.symbol ?? ""];
 
   return useQuery(
     ["pool", denom],
@@ -27,22 +26,13 @@ export function usePoolQuery(denom: string) {
             ? undefined
             : {
                 ...poolRes.pool,
-                externalAssetBalance: Decimal.fromAtomics(
-                  poolRes.pool.externalAssetBalance,
-                  externalToken.decimals
-                ),
-                nativeAssetBalance: Decimal.fromAtomics(
-                  poolRes.pool.nativeAssetBalance,
-                  env.nativeAsset.decimals
-                ),
+                externalAssetBalance: Decimal.fromAtomics(poolRes.pool.externalAssetBalance, externalToken.decimals),
+                nativeAssetBalance: Decimal.fromAtomics(poolRes.pool.nativeAssetBalance, env.nativeAsset.decimals),
               },
       };
     },
     {
-      enabled:
-        externalToken !== undefined &&
-        poolRes !== undefined &&
-        env !== undefined,
-    }
+      enabled: externalToken !== undefined && poolRes !== undefined && env !== undefined,
+    },
   );
 }

@@ -102,7 +102,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
       </Fieldset>
       <section className="p-4">
         <header className="mb-2">Est. amount you will receive:</header>
-        <dl className="[&>div]:flex [&>div]:justify-between [&_dt]:font-semibold [&_dt]:uppercase flex flex-col gap-2">
+        <dl className="flex flex-col gap-2 [&>div]:flex [&>div]:justify-between [&_dt]:font-semibold [&_dt]:uppercase">
           <div>
             <dt>{externalToken?.displaySymbol}</dt>
             <dd>

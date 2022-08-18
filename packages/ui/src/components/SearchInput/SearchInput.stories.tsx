@@ -11,9 +11,7 @@ export default {
   },
 } as ComponentMeta<typeof SearchInput>;
 
-const Template: ComponentStory<typeof SearchInput> = (args) => (
-  <SearchInput {...args} />
-);
+const Template: ComponentStory<typeof SearchInput> = (args) => <SearchInput {...args} />;
 
 export const Default = Template.bind({});
 

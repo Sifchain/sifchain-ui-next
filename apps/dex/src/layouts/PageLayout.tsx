@@ -24,18 +24,12 @@ const PageLayout: FC<PropsWithChildren<Props>> = (props) => {
         <header className="items-center gap-2 p-2 md:flex">
           {props.heading && (
             <nav className="flex items-center gap-2">
-              {props.withBackNavigation && (
-                <BackButton onClick={() => router.back()} />
-              )}
-              <span className="rounded py-0.5 px-2 text-gray-300 before:content-['/_']">
-                {props.heading}
-              </span>
+              {props.withBackNavigation && <BackButton onClick={() => router.back()} />}
+              <span className="rounded py-0.5 px-2 text-gray-300 before:content-['/_']">{props.heading}</span>
             </nav>
           )}
         </header>
-        <div className="max-h-[calc(100vh-200px)] overflow-y-scroll p-6">
-          {props.children}
-        </div>
+        <div className="max-h-[calc(100vh-200px)] overflow-y-scroll p-6">{props.children}</div>
       </SurfaceB>
     </>
   );

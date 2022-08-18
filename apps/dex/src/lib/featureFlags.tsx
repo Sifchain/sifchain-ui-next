@@ -35,11 +35,7 @@ type FeatureFlagProps = PropsWithChildren<{
   fallback?: ReactNode;
 }>;
 
-export const FeatureFlag: FC<FeatureFlagProps> = ({
-  children,
-  key,
-  fallback = null,
-}) => {
+export const FeatureFlag: FC<FeatureFlagProps> = ({ children, key, fallback = null }) => {
   const isFeatureOn = useFeatureFlag(key);
 
   return <>{isFeatureOn ? children : fallback}</>;
@@ -52,7 +48,7 @@ export function withRedirectOnMount<T>(
     // eslint-disable-next-line no-unused-vars
     redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
     fallback?: ReactNode;
-  }
+  },
 ) {
   function RedirectOnMount(innerProps: T) {
     const router = useRouter();
@@ -61,11 +57,7 @@ export function withRedirectOnMount<T>(
 
     useRedirectOnMount(options.redirectTo, options.redirectIf({ flags }));
 
-    return router.isReady ? (
-      <InnerComponent {...innerProps} />
-    ) : (
-      options.fallback ?? <>...</>
-    );
+    return router.isReady ? <InnerComponent {...innerProps} /> : options.fallback ?? <>...</>;
   }
 
   RedirectOnMount.displayName = `withRedirectOnMount(${InnerComponent.displayName})`;

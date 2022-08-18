@@ -39,7 +39,7 @@ Default.args = {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setTimeout(() => res(import("./fixture/Acme")), 2000);
-          })
+          }),
       ),
     },
     {
@@ -52,7 +52,7 @@ Default.args = {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setTimeout(() => res(import("./fixture/Tales")), 2000);
-          })
+          }),
       ),
     },
   ],
@@ -61,9 +61,7 @@ Default.args = {
 export const CustomLoading = Template.bind({});
 CustomLoading.args = {
   fallbackSuspense: (
-    <div className="m-4 border border-red-800 bg-red-100 p-10 text-center text-red-600">
-      Custom Loading, Yeah!
-    </div>
+    <div className="m-4 border border-red-800 bg-red-100 p-10 text-center text-red-600">Custom Loading, Yeah!</div>
   ),
   items: [
     {
@@ -76,7 +74,7 @@ CustomLoading.args = {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setTimeout(() => res(import("./fixture/Acme")), 2000);
-          })
+          }),
       ),
     },
     {
@@ -89,7 +87,7 @@ CustomLoading.args = {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             setTimeout(() => res(import("./fixture/Tales")), 2000);
-          })
+          }),
       ),
     },
   ],

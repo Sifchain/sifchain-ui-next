@@ -9,17 +9,11 @@ export type FieldsetProps = Omit<JSX.IntrinsicElements["fieldset"], "ref"> & {
   label?: string;
 };
 
-export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
-  ({ label, children, ...props }, ref) => {
-    return (
-      <StyledWrapper {...props} ref={ref}>
-        {label && (
-          <legend className="block translate-y-10 pb-6 font-semibold text-gray-200">
-            {label}
-          </legend>
-        )}
-        {children}
-      </StyledWrapper>
-    );
-  }
-);
+export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(({ label, children, ...props }, ref) => {
+  return (
+    <StyledWrapper {...props} ref={ref}>
+      {label && <legend className="block translate-y-10 pb-6 font-semibold text-gray-200">{label}</legend>}
+      {children}
+    </StyledWrapper>
+  );
+});

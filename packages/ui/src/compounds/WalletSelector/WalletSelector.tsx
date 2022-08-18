@@ -1,24 +1,11 @@
 import { FC, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
-import {
-  ArrowLeftIcon,
-  Button,
-  Modal,
-  SearchInput,
-  WalletIcon,
-} from "../../components";
-import {
-  ConnectedWallets,
-  type RenderConnectedAccount,
-  type ConnectedWalletsProps,
-} from "./ConnectedWallets";
+import { ArrowLeftIcon, Button, Modal, SearchInput, WalletIcon } from "../../components";
+import { ConnectedWallets, type RenderConnectedAccount, type ConnectedWalletsProps } from "./ConnectedWallets";
 import type { ChainEntry, WalletEntry } from "./types";
 
-export type WalletSelectorStep =
-  | "choose-network"
-  | "choose-wallet"
-  | "await-confirmation";
+export type WalletSelectorStep = "choose-network" | "choose-wallet" | "await-confirmation";
 
 const ListContainer = tw.ul`
   grid gap-2 max-h-64 overflow-y-scroll -mx-3
@@ -77,15 +64,9 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
     }
   }, [step]);
 
-  const selectedNetwork = useMemo(
-    () => props.chains.find((x) => x.id === networkId),
-    [networkId]
-  );
+  const selectedNetwork = useMemo(() => props.chains.find((x) => x.id === networkId), [networkId]);
 
-  const selectedWallet = useMemo(
-    () => props.wallets.find((x) => x.id === walletId),
-    [walletId]
-  );
+  const selectedWallet = useMemo(() => props.wallets.find((x) => x.id === walletId), [walletId]);
 
   const [subHeading, content] = useMemo(() => {
     switch (step) {
@@ -106,7 +87,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                   (x) =>
                     !(x.chainId in props.accounts) &&
                     !(x.id in props.accounts) &&
-                    x.name.toLowerCase().includes(search)
+                    x.name.toLowerCase().includes(search),
                 )
                 .map((x) => (
                   <ListItem
@@ -131,20 +112,12 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
         return [
           <label className="flex w-full items-center justify-between">
             <span>Choose wallet</span>
-            <SearchInput
-              placeholder="Search wallet"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <SearchInput placeholder="Search wallet" value={search} onChange={(e) => setSearch(e.target.value)} />
           </label>,
           <>
             <ListContainer>
               {props.wallets
-                .filter(
-                  (x) =>
-                    selectedNetwork?.type === x.type &&
-                    x.name.toLowerCase().includes(search)
-                )
+                .filter((x) => selectedNetwork?.type === x.type && x.name.toLowerCase().includes(search))
                 .map((x) => (
                   <ListItem
                     key={x.id}
@@ -174,11 +147,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           2,
         ];
       case "await-confirmation":
-        if (
-          selectedNetwork &&
-          (selectedNetwork.chainId in props.accounts ||
-            selectedNetwork.id in props.accounts)
-        ) {
+        if (selectedNetwork && (selectedNetwork.chainId in props.accounts || selectedNetwork.id in props.accounts)) {
           resetState();
           return [<></>, <></>];
         }
@@ -187,8 +156,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           <>
             <div className="grid place-items-center gap-4">
               <p>
-                Connect {selectedWallet?.name} to {selectedNetwork?.name} to
-                proceed
+                Connect {selectedWallet?.name} to {selectedNetwork?.name} to proceed
               </p>
               <Button
                 onClick={() => {
@@ -207,18 +175,9 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
       default:
         return [<></>];
     }
-  }, [
-    step,
-    search,
-    props.chains,
-    props.wallets,
-    props.onConnect,
-    props.onCancel,
-  ]);
+  }, [step, search, props.chains, props.wallets, props.onConnect, props.onCancel]);
 
-  const accountEntries = Object.entries(props.accounts).filter(
-    ([, x]) => x.length
-  );
+  const accountEntries = Object.entries(props.accounts).filter(([, x]) => x.length);
 
   return (
     <>

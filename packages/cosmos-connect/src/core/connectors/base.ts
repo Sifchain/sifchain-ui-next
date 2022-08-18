@@ -8,9 +8,7 @@ export type ConnectorEvents = {
   change(): void;
 };
 
-export abstract class BaseCosmConnector<
-  Options = any
-> extends EventEmitter<ConnectorEvents> {
+export abstract class BaseCosmConnector<Options = any> extends EventEmitter<ConnectorEvents> {
   /** Unique connector id */
   abstract readonly id: string;
   /** Connector name */
@@ -29,7 +27,5 @@ export abstract class BaseCosmConnector<
   abstract disconnect(): Promise<void>;
   abstract getSigner(chainId: string): Promise<OfflineSigner>;
   abstract getStargateClient(chainId: string): Promise<StargateClient>;
-  abstract getSigningStargateClient(
-    chainId: string
-  ): Promise<SigningStargateClient>;
+  abstract getSigningStargateClient(chainId: string): Promise<SigningStargateClient>;
 }

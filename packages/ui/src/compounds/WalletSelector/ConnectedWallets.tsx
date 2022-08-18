@@ -1,13 +1,7 @@
 import { Popover } from "@headlessui/react";
 import type { FC } from "react";
 
-import {
-  AppearTransition,
-  Button,
-  ChevronDownIcon,
-  PlusIcon,
-  SurfaceA,
-} from "../../components";
+import { AppearTransition, Button, ChevronDownIcon, PlusIcon, SurfaceA } from "../../components";
 import { ConnectedAccount, ConnectedAccountProps } from "./ConnectedAccount";
 import type { ChainEntry } from "./types";
 
@@ -40,15 +34,10 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
         </div>
       </Popover.Button>
       <AppearTransition>
-        <Popover.Panel
-          as={SurfaceA}
-          className="absolute top-[74px] right-2.5 z-10 grid w-[350px] min-w-max gap-4"
-        >
+        <Popover.Panel as={SurfaceA} className="absolute top-[74px] right-2.5 z-10 grid w-[350px] min-w-max gap-4">
           <ul className="grid gap-1">
             {props.accounts.map(([chainId, accounts]) => {
-              const chain = props.chains.find(
-                (x) => x.id === chainId || x.chainId === chainId
-              );
+              const chain = props.chains.find((x) => x.id === chainId || x.chainId === chainId);
 
               const connectedAccountProps: ConnectedAccountProps = {
                 account: accounts[0] ?? "",
@@ -64,15 +53,9 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 onConnectAnotherWallet: props.onConnectAnotherWallet,
               };
 
-              const ConnectedAccountComponent =
-                props.renderConnectedAccount ?? ConnectedAccount;
+              const ConnectedAccountComponent = props.renderConnectedAccount ?? ConnectedAccount;
 
-              return (
-                <ConnectedAccountComponent
-                  key={chainId}
-                  {...connectedAccountProps}
-                />
-              );
+              return <ConnectedAccountComponent key={chainId} {...connectedAccountProps} />;
             })}
           </ul>
           <hr className="border-gray-500" aria-hidden />

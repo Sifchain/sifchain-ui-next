@@ -5,9 +5,7 @@ import { useMemo } from "react";
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
-export function useAssetsQuery(
-  networkKinds: NetworkKind | NetworkKind[] = "sifchain"
-) {
+export function useAssetsQuery(networkKinds: NetworkKind | NetworkKind[] = "sifchain") {
   const { data: dexEnv, ...query } = useDexEnvironment();
 
   const networkAssets = useMemo(() => {
@@ -22,9 +20,7 @@ export function useAssetsQuery(
     }
 
     return assets.filter((x) =>
-      typeof networkKinds === "string"
-        ? x.network === networkKinds
-        : networkKinds.includes(x.network)
+      typeof networkKinds === "string" ? x.network === networkKinds : networkKinds.includes(x.network),
     );
   }, [dexEnv, networkKinds]);
 
@@ -36,15 +32,9 @@ export function useAssetsQuery(
       };
     }
 
-    const indexedBySymbol = indexBy(
-      compose(toLower, prop("symbol")),
-      networkAssets
-    );
+    const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), networkAssets);
 
-    const indexedByDisplaySymbol = indexBy(
-      compose(toLower, prop("displaySymbol")),
-      networkAssets
-    );
+    const indexedByDisplaySymbol = indexBy(compose(toLower, prop("displaySymbol")), networkAssets);
 
     return {
       indexedBySymbol,

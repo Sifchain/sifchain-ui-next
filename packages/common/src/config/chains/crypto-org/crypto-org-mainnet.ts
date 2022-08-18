@@ -8,8 +8,7 @@ export const CRYPTO_ORG_MAINNET: IBCChainConfig = {
   nativeAssetSymbol: "basecro",
   chainId: "crypto-org-chain-mainnet-1",
   rpcUrl: "https://proxies.sifchain.finance/api/crypto-org-chain-mainnet-1/rpc",
-  restUrl:
-    "https://proxies.sifchain.finance/api/crypto-org-chain-mainnet-1/rest",
+  restUrl: "https://proxies.sifchain.finance/api/crypto-org-chain-mainnet-1/rest",
   keplrChainInfo: {
     rpc: "https://proxies.sifchain.finance/api/crypto-org-chain-mainnet-1/rpc",
     rest: "https://proxies.sifchain.finance/api/crypto-org-chain-mainnet-1/rest",

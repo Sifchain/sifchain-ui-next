@@ -40,25 +40,18 @@ export const useImportTokensMutation = () => {
           throw new Error("No EVM signer found, please connect your wallet");
         }
 
-        const erc20Abi = [
-          "function approve(address _spender, uint256 _value) public returns (bool success)",
-        ];
-        const contract = new ethers.Contract(
-          variables.tokenAddress,
-          erc20Abi,
-          signer
-        );
+        const erc20Abi = ["function approve(address _spender, uint256 _value) public returns (bool success)"];
+        const contract = new ethers.Contract(variables.tokenAddress, erc20Abi, signer);
 
-        await contract["approve"](
-          env?.bridgebankContractAddress,
-          variables.amount.amount
-        ).then((x: ContractTransaction) => x.wait());
+        await contract["approve"](env?.bridgebankContractAddress, variables.amount.amount).then(
+          (x: ContractTransaction) => x.wait(),
+        );
 
         return evmSdk.peggy
           .sendTokensToCosmos(
             ethers.utils.toUtf8Bytes(variables.recipientAddress),
             variables.tokenAddress,
-            variables.amount.amount
+            variables.amount.amount,
           )
           .then((x) => x.wait());
       } else {
@@ -68,18 +61,13 @@ export const useImportTokensMutation = () => {
           throw new Error("Could not get wallet connection for sifchain");
         }
 
-        const counterPartySigningStargateClient =
-          await activeConnector?.getSigningStargateClient(variables.chainId);
+        const counterPartySigningStargateClient = await activeConnector?.getSigningStargateClient(variables.chainId);
 
         if (counterPartySigningStargateClient === undefined) {
-          throw new Error(
-            `Could not get wallet connection for ${variables.chainId}`
-          );
+          throw new Error(`Could not get wallet connection for ${variables.chainId}`);
         }
 
-        const counterPartyAccounts = await activeConnector
-          ?.getSigner(variables.chainId)
-          .then((x) => x.getAccounts());
+        const counterPartyAccounts = await activeConnector?.getSigner(variables.chainId).then((x) => x.getAccounts());
 
         return stargateClient.importIbcTokens(
           counterPartySigningStargateClient,
@@ -90,7 +78,7 @@ export const useImportTokensMutation = () => {
           undefined,
           getUnixTime(addMinutes(new Date(), 15)),
           DEFAULT_FEE,
-          variables.memo
+          variables.memo,
         );
       }
     },
@@ -126,6 +114,6 @@ export const useImportTokensMutation = () => {
           }
         }
       },
-    }
+    },
   );
 };

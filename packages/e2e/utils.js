@@ -77,11 +77,7 @@ export async function getInputValue(selector) {
 //     .until((text) => expect(text.trim()).toBe(expectedText));
 // }
 
-export async function assertWaitedValue(
-  selector,
-  expectedValue,
-  timeout = 30000
-) {
+export async function assertWaitedValue(selector, expectedValue, timeout = 30000) {
   const value = await retry()
     .fn(() => getInputValue(selector))
     .withTimeout(timeout)

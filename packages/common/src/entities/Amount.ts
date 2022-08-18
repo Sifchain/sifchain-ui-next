@@ -24,9 +24,7 @@ export type IAmount = {
   subtract(other: IAmount | string | number): IAmount;
 };
 
-export function Amount(
-  source: JSBI | bigint | string | IAmount | number
-): Readonly<IAmount> {
+export function Amount(source: JSBI | bigint | string | IAmount | number): Readonly<IAmount> {
   type _IAmount = _ExposeInternal<IAmount>;
 
   if (typeof source === "number") {
@@ -49,11 +47,7 @@ export function Amount(
     throw new Error(`Amount input cannot be falsey given <${source}>`);
   }
 
-  if (
-    !(source instanceof JSBI) &&
-    typeof source !== "bigint" &&
-    typeof source !== "string"
-  ) {
+  if (!(source instanceof JSBI) && typeof source !== "bigint" && typeof source !== "string") {
     if (isAssetAmount(source)) {
       return source.amount;
     }
@@ -114,9 +108,7 @@ export function Amount(
     sqrt() {
       // TODO: test against rounding errors
       const big = toBig(fraction);
-      const string = toFraction(
-        big.sqrt().times("100000000000000000000000").toFixed(0)
-      ) as string;
+      const string = toFraction(big.sqrt().times("100000000000000000000000").toFixed(0)) as string;
       return Amount(string).divide("100000000000000000000000");
     },
 
@@ -153,13 +145,9 @@ function getQuotientWithBankersRounding(fraction: IFraction): JSBI {
   const a = fraction.numerator;
   const b = fraction.denominator;
 
-  const aAbs = JSBI.greaterThan(a, JSBI.BigInt("0"))
-    ? a
-    : JSBI.multiply(JSBI.BigInt("-1"), a);
+  const aAbs = JSBI.greaterThan(a, JSBI.BigInt("0")) ? a : JSBI.multiply(JSBI.BigInt("-1"), a);
 
-  const bAbs = JSBI.greaterThan(b, JSBI.BigInt("0"))
-    ? b
-    : JSBI.multiply(JSBI.BigInt("-1"), b);
+  const bAbs = JSBI.greaterThan(b, JSBI.BigInt("0")) ? b : JSBI.multiply(JSBI.BigInt("-1"), b);
 
   let result = JSBI.divide(aAbs, bAbs);
 
@@ -168,17 +156,12 @@ function getQuotientWithBankersRounding(fraction: IFraction): JSBI {
   if (JSBI.greaterThan(JSBI.multiply(rem, JSBI.BigInt("2")), bAbs)) {
     result = JSBI.add(result, JSBI.BigInt("1"));
   } else if (JSBI.equal(JSBI.multiply(rem, JSBI.BigInt("2")), bAbs)) {
-    if (
-      JSBI.equal(JSBI.remainder(result, JSBI.BigInt("2")), JSBI.BigInt("1"))
-    ) {
+    if (JSBI.equal(JSBI.remainder(result, JSBI.BigInt("2")), JSBI.BigInt("1"))) {
       result = JSBI.add(result, JSBI.BigInt("1"));
     }
   }
 
-  if (
-    JSBI.greaterThan(a, JSBI.BigInt("0")) !==
-    JSBI.greaterThan(b, JSBI.BigInt("0"))
-  ) {
+  if (JSBI.greaterThan(a, JSBI.BigInt("0")) !== JSBI.greaterThan(b, JSBI.BigInt("0"))) {
     return JSBI.multiply(JSBI.BigInt("-1"), result);
   } else {
     return result;
@@ -186,9 +169,7 @@ function getQuotientWithBankersRounding(fraction: IFraction): JSBI {
 }
 
 function getAmountFromDecimal(decimal: string): IAmount {
-  return Amount(floorDecimal(decimalShift(decimal, 18))).divide(
-    "1000000000000000000"
-  );
+  return Amount(floorDecimal(decimalShift(decimal, 18))).divide("1000000000000000000");
 }
 
 // exported ONLY to be shared with AssetAmount!

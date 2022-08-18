@@ -30,30 +30,15 @@ const Assets = () => {
   return (
     <div className="grid gap-8">
       <div>
-        <SearchInput
-          placeholder="ROWAN"
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <SearchInput placeholder="ROWAN" onChange={(e) => setSearch(e.target.value)} />
       </div>
-      <AssetsSection
-        search={search}
-        title="Sifchain Assets"
-        network="sifchain"
-        env="mainnet"
-      />
-      <AssetsSection
-        search={search}
-        title="Ethereum Assets"
-        network="ethereum"
-        env="mainnet"
-      />
+      <AssetsSection search={search} title="Sifchain Assets" network="sifchain" env="mainnet" />
+      <AssetsSection search={search} title="Ethereum Assets" network="ethereum" env="mainnet" />
     </div>
   );
 };
 
-const AssetsSection: FC<
-  { title: string; search: string } & AssetsQueryOptions
-> = (props) => {
+const AssetsSection: FC<{ title: string; search: string } & AssetsQueryOptions> = (props) => {
   const { data: assets } = useAssetsQuery({
     network: props.network,
     env: props.env,
@@ -76,14 +61,11 @@ const AssetsSection: FC<
   return (
     <section className="grid gap-4">
       <header className="flex items-center justify-between">
-        <h2 className="text-xl">{props.title}</h2>{" "}
-        {assets && <div>{assets.length} assets</div>}
+        <h2 className="text-xl">{props.title}</h2> {assets && <div>{assets.length} assets</div>}
       </header>
       <CardsGrid>
         {assets
-          ?.filter((asset) =>
-            asset.name.toLowerCase().includes(props.search.toLowerCase())
-          )
+          ?.filter((asset) => asset.name.toLowerCase().includes(props.search.toLowerCase()))
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((asset) => (
             <li key={asset.symbol}>
@@ -92,18 +74,15 @@ const AssetsSection: FC<
                   {asset.imageUrl && (
                     <figure
                       className={clsx(
-                        "h-8 w-8 overflow-hidden rounded-full ring-2 ring-gray-750",
-                        asset.hasDarkIcon ? "bg-gray-500" : "bg-gray-200"
+                        "ring-gray-750 h-8 w-8 overflow-hidden rounded-full ring-2",
+                        asset.hasDarkIcon ? "bg-gray-500" : "bg-gray-200",
                       )}
                     >
                       <AsyncImage
                         alt={`${asset.name} logo`}
-                        className={clsx(
-                          "h-8 w-8 overflow-hidden rounded-full p-0.5",
-                          {
-                            "ring-blue-300 invert": asset.hasDarkIcon,
-                          }
-                        )}
+                        className={clsx("h-8 w-8 overflow-hidden rounded-full p-0.5", {
+                          "ring-blue-300 invert": asset.hasDarkIcon,
+                        })}
                         src={asset.imageUrl}
                       />
                     </figure>

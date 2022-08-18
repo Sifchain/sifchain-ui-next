@@ -1,11 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import {
-  ArrowDownIcon,
-  Button,
-  Modal,
-  PoolsIcon,
-  SwapIcon,
-} from "@sifchain/ui";
+import { ArrowDownIcon, Button, Modal, PoolsIcon, SwapIcon } from "@sifchain/ui";
 import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
 import clsx from "clsx";
 import type { NextPage } from "next";
@@ -17,16 +11,9 @@ import { useCallback, useMemo, useState } from "react";
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";
-import {
-  useBalancesStats,
-  useBalancesWithPool,
-} from "~/domains/bank/hooks/balances";
+import { useBalancesStats, useBalancesWithPool } from "~/domains/bank/hooks/balances";
 
-const TokenFigure = (props: {
-  symbol: string;
-  displaySymbol: string;
-  network: string;
-}) => {
+const TokenFigure = (props: { symbol: string; displaySymbol: string; network: string }) => {
   return (
     <figcaption className="flex items-center gap-4">
       <figure>
@@ -46,10 +33,7 @@ const BalancesPage: NextPage = () => {
   const balancesStats = useBalancesStats();
 
   const [selectedDenom, setSelectedDenom] = useState<string | undefined>();
-  const selectedBalance = useMemo(
-    () => balances?.find((x) => x.denom === selectedDenom),
-    [balances, selectedDenom]
-  );
+  const selectedBalance = useMemo(() => balances?.find((x) => x.denom === selectedDenom), [balances, selectedDenom]);
 
   const [[sortByOrder, sortByProperty], setSortBy] = useState<
     ["asc" | "desc", "token" | "available" | "balance" | "pooled" | undefined]
@@ -61,29 +45,25 @@ const BalancesPage: NextPage = () => {
       case "token":
         return sort(
           sortFunc((x) => x.displaySymbol ?? ""),
-          balances
+          balances,
         );
       case "available":
         return sort(
           sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
-          balances
+          balances,
         );
       case "balance":
         return sort(
           sortFunc(
             (x) =>
-              x.amount
-                ?.plus(
-                  x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits)
-                )
-                .toFloatApproximation() ?? 0
+              x.amount?.plus(x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits)).toFloatApproximation() ?? 0,
           ),
-          balances
+          balances,
         );
       case "pooled":
         return sort(
           sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0),
-          balances
+          balances,
         );
       case undefined:
       default:
@@ -96,53 +76,41 @@ const BalancesPage: NextPage = () => {
       {
         label: "Available",
         value:
-          balancesStats.data?.availableInUsdc
-            .toFloatApproximation()
-            .toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-            }) ?? "...",
+          balancesStats.data?.availableInUsdc.toFloatApproximation().toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+          }) ?? "...",
       },
       {
         label: "Pooled",
         value:
-          balancesStats.data?.pooledInUsdc
-            .toFloatApproximation()
-            .toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-            }) ?? "...",
+          balancesStats.data?.pooledInUsdc.toFloatApproximation().toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+          }) ?? "...",
       },
       {
         label: "Total",
         value:
-          balancesStats.data?.totalInUsdc
-            .toFloatApproximation()
-            .toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-            }) ?? "...",
+          balancesStats.data?.totalInUsdc.toFloatApproximation().toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+          }) ?? "...",
       },
     ];
-  }, [
-    balancesStats.data?.availableInUsdc,
-    balancesStats.data?.pooledInUsdc,
-    balancesStats.data?.totalInUsdc,
-  ]);
+  }, [balancesStats.data?.availableInUsdc, balancesStats.data?.pooledInUsdc, balancesStats.data?.totalInUsdc]);
 
   const actions = useMemo(
     () => [
       {
         label: "Import",
         Icon: ArrowDownIcon,
-        href: (denom: string) =>
-          `balances?action=import&denom=${encodeURIComponent(denom)}`,
+        href: (denom: string) => `balances?action=import&denom=${encodeURIComponent(denom)}`,
       },
       {
         label: "Export",
         Icon: () => <ArrowDownIcon className="rotate-180" />,
-        href: (denom: string) =>
-          `balances?action=export&denom=${encodeURIComponent(denom)}`,
+        href: (denom: string) => `balances?action=export&denom=${encodeURIComponent(denom)}`,
       },
       {
         label: "Pools",
@@ -155,7 +123,7 @@ const BalancesPage: NextPage = () => {
         href: (denom: string) => `/swap?fromDenom=${encodeURIComponent(denom)}`,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -181,10 +149,7 @@ const BalancesPage: NextPage = () => {
         </header>
         <div className="flex flex-col gap-4 md:hidden">
           {sortedBalance?.map((balance) => (
-            <details
-              key={balance.denom}
-              className="[&[open]>summary>div>.marker]:rotate-180"
-            >
+            <details key={balance.denom} className="[&[open]>summary>div>.marker]:rotate-180">
               <summary className="mb-2 flex items-center justify-between">
                 <TokenFigure
                   symbol={balance.symbol ?? ""}
@@ -195,22 +160,14 @@ const BalancesPage: NextPage = () => {
                   <strong>
                     {(
                       balance.amount
-                        ?.plus(
-                          balance.pooledAmount ??
-                            Decimal.zero(balance.amount.fractionalDigits)
-                        )
+                        ?.plus(balance.pooledAmount ?? Decimal.zero(balance.amount.fractionalDigits))
                         .toFloatApproximation() ?? 0
                     ).toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
                   </strong>
-                  <span className="marker cursor-pointer select-none p-2">
-                    ▼
-                  </span>
-                  <button
-                    className="p-2"
-                    onClick={() => setSelectedDenom(balance.denom)}
-                  >
+                  <span className="marker cursor-pointer select-none p-2">▼</span>
+                  <button className="p-2" onClick={() => setSelectedDenom(balance.denom)}>
                     <SvgDotsVerticalIcon />
                   </button>
                 </div>
@@ -219,9 +176,7 @@ const BalancesPage: NextPage = () => {
                 <div className="flex-1">
                   <header className="opacity-80">Available</header>
                   <div>
-                    {(
-                      balance.amount?.toFloatApproximation() ?? 0
-                    ).toLocaleString(undefined, {
+                    {(balance.amount?.toFloatApproximation() ?? 0).toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
                   </div>
@@ -229,11 +184,9 @@ const BalancesPage: NextPage = () => {
                 <div className="flex-1">
                   <header className="opacity-80">Pooled</header>
                   <div>
-                    {(balance.pooledAmount ?? Decimal.zero(0))
-                      ?.toFloatApproximation()
-                      .toLocaleString(undefined, {
-                        maximumFractionDigits: 6,
-                      })}
+                    {(balance.pooledAmount ?? Decimal.zero(0))?.toFloatApproximation().toLocaleString(undefined, {
+                      maximumFractionDigits: 6,
+                    })}
                   </div>
                 </div>
               </div>
@@ -246,28 +199,21 @@ const BalancesPage: NextPage = () => {
               <th
                 key={x}
                 className="cursor-pointer select-none"
-                onClick={() =>
-                  setSortBy((y) => [
-                    y[1] !== x ? "asc" : y[0] === "asc" ? "desc" : "asc",
-                    x,
-                  ])
-                }
+                onClick={() => setSortBy((y) => [y[1] !== x ? "asc" : y[0] === "asc" ? "desc" : "asc", x])}
               >
                 <div className="flex items-center gap-2">
                   {x}
                   <div className="text-[0.75em]">
                     <div
                       className={clsx("mb-[-0.75em]", {
-                        "opacity-0":
-                          sortByProperty === x && sortByOrder === "desc",
+                        "opacity-0": sortByProperty === x && sortByOrder === "desc",
                       })}
                     >
                       ▲
                     </div>
                     <div
                       className={clsx({
-                        "opacity-0":
-                          sortByProperty === x && sortByOrder === "asc",
+                        "opacity-0": sortByProperty === x && sortByOrder === "asc",
                       })}
                     >
                       ▼
@@ -288,27 +234,19 @@ const BalancesPage: NextPage = () => {
                   />
                 </td>
                 <td>
-                  {(balance.amount?.toFloatApproximation() ?? 0).toLocaleString(
-                    undefined,
-                    {
-                      maximumFractionDigits: 6,
-                    }
-                  )}
+                  {(balance.amount?.toFloatApproximation() ?? 0).toLocaleString(undefined, {
+                    maximumFractionDigits: 6,
+                  })}
                 </td>
                 <td>
-                  {(balance.pooledAmount ?? Decimal.zero(0))
-                    ?.toFloatApproximation()
-                    .toLocaleString(undefined, {
-                      maximumFractionDigits: 6,
-                    })}
+                  {(balance.pooledAmount ?? Decimal.zero(0))?.toFloatApproximation().toLocaleString(undefined, {
+                    maximumFractionDigits: 6,
+                  })}
                 </td>
                 <td>
                   {(
                     balance.amount
-                      ?.plus(
-                        balance.pooledAmount ??
-                          Decimal.zero(balance.amount.fractionalDigits)
-                      )
+                      ?.plus(balance.pooledAmount ?? Decimal.zero(balance.amount.fractionalDigits))
                       .toFloatApproximation() ?? 0
                   ).toLocaleString(undefined, {
                     maximumFractionDigits: 6,
@@ -318,7 +256,7 @@ const BalancesPage: NextPage = () => {
                   <div className="flex gap-3">
                     {actions.map(({ label, href }, index) => (
                       <Link key={index} href={href(balance.denom)}>
-                        <a className="h-full flex-1 rounded px-4 py-3 text-center first:bg-gray-750 hover:bg-gray-700">
+                        <a className="first:bg-gray-750 h-full flex-1 rounded px-4 py-3 text-center hover:bg-gray-700">
                           <span>{label}</span>
                         </a>
                       </Link>
@@ -349,11 +287,8 @@ const BalancesPage: NextPage = () => {
         isOpen={router.query["action"] === "import"}
         onClose={useCallback(() => router.replace("/balances"), [router])}
         onChangeDenom={useCallback(
-          (denom) =>
-            router.replace(
-              `balances?action=import&denom=${encodeURIComponent(denom ?? "")}`
-            ),
-          [router]
+          (denom) => router.replace(`balances?action=import&denom=${encodeURIComponent(denom ?? "")}`),
+          [router],
         )}
       />
       <ExportModal

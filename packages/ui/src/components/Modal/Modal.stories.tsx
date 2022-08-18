@@ -18,14 +18,7 @@ const Template: ComponentStory<typeof Modal> = (args) => {
     }
   }, [isOpen]);
 
-  return (
-    <Modal
-      {...args}
-      isOpen={isOpen}
-      onGoBack={undefined}
-      onClose={() => setIsOpen(false)}
-    />
-  );
+  return <Modal {...args} isOpen={isOpen} onGoBack={undefined} onClose={() => setIsOpen(false)} />;
 };
 
 export const Default = Template.bind({});

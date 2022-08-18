@@ -14,12 +14,7 @@ export function useSwapMutation() {
   const { indexedByDenom } = useTokenRegistryQuery();
 
   return useMutation(
-    async (variables: {
-      fromDenom: string;
-      toDenom: string;
-      fromAmount: string;
-      minimumReceiving: string;
-    }) => {
+    async (variables: { fromDenom: string; toDenom: string; fromAmount: string; minimumReceiving: string }) => {
       const signerAddress = (await signer?.getAccounts())?.[0]?.address ?? "";
       return signingStargateClient?.signAndBroadcast(
         signerAddress,
@@ -35,7 +30,7 @@ export function useSwapMutation() {
             },
           },
         ],
-        DEFAULT_FEE
+        DEFAULT_FEE,
       );
     },
     {
@@ -51,20 +46,12 @@ export function useSwapMutation() {
           const fromSymbol = fromCoin?.displaySymbol;
           const toSymbol = toCoin?.displaySymbol;
 
-          const fromDisplayAmount = Decimal.fromAtomics(
-            variables.fromAmount,
-            fromCoin?.decimals ?? 0
-          ).toString();
-          const toDisplayAmount = Decimal.fromAtomics(
-            variables.minimumReceiving,
-            toCoin?.decimals ?? 0
-          ).toString();
+          const fromDisplayAmount = Decimal.fromAtomics(variables.fromAmount, fromCoin?.decimals ?? 0).toString();
+          const toDisplayAmount = Decimal.fromAtomics(variables.minimumReceiving, toCoin?.decimals ?? 0).toString();
 
-          toast.success(
-            `Successfully swapped ${fromDisplayAmount} ${fromSymbol} for >=${toDisplayAmount} ${toSymbol}`
-          );
+          toast.success(`Successfully swapped ${fromDisplayAmount} ${fromSymbol} for >=${toDisplayAmount} ${toSymbol}`);
         }
       },
-    }
+    },
   );
 }

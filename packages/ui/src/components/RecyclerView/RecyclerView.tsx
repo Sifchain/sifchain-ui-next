@@ -1,18 +1,11 @@
-import React, {
-  createElement,
-  FC,
-  ReactHTML,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { createElement, FC, ReactHTML, useCallback, useMemo, useState } from "react";
 import _debounce from "lodash.debounce";
 import { debounceRaf } from "../../utils";
 import type { StringIndexable } from "../../utils";
 
 export type RecyclerViewProps<
   T extends StringIndexable,
-  U extends keyof ReactHTML = "div"
+  U extends keyof ReactHTML = "div",
 > = JSX.IntrinsicElements[U] & {
   data: T[];
   visibleRows: number;
@@ -23,22 +16,10 @@ export type RecyclerViewProps<
   debounce?: number | "raf";
 };
 
-export const RecyclerView = <
-  T extends StringIndexable,
-  U extends keyof ReactHTML = "div"
->(
-  props: RecyclerViewProps<T, U>
+export const RecyclerView = <T extends StringIndexable, U extends keyof ReactHTML = "div">(
+  props: RecyclerViewProps<T, U>,
 ) => {
-  const {
-    data,
-    visibleRows,
-    rowHeight,
-    keyExtractor,
-    as,
-    renderItem: RowItem,
-    debounce,
-    ...containerProps
-  } = props;
+  const { data, visibleRows, rowHeight, keyExtractor, as, renderItem: RowItem, debounce, ...containerProps } = props;
 
   const [startIndex, setStartIndex] = useState(0);
 
@@ -52,11 +33,8 @@ export const RecyclerView = <
   const entries = data as T[];
 
   const page = useMemo(
-    () =>
-      entries
-        .slice(startIndex, endIndex + 1)
-        .map((item) => ({ key: keyExtractor(item), value: item })),
-    [startIndex, endIndex, entries, keyExtractor]
+    () => entries.slice(startIndex, endIndex + 1).map((item) => ({ key: keyExtractor(item), value: item })),
+    [startIndex, endIndex, entries, keyExtractor],
   );
 
   const handleScroll = useCallback(
@@ -69,7 +47,7 @@ export const RecyclerView = <
         setStartIndex(index);
       }
     },
-    [startIndex, setStartIndex, rowHeight]
+    [startIndex, setStartIndex, rowHeight],
   );
 
   const debouncedHandleScroll = useMemo(() => {
@@ -81,11 +59,9 @@ export const RecyclerView = <
 
   const Container = useCallback<FC<JSX.IntrinsicElements[U]>>(
     ({ children, ...props }) => {
-      return createElement(as ?? "div", props as JSX.IntrinsicElements[U], [
-        children,
-      ]);
+      return createElement(as ?? "div", props as JSX.IntrinsicElements[U], [children]);
     },
-    [as]
+    [as],
   );
 
   return (
@@ -103,9 +79,7 @@ export const RecyclerView = <
           style: { height: rowHeight },
         });
       })}
-      {endIndex < lastIndex && (
-        <div style={{ height: rowHeight * (lastIndex - endIndex) }} />
-      )}
+      {endIndex < lastIndex && <div style={{ height: rowHeight * (lastIndex - endIndex) }} />}
     </Container>
   );
 };

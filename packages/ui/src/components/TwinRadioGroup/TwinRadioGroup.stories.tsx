@@ -8,10 +8,7 @@ export default {
   component: TwinRadioGroup,
 } as ComponentMeta<typeof TwinRadioGroup>;
 
-export const Uncontrolled: ComponentStory<typeof TwinRadioGroup> = ({
-  name,
-  options,
-}) => {
+export const Uncontrolled: ComponentStory<typeof TwinRadioGroup> = ({ name, options }) => {
   return (
     <form
       onSubmit={(event) => {

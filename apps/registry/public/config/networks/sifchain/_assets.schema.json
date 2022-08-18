@@ -47,14 +47,7 @@
           "description": "[OPTIONAL] Whether the asset has a dark icon."
         }
       },
-      "required": [
-        "name",
-        "symbol",
-        "network",
-        "homeNetwork",
-        "decimals",
-        "imageUrl"
-      ]
+      "required": ["name", "symbol", "network", "homeNetwork", "decimals", "imageUrl"]
     }
   }
 }

@@ -6,13 +6,9 @@ import { useDexEnvironment } from "~/domains/core/envs";
 export const useSifStargateClient = () => {
   const { data: env } = useDexEnvironment();
 
-  return useQuery(
-    "sif-stargate-client",
-    () => SifSigningStargateClient.connect(env?.sifRpcUrl ?? ""),
-    {
-      enabled: env !== undefined,
-    }
-  );
+  return useQuery("sif-stargate-client", () => SifSigningStargateClient.connect(env?.sifRpcUrl ?? ""), {
+    enabled: env !== undefined,
+  });
 };
 
 export const useSifSigningStargateClient = () => {
@@ -27,8 +23,8 @@ export const useSifSigningStargateClient = () => {
       SifSigningStargateClient.connectWithSigner(
         env?.sifRpcUrl ?? "",
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        signer!
+        signer!,
       ),
-    { enabled: signer !== undefined && env !== undefined }
+    { enabled: signer !== undefined && env !== undefined },
   );
 };

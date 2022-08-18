@@ -87,11 +87,7 @@ export interface IFraction {
   greaterThanOrEqual(other: IFraction | BigintIsh): boolean;
   multiply(other: IFraction | BigintIsh): IFraction;
   divide(other: IFraction | BigintIsh): IFraction;
-  toSignificant(
-    significantDigits: number,
-    format?: object,
-    rounding?: Rounding
-  ): string;
+  toSignificant(significantDigits: number, format?: object, rounding?: Rounding): string;
   toFixed(decimalPlaces: number, format?: object, rounding?: Rounding): string;
 }
 
@@ -100,9 +96,7 @@ export function isFraction(value: unknown): value is IFraction {
 }
 
 const ensureFraction = (other: IFraction | BigintIsh): IFraction => {
-  return other instanceof Fraction || isFraction(other)
-    ? other
-    : new Fraction(parseBigintIsh(other));
+  return other instanceof Fraction || isFraction(other) ? other : new Fraction(parseBigintIsh(other));
 };
 
 export class Fraction implements IFraction {
@@ -121,10 +115,7 @@ export class Fraction implements IFraction {
 
   // remainder after floor division
   public get remainder(): IFraction {
-    return new Fraction(
-      JSBI.remainder(this.numerator, this.denominator),
-      this.denominator
-    );
+    return new Fraction(JSBI.remainder(this.numerator, this.denominator), this.denominator);
   }
 
   public invert(): IFraction {
@@ -135,17 +126,14 @@ export class Fraction implements IFraction {
     const otherParsed = ensureFraction(other);
 
     if (JSBI.equal(this.denominator, otherParsed.denominator)) {
-      return new Fraction(
-        JSBI.add(this.numerator, otherParsed.numerator),
-        this.denominator
-      );
+      return new Fraction(JSBI.add(this.numerator, otherParsed.numerator), this.denominator);
     }
     return new Fraction(
       JSBI.add(
         JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
+        JSBI.multiply(otherParsed.numerator, this.denominator),
       ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     );
   }
 
@@ -153,17 +141,14 @@ export class Fraction implements IFraction {
     const otherParsed = ensureFraction(other);
 
     if (JSBI.equal(this.denominator, otherParsed.denominator)) {
-      return new Fraction(
-        JSBI.subtract(this.numerator, otherParsed.numerator),
-        this.denominator
-      );
+      return new Fraction(JSBI.subtract(this.numerator, otherParsed.numerator), this.denominator);
     }
     return new Fraction(
       JSBI.subtract(
         JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
+        JSBI.multiply(otherParsed.numerator, this.denominator),
       ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     );
   }
 
@@ -172,7 +157,7 @@ export class Fraction implements IFraction {
 
     return JSBI.lessThan(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     );
   }
 
@@ -185,7 +170,7 @@ export class Fraction implements IFraction {
 
     return JSBI.equal(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     );
   }
 
@@ -194,7 +179,7 @@ export class Fraction implements IFraction {
 
     return JSBI.greaterThan(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     );
   }
 
@@ -207,7 +192,7 @@ export class Fraction implements IFraction {
 
     return new Fraction(
       JSBI.multiply(this.numerator, otherParsed.numerator),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     );
   }
 
@@ -216,19 +201,16 @@ export class Fraction implements IFraction {
 
     return new Fraction(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(this.denominator, otherParsed.numerator)
+      JSBI.multiply(this.denominator, otherParsed.numerator),
     );
   }
 
   public toSignificant(
     significantDigits: number,
     format: object = { groupSeparator: "" },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
+    rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
-    invariant(
-      Number.isInteger(significantDigits),
-      `${significantDigits} is not an integer.`
-    );
+    invariant(Number.isInteger(significantDigits), `${significantDigits} is not an integer.`);
     invariant(significantDigits > 0, `${significantDigits} is not positive.`);
 
     Decimal.set({
@@ -244,18 +226,13 @@ export class Fraction implements IFraction {
   public toFixed(
     decimalPlaces: number,
     format: object = { groupSeparator: "" },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
+    rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
-    invariant(
-      Number.isInteger(decimalPlaces),
-      `${decimalPlaces} is not an integer.`
-    );
+    invariant(Number.isInteger(decimalPlaces), `${decimalPlaces} is not an integer.`);
     invariant(decimalPlaces >= 0, `${decimalPlaces} is negative.`);
 
     Big.DP = decimalPlaces;
     Big.RM = toFixedRounding[rounding];
-    return new Big(this.numerator.toString())
-      .div(this.denominator.toString())
-      .toFormat(decimalPlaces, format);
+    return new Big(this.numerator.toString()).div(this.denominator.toString()).toFormat(decimalPlaces, format);
   }
 }

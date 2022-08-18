@@ -29,6 +29,5 @@ Round.args = {
   placeholder: <RacetrackSpinnerIcon className="h-36 w-36 place-self-center" />,
   height: 300,
   width: 300,
-  containerClassName:
-    "ring ring-gray-400 rounded-full shadow-lg shadow-black/70",
+  containerClassName: "ring ring-gray-400 rounded-full shadow-lg shadow-black/70",
 };

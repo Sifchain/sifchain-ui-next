@@ -11,10 +11,7 @@ import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
 
-export type TokenSelectorProps = Omit<
-  BaseTokenSelectorProps,
-  "tokens" | "value" | "onChange"
-> & {
+export type TokenSelectorProps = Omit<BaseTokenSelectorProps, "tokens" | "value" | "onChange"> & {
   value?: string;
   onChange: (token?: EnhancedRegistryAsset) => unknown;
 };
@@ -27,8 +24,7 @@ export const toTokenEntry = <T extends EnhancedRegistryAsset>(x: T) => ({
   decimals: x.decimals,
   network: x.network,
   homeNetwork: x.homeNetwork,
-  homeNetworkUrl:
-    x.network !== x.homeNetwork ? `/chains/${x.homeNetwork}.png` : undefined,
+  homeNetworkUrl: x.network !== x.homeNetwork ? `/chains/${x.homeNetwork}.png` : undefined,
   imageUrl: x.imageUrl ?? "",
   hasDarkIcon: Boolean(x.hasDarkIcon),
 });
@@ -48,13 +44,10 @@ export function useTokenEntriesWithBalance() {
           }
         : token;
     },
-    [findBySymbolOrDenom]
+    [findBySymbolOrDenom],
   );
 
-  return useMemo(
-    () => registry?.map(pipe(toTokenEntry, toTokenEntryWithBalance)),
-    [registry, toTokenEntryWithBalance]
-  );
+  return useMemo(() => registry?.map(pipe(toTokenEntry, toTokenEntryWithBalance)), [registry, toTokenEntryWithBalance]);
 }
 
 const TokenSelector = (props: TokenSelectorProps) => {
@@ -62,7 +55,7 @@ const TokenSelector = (props: TokenSelectorProps) => {
 
   const handleChange = useCallback(
     (token: TokenEntry) => props.onChange(indexedByDenom[token.id ?? ""]),
-    [indexedByDenom, props]
+    [indexedByDenom, props],
   );
 
   const tokens = useTokenEntriesWithBalance();
@@ -71,14 +64,7 @@ const TokenSelector = (props: TokenSelectorProps) => {
     .map((x) => indexedByDenom[x])
     .mapOr(undefined, toTokenEntry);
 
-  return (
-    <BaseTokenSelector
-      {...props}
-      value={value}
-      tokens={tokens ?? []}
-      onChange={handleChange}
-    />
-  );
+  return <BaseTokenSelector {...props} value={value} tokens={tokens ?? []} onChange={handleChange} />;
 };
 
 export default TokenSelector;

@@ -29,12 +29,12 @@ export default function useSifApiQuery<
   P extends keyof VanirPublicClient[T],
   M = VanirPublicClient[T][P],
   F = M extends () => any ? ReturnType<M> : never,
-  Res = Awaited<F>
+  Res = Awaited<F>,
 >(
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<VanirPublicClient[T][P]>,
-  options: Omit<UseQueryOptions<Res, unknown, Res>, "queryKey" | "queryFn"> = {}
+  options: Omit<UseQueryOptions<Res, unknown, Res>, "queryKey" | "queryFn"> = {},
 ) {
   const { data: client } = useSifApiClient();
 
@@ -51,9 +51,7 @@ export default function useSifApiQuery<
       const method = client[moduleName][methodName];
 
       if (typeof method !== "function") {
-        throw new Error(
-          `[useSifApiQuery] Method ${String(methodName)} is not a function`
-        );
+        throw new Error(`[useSifApiQuery] Method ${String(methodName)} is not a function`);
       }
 
       const result = await method(...args);
@@ -66,11 +64,8 @@ export default function useSifApiQuery<
       return "body" in result ? result.body : result;
     },
     {
-      enabled:
-        "enabled" in options
-          ? options.enabled && Boolean(client)
-          : Boolean(client),
+      enabled: "enabled" in options ? options.enabled && Boolean(client) : Boolean(client),
       ...(omit(["enabled"], options) as {}),
-    }
+    },
   );
 }

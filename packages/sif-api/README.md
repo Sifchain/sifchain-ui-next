@@ -13,7 +13,7 @@ yarn add @sifchain/stargate@snapshot
 ## Example usage
 
 ```ts
-import { createClient } from "@sifchain/sif-api";
+import { createClient } from '@sifchain/sif-api';
 
 const vanirClient = createClient();
 

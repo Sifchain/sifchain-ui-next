@@ -1,10 +1,7 @@
 import { TransactionStatus, ErrorCode, getErrorMessage } from "../entities";
 
 // returns contextual inflrmation based on ethereum tx failure
-export function parseEthereumTxFailure(txFailure: {
-  transactionHash: string;
-  rawLog?: string;
-}): TransactionStatus {
+export function parseEthereumTxFailure(txFailure: { transactionHash: string; rawLog?: string }): TransactionStatus {
   if (txFailure.rawLog?.includes("LEDGER_")) {
     return {
       code: ErrorCode.UNKNOWN_FAILURE,
@@ -26,10 +23,7 @@ export function parseEthereumTxFailure(txFailure: {
   return parseTxFailure(txFailure);
 }
 
-export function parseTxFailure(txFailure: {
-  transactionHash: string;
-  rawLog?: string;
-}): TransactionStatus {
+export function parseTxFailure(txFailure: { transactionHash: string; rawLog?: string }): TransactionStatus {
   if (txFailure.rawLog && process.env["NODE_ENV"] === "development") {
     console.log({ "txFailure.rawLog": txFailure.rawLog });
   }
@@ -80,11 +74,7 @@ export function parseTxFailure(txFailure: {
     };
   }
 
-  if (
-    txFailure.rawLog
-      ?.toLowerCase()
-      .includes("user does not have enough balance")
-  ) {
+  if (txFailure.rawLog?.toLowerCase().includes("user does not have enough balance")) {
     return {
       code: ErrorCode.TX_FAILED_USER_NOT_ENOUGH_BALANCE,
       hash: txFailure.transactionHash,
@@ -93,11 +83,7 @@ export function parseTxFailure(txFailure: {
     };
   }
 
-  if (
-    txFailure.rawLog
-      ?.toLowerCase()
-      .includes("data is invalid : unexpected characters")
-  ) {
+  if (txFailure.rawLog?.toLowerCase().includes("data is invalid : unexpected characters")) {
     return {
       code: ErrorCode.UNKNOWN_FAILURE,
       hash: txFailure.transactionHash,
