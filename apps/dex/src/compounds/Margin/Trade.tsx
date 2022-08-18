@@ -443,11 +443,11 @@ const Trade = (props: TradeProps) => {
   const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setInputCollateral({
-      value: String(COLLATERAL_MIN_VALUE),
+      value: "",
       error: "",
     });
     setInputPosition({
-      value: String(POSITION_MIN_VALUE),
+      value: "",
       error: "",
     });
     setInputLeverage({
