@@ -6,6 +6,7 @@ export type ConnectorEvents = {
   connect(): void;
   disconnect(): void;
   change(): void;
+  enable(chainIds: string | string[]): void;
 };
 
 export abstract class BaseCosmConnector<Options = any> extends EventEmitter<ConnectorEvents> {

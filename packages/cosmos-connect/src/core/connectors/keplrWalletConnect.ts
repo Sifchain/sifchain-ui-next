@@ -85,6 +85,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   async getSigner(chainId: string): Promise<OfflineSigner> {
     await this.#keplr.enable(chainId);
+    this.emit("enable", chainId);
     return this.#keplr.getOfflineSignerOnlyAmino(chainId);
   }
 
