@@ -90,73 +90,73 @@ const WalletConnector: FC = () => {
 
   const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
-  const syncCosmosAccounts = useCallback(async () => {
-    const enabledChains = chains.filter((x) => enabledChainsState.networks.includes(x.id));
+  useEffect(
+    () =>
+      void (async () => {
+        const enabledChains = chains.filter((x) => enabledChainsState.networks.includes(x.id));
 
-    if (cosmosActiveConnector) {
-      console.log({
-        cosmosActiveConnector,
-        enabledChains: enabledChains,
-      });
-      const entries = await Promise.all(
-        enabledChains
-          .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
-          .flatMap(async (chain) => {
-            try {
-              const signer = await cosmosActiveConnector.getSigner(chain.chainId);
-              const accounts = await signer.getAccounts();
+        if (cosmosActiveConnector) {
+          console.log({
+            cosmosActiveConnector,
+            enabledChains: enabledChains,
+          });
+          const entries = await Promise.all(
+            enabledChains
+              .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
+              .flatMap(async (chain) => {
+                try {
+                  const signer = await cosmosActiveConnector.getSigner(chain.chainId);
+                  const accounts = await signer.getAccounts();
 
-              return [chain.chainId, accounts.map((x) => x.address)] as const;
-            } catch (error) {
-              if (error instanceof Error && error.message.includes("Unknown chain info")) {
-                //
+                  return [chain.chainId, accounts.map((x) => x.address)] as const;
+                } catch (error) {
+                  if (error instanceof Error && error.message.includes("Unknown chain info")) {
+                    //
 
-                console.log("failed to read chain", chain.chainId);
-              }
-              console.log({ failed: (error as Error)?.message });
-              return [chain.chainId, []] as const;
-            }
-          }),
-      );
+                    console.log("failed to read chain", chain.chainId);
+                  }
+                  console.log({ failed: (error as Error)?.message });
+                  return [chain.chainId, []] as const;
+                }
+              }),
+          );
 
-      const cosmosAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
+          const cosmosAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
 
-      setAccounts((accounts) => ({
-        ...accounts,
-        ...cosmosAccounts,
-      }));
-    }
+          setAccounts((accounts) => ({
+            ...accounts,
+            ...cosmosAccounts,
+          }));
+        }
 
-    const ethActiveConnector = evmConnectors.find((x) => x.ready);
+        const ethActiveConnector = evmConnectors.find((x) => x.ready);
 
-    if (ethActiveConnector) {
-      const entries = await Promise.all(
-        enabledChains
-          .filter((chain) => chain.type === "eth")
-          .flatMap(async (chain) => {
-            try {
-              const signer = await ethActiveConnector.getSigner();
-              const account = await signer.getAddress();
+        if (ethActiveConnector) {
+          const entries = await Promise.all(
+            enabledChains
+              .filter((chain) => chain.type === "eth")
+              .flatMap(async (chain) => {
+                try {
+                  const signer = await ethActiveConnector.getSigner();
+                  const account = await signer.getAddress();
 
-              return [chain.id, [account]] as const;
-            } catch (error) {
-              return [chain.id, []] as const;
-            }
-          }),
-      );
+                  return [chain.id, [account]] as const;
+                } catch (error) {
+                  return [chain.id, []] as const;
+                }
+              }),
+          );
 
-      const ethAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
+          const ethAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
 
-      setAccounts((accounts) => ({
-        ...accounts,
-        ...ethAccounts,
-      }));
-    }
-  }, [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors]);
-
-  useEffect(() => {
-    syncCosmosAccounts();
-  }, [syncCosmosAccounts]);
+          setAccounts((accounts) => ({
+            ...accounts,
+            ...ethAccounts,
+          }));
+        }
+      })(),
+    [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors],
+  );
 
   useEffect(() => {
     const listener = (chainIds: string | string[]) => {
