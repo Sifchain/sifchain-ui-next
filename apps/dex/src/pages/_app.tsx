@@ -23,16 +23,11 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
         defaultOptions: {
           queries: { refetchOnWindowFocus: false },
         },
-      })
+      }),
   );
 
   return (
-    <ComposeProviders
-      providers={[
-        typeof window !== "undefined" ? CosmConnectProvider : Fragment,
-        WagmiProvider,
-      ]}
-    >
+    <ComposeProviders providers={[typeof window !== "undefined" ? CosmConnectProvider : Fragment, WagmiProvider]}>
       <WalletsWatcher />
       <CookiesProvider>
         <QueryClientProvider client={queryClient}>

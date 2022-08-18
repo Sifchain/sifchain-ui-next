@@ -22,8 +22,7 @@ export type SifEncodeObjectRecord = EncodeObjectRecord<typeof clpTx> &
   EncodeObjectRecord<typeof tokenRegistryTx> &
   EncodeObjectRecord<typeof marginTx>;
 
-export type SifEncodeObject =
-  SifEncodeObjectRecord[keyof SifEncodeObjectRecord];
+export type SifEncodeObject = SifEncodeObjectRecord[keyof SifEncodeObjectRecord];
 
 export type CosmosEncodeObject =
   | MsgDelegateEncodeObject

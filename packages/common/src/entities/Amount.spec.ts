@@ -86,9 +86,7 @@ describe("Amount", () => {
     expect(JSBI.equal(JSBI.BigInt("1"), Amount("1").toBigInt())).toBe(true);
 
     // Supports Negative Numbers
-    expect(JSBI.equal(JSBI.BigInt("-1234"), Amount("-1234").toBigInt())).toBe(
-      true
-    );
+    expect(JSBI.equal(JSBI.BigInt("-1234"), Amount("-1234").toBigInt())).toBe(true);
 
     expect(JSBI.equal(JSBI.BigInt("1"), Amount("2").toBigInt())).toBe(false);
   });
@@ -98,9 +96,7 @@ describe("Amount", () => {
   });
 
   test("#add", () => {
-    expect(Amount("1000").add(Amount("1000")).equalTo(Amount("2000"))).toBe(
-      true
-    );
+    expect(Amount("1000").add(Amount("1000")).equalTo(Amount("2000"))).toBe(true);
   });
 
   describe("#divide", () => {
@@ -147,26 +143,20 @@ describe("Amount", () => {
   });
 
   test("#multiply", () => {
-    expect(
-      Amount("12345678").multiply(Amount("10")).equalTo(Amount("123456780"))
-    ).toBe(true);
+    expect(Amount("12345678").multiply(Amount("10")).equalTo(Amount("123456780"))).toBe(true);
   });
 
   test("#sqrt", () => {
     expect(Amount("15241383936").sqrt().toBigInt().toString()).toBe("123456");
 
-    expect(Amount("15241578750190521").sqrt().toBigInt().toString()).toBe(
-      "123456789"
-    );
+    expect(Amount("15241578750190521").sqrt().toBigInt().toString()).toBe("123456789");
 
     // Floor
     expect(Amount("20").sqrt().toString()).toBe("4.472135954999579393");
   });
 
   test("#subtract", () => {
-    expect(
-      Amount("12345678").subtract(Amount("2345678")).equalTo(Amount("10000000"))
-    ).toBe(true);
+    expect(Amount("12345678").subtract(Amount("2345678")).equalTo(Amount("10000000"))).toBe(true);
   });
 
   test("isAmount", () => {

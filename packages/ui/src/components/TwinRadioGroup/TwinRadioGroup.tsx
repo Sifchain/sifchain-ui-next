@@ -42,8 +42,7 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
       name={props.name}
     >
       {props.options.map((item, index) => {
-        const rounded =
-          index === 0 ? "rounded-tl rounded-bl" : "rounded-tr rounded-br";
+        const rounded = index === 0 ? "rounded-tl rounded-bl" : "rounded-tr rounded-br";
         return (
           <RadioGroup.Option
             key={item.value}
@@ -52,11 +51,9 @@ export const TwinRadioGroup: FC<TwinRadioGroup> = (props) => {
               clsx(
                 "cursor-pointer p-2 text-center",
                 rounded,
-                checked
-                  ? "z-10 bg-gray-500 text-gray-200"
-                  : "bg-gray-850 text-gray-700",
+                checked ? "z-10 bg-gray-500 text-gray-200" : "bg-gray-850 text-gray-700",
                 active ? "ring-1 ring-indigo-500" : "",
-                "hover:z-20 hover:ring-1 hover:ring-indigo-300"
+                "hover:z-20 hover:ring-1 hover:ring-indigo-300",
               )
             }
           >

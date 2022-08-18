@@ -14,9 +14,7 @@ export type EnhancedRegistryAsset = IAsset & {
   denom: string;
 };
 
-export default function useTokenRegistryQuery(
-  networkKind: NetworkKind | NetworkKind[] = "sifchain"
-) {
+export default function useTokenRegistryQuery(networkKind: NetworkKind | NetworkKind[] = "sifchain") {
   const { data: env } = useDexEnvironment();
   const { data, ...query } = useSifnodeQuery("tokenRegistry.entries", [{}], {
     refetchOnWindowFocus: false,
@@ -37,19 +35,15 @@ export default function useTokenRegistryQuery(
         .reduce<EnhancedRegistryAsset[]>((acc, entry) => {
           const maybeAsset = (indexedBySymbol[entry.denom.toLowerCase()] ||
             indexedBySymbol[entry.baseDenom.toLowerCase()] ||
-            indexedBySymbol[entry.denom.slice(1).toLowerCase()]) as
-            | EnhancedRegistryAsset
-            | undefined;
+            indexedBySymbol[entry.denom.slice(1).toLowerCase()]) as EnhancedRegistryAsset | undefined;
 
           return Maybe.of(maybeAsset).mapOr(acc, (asset) =>
             acc.concat({
               ...asset,
               denom: entry.denom,
               chainId:
-                entry.denom === env?.nativeAsset.symbol.toLowerCase()
-                  ? env.sifChainId
-                  : entry.ibcCounterpartyChainId,
-            })
+                entry.denom === env?.nativeAsset.symbol.toLowerCase() ? env.sifChainId : entry.ibcCounterpartyChainId,
+            }),
           );
         }, [])
     );
@@ -65,10 +59,7 @@ export default function useTokenRegistryQuery(
     }
 
     const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), entries);
-    const indexedByDisplaySymbol = indexBy(
-      compose(toLower, prop("displaySymbol")),
-      entries
-    );
+    const indexedByDisplaySymbol = indexBy(compose(toLower, prop("displaySymbol")), entries);
     const indexedByDenom = indexBy(prop("denom"), entries);
 
     return {

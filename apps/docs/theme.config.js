@@ -1,8 +1,7 @@
 // theme.config.js
 export default {
   projectLink: "https://github.com/sifchain/sifchain-ui-next", // GitHub link in the navbar
-  docsRepositoryBase:
-    "https://github.com/Sifchain/sifchain-ui-next/tree/main/apps/docs", // base URL for the docs repository
+  docsRepositoryBase: "https://github.com/Sifchain/sifchain-ui-next/tree/main/apps/docs", // base URL for the docs repository
   titleSuffix: " – Sifchain UI",
   nextLinks: true,
   prevLinks: true,
@@ -30,8 +29,7 @@ export default {
         />
       </svg>
       <span>
-        <strong>Sifchain SDK</strong>{" "}
-        <span className="text-gray-300 dark:text-gray-200">(preview)</span>
+        <strong>Sifchain SDK</strong> <span className="text-gray-300 dark:text-gray-200">(preview)</span>
       </span>
     </>
   ),

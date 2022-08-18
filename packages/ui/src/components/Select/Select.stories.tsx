@@ -11,9 +11,7 @@ export default {
 const Template: ComponentStory<typeof Select> = (args) => {
   const [selectedOption, setSelectedOption] = useState(args.options[0]);
 
-  return (
-    <Select {...args} onChange={setSelectedOption} value={selectedOption} />
-  );
+  return <Select {...args} onChange={setSelectedOption} value={selectedOption} />;
 };
 
 export const Default = Template.bind({});

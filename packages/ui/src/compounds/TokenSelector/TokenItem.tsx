@@ -7,12 +7,7 @@ import type { TokenEntry } from "./types";
 
 export type TokenItemProps = Pick<
   TokenEntry,
-  | "name"
-  | "symbol"
-  | "displaySymbol"
-  | "imageUrl"
-  | "hasDarkIcon"
-  | "homeNetworkUrl"
+  "name" | "symbol" | "displaySymbol" | "imageUrl" | "hasDarkIcon" | "homeNetworkUrl"
 > & {
   balance?: number;
   selected: boolean;
@@ -28,10 +23,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
       })}
     >
       <div className="relative">
-        <AssetIcon
-          imageUrl={props.imageUrl ?? ""}
-          hasDarkIcon={Boolean(props.hasDarkIcon)}
-        />
+        <AssetIcon imageUrl={props.imageUrl ?? ""} hasDarkIcon={Boolean(props.hasDarkIcon)} />
         {props.homeNetworkUrl && (
           <figure className="absolute top-4 -right-2 h-5 w-5 overflow-hidden rounded-full bg-gray-800 ring-2 ring-gray-800">
             <AsyncImage
@@ -42,9 +34,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
         )}
       </div>
       <div className="grid flex-1">
-        <span className="text-base font-semibold uppercase text-white">
-          {props.displaySymbol}
-        </span>
+        <span className="text-base font-semibold uppercase text-white">{props.displaySymbol}</span>
         <span className="text-sm font-normal text-gray-300">{props.name}</span>
       </div>
       {props.balance !== undefined && (

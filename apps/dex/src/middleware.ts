@@ -5,10 +5,7 @@ import { hasFeatureFlag } from "./lib/featureFlags";
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  if (
-    hasFeatureFlag("margin-standalone") &&
-    !request.url.includes("localhost:3001")
-  ) {
+  if (hasFeatureFlag("margin-standalone") && !request.url.includes("localhost:3001")) {
     return NextResponse.redirect(new URL("/margin", request.url));
   }
 

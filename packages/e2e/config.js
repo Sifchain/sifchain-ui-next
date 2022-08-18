@@ -1,6 +1,4 @@
-export const DEX_TARGET = process.env.PORT
-  ? `localhost:${process.env.PORT}`
-  : "localhost:3000";
+export const DEX_TARGET = process.env.PORT ? `localhost:${process.env.PORT}` : "localhost:3000";
 
 export const KEPLR_CONFIG = {
   id: "dmkamcknogkgcdfhhbddcghachkejeap",
@@ -29,8 +27,7 @@ export const MM_CONFIG = {
   },
   options: {
     address: "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-    mnemonic:
-      "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat",
+    mnemonic: "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat",
     password: "coolguy21",
   },
 };

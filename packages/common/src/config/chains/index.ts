@@ -57,32 +57,23 @@ const CONFIG_LOOKUP: Record<NetworkKind, NetEnvChainConfigLookup> = {
   terra,
 };
 
-export type ChainConfigByNetworkEnv = Record<
-  NetworkEnv,
-  Record<NetworkKind, ChainConfig>
->;
+export type ChainConfigByNetworkEnv = Record<NetworkEnv, Record<NetworkKind, ChainConfig>>;
 
 function getChainConfigWithFallbackOrThrow(
   env: NetworkEnv,
   networkKind: NetworkKind,
-  networkLookup: NetEnvChainConfigLookup
+  networkLookup: NetEnvChainConfigLookup,
 ) {
   const config = networkLookup[env];
 
   if (!config) {
-    const envMatch = (["testnet", "mainnet"] as NetworkEnv[]).find(
-      (env) => networkLookup[env] !== undefined
-    );
+    const envMatch = (["testnet", "mainnet"] as NetworkEnv[]).find((env) => networkLookup[env] !== undefined);
 
     if (!envMatch) {
-      throw new Error(
-        `No config found for network "${networkKind}" on env "${env}"`
-      );
+      throw new Error(`No config found for network "${networkKind}" on env "${env}"`);
     }
 
-    console.warn(
-      `[network] ${env} config fallback to ${envMatch} for ${networkKind}`
-    );
+    console.warn(`[network] ${env} config fallback to ${envMatch} for ${networkKind}`);
     return networkLookup[envMatch] as ChainConfig;
   }
 
@@ -93,22 +84,15 @@ function buildChainConfigIndex() {
   return Object.fromEntries(
     [...NETWORK_ENVS].map((env) => [
       env,
-      Object.entries(CONFIG_LOOKUP).reduce(
-        (acc, [networkKind, networkLookup]) => {
-          const config = getChainConfigWithFallbackOrThrow(
-            env,
-            networkKind as NetworkKind,
-            networkLookup
-          );
+      Object.entries(CONFIG_LOOKUP).reduce((acc, [networkKind, networkLookup]) => {
+        const config = getChainConfigWithFallbackOrThrow(env, networkKind as NetworkKind, networkLookup);
 
-          return {
-            ...acc,
-            [networkKind]: config,
-          };
-        },
-        {}
-      ),
-    ])
+        return {
+          ...acc,
+          [networkKind]: config,
+        };
+      }, {}),
+    ]),
   ) as ChainConfigByNetworkEnv;
 }
 

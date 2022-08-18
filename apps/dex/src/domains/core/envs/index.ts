@@ -18,20 +18,13 @@ export function useDexEnvKind(): NetworkEnv {
   useEffect(() => {
     const queryString = new URLSearchParams(window.location.search);
     const envKind = queryString.get("_env");
-    if (
-      envKind &&
-      NETWORK_ENVS.has(envKind as NetworkEnv) &&
-      envKind !== sif_dex_env
-    ) {
+    if (envKind && NETWORK_ENVS.has(envKind as NetworkEnv) && envKind !== sif_dex_env) {
       setCookie("sif_dex_env", envKind);
       setResolvedEnv(envKind as NetworkEnv);
     }
   }, [setCookie, sif_dex_env]);
 
-  return useMemo(
-    () => resolvedEnv ?? sif_dex_env ?? "mainnet",
-    [resolvedEnv, sif_dex_env]
-  );
+  return useMemo(() => resolvedEnv ?? sif_dex_env ?? "mainnet", [resolvedEnv, sif_dex_env]);
 }
 
 export function useDexEnvironment() {
@@ -41,14 +34,11 @@ export function useDexEnvironment() {
 
   return useQuery(
     `dex_env_${environment}`,
-    async () =>
-      isMarginStandAloneOn
-        ? getSdkConfig({ environment: "tempnet" })
-        : getSdkConfig({ environment }),
+    async () => (isMarginStandAloneOn ? getSdkConfig({ environment: "tempnet" }) : getSdkConfig({ environment })),
     {
       staleTime: 3600_000,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-    }
+    },
   );
 }

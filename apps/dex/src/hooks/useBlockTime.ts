@@ -16,13 +16,10 @@ export const useBlockTimeQuery = () => {
       const currentBlock = await sifchainClients.getBlock(currentHeight);
       const prevBlock = await sifchainClients.getBlock(currentHeight - 1);
 
-      return differenceInMilliseconds(
-        parseISO(currentBlock.header.time),
-        parseISO(prevBlock.header.time)
-      );
+      return differenceInMilliseconds(parseISO(currentBlock.header.time), parseISO(prevBlock.header.time));
     },
     {
       enabled: sifchainClients !== undefined,
-    }
+    },
   );
 };

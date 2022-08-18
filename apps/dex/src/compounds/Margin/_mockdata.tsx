@@ -48,16 +48,11 @@ export function useQueryPositionToClose(params: { id: string }) {
           }
         }, 1000);
       }),
-    { enabled: Boolean(params.id), retry: false }
+    { enabled: Boolean(params.id), retry: false },
   );
 }
 
-export function useQueryOpenPositions(queryParams: {
-  limit: string;
-  offset: string;
-  orderBy: string;
-  sortBy: string;
-}) {
+export function useQueryOpenPositions(queryParams: { limit: string; offset: string; orderBy: string; sortBy: string }) {
   let maybeCacheResults = cache.openPositions;
 
   if (typeof maybeCacheResults === "undefined") {
@@ -72,7 +67,7 @@ export function useQueryOpenPositions(queryParams: {
 
   const paginatedResults = results.slice(
     Number(queryParams.offset),
-    Number(queryParams.offset) + Number(queryParams.limit)
+    Number(queryParams.offset) + Number(queryParams.limit),
   );
 
   const query = () =>
@@ -104,12 +99,7 @@ export function useQueryOpenPositions(queryParams: {
   });
 }
 
-export function useQueryHistory(queryParams: {
-  limit: string;
-  offset: string;
-  orderBy: string;
-  sortBy: string;
-}) {
+export function useQueryHistory(queryParams: { limit: string; offset: string; orderBy: string; sortBy: string }) {
   let maybeCacheResults = cache.history;
 
   if (typeof maybeCacheResults === "undefined") {
@@ -124,7 +114,7 @@ export function useQueryHistory(queryParams: {
 
   const paginatedResults = results.slice(
     Number(queryParams.offset),
-    Number(queryParams.offset) + Number(queryParams.limit)
+    Number(queryParams.offset) + Number(queryParams.limit),
   );
 
   const query = () =>
@@ -156,27 +146,11 @@ export function useQueryHistory(queryParams: {
   });
 }
 
-function createFakeOpenPositions({
-  limit,
-  multi = 3.725,
-}: {
-  limit: number;
-  multi?: number;
-}) {
-  return Array.from({ length: Number(limit) * multi }, (_, index) =>
-    createOpenPositionsRow(index++)
-  );
+function createFakeOpenPositions({ limit, multi = 3.725 }: { limit: number; multi?: number }) {
+  return Array.from({ length: Number(limit) * multi }, (_, index) => createOpenPositionsRow(index++));
 }
-function createFakeHistory({
-  limit,
-  multi = 3.725,
-}: {
-  limit: number;
-  multi?: number;
-}) {
-  return Array.from({ length: Number(limit) * multi }, (_, index) =>
-    createHistoryRow(index++)
-  );
+function createFakeHistory({ limit, multi = 3.725 }: { limit: number; multi?: number }) {
+  return Array.from({ length: Number(limit) * multi }, (_, index) => createHistoryRow(index++));
 }
 
 function rand(range: number) {

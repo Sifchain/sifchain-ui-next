@@ -33,15 +33,13 @@ const AssetIcon: FC<{
       "grid place-items-center overflow-hidden rounded-full bg-black ring-4 ring-black/60",
       {
         "!bg-white": props.hasDarkIcon,
-      }
+      },
     )}
   >
     {props.imageUrl ? (
       <AsyncImage src={props.imageUrl} />
     ) : (
-      <RacetrackSpinnerIcon
-        className={clsx(props.size === "xs" ? "h-4 w-4" : "h-6 w-6")}
-      />
+      <RacetrackSpinnerIcon className={clsx(props.size === "xs" ? "h-4 w-4" : "h-6 w-6")} />
     )}
   </figure>
 );
@@ -78,18 +76,13 @@ const SORT_KEYS: SortOptions<TokenEntry>[] = [
 
 export const TokenSelector: FC<TokenSelectorProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedToken, _setSelectedToken] = useState<TokenEntry | undefined>(
-    props.value ?? props.tokens[0]
-  );
+  const [selectedToken, _setSelectedToken] = useState<TokenEntry | undefined>(props.value ?? props.tokens[0]);
   const [query, setQuery] = useState("");
-  const { sorted, sort, sortKey, sortDirection } = useSortedArray(
-    props.tokens,
-    {
-      sortKey: "balance",
-      sortAs: "number",
-      sortDirection: "desc",
-    }
-  );
+  const { sorted, sort, sortKey, sortDirection } = useSortedArray(props.tokens, {
+    sortKey: "balance",
+    sortAs: "number",
+    sortDirection: "desc",
+  });
 
   const setSelectedToken = useCallback((token: TokenEntry | undefined) => {
     _setSelectedToken(token);
@@ -110,28 +103,22 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
     return !sanitizedQuery.length
       ? sorted
       : sorted.filter((token) =>
-          [token.name, token.symbol, token.displaySymbol].some((value) =>
-            value.toLowerCase().includes(sanitizedQuery)
-          )
+          [token.name, token.symbol, token.displaySymbol].some((value) => value.toLowerCase().includes(sanitizedQuery)),
         );
   }, [sorted, sanitizedQuery]);
 
   return (
     <>
       <div
-        className={clsx(
-          "relative gap-1",
-          props.inline ? "inline-grid" : "grid",
-          {
-            "text-xs": props.size === "xs",
-          }
-        )}
+        className={clsx("relative gap-1", props.inline ? "inline-grid" : "grid", {
+          "text-xs": props.size === "xs",
+        })}
       >
         {props.label && <span className="input-label">{props.label}</span>}
         <button
           className={clsx(
             "flex h-12 items-center gap-2.5 overflow-hidden rounded bg-gray-700 px-2.5 text-lg font-semibold",
-            props.buttonClassName
+            props.buttonClassName,
           )}
           onClick={(e) => {
             e.preventDefault();
@@ -157,27 +144,13 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
             </>
           )}
           {props.readonly ? (
-            <LockIcon
-              className={clsx(
-                "ml-auto text-white",
-                props.size === "xs" ? "h-3 w-3" : "h-4 w-4"
-              )}
-            />
+            <LockIcon className={clsx("ml-auto text-white", props.size === "xs" ? "h-3 w-3" : "h-4 w-4")} />
           ) : (
-            <ChevronDownIcon
-              className={clsx(
-                "ml-auto text-gray-400",
-                props.size === "xs" ? "h-3 w-3" : "h-4 w-4"
-              )}
-            />
+            <ChevronDownIcon className={clsx("ml-auto text-gray-400", props.size === "xs" ? "h-3 w-3" : "h-4 w-4")} />
           )}
         </button>
       </div>
-      <Modal
-        title={props.modalTitle}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
+      <Modal title={props.modalTitle} isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Combobox
           value={selectedToken}
           onChange={(token) => {
@@ -193,9 +166,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 fullWidth
                 placeholder={props.textPlaceholder}
                 onChange={(event) => setQuery(event.target.value)}
-                displayValue={(token: TokenEntry) =>
-                  sanitizedQuery || token.displaySymbol || token.symbol
-                }
+                displayValue={(token: TokenEntry) => sanitizedQuery || token.displaySymbol || token.symbol}
               />
               <Button variant="secondary" className="hidden h-11 w-11 !p-0">
                 <PencilIcon className="text-lg" />
@@ -209,13 +180,9 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                     className="flex items-center gap-2 uppercase text-gray-300"
                     onClick={sort.bind(null, options)}
                   >
-                    {options.sortKey}{" "}
-                    <SortIcon
-                      active={options.sortKey === sortKey}
-                      sortDirection={sortDirection}
-                    />
+                    {options.sortKey} <SortIcon active={options.sortKey === sortKey} sortDirection={sortDirection} />
                   </button>
-                )
+                ),
               )}
             </div>
 
@@ -227,19 +194,8 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                   const ItemComponent = props.renderTokenItem ?? TokenItem;
 
                   return (
-                    <Combobox.Option
-                      key={`${token.symbol}-${
-                        token.homeNetwork ?? token.network
-                      }`}
-                      value={token}
-                    >
-                      {({ selected, active }) => (
-                        <ItemComponent
-                          {...token}
-                          selected={selected}
-                          active={active}
-                        />
-                      )}
+                    <Combobox.Option key={`${token.symbol}-${token.homeNetwork ?? token.network}`} value={token}>
+                      {({ selected, active }) => <ItemComponent {...token} selected={selected} active={active} />}
                     </Combobox.Option>
                   );
                 })

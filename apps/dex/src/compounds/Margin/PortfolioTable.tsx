@@ -64,16 +64,8 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
 
           return (
             <li key={slug}>
-              <Link
-                href={{ query: { ...qs, tab: qsTab, option: slug } }}
-                scroll={false}
-              >
-                <a
-                  className={clsx(
-                    "mx-4 flex py-3",
-                    isTabActive ? "font-semibold text-white" : "text-gray-400"
-                  )}
-                >
+              <Link href={{ query: { ...qs, tab: qsTab, option: slug } }} scroll={false}>
+                <a className={clsx("mx-4 flex py-3", isTabActive ? "font-semibold text-white" : "text-gray-400")}>
                   {title}
                 </a>
               </Link>
@@ -82,13 +74,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
         })}
       </ul>
       {TabContent && (
-        <Suspense
-          fallback={
-            <div className="bg-gray-850 p-10 text-center text-gray-100">
-              Loading...
-            </div>
-          }
-        >
+        <Suspense fallback={<div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>}>
           {props.walletAddress ? (
             <TabContent
               {...slugProps}
@@ -96,9 +82,7 @@ export const PortfolioTable = (props: PortfolioTableProps) => {
               walletAddress={props.walletAddress}
             />
           ) : (
-            <div className="bg-gray-850 p-10 text-center text-gray-100">
-              Connect your Sifchain wallet.
-            </div>
+            <div className="bg-gray-850 p-10 text-center text-gray-100">Connect your Sifchain wallet.</div>
           )}
         </Suspense>
       )}

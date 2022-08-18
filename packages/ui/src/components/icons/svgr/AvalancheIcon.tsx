@@ -1,14 +1,7 @@
 import type { SVGProps } from "react";
 
 const SvgAvalancheIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 1503 1504"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    {...props}
-  >
+  <svg viewBox="0 0 1503 1504" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <path fill="#fff" d="M287 258h928v844H287z" />
     <path
       fillRule="evenodd"

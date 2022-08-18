@@ -17,19 +17,17 @@ const StyledLabel = tw.button<LabelProps>`
   active:bg-gray-400 active:border-gray-300
 `;
 
-export const Label = forwardRef<HTMLButtonElement, LabelProps>(
-  ({ className, variant, round, size, ...props }, ref) => (
-    <StyledLabel
-      {...props}
-      ref={ref}
-      className={clsx({
-        "rounded-full": round,
-      })}
-    >
-      {props.children}
-    </StyledLabel>
-  )
-);
+export const Label = forwardRef<HTMLButtonElement, LabelProps>(({ className, variant, round, size, ...props }, ref) => (
+  <StyledLabel
+    {...props}
+    ref={ref}
+    className={clsx({
+      "rounded-full": round,
+    })}
+  >
+    {props.children}
+  </StyledLabel>
+));
 
 Label.defaultProps = {
   size: "md",

@@ -23,18 +23,14 @@ export class BaseChain implements Chain {
   constructor(public context: ChainContext) {
     this.chainConfig = context.chainConfig;
 
-    this.assets = context.assets.filter(
-      (a) => a.network === context.chainConfig.network
-    );
+    this.assets = context.assets.filter((a) => a.network === context.chainConfig.network);
 
     this.assetMap = new Map();
     this.assets.forEach((asset) => {
       this.assetMap.set(asset.symbol.toLowerCase(), asset);
     });
     this.nativeAsset = this.assets.find(
-      (a) =>
-        a.symbol.toLowerCase() ===
-        context.chainConfig.nativeAssetSymbol.toLowerCase()
+      (a) => a.symbol.toLowerCase() === context.chainConfig.nativeAssetSymbol.toLowerCase(),
     ) as IAsset;
   }
 
@@ -45,9 +41,7 @@ export class BaseChain implements Chain {
   lookupAssetOrThrow(symbol: string) {
     const asset = this.lookupAsset(symbol);
     if (!asset) {
-      throw new Error(
-        `Asset with symbol ${symbol} not found in chain ${this.displayName}`
-      );
+      throw new Error(`Asset with symbol ${symbol} not found in chain ${this.displayName}`);
     }
     return asset;
   }
@@ -57,11 +51,8 @@ export class BaseChain implements Chain {
   }
 
   findAssetWithLikeSymbolOrThrow(symbol: string) {
-    const asset = this.assets.find((asset) =>
-      isLikeSymbol(asset.symbol, symbol)
-    );
-    if (!asset)
-      throw new Error(`Asset ${symbol} not found in chain ${this.displayName}`);
+    const asset = this.assets.find((asset) => isLikeSymbol(asset.symbol, symbol));
+    if (!asset) throw new Error(`Asset ${symbol} not found in chain ${this.displayName}`);
     return asset;
   }
 
@@ -74,8 +65,6 @@ export class BaseChain implements Chain {
   }
 
   forceGetAsset(symbol: string) {
-    return (
-      this.lookupAsset(symbol) || this.findAssetWithLikeSymbolOrThrow(symbol)
-    );
+    return this.lookupAsset(symbol) || this.findAssetWithLikeSymbolOrThrow(symbol);
   }
 }

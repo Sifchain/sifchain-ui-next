@@ -8,9 +8,7 @@ import type { ProviderConfig } from "~/types";
 
 function useProvidersQuery() {
   const query = useQuery(["providers"], async () => {
-    const { default: file } = await import(
-      "~/../public/config/providers/providers.json"
-    );
+    const { default: file } = await import("~/../public/config/providers/providers.json");
 
     return file.providers as ProviderConfig[];
   });
@@ -42,12 +40,10 @@ const ProvidersSection: FC<{ title: string }> = (props) => {
             <li key={provider.id}>
               <GridCard>
                 <div className="flex items-center gap-2">
-                  <figure className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-gray-750">
+                  <figure className="ring-gray-750 h-8 w-8 overflow-hidden rounded-full ring-2">
                     <AsyncImage
                       alt={`${provider.displayName} logo`}
-                      className={clsx(
-                        "h-8 w-8 overflow-hidden rounded-full p-0.5"
-                      )}
+                      className={clsx("h-8 w-8 overflow-hidden rounded-full p-0.5")}
                       src={provider.logoUrl}
                     />
                   </figure>
@@ -57,11 +53,7 @@ const ProvidersSection: FC<{ title: string }> = (props) => {
                   <p className="text-sm">{provider.description}</p>
                 </div>
                 <div>
-                  <a
-                    className="text-indigo-400 underline"
-                    href={provider.url}
-                    rel="noopener noreferrer"
-                  >
+                  <a className="text-indigo-400 underline" href={provider.url} rel="noopener noreferrer">
                     {provider.url}
                   </a>
                 </div>

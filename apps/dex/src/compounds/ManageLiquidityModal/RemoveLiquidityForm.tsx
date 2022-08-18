@@ -1,12 +1,7 @@
 import { Button, Fieldset, Input, RacetrackSpinnerIcon } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import { clamp } from "rambda";
-import {
-  ChangeEventHandler,
-  FormEventHandler,
-  useCallback,
-  useMemo,
-} from "react";
+import { ChangeEventHandler, FormEventHandler, useCallback, useMemo } from "react";
 import { useLiquidityProviderQuery } from "~/domains/clp";
 import useUnlockLiquidity from "~/domains/clp/formHooks/useUnlockLiquidity";
 import useUnlockLiquidityMutation from "~/domains/clp/hooks/useUnlockLiquidityMutation";
@@ -35,12 +30,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
       return "Close";
     }
 
-    return (
-      <>
-        {unlockLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Unbond
-        liquidity
-      </>
-    );
+    return <>{unlockLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Unbond liquidity</>;
   }, [
     unlockLiquidityMutation.isError,
     unlockLiquidityMutation.isLoading,
@@ -52,16 +42,12 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
     (event) => {
       event.preventDefault();
 
-      if (
-        unlockLiquidityMutation.isSuccess ||
-        unlockLiquidityMutation.isError
-      ) {
+      if (unlockLiquidityMutation.isSuccess || unlockLiquidityMutation.isError) {
         props.onClose(false);
       } else {
         // TODO: this is a temporary solution
         // should be prevented on sifnode side
-        const latestUnlockRequest =
-          liquidityProviderQuery.data?.liquidityProvider?.unlocks[0];
+        const latestUnlockRequest = liquidityProviderQuery.data?.liquidityProvider?.unlocks[0];
         if (latestUnlockRequest !== undefined && !latestUnlockRequest.expired) {
           throw new Error("Only 1 active unlock request allowed");
         }
@@ -69,30 +55,21 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
         unlockLiquidityMutation.mutate({ denom: props.denom, units });
       }
     },
-    [
-      liquidityProviderQuery.data?.liquidityProvider?.unlocks,
-      props,
-      units,
-      unlockLiquidityMutation,
-    ]
+    [liquidityProviderQuery.data?.liquidityProvider?.unlocks, props, units, unlockLiquidityMutation],
   );
 
-  const onChangePercentageInput = useCallback<
-    ChangeEventHandler<HTMLInputElement>
-  >(
+  const onChangePercentageInput = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
       const value = event.target.value.replace(".", "").trim();
       const parsedValue = clamp(0, 100, parseInt(value));
 
       setUnlockPercentage(new BigNumber(parsedValue).div(100).toString());
     },
-    [setUnlockPercentage]
+    [setUnlockPercentage],
   );
 
   const inputDisabled =
-    unlockLiquidityMutation.isLoading ||
-    unlockLiquidityMutation.isSuccess ||
-    unlockLiquidityMutation.isError;
+    unlockLiquidityMutation.isLoading || unlockLiquidityMutation.isSuccess || unlockLiquidityMutation.isError;
 
   return (
     <form onSubmit={onSubmit}>
@@ -106,7 +83,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
           value={unlockPercentage}
           onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
             (event) => setUnlockPercentage(event.target.value),
-            [setUnlockPercentage]
+            [setUnlockPercentage],
           )}
           disabled={inputDisabled}
         />
@@ -144,10 +121,7 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
           </div>
         </dl>
       </section>
-      <Button
-        className="w-full"
-        disabled={unlockLiquidityMutation.isLoading || unlockPercentage === "0"}
-      >
+      <Button className="w-full" disabled={unlockLiquidityMutation.isLoading || unlockPercentage === "0"}>
         {buttonMessage}
       </Button>
     </form>

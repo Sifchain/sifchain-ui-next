@@ -37,11 +37,7 @@ type FindNextOrderAndSortByProps = {
   itemKey: string;
   currentSortBy: string;
 };
-export function findNextOrderAndSortBy({
-  itemActive,
-  itemKey,
-  currentSortBy,
-}: FindNextOrderAndSortByProps) {
+export function findNextOrderAndSortBy({ itemActive, itemKey, currentSortBy }: FindNextOrderAndSortByProps) {
   let nextSortBy = SORT_BY.DESC;
   let nextOrderBy = itemKey;
 

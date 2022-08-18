@@ -1,32 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { isEvmBridgedCoin, runCatching } from "@sifchain/common";
 import { useAccounts } from "@sifchain/cosmos-connect";
-import {
-  ArrowDownIcon,
-  Button,
-  Input,
-  Label,
-  Modal,
-  ModalProps,
-  RacetrackSpinnerIcon,
-} from "@sifchain/ui";
+import { ArrowDownIcon, Button, Input, Label, Modal, ModalProps, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { isNilOrWhitespace } from "@sifchain/utils";
 import { isNil } from "rambda";
-import {
-  ChangeEventHandler,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ChangeEventHandler, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import AssetIcon from "~/compounds/AssetIcon";
 import { useAssetsQuery } from "~/domains/assets";
-import {
-  useAllBalancesQuery,
-  useBalanceQuery,
-} from "~/domains/bank/hooks/balances";
+import { useAllBalancesQuery, useBalanceQuery } from "~/domains/bank/hooks/balances";
 import { useImportTokensMutation } from "~/domains/bank/hooks/import";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -36,13 +18,12 @@ const ImportModal = (
   props: ModalProps & {
     denom: string;
     onChangeDenom: (denom: string) => unknown;
-  }
+  },
 ) => {
   const importTokensMutation = useImportTokensMutation();
 
   const { indexedByDenom } = useTokenRegistryQuery();
-  const { indexedBySymbol: ethAssetsIndexedBySymbol } =
-    useAssetsQuery("ethereum");
+  const { indexedBySymbol: ethAssetsIndexedBySymbol } = useAssetsQuery("ethereum");
   const token = indexedByDenom[props.denom];
   const evmToken = ethAssetsIndexedBySymbol[props.denom.replace(/^c/, "")];
   const balances = useAllBalancesQuery();
@@ -52,25 +33,16 @@ const ImportModal = (
   const { data: evmWalletBalance } = useBalance({
     addressOrName: evmAccount?.address ?? "",
     token: token?.symbol.match(/^ceth$/i) ? undefined : evmToken?.address,
-    enabled: token?.symbol.match(/^ceth$/i)
-      ? true
-      : !isNilOrWhitespace(evmToken?.address),
+    enabled: token?.symbol.match(/^ceth$/i) ? true : !isNilOrWhitespace(evmToken?.address),
   });
 
-  const importTokenWalletBalance = useBalanceQuery(
-    token?.chainId ?? "",
-    props.denom,
-    {
-      enabled: !isEvmBridgedCoin(props.denom) && token?.chainId !== undefined,
-    }
-  );
+  const importTokenWalletBalance = useBalanceQuery(token?.chainId ?? "", props.denom, {
+    enabled: !isEvmBridgedCoin(props.denom) && token?.chainId !== undefined,
+  });
   const walletBalance = isEvmBridgedCoin(props.denom)
     ? isNil(evmWalletBalance)
       ? undefined
-      : Decimal.fromAtomics(
-          evmWalletBalance.value.toString(),
-          evmWalletBalance.decimals
-        )
+      : Decimal.fromAtomics(evmWalletBalance.value.toString(), evmWalletBalance.decimals)
     : importTokenWalletBalance.data?.amount;
 
   const { data: env } = useDexEnvironment();
@@ -81,13 +53,8 @@ const ImportModal = (
 
   const [amount, setAmount] = useState("");
   const amountDecimal = useMemo(
-    () =>
-      runCatching(() =>
-        token === undefined
-          ? undefined
-          : Decimal.fromUserInput(amount, token.decimals)
-      )[1],
-    [amount, token]
+    () => runCatching(() => (token === undefined ? undefined : Decimal.fromUserInput(amount, token.decimals)))[1],
+    [amount, token],
   );
 
   const error = useMemo(() => {
@@ -99,11 +66,7 @@ const ImportModal = (
       return new Error("Please connect Sifchain wallet");
     }
 
-    if (
-      walletBalance?.isLessThan(
-        amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0)
-      )
-    ) {
+    if (walletBalance?.isLessThan(amountDecimal ?? Decimal.zero(walletBalance?.fractionalDigits ?? 0))) {
       return new Error("Insufficient fund");
     }
 
@@ -122,9 +85,7 @@ const ImportModal = (
         return "Transaction failed";
       case "idle":
       default:
-        return `Import ${indexedByDenom[
-          props.denom
-        ]?.displaySymbol.toUpperCase()} from Sifchain`;
+        return `Import ${indexedByDenom[props.denom]?.displaySymbol.toUpperCase()} from Sifchain`;
     }
   }, [importTokensMutation.status, indexedByDenom, props.denom]);
 
@@ -139,20 +100,11 @@ const ImportModal = (
 
     return (
       <>
-        {importTokensMutation.isLoading ? (
-          <RacetrackSpinnerIcon />
-        ) : (
-          <ArrowDownIcon />
-        )}
+        {importTokensMutation.isLoading ? <RacetrackSpinnerIcon /> : <ArrowDownIcon />}
         Import
       </>
     );
-  }, [
-    error,
-    importTokensMutation.isError,
-    importTokensMutation.isLoading,
-    importTokensMutation.isSuccess,
-  ]);
+  }, [error, importTokensMutation.isError, importTokensMutation.isLoading, importTokensMutation.isSuccess]);
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLElement>) => {
@@ -173,14 +125,7 @@ const ImportModal = (
         },
       });
     },
-    [
-      amountDecimal?.atomics,
-      importTokensMutation,
-      props,
-      recipientAddress,
-      token?.address,
-      token?.chainId,
-    ]
+    [amountDecimal?.atomics, importTokensMutation, props, recipientAddress, token?.address, token?.chainId],
   );
 
   useEffect(() => {
@@ -190,35 +135,23 @@ const ImportModal = (
   }, [props.isOpen]);
 
   return (
-    <Modal
-      {...props}
-      onTransitionEnd={() => importTokensMutation.reset()}
-      title={title}
-    >
+    <Modal {...props} onTransitionEnd={() => importTokensMutation.reset()} title={title}>
       <form onSubmit={onSubmit}>
         <fieldset className="mb-4 rounded-lg bg-black p-4">
           <TokenSelector
             modalTitle="Import"
             value={props.denom}
-            onChange={useCallback(
-              (value) => props.onChangeDenom(value?.denom ?? ""),
-              [props]
-            )}
+            onChange={useCallback((value) => props.onChangeDenom(value?.denom ?? ""), [props])}
           />
           <Input
             inputClassName="text-right"
             type="number"
             label="Amount"
-            secondaryLabel={`Balance: ${(
-              walletBalance?.toFloatApproximation() ?? 0
-            ).toLocaleString(undefined, {
+            secondaryLabel={`Balance: ${(walletBalance?.toFloatApproximation() ?? 0).toLocaleString(undefined, {
               maximumFractionDigits: 6,
             })}`}
             value={amount}
-            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>(
-              (event) => setAmount(event.target.value),
-              []
-            )}
+            onChange={useCallback<ChangeEventHandler<HTMLInputElement>>((event) => setAmount(event.target.value), [])}
             leadingIcon={
               <div className="flex gap-1.5">
                 <Label
@@ -226,13 +159,11 @@ const ImportModal = (
                   onClick={useCallback(() => {
                     if (walletBalance !== undefined) {
                       setAmount(
-                        (
-                          walletBalance.toFloatApproximation() / 2
-                        ).toLocaleString(undefined, {
+                        (walletBalance.toFloatApproximation() / 2).toLocaleString(undefined, {
                           minimumFractionDigits: 0,
                           maximumFractionDigits: walletBalance.fractionalDigits,
                           useGrouping: false,
-                        })
+                        }),
                       );
                     }
                   }, [walletBalance])}
@@ -241,10 +172,7 @@ const ImportModal = (
                 </Label>
                 <Label
                   type="button"
-                  onClick={useCallback(
-                    () => setAmount((x) => walletBalance?.toString() ?? x),
-                    [walletBalance]
-                  )}
+                  onClick={useCallback(() => setAmount((x) => walletBalance?.toString() ?? x), [walletBalance])}
                 >
                   Max
                 </Label>
@@ -270,9 +198,7 @@ const ImportModal = (
           <div>
             <dt>Import amount</dt>
             <dd>
-              {amountDecimal
-                ?.toFloatApproximation()
-                .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+              {amountDecimal?.toFloatApproximation().toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
               <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
             </dd>
           </div>
@@ -280,9 +206,7 @@ const ImportModal = (
             <dt>New Sifchain Balance</dt>
             <dd>
               {balance?.amount
-                ?.plus(
-                  amountDecimal ?? Decimal.zero(balance.amount.fractionalDigits)
-                )
+                ?.plus(amountDecimal ?? Decimal.zero(balance.amount.fractionalDigits))
                 .toFloatApproximation()
                 .toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
               <AssetIcon network="sifchain" symbol={props.denom} size="sm" />
@@ -290,16 +214,15 @@ const ImportModal = (
           </div>
         </dl>
         {isEvmBridgedCoin(props.denom) && (
-          <div className="flex items-center gap-4 rounded-lg bg-gray-750 p-4">
+          <div className="bg-gray-750 flex items-center gap-4 rounded-lg p-4">
             <p className="text-lg">ℹ️</p>
             <p className="text-xs text-gray-200">
-              Your funds will be available for use on Sifchain after about 10
-              minutes. However in some cases, this action can take up to 60
-              minutes.
+              Your funds will be available for use on Sifchain after about 10 minutes. However in some cases, this
+              action can take up to 60 minutes.
               <br />
               <br />
-              Up to 2 transactions might be needed, please do not close the
-              modal or leave the page while transactions are still inprogress
+              Up to 2 transactions might be needed, please do not close the modal or leave the page while transactions
+              are still inprogress
             </p>
           </div>
         )}

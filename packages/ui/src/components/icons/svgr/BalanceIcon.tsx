@@ -1,14 +1,7 @@
 import type { SVGProps } from "react";
 
 const SvgBalanceIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 18 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    {...props}
-  >
+  <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <path
       d="M9 6.188A2.812 2.812 0 1 0 11.813 9 2.815 2.815 0 0 0 9 6.187Zm0 6.25A3.438 3.438 0 1 1 9 5.56a3.438 3.438 0 0 1 0 6.877Z"
       fill="currentColor"

@@ -12,12 +12,7 @@ export const useExportTokensMutation = () => {
   const { refetch: refetchEnv } = useDexEnvironment();
 
   return useMutation(
-    async (variables: {
-      senderAddress: string;
-      recipientAddress: string;
-      amount: Coin;
-      memo?: string;
-    }) => {
+    async (variables: { senderAddress: string; recipientAddress: string; amount: Coin; memo?: string }) => {
       const { data: stargateClient } = await refetchStargateClient();
       const { data: env } = await refetchEnv();
 
@@ -29,7 +24,7 @@ export const useExportTokensMutation = () => {
             (env?.chainConfigsByNetwork.ethereum as EthChainConfig).chainId,
             undefined,
             DEFAULT_FEE,
-            variables.memo
+            variables.memo,
           )
         : stargateClient?.exportIbcTokens(
             variables.senderAddress,
@@ -39,7 +34,7 @@ export const useExportTokensMutation = () => {
             undefined,
             getUnixTime(addMinutes(new Date(), 15)),
             DEFAULT_FEE,
-            variables.memo
+            variables.memo,
           );
     },
     {
@@ -48,13 +43,11 @@ export const useExportTokensMutation = () => {
       },
       onSettled: (data, error) => {
         if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
-          toast.error(
-            data?.rawLog ?? (data as any)?.message ?? "Failed to export"
-          );
+          toast.error(data?.rawLog ?? (data as any)?.message ?? "Failed to export");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
           toast.success(`Successfully exported`);
         }
       },
-    }
+    },
   );
 };

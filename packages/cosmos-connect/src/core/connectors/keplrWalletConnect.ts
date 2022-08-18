@@ -22,10 +22,7 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
 
   readonly #walletConnect = new WalletConnect({
     bridge: "https://bridge.walletconnect.org",
-    signingMethods: [
-      "keplr_enable_wallet_connect_v1",
-      "keplr_sign_amino_wallet_connect_v1",
-    ],
+    signingMethods: ["keplr_enable_wallet_connect_v1", "keplr_sign_amino_wallet_connect_v1"],
     clientMeta: this.options.clientMeta,
     qrcodeModal: this.#qrCodeModal,
   });
@@ -92,17 +89,13 @@ export class KeplrWalletConnectConnector extends BaseCosmConnector<KeplrWalletCo
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
-    return SigningStargateClient.connect(
-      this.#chainStore.getChain(chainId).rpc
-    );
+    return SigningStargateClient.connect(this.#chainStore.getChain(chainId).rpc);
   }
 
-  async getSigningStargateClient(
-    chainId: string
-  ): Promise<SigningStargateClient> {
+  async getSigningStargateClient(chainId: string): Promise<SigningStargateClient> {
     return SigningStargateClient.connectWithSigner(
       this.#chainStore.getChain(chainId).rpc,
-      await this.getSigner(chainId)
+      await this.getSigner(chainId),
     );
   }
 }

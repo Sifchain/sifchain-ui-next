@@ -6,11 +6,7 @@ import { createInterface } from "readline";
  * @param {string} message
  * @returns {Promise<string>}
  */
-export async function prompt(
-  message = "",
-  options = ["y", "n"],
-  defaultAnswer = "y"
-) {
+export async function prompt(message = "", options = ["y", "n"], defaultAnswer = "y") {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,

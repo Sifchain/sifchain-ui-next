@@ -372,7 +372,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
       <>
         <h1 className="text-center text-lg font-bold">Review closing trade</h1>
         <ul className="mt-4 flex flex-col gap-3">
-          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
+          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol="rowan" network="sifchain" size="sm" />
             <span className="ml-1">ROWAN</span>
           </li>
@@ -431,7 +431,7 @@ function PositionToCloseModal(props: PositionToCloseModalProps) {
           </div>
         </div>
         <ul className="flex flex-col gap-3">
-          <li className="flex flex-row items-center rounded-lg bg-gray-850 py-2 px-4 text-base font-semibold">
+          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol="usdc" network="sifchain" size="sm" />
             <span className="ml-1">USDC</span>
           </li>

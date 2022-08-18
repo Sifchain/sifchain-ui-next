@@ -13,15 +13,9 @@ const Portfolio: NextPage = () => {
       <Head>
         <title>Sichain Dex - Margin - Portfolio</title>
       </Head>
-      <section className="mt-4 overflow-hidden rounded border border-gold-800">
-        {walletAddress.isLoading && (
-          <div className="bg-gray-850 p-10 text-center text-gray-100">
-            Loading...
-          </div>
-        )}
-        {walletAddress.isSuccess && (
-          <PortfolioTable walletAddress={walletAddress.data} />
-        )}
+      <section className="border-gold-800 mt-4 overflow-hidden rounded border">
+        {walletAddress.isLoading && <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>}
+        {walletAddress.isSuccess && <PortfolioTable walletAddress={walletAddress.data} />}
       </section>
     </>
   );

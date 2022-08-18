@@ -1,14 +1,7 @@
 import type { SVGProps } from "react";
 
 const SvgRacetrackSpinnerIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    viewBox="0 0 40 40"
-    xmlSpace="preserve"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 40 40" xmlSpace="preserve" {...props}>
     <path
       opacity={0.2}
       fill="currentColor"

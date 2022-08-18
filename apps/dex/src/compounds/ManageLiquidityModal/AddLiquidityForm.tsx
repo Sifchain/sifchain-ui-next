@@ -18,20 +18,12 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
   } = useAddLiquidity(props.denom);
   const addLiquidityMutation = useAddLiquidityMutation();
 
-  const { data: nativeBalance } = useBalanceQuery(
-    env?.sifChainId ?? "",
-    env?.nativeAsset.symbol.toLowerCase() ?? "",
-    {
-      enabled: env !== undefined,
-    }
-  );
-  const { data: externalBalance } = useBalanceQuery(
-    env?.sifChainId ?? "",
-    props.denom,
-    {
-      enabled: env !== undefined,
-    }
-  );
+  const { data: nativeBalance } = useBalanceQuery(env?.sifChainId ?? "", env?.nativeAsset.symbol.toLowerCase() ?? "", {
+    enabled: env !== undefined,
+  });
+  const { data: externalBalance } = useBalanceQuery(env?.sifChainId ?? "", props.denom, {
+    enabled: env !== undefined,
+  });
 
   const validationError = useMemo(() => {
     if (!addLiquidityMutation.isReady) {
@@ -39,22 +31,14 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
     }
 
     if (
-      (nativeBalance !== undefined &&
-        nativeAmountDecimal?.isGreaterThan(nativeBalance.amount)) ||
-      (externalBalance &&
-        externalAmountDecimal?.isGreaterThan(externalBalance.amount))
+      (nativeBalance !== undefined && nativeAmountDecimal?.isGreaterThan(nativeBalance.amount)) ||
+      (externalBalance && externalAmountDecimal?.isGreaterThan(externalBalance.amount))
     ) {
       return new Error("Insufficient balance");
     }
 
     return;
-  }, [
-    addLiquidityMutation.isReady,
-    externalAmountDecimal,
-    externalBalance,
-    nativeAmountDecimal,
-    nativeBalance,
-  ]);
+  }, [addLiquidityMutation.isReady, externalAmountDecimal, externalBalance, nativeAmountDecimal, nativeBalance]);
 
   const buttonMessage = useMemo(() => {
     if (validationError !== undefined) {
@@ -65,18 +49,8 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
       return "Close";
     }
 
-    return (
-      <>
-        {addLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Add
-        liquidity
-      </>
-    );
-  }, [
-    addLiquidityMutation.isError,
-    addLiquidityMutation.isLoading,
-    addLiquidityMutation.isSuccess,
-    validationError,
-  ]);
+    return <>{addLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Add liquidity</>;
+  }, [addLiquidityMutation.isError, addLiquidityMutation.isLoading, addLiquidityMutation.isSuccess, validationError]);
 
   const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     (event) => {
@@ -86,10 +60,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         return props.onClose(false);
       }
 
-      if (
-        nativeAmountDecimal !== undefined &&
-        externalAmountDecimal !== undefined
-      ) {
+      if (nativeAmountDecimal !== undefined && externalAmountDecimal !== undefined) {
         addLiquidityMutation.mutate({
           denom: props.denom,
           nativeAmount: nativeAmountDecimal.atomics,
@@ -97,13 +68,11 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
         });
       }
     },
-    [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props]
+    [addLiquidityMutation, externalAmountDecimal, nativeAmountDecimal, props],
   );
 
   const inputsDisabled =
-    addLiquidityMutation.isLoading ||
-    addLiquidityMutation.isSuccess ||
-    addLiquidityMutation.isError;
+    addLiquidityMutation.isLoading || addLiquidityMutation.isSuccess || addLiquidityMutation.isError;
 
   return (
     <form onSubmit={onSubmit}>
@@ -144,12 +113,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
           </dd>
         </div>
       </dl>
-      <Button
-        className="w-full"
-        disabled={
-          addLiquidityMutation.isLoading || validationError !== undefined
-        }
-      >
+      <Button className="w-full" disabled={addLiquidityMutation.isLoading || validationError !== undefined}>
         {buttonMessage}
       </Button>
     </form>

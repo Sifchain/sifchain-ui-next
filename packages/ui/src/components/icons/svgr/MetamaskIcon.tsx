@@ -1,14 +1,7 @@
 import type { SVGProps } from "react";
 
 const SvgMetamaskIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 22 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    {...props}
-  >
+  <svg viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" {...props}>
     <path
       d="m20.011.752-7.813 5.781 1.453-3.407L20.01.752Z"
       fill="#E17726"

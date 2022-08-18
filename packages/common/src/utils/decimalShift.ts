@@ -14,8 +14,7 @@ export function decimalShift(decimal: string, shift: number) {
   }
 
   // Extract the sign(+-) and the unsigned content from the decimal
-  const [, sign = "", unsignedDecimal = decimal] =
-    decimal.match(/^([+-]?)(.+)$/) || [];
+  const [, sign = "", unsignedDecimal = decimal] = decimal.match(/^([+-]?)(.+)$/) || [];
 
   // Eg, "12.34" > ['12','34']
   const [origCharacter, origMantissa] = unsignedDecimal.split(".");
@@ -27,12 +26,7 @@ export function decimalShift(decimal: string, shift: number) {
   const significand = [origCharacter, origMantissa].join("");
 
   const character =
-    targetIndex >= 0
-      ? significand
-          .slice(0, targetIndex)
-          .padEnd(targetIndex, "0")
-          .replace(/^0+/, "") || "0"
-      : "0";
+    targetIndex >= 0 ? significand.slice(0, targetIndex).padEnd(targetIndex, "0").replace(/^0+/, "") || "0" : "0";
 
   const mantissa =
     targetIndex >= 0
@@ -76,16 +70,11 @@ export function floorDecimal(decimal: string) {
  * @param amount an IAmount
  * @returns length of mantissa
  */
-export function getMantissaLength<T extends IAmount>(
-  amount: AmountNotAssetAmount<T>
-): number {
+export function getMantissaLength<T extends IAmount>(amount: AmountNotAssetAmount<T>): number {
   const number = format(amount, { mantissa: 18, trimMantissa: true });
   return number.length - number.indexOf(".") - 1;
 }
 
-export function humanUnitsToAssetAmount(
-  asset: IAsset,
-  amount: string | number
-) {
+export function humanUnitsToAssetAmount(asset: IAsset, amount: string | number) {
   return AssetAmount(asset, toBaseUnits(String(amount), asset));
 }

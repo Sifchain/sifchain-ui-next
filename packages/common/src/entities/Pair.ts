@@ -5,17 +5,12 @@ import { createPoolKey } from "../";
 export class Pair {
   amounts: [IAssetAmount, IAssetAmount];
 
-  constructor(
-    private nativeAsset: IAssetAmount,
-    private externalAsset: IAssetAmount
-  ) {
+  constructor(private nativeAsset: IAssetAmount, private externalAsset: IAssetAmount) {
     this.amounts = [nativeAsset, externalAsset];
   }
 
   otherAsset(asset: IAsset) {
-    const otherAsset = this.amounts.find(
-      (amount) => amount.symbol !== asset.symbol
-    );
+    const otherAsset = this.amounts.find((amount) => amount.symbol !== asset.symbol);
     if (!otherAsset) {
       throw new Error("Asset doesnt exist in pair");
     }
@@ -36,9 +31,7 @@ export class Pair {
 
   getAmount(asset: IAsset | string) {
     const assetSymbol = typeof asset === "string" ? asset : asset.symbol;
-    const found = this.amounts.find(
-      (amount) => amount.symbol.toLowerCase() === assetSymbol.toLowerCase()
-    );
+    const found = this.amounts.find((amount) => amount.symbol.toLowerCase() === assetSymbol.toLowerCase());
     if (!found) throw new Error(`Asset ${assetSymbol} doesnt exist in pair`);
     return found;
   }

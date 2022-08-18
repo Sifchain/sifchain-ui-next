@@ -17,22 +17,12 @@ export type ProtoPackageAndMessages<T extends { protobufPackage: any }> = {
 export type EncodeObjectRecord<T extends ProtoPackageAndMessages<T>> = {
   [P in keyof PickType<T, TsProtoGeneratedType>]: {
     typeUrl: P extends string ? `/${T["protobufPackage"]}.${P}` : void;
-    value: T[P] extends TsProtoGeneratedType
-      ? ReturnType<T[P]["fromPartial"]>
-      : void;
+    value: T[P] extends TsProtoGeneratedType ? ReturnType<T[P]["fromPartial"]> : void;
   };
 };
 
 export type Rpc = {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 };
 
-export type StringLiteral<T> = T extends string
-  ? string extends T
-    ? never
-    : T
-  : never;
+export type StringLiteral<T> = T extends string ? (string extends T ? never : T) : never;
