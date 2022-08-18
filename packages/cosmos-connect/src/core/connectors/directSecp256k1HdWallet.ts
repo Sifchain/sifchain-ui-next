@@ -23,17 +23,15 @@ export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOption
     return this.options.simulateDisconnect ? this.#connectedSim : true;
   }
 
-  async connect() {
+  connect() {
     this.#connectedSim = true;
     this.emit("connect");
-
     return Promise.resolve();
   }
 
-  async disconnect() {
+  disconnect() {
     this.#connectedSim = false;
     this.emit("disconnect");
-
     return Promise.resolve();
   }
 
