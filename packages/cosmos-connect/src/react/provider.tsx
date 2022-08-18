@@ -48,7 +48,7 @@ export const CosmConnectProvider = (props: PropsWithChildren<CosmConnectProvider
   // get active connector from storage on first mount then try to connect it
   useEffect(() => {
     if (!activeConnector?.connected) {
-      activeConnector?.connect().then(() => {
+      void activeConnector?.connect().then(() => {
         setIsInitSuccessful(true);
       });
     }
