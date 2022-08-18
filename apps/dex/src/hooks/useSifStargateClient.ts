@@ -19,12 +19,7 @@ export const useSifSigningStargateClient = () => {
 
   return useQuery(
     "sif-signing-stargate-client",
-    () =>
-      SifSigningStargateClient.connectWithSigner(
-        env?.sifRpcUrl ?? "",
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        signer!,
-      ),
+    () => SifSigningStargateClient.connectWithSigner(env?.sifRpcUrl ?? "", signer!),
     { enabled: signer !== undefined && env !== undefined },
   );
 };

@@ -30,7 +30,6 @@ export default function useSifnodeQuery<
   F = M extends () => any ? ReturnType<M> : never,
   Res = Awaited<F>,
 >(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   query: QueryKey | `${T}.${P}`,
   args: ArgumentTypes<PublicSifnodeClient[T][P]>,
@@ -40,7 +39,7 @@ export default function useSifnodeQuery<
 
   return useQuery(
     [query, client, ...args],
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
     // @ts-ignore
     async (): Awaited<ReturnType<PublicSifnodeClient[T][P]>> => {
       if (!client) {
@@ -59,7 +58,6 @@ export default function useSifnodeQuery<
     },
     {
       enabled: "enabled" in options ? options.enabled && Boolean(client) : Boolean(client),
-      // eslint-disable-next-line @typescript-eslint/ban-types
       ...(omit(["enabled"], options) as {}),
     },
   );

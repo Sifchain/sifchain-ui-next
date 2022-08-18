@@ -4,7 +4,7 @@ import {
   TokenSelector as BaseTokenSelector,
   TokenSelectorProps as BaseTokenSelectorProps,
 } from "@sifchain/ui";
-import { pipe } from "ramda";
+import { pipe } from "rambda";
 import { useCallback, useMemo } from "react";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";

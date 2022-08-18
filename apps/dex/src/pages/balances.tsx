@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ascend, descend, sort } from "ramda";
+import { ascend, descend } from "ramda";
 import { useCallback, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
@@ -43,28 +43,19 @@ const BalancesPage: NextPage = () => {
     const sortFunc = sortByOrder === "asc" ? ascend : descend;
     switch (sortByProperty) {
       case "token":
-        return sort(
-          sortFunc((x) => x.displaySymbol ?? ""),
-          balances,
-        );
+        return balances.sort(sortFunc((x) => x.displaySymbol ?? ""));
+
       case "available":
-        return sort(
-          sortFunc((x) => x.amount?.toFloatApproximation() ?? 0),
-          balances,
-        );
+        return balances.sort(sortFunc((x) => x.amount?.toFloatApproximation() ?? 0));
       case "balance":
-        return sort(
+        return balances.sort(
           sortFunc(
             (x) =>
               x.amount?.plus(x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits)).toFloatApproximation() ?? 0,
           ),
-          balances,
         );
       case "pooled":
-        return sort(
-          sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0),
-          balances,
-        );
+        return balances.sort(sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0));
       case undefined:
       default:
         return balances;

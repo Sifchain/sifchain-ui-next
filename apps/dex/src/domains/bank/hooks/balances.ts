@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { useAccounts, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
-import { compose, identity, indexBy, prop, toLower } from "rambda";
+import { compose, identity, indexBy, prop, toLower } from "rambda/immutable";
 import { memoizeWith } from "ramda";
 import { useMemo } from "react";
 import { useQuery } from "react-query";

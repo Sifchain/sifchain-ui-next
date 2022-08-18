@@ -4,7 +4,7 @@ import chalk from "chalk";
 import CoingeckoClient from "coingecko-api";
 import fs from "fs/promises";
 import path from "path";
-import { uniqBy } from "ramda";
+import { uniqBy } from "rambda";
 import Web3 from "web3";
 
 import { ERC20_ABI } from "./erc20TokenAbi.mjs";
