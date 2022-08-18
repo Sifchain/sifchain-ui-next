@@ -11,4 +11,13 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./apps/*/tsconfig.json", "./packages/*/tsconfig.json"],
   },
+  rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        varsIgnorePattern: "^_.*$",
+        argsIgnorePattern: "^_.*$",
+      },
+    ],
+  },
 };
