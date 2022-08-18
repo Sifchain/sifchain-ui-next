@@ -18,6 +18,7 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import WalletConnector from "~/compounds/WalletConnector";
 import { useRowanPriceQuery, useTVLQuery } from "~/domains/clp/hooks";
@@ -58,6 +59,13 @@ export function useMenuItems() {
 const Header = () => {
   const windowSize = useWindowSize();
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+  const [linkLogo, setLinkLogo] = useState(isMarginStandaloneOn ? "/margin" : "/");
+
+  useEffect(() => {
+    if (isMarginStandaloneOn && document.referrer) {
+      setLinkLogo(document.referrer);
+    }
+  }, [isMarginStandaloneOn, setLinkLogo]);
 
   return (
     <header className="grid bg-black md:p-4">
@@ -70,7 +78,7 @@ const Header = () => {
           {({ open }) => (
             <>
               <section className="shadow-inset-border flex items-center justify-between md:grid md:place-items-center md:shadow-none">
-                <Link href={isMarginStandaloneOn ? "/margin" : "/"}>
+                <Link href={linkLogo}>
                   <a className="flex items-center gap-4 p-2 md:p-1">
                     <SifchainLogoSmall className="inline-block text-[44px]" />
                     {isMarginStandaloneOn && <h1 className="pl-3 text-2xl font-semibold">Margin</h1>}

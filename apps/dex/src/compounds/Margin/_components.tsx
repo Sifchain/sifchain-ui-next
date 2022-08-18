@@ -1,9 +1,16 @@
+import clsx from "clsx";
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
-import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+  TokenEntry,
+  TokenSelector as BaseTokenSelector,
+} from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
+import type { PropsWithChildren } from "react";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -39,7 +46,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
 
 type PaginationButtonsProps = {
   pages: number;
-  render: (page: number) => React.ReactNode;
+  render: (_page: number) => React.ReactNode;
 };
 export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
   return (
@@ -57,19 +64,23 @@ export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
 }
 
 export function PillUpdating() {
-  return <span className="rounded bg-yellow-600 px-4 py-2 text-xs text-yellow-200">Updating...</span>;
+  return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
   rowanPriceUsd: number;
-  onChangePoolSelector: (token: TokenEntry) => void;
+  onChangePoolSelector: (_token: TokenEntry) => void;
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
+  const poolTVL24hChange = props.pool.stats.tvl_24h_change || 0;
   const volume = props.pool.stats.volume || 0;
+  const volume24hChange = props.pool.stats.volume_24h_change || 0;
   const health = props.pool.stats.health || 0;
+  const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
+  const asset24hChange = props.pool.stats.asset_24h_change || 0;
 
   return (
     <ul className="grid grid-cols-7 gap-5">
@@ -89,7 +100,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(poolTVL)}</span>
-            <span className="text-green-400">(+2.8%)</span>
+            <Average24hPercent value={poolTVL24hChange} />
           </span>
         </div>
       </li>
@@ -98,7 +109,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">Pool Volume</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
-            <span className="text-green-400">(+2.8%)</span>
+            <Average24hPercent value={volume24hChange} />
           </span>
         </div>
       </li>
@@ -107,7 +118,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="text-gray-300">ROWAN Price</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(props.rowanPriceUsd, 4)}</span>
-            <span className="text-red-400">(-2.8%)</span>
+            <Average24hPercent value={rowan24hChange} />
           </span>
         </div>
       </li>
@@ -118,16 +129,71 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">
               <span className="mr-1">{formatNumberAsCurrency(Number(props.pool.stats.priceToken))}</span>
             </span>
-            <span className="text-red-400">(-1.3%)</span>
+            <Average24hPercent value={asset24hChange} />
           </span>
         </div>
       </li>
       <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Health</span>
-          <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
+          <span className="text-sm font-semibold">{formatNumberAsDecimal(health)}</span>
         </div>
       </li>
     </ul>
+  );
+}
+
+function Average24hPercent({ value }: { value: number }) {
+  const sign = Math.sign(value);
+  const cls = clsx({
+    "text-green-400": sign === 1,
+    "text-red-400": sign === -1,
+    "text-cyan-400": sign === 0,
+  });
+  return <span className={cls}>({formatNumberAsPercent(value)})</span>;
+}
+
+export function FlashMessageAccountNotWhitelisted() {
+  return (
+    <FlashMessage>
+      Sorry! Your account has not yet been approved for margin trading. Please reach out to us on
+      <a
+        className="mx-1 text-blue-300 underline hover:text-blue-400"
+        href="https://discord.gg/sifchain"
+        rel="noopener noreferrer"
+      >
+        Discord
+      </a>
+      to get started
+    </FlashMessage>
+  );
+}
+
+export function FlashMessage5xxError() {
+  return <FlashMessage>Ooops! Something wrong happened, try again later.</FlashMessage>;
+}
+
+export function FlashMessageLoading() {
+  return <FlashMessage>Loading...</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWallet() {
+  return <FlashMessage>Connect your Sifchain wallet</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWalletError() {
+  return <FlashMessage>Unable to connect your Sifchain wallet. Try again later.</FlashMessage>;
+}
+
+export function FlashMessageConnectSifChainWalletLoading() {
+  return <FlashMessage>Sifchain wallet connecting...</FlashMessage>;
+}
+
+type FlashMessageProps = PropsWithChildren & { className?: string; size?: "small" };
+export function FlashMessage({ children, className, size }: FlashMessageProps) {
+  return (
+    <div className={clsx(className ?? "bg-gray-850 text-center text-gray-100", size === "small" ? "p-4" : "p-10")}>
+      {children}
+    </div>
   );
 }

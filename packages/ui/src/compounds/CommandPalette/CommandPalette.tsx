@@ -171,7 +171,7 @@ export const CommandPalette: FC<CommandPaletteProps> = (props) => {
             >
               <Dialog.Panel
                 className={`
-                  m-auto mt-[10vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden 
+                  m-auto mt-[10vh] max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden
                   rounded-xl bg-gray-900 shadow-2xl transition-all md:mt-[25vh]
                 `}
               >

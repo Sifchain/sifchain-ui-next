@@ -6,6 +6,7 @@ import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import { transformMTPMutationErrors } from "./transformMTPMutationErrors";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
@@ -46,7 +47,7 @@ export function useCloseMTPMutation() {
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
-          ? `Failed to close margin position: ${error.message}`
+          ? `Failed to close margin position: ${transformMTPMutationErrors(error.message)}`
           : data?.rawLog ?? "Failed to close margin position";
 
         toast.error(errorMessage);

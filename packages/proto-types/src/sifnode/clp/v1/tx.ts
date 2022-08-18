@@ -161,10 +161,7 @@ function createBaseMsgUpdateStakingRewardParams(): MsgUpdateStakingRewardParams 
 }
 
 export const MsgUpdateStakingRewardParams = {
-  encode(
-    message: MsgUpdateStakingRewardParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateStakingRewardParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -177,10 +174,7 @@ export const MsgUpdateStakingRewardParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateStakingRewardParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateStakingRewardParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateStakingRewardParams();
@@ -220,9 +214,7 @@ export const MsgUpdateStakingRewardParams = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateStakingRewardParams>, I>>(
-    object: I,
-  ): MsgUpdateStakingRewardParams {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateStakingRewardParams>, I>>(object: I): MsgUpdateStakingRewardParams {
     const message = createBaseMsgUpdateStakingRewardParams();
     message.signer = object.signer ?? "";
     message.minter = object.minter ?? "";
@@ -236,17 +228,11 @@ function createBaseMsgUpdateStakingRewardParamsResponse(): MsgUpdateStakingRewar
 }
 
 export const MsgUpdateStakingRewardParamsResponse = {
-  encode(
-    _: MsgUpdateStakingRewardParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateStakingRewardParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateStakingRewardParamsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateStakingRewardParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateStakingRewardParamsResponse();
@@ -270,28 +256,20 @@ export const MsgUpdateStakingRewardParamsResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgUpdateStakingRewardParamsResponse>, I>,
-  >(_: I): MsgUpdateStakingRewardParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateStakingRewardParamsResponse>, I>>(
+    _: I,
+  ): MsgUpdateStakingRewardParamsResponse {
     const message = createBaseMsgUpdateStakingRewardParamsResponse();
     return message;
   },
 };
 
 function createBaseMsgRemoveLiquidity(): MsgRemoveLiquidity {
-  return {
-    signer: "",
-    externalAsset: undefined,
-    wBasisPoints: "",
-    asymmetry: "",
-  };
+  return { signer: "", externalAsset: undefined, wBasisPoints: "", asymmetry: "" };
 }
 
 export const MsgRemoveLiquidity = {
-  encode(
-    message: MsgRemoveLiquidity,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRemoveLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -337,12 +315,8 @@ export const MsgRemoveLiquidity = {
   fromJSON(object: any): MsgRemoveLiquidity {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
-      wBasisPoints: isSet(object.wBasisPoints)
-        ? String(object.wBasisPoints)
-        : "",
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
+      wBasisPoints: isSet(object.wBasisPoints) ? String(object.wBasisPoints) : "",
       asymmetry: isSet(object.asymmetry) ? String(object.asymmetry) : "",
     };
   },
@@ -351,18 +325,13 @@ export const MsgRemoveLiquidity = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
-    message.wBasisPoints !== undefined &&
-      (obj.wBasisPoints = message.wBasisPoints);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
+    message.wBasisPoints !== undefined && (obj.wBasisPoints = message.wBasisPoints);
     message.asymmetry !== undefined && (obj.asymmetry = message.asymmetry);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidity>, I>>(
-    object: I,
-  ): MsgRemoveLiquidity {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidity>, I>>(object: I): MsgRemoveLiquidity {
     const message = createBaseMsgRemoveLiquidity();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -380,17 +349,11 @@ function createBaseMsgRemoveLiquidityResponse(): MsgRemoveLiquidityResponse {
 }
 
 export const MsgRemoveLiquidityResponse = {
-  encode(
-    _: MsgRemoveLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRemoveLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRemoveLiquidityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveLiquidityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRemoveLiquidityResponse();
@@ -414,9 +377,7 @@ export const MsgRemoveLiquidityResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityResponse>, I>>(
-    _: I,
-  ): MsgRemoveLiquidityResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityResponse>, I>>(_: I): MsgRemoveLiquidityResponse {
     const message = createBaseMsgRemoveLiquidityResponse();
     return message;
   },
@@ -427,10 +388,7 @@ function createBaseMsgRemoveLiquidityUnits(): MsgRemoveLiquidityUnits {
 }
 
 export const MsgRemoveLiquidityUnits = {
-  encode(
-    message: MsgRemoveLiquidityUnits,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRemoveLiquidityUnits, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -443,10 +401,7 @@ export const MsgRemoveLiquidityUnits = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRemoveLiquidityUnits {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveLiquidityUnits {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRemoveLiquidityUnits();
@@ -473,12 +428,8 @@ export const MsgRemoveLiquidityUnits = {
   fromJSON(object: any): MsgRemoveLiquidityUnits {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
-      withdrawUnits: isSet(object.withdrawUnits)
-        ? String(object.withdrawUnits)
-        : "",
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
+      withdrawUnits: isSet(object.withdrawUnits) ? String(object.withdrawUnits) : "",
     };
   },
 
@@ -486,17 +437,12 @@ export const MsgRemoveLiquidityUnits = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
-    message.withdrawUnits !== undefined &&
-      (obj.withdrawUnits = message.withdrawUnits);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
+    message.withdrawUnits !== undefined && (obj.withdrawUnits = message.withdrawUnits);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityUnits>, I>>(
-    object: I,
-  ): MsgRemoveLiquidityUnits {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityUnits>, I>>(object: I): MsgRemoveLiquidityUnits {
     const message = createBaseMsgRemoveLiquidityUnits();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -513,17 +459,11 @@ function createBaseMsgRemoveLiquidityUnitsResponse(): MsgRemoveLiquidityUnitsRes
 }
 
 export const MsgRemoveLiquidityUnitsResponse = {
-  encode(
-    _: MsgRemoveLiquidityUnitsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRemoveLiquidityUnitsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRemoveLiquidityUnitsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveLiquidityUnitsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRemoveLiquidityUnitsResponse();
@@ -547,28 +487,18 @@ export const MsgRemoveLiquidityUnitsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityUnitsResponse>, I>>(
-    _: I,
-  ): MsgRemoveLiquidityUnitsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveLiquidityUnitsResponse>, I>>(_: I): MsgRemoveLiquidityUnitsResponse {
     const message = createBaseMsgRemoveLiquidityUnitsResponse();
     return message;
   },
 };
 
 function createBaseMsgCreatePool(): MsgCreatePool {
-  return {
-    signer: "",
-    externalAsset: undefined,
-    nativeAssetAmount: "",
-    externalAssetAmount: "",
-  };
+  return { signer: "", externalAsset: undefined, nativeAssetAmount: "", externalAssetAmount: "" };
 }
 
 export const MsgCreatePool = {
-  encode(
-    message: MsgCreatePool,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgCreatePool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -614,15 +544,9 @@ export const MsgCreatePool = {
   fromJSON(object: any): MsgCreatePool {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
-      nativeAssetAmount: isSet(object.nativeAssetAmount)
-        ? String(object.nativeAssetAmount)
-        : "",
-      externalAssetAmount: isSet(object.externalAssetAmount)
-        ? String(object.externalAssetAmount)
-        : "",
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
+      nativeAssetAmount: isSet(object.nativeAssetAmount) ? String(object.nativeAssetAmount) : "",
+      externalAssetAmount: isSet(object.externalAssetAmount) ? String(object.externalAssetAmount) : "",
     };
   },
 
@@ -630,19 +554,13 @@ export const MsgCreatePool = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
-    message.nativeAssetAmount !== undefined &&
-      (obj.nativeAssetAmount = message.nativeAssetAmount);
-    message.externalAssetAmount !== undefined &&
-      (obj.externalAssetAmount = message.externalAssetAmount);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
+    message.nativeAssetAmount !== undefined && (obj.nativeAssetAmount = message.nativeAssetAmount);
+    message.externalAssetAmount !== undefined && (obj.externalAssetAmount = message.externalAssetAmount);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreatePool>, I>>(
-    object: I,
-  ): MsgCreatePool {
+  fromPartial<I extends Exact<DeepPartial<MsgCreatePool>, I>>(object: I): MsgCreatePool {
     const message = createBaseMsgCreatePool();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -660,17 +578,11 @@ function createBaseMsgCreatePoolResponse(): MsgCreatePoolResponse {
 }
 
 export const MsgCreatePoolResponse = {
-  encode(
-    _: MsgCreatePoolResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCreatePoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreatePoolResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreatePoolResponse();
@@ -694,28 +606,18 @@ export const MsgCreatePoolResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreatePoolResponse>, I>>(
-    _: I,
-  ): MsgCreatePoolResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreatePoolResponse>, I>>(_: I): MsgCreatePoolResponse {
     const message = createBaseMsgCreatePoolResponse();
     return message;
   },
 };
 
 function createBaseMsgAddLiquidity(): MsgAddLiquidity {
-  return {
-    signer: "",
-    externalAsset: undefined,
-    nativeAssetAmount: "",
-    externalAssetAmount: "",
-  };
+  return { signer: "", externalAsset: undefined, nativeAssetAmount: "", externalAssetAmount: "" };
 }
 
 export const MsgAddLiquidity = {
-  encode(
-    message: MsgAddLiquidity,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgAddLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -761,15 +663,9 @@ export const MsgAddLiquidity = {
   fromJSON(object: any): MsgAddLiquidity {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
-      nativeAssetAmount: isSet(object.nativeAssetAmount)
-        ? String(object.nativeAssetAmount)
-        : "",
-      externalAssetAmount: isSet(object.externalAssetAmount)
-        ? String(object.externalAssetAmount)
-        : "",
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
+      nativeAssetAmount: isSet(object.nativeAssetAmount) ? String(object.nativeAssetAmount) : "",
+      externalAssetAmount: isSet(object.externalAssetAmount) ? String(object.externalAssetAmount) : "",
     };
   },
 
@@ -777,19 +673,13 @@ export const MsgAddLiquidity = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
-    message.nativeAssetAmount !== undefined &&
-      (obj.nativeAssetAmount = message.nativeAssetAmount);
-    message.externalAssetAmount !== undefined &&
-      (obj.externalAssetAmount = message.externalAssetAmount);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
+    message.nativeAssetAmount !== undefined && (obj.nativeAssetAmount = message.nativeAssetAmount);
+    message.externalAssetAmount !== undefined && (obj.externalAssetAmount = message.externalAssetAmount);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddLiquidity>, I>>(
-    object: I,
-  ): MsgAddLiquidity {
+  fromPartial<I extends Exact<DeepPartial<MsgAddLiquidity>, I>>(object: I): MsgAddLiquidity {
     const message = createBaseMsgAddLiquidity();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -807,17 +697,11 @@ function createBaseMsgAddLiquidityResponse(): MsgAddLiquidityResponse {
 }
 
 export const MsgAddLiquidityResponse = {
-  encode(
-    _: MsgAddLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgAddLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddLiquidityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddLiquidityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddLiquidityResponse();
@@ -841,9 +725,7 @@ export const MsgAddLiquidityResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddLiquidityResponse>, I>>(
-    _: I,
-  ): MsgAddLiquidityResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgAddLiquidityResponse>, I>>(_: I): MsgAddLiquidityResponse {
     const message = createBaseMsgAddLiquidityResponse();
     return message;
   },
@@ -854,10 +736,7 @@ function createBaseMsgModifyPmtpRates(): MsgModifyPmtpRates {
 }
 
 export const MsgModifyPmtpRates = {
-  encode(
-    message: MsgModifyPmtpRates,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgModifyPmtpRates, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -913,15 +792,12 @@ export const MsgModifyPmtpRates = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.blockRate !== undefined && (obj.blockRate = message.blockRate);
-    message.runningRate !== undefined &&
-      (obj.runningRate = message.runningRate);
+    message.runningRate !== undefined && (obj.runningRate = message.runningRate);
     message.endPolicy !== undefined && (obj.endPolicy = message.endPolicy);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgModifyPmtpRates>, I>>(
-    object: I,
-  ): MsgModifyPmtpRates {
+  fromPartial<I extends Exact<DeepPartial<MsgModifyPmtpRates>, I>>(object: I): MsgModifyPmtpRates {
     const message = createBaseMsgModifyPmtpRates();
     message.signer = object.signer ?? "";
     message.blockRate = object.blockRate ?? "";
@@ -936,17 +812,11 @@ function createBaseMsgModifyPmtpRatesResponse(): MsgModifyPmtpRatesResponse {
 }
 
 export const MsgModifyPmtpRatesResponse = {
-  encode(
-    _: MsgModifyPmtpRatesResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgModifyPmtpRatesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgModifyPmtpRatesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgModifyPmtpRatesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgModifyPmtpRatesResponse();
@@ -970,9 +840,7 @@ export const MsgModifyPmtpRatesResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgModifyPmtpRatesResponse>, I>>(
-    _: I,
-  ): MsgModifyPmtpRatesResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgModifyPmtpRatesResponse>, I>>(_: I): MsgModifyPmtpRatesResponse {
     const message = createBaseMsgModifyPmtpRatesResponse();
     return message;
   },
@@ -989,10 +857,7 @@ function createBaseMsgUpdatePmtpParams(): MsgUpdatePmtpParams {
 }
 
 export const MsgUpdatePmtpParams = {
-  encode(
-    message: MsgUpdatePmtpParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdatePmtpParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1044,60 +909,44 @@ export const MsgUpdatePmtpParams = {
   fromJSON(object: any): MsgUpdatePmtpParams {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      pmtpPeriodGovernanceRate: isSet(object.pmtpPeriodGovernanceRate)
-        ? String(object.pmtpPeriodGovernanceRate)
-        : "",
+      pmtpPeriodGovernanceRate: isSet(object.pmtpPeriodGovernanceRate) ? String(object.pmtpPeriodGovernanceRate) : "",
       pmtpPeriodEpochLength: isSet(object.pmtpPeriodEpochLength)
         ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO,
       pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
         ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO,
-      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? Long.fromValue(object.pmtpPeriodEndBlock)
-        : Long.ZERO,
+      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock) ? Long.fromValue(object.pmtpPeriodEndBlock) : Long.ZERO,
     };
   },
 
   toJSON(message: MsgUpdatePmtpParams): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.pmtpPeriodGovernanceRate !== undefined &&
-      (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
+    message.pmtpPeriodGovernanceRate !== undefined && (obj.pmtpPeriodGovernanceRate = message.pmtpPeriodGovernanceRate);
     message.pmtpPeriodEpochLength !== undefined &&
-      (obj.pmtpPeriodEpochLength = (
-        message.pmtpPeriodEpochLength || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodEpochLength = (message.pmtpPeriodEpochLength || Long.ZERO).toString());
     message.pmtpPeriodStartBlock !== undefined &&
-      (obj.pmtpPeriodStartBlock = (
-        message.pmtpPeriodStartBlock || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodStartBlock = (message.pmtpPeriodStartBlock || Long.ZERO).toString());
     message.pmtpPeriodEndBlock !== undefined &&
-      (obj.pmtpPeriodEndBlock = (
-        message.pmtpPeriodEndBlock || Long.ZERO
-      ).toString());
+      (obj.pmtpPeriodEndBlock = (message.pmtpPeriodEndBlock || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdatePmtpParams>, I>>(
-    object: I,
-  ): MsgUpdatePmtpParams {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdatePmtpParams>, I>>(object: I): MsgUpdatePmtpParams {
     const message = createBaseMsgUpdatePmtpParams();
     message.signer = object.signer ?? "";
     message.pmtpPeriodGovernanceRate = object.pmtpPeriodGovernanceRate ?? "";
     message.pmtpPeriodEpochLength =
-      object.pmtpPeriodEpochLength !== undefined &&
-      object.pmtpPeriodEpochLength !== null
+      object.pmtpPeriodEpochLength !== undefined && object.pmtpPeriodEpochLength !== null
         ? Long.fromValue(object.pmtpPeriodEpochLength)
         : Long.ZERO;
     message.pmtpPeriodStartBlock =
-      object.pmtpPeriodStartBlock !== undefined &&
-      object.pmtpPeriodStartBlock !== null
+      object.pmtpPeriodStartBlock !== undefined && object.pmtpPeriodStartBlock !== null
         ? Long.fromValue(object.pmtpPeriodStartBlock)
         : Long.ZERO;
     message.pmtpPeriodEndBlock =
-      object.pmtpPeriodEndBlock !== undefined &&
-      object.pmtpPeriodEndBlock !== null
+      object.pmtpPeriodEndBlock !== undefined && object.pmtpPeriodEndBlock !== null
         ? Long.fromValue(object.pmtpPeriodEndBlock)
         : Long.ZERO;
     return message;
@@ -1109,17 +958,11 @@ function createBaseMsgUpdatePmtpParamsResponse(): MsgUpdatePmtpParamsResponse {
 }
 
 export const MsgUpdatePmtpParamsResponse = {
-  encode(
-    _: MsgUpdatePmtpParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdatePmtpParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdatePmtpParamsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePmtpParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdatePmtpParamsResponse();
@@ -1143,29 +986,18 @@ export const MsgUpdatePmtpParamsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdatePmtpParamsResponse>, I>>(
-    _: I,
-  ): MsgUpdatePmtpParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdatePmtpParamsResponse>, I>>(_: I): MsgUpdatePmtpParamsResponse {
     const message = createBaseMsgUpdatePmtpParamsResponse();
     return message;
   },
 };
 
 function createBaseMsgSwap(): MsgSwap {
-  return {
-    signer: "",
-    sentAsset: undefined,
-    receivedAsset: undefined,
-    sentAmount: "",
-    minReceivingAmount: "",
-  };
+  return { signer: "", sentAsset: undefined, receivedAsset: undefined, sentAmount: "", minReceivingAmount: "" };
 }
 
 export const MsgSwap = {
-  encode(
-    message: MsgSwap,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgSwap, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1217,16 +1049,10 @@ export const MsgSwap = {
   fromJSON(object: any): MsgSwap {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      sentAsset: isSet(object.sentAsset)
-        ? Asset.fromJSON(object.sentAsset)
-        : undefined,
-      receivedAsset: isSet(object.receivedAsset)
-        ? Asset.fromJSON(object.receivedAsset)
-        : undefined,
+      sentAsset: isSet(object.sentAsset) ? Asset.fromJSON(object.sentAsset) : undefined,
+      receivedAsset: isSet(object.receivedAsset) ? Asset.fromJSON(object.receivedAsset) : undefined,
       sentAmount: isSet(object.sentAmount) ? String(object.sentAmount) : "",
-      minReceivingAmount: isSet(object.minReceivingAmount)
-        ? String(object.minReceivingAmount)
-        : "",
+      minReceivingAmount: isSet(object.minReceivingAmount) ? String(object.minReceivingAmount) : "",
     };
   },
 
@@ -1234,16 +1060,11 @@ export const MsgSwap = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.sentAsset !== undefined &&
-      (obj.sentAsset = message.sentAsset
-        ? Asset.toJSON(message.sentAsset)
-        : undefined);
+      (obj.sentAsset = message.sentAsset ? Asset.toJSON(message.sentAsset) : undefined);
     message.receivedAsset !== undefined &&
-      (obj.receivedAsset = message.receivedAsset
-        ? Asset.toJSON(message.receivedAsset)
-        : undefined);
+      (obj.receivedAsset = message.receivedAsset ? Asset.toJSON(message.receivedAsset) : undefined);
     message.sentAmount !== undefined && (obj.sentAmount = message.sentAmount);
-    message.minReceivingAmount !== undefined &&
-      (obj.minReceivingAmount = message.minReceivingAmount);
+    message.minReceivingAmount !== undefined && (obj.minReceivingAmount = message.minReceivingAmount);
     return obj;
   },
 
@@ -1251,9 +1072,7 @@ export const MsgSwap = {
     const message = createBaseMsgSwap();
     message.signer = object.signer ?? "";
     message.sentAsset =
-      object.sentAsset !== undefined && object.sentAsset !== null
-        ? Asset.fromPartial(object.sentAsset)
-        : undefined;
+      object.sentAsset !== undefined && object.sentAsset !== null ? Asset.fromPartial(object.sentAsset) : undefined;
     message.receivedAsset =
       object.receivedAsset !== undefined && object.receivedAsset !== null
         ? Asset.fromPartial(object.receivedAsset)
@@ -1269,10 +1088,7 @@ function createBaseMsgSwapResponse(): MsgSwapResponse {
 }
 
 export const MsgSwapResponse = {
-  encode(
-    _: MsgSwapResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgSwapResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -1300,9 +1116,7 @@ export const MsgSwapResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSwapResponse>, I>>(
-    _: I,
-  ): MsgSwapResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgSwapResponse>, I>>(_: I): MsgSwapResponse {
     const message = createBaseMsgSwapResponse();
     return message;
   },
@@ -1313,10 +1127,7 @@ function createBaseMsgDecommissionPool(): MsgDecommissionPool {
 }
 
 export const MsgDecommissionPool = {
-  encode(
-    message: MsgDecommissionPool,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgDecommissionPool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1361,9 +1172,7 @@ export const MsgDecommissionPool = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDecommissionPool>, I>>(
-    object: I,
-  ): MsgDecommissionPool {
+  fromPartial<I extends Exact<DeepPartial<MsgDecommissionPool>, I>>(object: I): MsgDecommissionPool {
     const message = createBaseMsgDecommissionPool();
     message.signer = object.signer ?? "";
     message.symbol = object.symbol ?? "";
@@ -1376,17 +1185,11 @@ function createBaseMsgDecommissionPoolResponse(): MsgDecommissionPoolResponse {
 }
 
 export const MsgDecommissionPoolResponse = {
-  encode(
-    _: MsgDecommissionPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgDecommissionPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgDecommissionPoolResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDecommissionPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgDecommissionPoolResponse();
@@ -1410,9 +1213,7 @@ export const MsgDecommissionPoolResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDecommissionPoolResponse>, I>>(
-    _: I,
-  ): MsgDecommissionPoolResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgDecommissionPoolResponse>, I>>(_: I): MsgDecommissionPoolResponse {
     const message = createBaseMsgDecommissionPoolResponse();
     return message;
   },
@@ -1423,10 +1224,7 @@ function createBaseMsgUnlockLiquidityRequest(): MsgUnlockLiquidityRequest {
 }
 
 export const MsgUnlockLiquidityRequest = {
-  encode(
-    message: MsgUnlockLiquidityRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUnlockLiquidityRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1439,10 +1237,7 @@ export const MsgUnlockLiquidityRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUnlockLiquidityRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnlockLiquidityRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUnlockLiquidityRequest();
@@ -1469,9 +1264,7 @@ export const MsgUnlockLiquidityRequest = {
   fromJSON(object: any): MsgUnlockLiquidityRequest {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
       units: isSet(object.units) ? String(object.units) : "",
     };
   },
@@ -1480,16 +1273,12 @@ export const MsgUnlockLiquidityRequest = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
     message.units !== undefined && (obj.units = message.units);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUnlockLiquidityRequest>, I>>(
-    object: I,
-  ): MsgUnlockLiquidityRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgUnlockLiquidityRequest>, I>>(object: I): MsgUnlockLiquidityRequest {
     const message = createBaseMsgUnlockLiquidityRequest();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -1506,17 +1295,11 @@ function createBaseMsgUnlockLiquidityResponse(): MsgUnlockLiquidityResponse {
 }
 
 export const MsgUnlockLiquidityResponse = {
-  encode(
-    _: MsgUnlockLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUnlockLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUnlockLiquidityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnlockLiquidityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUnlockLiquidityResponse();
@@ -1540,27 +1323,18 @@ export const MsgUnlockLiquidityResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUnlockLiquidityResponse>, I>>(
-    _: I,
-  ): MsgUnlockLiquidityResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUnlockLiquidityResponse>, I>>(_: I): MsgUnlockLiquidityResponse {
     const message = createBaseMsgUnlockLiquidityResponse();
     return message;
   },
 };
 
 function createBaseMsgUpdateRewardsParamsRequest(): MsgUpdateRewardsParamsRequest {
-  return {
-    signer: "",
-    liquidityRemovalLockPeriod: Long.UZERO,
-    liquidityRemovalCancelPeriod: Long.UZERO,
-  };
+  return { signer: "", liquidityRemovalLockPeriod: Long.UZERO, liquidityRemovalCancelPeriod: Long.UZERO };
 }
 
 export const MsgUpdateRewardsParamsRequest = {
-  encode(
-    message: MsgUpdateRewardsParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateRewardsParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1573,10 +1347,7 @@ export const MsgUpdateRewardsParamsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateRewardsParamsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateRewardsParamsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateRewardsParamsRequest();
@@ -1616,13 +1387,9 @@ export const MsgUpdateRewardsParamsRequest = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.liquidityRemovalLockPeriod !== undefined &&
-      (obj.liquidityRemovalLockPeriod = (
-        message.liquidityRemovalLockPeriod || Long.UZERO
-      ).toString());
+      (obj.liquidityRemovalLockPeriod = (message.liquidityRemovalLockPeriod || Long.UZERO).toString());
     message.liquidityRemovalCancelPeriod !== undefined &&
-      (obj.liquidityRemovalCancelPeriod = (
-        message.liquidityRemovalCancelPeriod || Long.UZERO
-      ).toString());
+      (obj.liquidityRemovalCancelPeriod = (message.liquidityRemovalCancelPeriod || Long.UZERO).toString());
     return obj;
   },
 
@@ -1632,13 +1399,11 @@ export const MsgUpdateRewardsParamsRequest = {
     const message = createBaseMsgUpdateRewardsParamsRequest();
     message.signer = object.signer ?? "";
     message.liquidityRemovalLockPeriod =
-      object.liquidityRemovalLockPeriod !== undefined &&
-      object.liquidityRemovalLockPeriod !== null
+      object.liquidityRemovalLockPeriod !== undefined && object.liquidityRemovalLockPeriod !== null
         ? Long.fromValue(object.liquidityRemovalLockPeriod)
         : Long.UZERO;
     message.liquidityRemovalCancelPeriod =
-      object.liquidityRemovalCancelPeriod !== undefined &&
-      object.liquidityRemovalCancelPeriod !== null
+      object.liquidityRemovalCancelPeriod !== undefined && object.liquidityRemovalCancelPeriod !== null
         ? Long.fromValue(object.liquidityRemovalCancelPeriod)
         : Long.UZERO;
     return message;
@@ -1650,17 +1415,11 @@ function createBaseMsgUpdateRewardsParamsResponse(): MsgUpdateRewardsParamsRespo
 }
 
 export const MsgUpdateRewardsParamsResponse = {
-  encode(
-    _: MsgUpdateRewardsParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateRewardsParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateRewardsParamsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateRewardsParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateRewardsParamsResponse();
@@ -1684,9 +1443,7 @@ export const MsgUpdateRewardsParamsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateRewardsParamsResponse>, I>>(
-    _: I,
-  ): MsgUpdateRewardsParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateRewardsParamsResponse>, I>>(_: I): MsgUpdateRewardsParamsResponse {
     const message = createBaseMsgUpdateRewardsParamsResponse();
     return message;
   },
@@ -1697,10 +1454,7 @@ function createBaseMsgAddRewardPeriodRequest(): MsgAddRewardPeriodRequest {
 }
 
 export const MsgAddRewardPeriodRequest = {
-  encode(
-    message: MsgAddRewardPeriodRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgAddRewardPeriodRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1710,10 +1464,7 @@ export const MsgAddRewardPeriodRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddRewardPeriodRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRewardPeriodRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddRewardPeriodRequest();
@@ -1724,9 +1475,7 @@ export const MsgAddRewardPeriodRequest = {
           message.signer = reader.string();
           break;
         case 2:
-          message.rewardPeriods.push(
-            RewardPeriod.decode(reader, reader.uint32()),
-          );
+          message.rewardPeriods.push(RewardPeriod.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1749,22 +1498,17 @@ export const MsgAddRewardPeriodRequest = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     if (message.rewardPeriods) {
-      obj.rewardPeriods = message.rewardPeriods.map((e) =>
-        e ? RewardPeriod.toJSON(e) : undefined,
-      );
+      obj.rewardPeriods = message.rewardPeriods.map((e) => (e ? RewardPeriod.toJSON(e) : undefined));
     } else {
       obj.rewardPeriods = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddRewardPeriodRequest>, I>>(
-    object: I,
-  ): MsgAddRewardPeriodRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgAddRewardPeriodRequest>, I>>(object: I): MsgAddRewardPeriodRequest {
     const message = createBaseMsgAddRewardPeriodRequest();
     message.signer = object.signer ?? "";
-    message.rewardPeriods =
-      object.rewardPeriods?.map((e) => RewardPeriod.fromPartial(e)) || [];
+    message.rewardPeriods = object.rewardPeriods?.map((e) => RewardPeriod.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1774,17 +1518,11 @@ function createBaseMsgAddRewardPeriodResponse(): MsgAddRewardPeriodResponse {
 }
 
 export const MsgAddRewardPeriodResponse = {
-  encode(
-    _: MsgAddRewardPeriodResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgAddRewardPeriodResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddRewardPeriodResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRewardPeriodResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddRewardPeriodResponse();
@@ -1808,9 +1546,7 @@ export const MsgAddRewardPeriodResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddRewardPeriodResponse>, I>>(
-    _: I,
-  ): MsgAddRewardPeriodResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgAddRewardPeriodResponse>, I>>(_: I): MsgAddRewardPeriodResponse {
     const message = createBaseMsgAddRewardPeriodResponse();
     return message;
   },
@@ -1821,10 +1557,7 @@ function createBaseMsgSetSymmetryThreshold(): MsgSetSymmetryThreshold {
 }
 
 export const MsgSetSymmetryThreshold = {
-  encode(
-    message: MsgSetSymmetryThreshold,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgSetSymmetryThreshold, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1837,10 +1570,7 @@ export const MsgSetSymmetryThreshold = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgSetSymmetryThreshold {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetSymmetryThreshold {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgSetSymmetryThreshold();
@@ -1880,9 +1610,7 @@ export const MsgSetSymmetryThreshold = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThreshold>, I>>(
-    object: I,
-  ): MsgSetSymmetryThreshold {
+  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThreshold>, I>>(object: I): MsgSetSymmetryThreshold {
     const message = createBaseMsgSetSymmetryThreshold();
     message.signer = object.signer ?? "";
     message.threshold = object.threshold ?? "";
@@ -1896,17 +1624,11 @@ function createBaseMsgSetSymmetryThresholdResponse(): MsgSetSymmetryThresholdRes
 }
 
 export const MsgSetSymmetryThresholdResponse = {
-  encode(
-    _: MsgSetSymmetryThresholdResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgSetSymmetryThresholdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgSetSymmetryThresholdResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetSymmetryThresholdResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgSetSymmetryThresholdResponse();
@@ -1930,9 +1652,7 @@ export const MsgSetSymmetryThresholdResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThresholdResponse>, I>>(
-    _: I,
-  ): MsgSetSymmetryThresholdResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgSetSymmetryThresholdResponse>, I>>(_: I): MsgSetSymmetryThresholdResponse {
     const message = createBaseMsgSetSymmetryThresholdResponse();
     return message;
   },
@@ -1943,10 +1663,7 @@ function createBaseMsgCancelUnlock(): MsgCancelUnlock {
 }
 
 export const MsgCancelUnlock = {
-  encode(
-    message: MsgCancelUnlock,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgCancelUnlock, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -1986,9 +1703,7 @@ export const MsgCancelUnlock = {
   fromJSON(object: any): MsgCancelUnlock {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
       units: isSet(object.units) ? String(object.units) : "",
     };
   },
@@ -1997,16 +1712,12 @@ export const MsgCancelUnlock = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
     message.units !== undefined && (obj.units = message.units);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlock>, I>>(
-    object: I,
-  ): MsgCancelUnlock {
+  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlock>, I>>(object: I): MsgCancelUnlock {
     const message = createBaseMsgCancelUnlock();
     message.signer = object.signer ?? "";
     message.externalAsset =
@@ -2023,17 +1734,11 @@ function createBaseMsgCancelUnlockResponse(): MsgCancelUnlockResponse {
 }
 
 export const MsgCancelUnlockResponse = {
-  encode(
-    _: MsgCancelUnlockResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCancelUnlockResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCancelUnlockResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelUnlockResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCancelUnlockResponse();
@@ -2057,9 +1762,7 @@ export const MsgCancelUnlockResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlockResponse>, I>>(
-    _: I,
-  ): MsgCancelUnlockResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCancelUnlockResponse>, I>>(_: I): MsgCancelUnlockResponse {
     const message = createBaseMsgCancelUnlockResponse();
     return message;
   },
@@ -2070,10 +1773,7 @@ function createBaseRemovalRequest(): RemovalRequest {
 }
 
 export const RemovalRequest = {
-  encode(
-    message: RemovalRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RemovalRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).int64(message.id);
     }
@@ -2114,9 +1814,7 @@ export const RemovalRequest = {
     return {
       id: isSet(object.id) ? Long.fromValue(object.id) : Long.ZERO,
       value: isSet(object.value) ? String(object.value) : "",
-      msg: isSet(object.msg)
-        ? MsgRemoveLiquidity.fromJSON(object.msg)
-        : undefined,
+      msg: isSet(object.msg) ? MsgRemoveLiquidity.fromJSON(object.msg) : undefined,
     };
   },
 
@@ -2124,26 +1822,16 @@ export const RemovalRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = (message.id || Long.ZERO).toString());
     message.value !== undefined && (obj.value = message.value);
-    message.msg !== undefined &&
-      (obj.msg = message.msg
-        ? MsgRemoveLiquidity.toJSON(message.msg)
-        : undefined);
+    message.msg !== undefined && (obj.msg = message.msg ? MsgRemoveLiquidity.toJSON(message.msg) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RemovalRequest>, I>>(
-    object: I,
-  ): RemovalRequest {
+  fromPartial<I extends Exact<DeepPartial<RemovalRequest>, I>>(object: I): RemovalRequest {
     const message = createBaseRemovalRequest();
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.ZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.ZERO;
     message.value = object.value ?? "";
     message.msg =
-      object.msg !== undefined && object.msg !== null
-        ? MsgRemoveLiquidity.fromPartial(object.msg)
-        : undefined;
+      object.msg !== undefined && object.msg !== null ? MsgRemoveLiquidity.fromPartial(object.msg) : undefined;
     return message;
   },
 };
@@ -2153,10 +1841,7 @@ function createBaseMsgModifyLiquidityProtectionRates(): MsgModifyLiquidityProtec
 }
 
 export const MsgModifyLiquidityProtectionRates = {
-  encode(
-    message: MsgModifyLiquidityProtectionRates,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgModifyLiquidityProtectionRates, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -2166,10 +1851,7 @@ export const MsgModifyLiquidityProtectionRates = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgModifyLiquidityProtectionRates {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgModifyLiquidityProtectionRates {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgModifyLiquidityProtectionRates();
@@ -2193,9 +1875,7 @@ export const MsgModifyLiquidityProtectionRates = {
   fromJSON(object: any): MsgModifyLiquidityProtectionRates {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      currentRowanLiquidityThreshold: isSet(
-        object.currentRowanLiquidityThreshold,
-      )
+      currentRowanLiquidityThreshold: isSet(object.currentRowanLiquidityThreshold)
         ? String(object.currentRowanLiquidityThreshold)
         : "",
     };
@@ -2205,18 +1885,16 @@ export const MsgModifyLiquidityProtectionRates = {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.currentRowanLiquidityThreshold !== undefined &&
-      (obj.currentRowanLiquidityThreshold =
-        message.currentRowanLiquidityThreshold);
+      (obj.currentRowanLiquidityThreshold = message.currentRowanLiquidityThreshold);
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRates>, I>,
-  >(object: I): MsgModifyLiquidityProtectionRates {
+  fromPartial<I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRates>, I>>(
+    object: I,
+  ): MsgModifyLiquidityProtectionRates {
     const message = createBaseMsgModifyLiquidityProtectionRates();
     message.signer = object.signer ?? "";
-    message.currentRowanLiquidityThreshold =
-      object.currentRowanLiquidityThreshold ?? "";
+    message.currentRowanLiquidityThreshold = object.currentRowanLiquidityThreshold ?? "";
     return message;
   },
 };
@@ -2226,17 +1904,11 @@ function createBaseMsgModifyLiquidityProtectionRatesResponse(): MsgModifyLiquidi
 }
 
 export const MsgModifyLiquidityProtectionRatesResponse = {
-  encode(
-    _: MsgModifyLiquidityProtectionRatesResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgModifyLiquidityProtectionRatesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgModifyLiquidityProtectionRatesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgModifyLiquidityProtectionRatesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgModifyLiquidityProtectionRatesResponse();
@@ -2260,9 +1932,9 @@ export const MsgModifyLiquidityProtectionRatesResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRatesResponse>, I>,
-  >(_: I): MsgModifyLiquidityProtectionRatesResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgModifyLiquidityProtectionRatesResponse>, I>>(
+    _: I,
+  ): MsgModifyLiquidityProtectionRatesResponse {
     const message = createBaseMsgModifyLiquidityProtectionRatesResponse();
     return message;
   },
@@ -2279,10 +1951,7 @@ function createBaseMsgUpdateLiquidityProtectionParams(): MsgUpdateLiquidityProte
 }
 
 export const MsgUpdateLiquidityProtectionParams = {
-  encode(
-    message: MsgUpdateLiquidityProtectionParams,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateLiquidityProtectionParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -2301,10 +1970,7 @@ export const MsgUpdateLiquidityProtectionParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateLiquidityProtectionParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateLiquidityProtectionParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateLiquidityProtectionParams();
@@ -2340,14 +2006,10 @@ export const MsgUpdateLiquidityProtectionParams = {
       maxRowanLiquidityThreshold: isSet(object.maxRowanLiquidityThreshold)
         ? String(object.maxRowanLiquidityThreshold)
         : "",
-      maxRowanLiquidityThresholdAsset: isSet(
-        object.maxRowanLiquidityThresholdAsset,
-      )
+      maxRowanLiquidityThresholdAsset: isSet(object.maxRowanLiquidityThresholdAsset)
         ? String(object.maxRowanLiquidityThresholdAsset)
         : "",
-      epochLength: isSet(object.epochLength)
-        ? Long.fromValue(object.epochLength)
-        : Long.UZERO,
+      epochLength: isSet(object.epochLength) ? Long.fromValue(object.epochLength) : Long.UZERO,
       isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
     };
   },
@@ -2358,27 +2020,21 @@ export const MsgUpdateLiquidityProtectionParams = {
     message.maxRowanLiquidityThreshold !== undefined &&
       (obj.maxRowanLiquidityThreshold = message.maxRowanLiquidityThreshold);
     message.maxRowanLiquidityThresholdAsset !== undefined &&
-      (obj.maxRowanLiquidityThresholdAsset =
-        message.maxRowanLiquidityThresholdAsset);
-    message.epochLength !== undefined &&
-      (obj.epochLength = (message.epochLength || Long.UZERO).toString());
+      (obj.maxRowanLiquidityThresholdAsset = message.maxRowanLiquidityThresholdAsset);
+    message.epochLength !== undefined && (obj.epochLength = (message.epochLength || Long.UZERO).toString());
     message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParams>, I>,
-  >(object: I): MsgUpdateLiquidityProtectionParams {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParams>, I>>(
+    object: I,
+  ): MsgUpdateLiquidityProtectionParams {
     const message = createBaseMsgUpdateLiquidityProtectionParams();
     message.signer = object.signer ?? "";
-    message.maxRowanLiquidityThreshold =
-      object.maxRowanLiquidityThreshold ?? "";
-    message.maxRowanLiquidityThresholdAsset =
-      object.maxRowanLiquidityThresholdAsset ?? "";
+    message.maxRowanLiquidityThreshold = object.maxRowanLiquidityThreshold ?? "";
+    message.maxRowanLiquidityThresholdAsset = object.maxRowanLiquidityThresholdAsset ?? "";
     message.epochLength =
-      object.epochLength !== undefined && object.epochLength !== null
-        ? Long.fromValue(object.epochLength)
-        : Long.UZERO;
+      object.epochLength !== undefined && object.epochLength !== null ? Long.fromValue(object.epochLength) : Long.UZERO;
     message.isActive = object.isActive ?? false;
     return message;
   },
@@ -2389,17 +2045,11 @@ function createBaseMsgUpdateLiquidityProtectionParamsResponse(): MsgUpdateLiquid
 }
 
 export const MsgUpdateLiquidityProtectionParamsResponse = {
-  encode(
-    _: MsgUpdateLiquidityProtectionParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateLiquidityProtectionParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateLiquidityProtectionParamsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateLiquidityProtectionParamsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateLiquidityProtectionParamsResponse();
@@ -2423,9 +2073,9 @@ export const MsgUpdateLiquidityProtectionParamsResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParamsResponse>, I>,
-  >(_: I): MsgUpdateLiquidityProtectionParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateLiquidityProtectionParamsResponse>, I>>(
+    _: I,
+  ): MsgUpdateLiquidityProtectionParamsResponse {
     const message = createBaseMsgUpdateLiquidityProtectionParamsResponse();
     return message;
   },
@@ -2436,10 +2086,7 @@ function createBaseMsgAddProviderDistributionPeriodRequest(): MsgAddProviderDist
 }
 
 export const MsgAddProviderDistributionPeriodRequest = {
-  encode(
-    message: MsgAddProviderDistributionPeriodRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgAddProviderDistributionPeriodRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -2449,10 +2096,7 @@ export const MsgAddProviderDistributionPeriodRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddProviderDistributionPeriodRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddProviderDistributionPeriodRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddProviderDistributionPeriodRequest();
@@ -2463,9 +2107,7 @@ export const MsgAddProviderDistributionPeriodRequest = {
           message.signer = reader.string();
           break;
         case 2:
-          message.distributionPeriods.push(
-            ProviderDistributionPeriod.decode(reader, reader.uint32()),
-          );
+          message.distributionPeriods.push(ProviderDistributionPeriod.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -2479,9 +2121,7 @@ export const MsgAddProviderDistributionPeriodRequest = {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
       distributionPeriods: Array.isArray(object?.distributionPeriods)
-        ? object.distributionPeriods.map((e: any) =>
-            ProviderDistributionPeriod.fromJSON(e),
-          )
+        ? object.distributionPeriods.map((e: any) => ProviderDistributionPeriod.fromJSON(e))
         : [],
     };
   },
@@ -2499,15 +2139,13 @@ export const MsgAddProviderDistributionPeriodRequest = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodRequest>, I>,
-  >(object: I): MsgAddProviderDistributionPeriodRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodRequest>, I>>(
+    object: I,
+  ): MsgAddProviderDistributionPeriodRequest {
     const message = createBaseMsgAddProviderDistributionPeriodRequest();
     message.signer = object.signer ?? "";
     message.distributionPeriods =
-      object.distributionPeriods?.map((e) =>
-        ProviderDistributionPeriod.fromPartial(e),
-      ) || [];
+      object.distributionPeriods?.map((e) => ProviderDistributionPeriod.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2517,17 +2155,11 @@ function createBaseMsgAddProviderDistributionPeriodResponse(): MsgAddProviderDis
 }
 
 export const MsgAddProviderDistributionPeriodResponse = {
-  encode(
-    _: MsgAddProviderDistributionPeriodResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgAddProviderDistributionPeriodResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddProviderDistributionPeriodResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddProviderDistributionPeriodResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddProviderDistributionPeriodResponse();
@@ -2551,51 +2183,29 @@ export const MsgAddProviderDistributionPeriodResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodResponse>, I>,
-  >(_: I): MsgAddProviderDistributionPeriodResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgAddProviderDistributionPeriodResponse>, I>>(
+    _: I,
+  ): MsgAddProviderDistributionPeriodResponse {
     const message = createBaseMsgAddProviderDistributionPeriodResponse();
     return message;
   },
 };
 
 export interface Msg {
-  RemoveLiquidity(
-    request: MsgRemoveLiquidity,
-  ): Promise<MsgRemoveLiquidityResponse>;
-  RemoveLiquidityUnits(
-    request: MsgRemoveLiquidityUnits,
-  ): Promise<MsgRemoveLiquidityUnitsResponse>;
+  RemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse>;
+  RemoveLiquidityUnits(request: MsgRemoveLiquidityUnits): Promise<MsgRemoveLiquidityUnitsResponse>;
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse>;
   AddLiquidity(request: MsgAddLiquidity): Promise<MsgAddLiquidityResponse>;
   Swap(request: MsgSwap): Promise<MsgSwapResponse>;
-  DecommissionPool(
-    request: MsgDecommissionPool,
-  ): Promise<MsgDecommissionPoolResponse>;
-  UnlockLiquidity(
-    request: MsgUnlockLiquidityRequest,
-  ): Promise<MsgUnlockLiquidityResponse>;
-  UpdateRewardsParams(
-    request: MsgUpdateRewardsParamsRequest,
-  ): Promise<MsgUpdateRewardsParamsResponse>;
-  AddRewardPeriod(
-    request: MsgAddRewardPeriodRequest,
-  ): Promise<MsgAddRewardPeriodResponse>;
-  ModifyPmtpRates(
-    request: MsgModifyPmtpRates,
-  ): Promise<MsgModifyPmtpRatesResponse>;
-  UpdatePmtpParams(
-    request: MsgUpdatePmtpParams,
-  ): Promise<MsgUpdatePmtpParamsResponse>;
-  UpdateStakingRewardParams(
-    request: MsgUpdateStakingRewardParams,
-  ): Promise<MsgUpdateStakingRewardParamsResponse>;
-  SetSymmetryThreshold(
-    request: MsgSetSymmetryThreshold,
-  ): Promise<MsgSetSymmetryThresholdResponse>;
-  CancelUnlockLiquidity(
-    request: MsgCancelUnlock,
-  ): Promise<MsgCancelUnlockResponse>;
+  DecommissionPool(request: MsgDecommissionPool): Promise<MsgDecommissionPoolResponse>;
+  UnlockLiquidity(request: MsgUnlockLiquidityRequest): Promise<MsgUnlockLiquidityResponse>;
+  UpdateRewardsParams(request: MsgUpdateRewardsParamsRequest): Promise<MsgUpdateRewardsParamsResponse>;
+  AddRewardPeriod(request: MsgAddRewardPeriodRequest): Promise<MsgAddRewardPeriodResponse>;
+  ModifyPmtpRates(request: MsgModifyPmtpRates): Promise<MsgModifyPmtpRatesResponse>;
+  UpdatePmtpParams(request: MsgUpdatePmtpParams): Promise<MsgUpdatePmtpParamsResponse>;
+  UpdateStakingRewardParams(request: MsgUpdateStakingRewardParams): Promise<MsgUpdateStakingRewardParamsResponse>;
+  SetSymmetryThreshold(request: MsgSetSymmetryThreshold): Promise<MsgSetSymmetryThresholdResponse>;
+  CancelUnlockLiquidity(request: MsgCancelUnlock): Promise<MsgCancelUnlockResponse>;
   UpdateLiquidityProtectionParams(
     request: MsgUpdateLiquidityProtectionParams,
   ): Promise<MsgUpdateLiquidityProtectionParamsResponse>;
@@ -2625,59 +2235,32 @@ export class MsgClientImpl implements Msg {
     this.UpdateStakingRewardParams = this.UpdateStakingRewardParams.bind(this);
     this.SetSymmetryThreshold = this.SetSymmetryThreshold.bind(this);
     this.CancelUnlockLiquidity = this.CancelUnlockLiquidity.bind(this);
-    this.UpdateLiquidityProtectionParams =
-      this.UpdateLiquidityProtectionParams.bind(this);
-    this.ModifyLiquidityProtectionRates =
-      this.ModifyLiquidityProtectionRates.bind(this);
-    this.AddProviderDistributionPeriod =
-      this.AddProviderDistributionPeriod.bind(this);
+    this.UpdateLiquidityProtectionParams = this.UpdateLiquidityProtectionParams.bind(this);
+    this.ModifyLiquidityProtectionRates = this.ModifyLiquidityProtectionRates.bind(this);
+    this.AddProviderDistributionPeriod = this.AddProviderDistributionPeriod.bind(this);
   }
-  RemoveLiquidity(
-    request: MsgRemoveLiquidity,
-  ): Promise<MsgRemoveLiquidityResponse> {
+  RemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse> {
     const data = MsgRemoveLiquidity.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "RemoveLiquidity",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRemoveLiquidityResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "RemoveLiquidity", data);
+    return promise.then((data) => MsgRemoveLiquidityResponse.decode(new _m0.Reader(data)));
   }
 
-  RemoveLiquidityUnits(
-    request: MsgRemoveLiquidityUnits,
-  ): Promise<MsgRemoveLiquidityUnitsResponse> {
+  RemoveLiquidityUnits(request: MsgRemoveLiquidityUnits): Promise<MsgRemoveLiquidityUnitsResponse> {
     const data = MsgRemoveLiquidityUnits.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "RemoveLiquidityUnits",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRemoveLiquidityUnitsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "RemoveLiquidityUnits", data);
+    return promise.then((data) => MsgRemoveLiquidityUnitsResponse.decode(new _m0.Reader(data)));
   }
 
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
     const promise = this.rpc.request("sifnode.clp.v1.Msg", "CreatePool", data);
-    return promise.then((data) =>
-      MsgCreatePoolResponse.decode(new _m0.Reader(data)),
-    );
+    return promise.then((data) => MsgCreatePoolResponse.decode(new _m0.Reader(data)));
   }
 
   AddLiquidity(request: MsgAddLiquidity): Promise<MsgAddLiquidityResponse> {
     const data = MsgAddLiquidity.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "AddLiquidity",
-      data,
-    );
-    return promise.then((data) =>
-      MsgAddLiquidityResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "AddLiquidity", data);
+    return promise.then((data) => MsgAddLiquidityResponse.decode(new _m0.Reader(data)));
   }
 
   Swap(request: MsgSwap): Promise<MsgSwapResponse> {
@@ -2686,192 +2269,90 @@ export class MsgClientImpl implements Msg {
     return promise.then((data) => MsgSwapResponse.decode(new _m0.Reader(data)));
   }
 
-  DecommissionPool(
-    request: MsgDecommissionPool,
-  ): Promise<MsgDecommissionPoolResponse> {
+  DecommissionPool(request: MsgDecommissionPool): Promise<MsgDecommissionPoolResponse> {
     const data = MsgDecommissionPool.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "DecommissionPool",
-      data,
-    );
-    return promise.then((data) =>
-      MsgDecommissionPoolResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "DecommissionPool", data);
+    return promise.then((data) => MsgDecommissionPoolResponse.decode(new _m0.Reader(data)));
   }
 
-  UnlockLiquidity(
-    request: MsgUnlockLiquidityRequest,
-  ): Promise<MsgUnlockLiquidityResponse> {
+  UnlockLiquidity(request: MsgUnlockLiquidityRequest): Promise<MsgUnlockLiquidityResponse> {
     const data = MsgUnlockLiquidityRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "UnlockLiquidity",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUnlockLiquidityResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UnlockLiquidity", data);
+    return promise.then((data) => MsgUnlockLiquidityResponse.decode(new _m0.Reader(data)));
   }
 
-  UpdateRewardsParams(
-    request: MsgUpdateRewardsParamsRequest,
-  ): Promise<MsgUpdateRewardsParamsResponse> {
+  UpdateRewardsParams(request: MsgUpdateRewardsParamsRequest): Promise<MsgUpdateRewardsParamsResponse> {
     const data = MsgUpdateRewardsParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "UpdateRewardsParams",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateRewardsParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UpdateRewardsParams", data);
+    return promise.then((data) => MsgUpdateRewardsParamsResponse.decode(new _m0.Reader(data)));
   }
 
-  AddRewardPeriod(
-    request: MsgAddRewardPeriodRequest,
-  ): Promise<MsgAddRewardPeriodResponse> {
+  AddRewardPeriod(request: MsgAddRewardPeriodRequest): Promise<MsgAddRewardPeriodResponse> {
     const data = MsgAddRewardPeriodRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "AddRewardPeriod",
-      data,
-    );
-    return promise.then((data) =>
-      MsgAddRewardPeriodResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "AddRewardPeriod", data);
+    return promise.then((data) => MsgAddRewardPeriodResponse.decode(new _m0.Reader(data)));
   }
 
-  ModifyPmtpRates(
-    request: MsgModifyPmtpRates,
-  ): Promise<MsgModifyPmtpRatesResponse> {
+  ModifyPmtpRates(request: MsgModifyPmtpRates): Promise<MsgModifyPmtpRatesResponse> {
     const data = MsgModifyPmtpRates.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "ModifyPmtpRates",
-      data,
-    );
-    return promise.then((data) =>
-      MsgModifyPmtpRatesResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "ModifyPmtpRates", data);
+    return promise.then((data) => MsgModifyPmtpRatesResponse.decode(new _m0.Reader(data)));
   }
 
-  UpdatePmtpParams(
-    request: MsgUpdatePmtpParams,
-  ): Promise<MsgUpdatePmtpParamsResponse> {
+  UpdatePmtpParams(request: MsgUpdatePmtpParams): Promise<MsgUpdatePmtpParamsResponse> {
     const data = MsgUpdatePmtpParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "UpdatePmtpParams",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdatePmtpParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UpdatePmtpParams", data);
+    return promise.then((data) => MsgUpdatePmtpParamsResponse.decode(new _m0.Reader(data)));
   }
 
-  UpdateStakingRewardParams(
-    request: MsgUpdateStakingRewardParams,
-  ): Promise<MsgUpdateStakingRewardParamsResponse> {
+  UpdateStakingRewardParams(request: MsgUpdateStakingRewardParams): Promise<MsgUpdateStakingRewardParamsResponse> {
     const data = MsgUpdateStakingRewardParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "UpdateStakingRewardParams",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateStakingRewardParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UpdateStakingRewardParams", data);
+    return promise.then((data) => MsgUpdateStakingRewardParamsResponse.decode(new _m0.Reader(data)));
   }
 
-  SetSymmetryThreshold(
-    request: MsgSetSymmetryThreshold,
-  ): Promise<MsgSetSymmetryThresholdResponse> {
+  SetSymmetryThreshold(request: MsgSetSymmetryThreshold): Promise<MsgSetSymmetryThresholdResponse> {
     const data = MsgSetSymmetryThreshold.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "SetSymmetryThreshold",
-      data,
-    );
-    return promise.then((data) =>
-      MsgSetSymmetryThresholdResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "SetSymmetryThreshold", data);
+    return promise.then((data) => MsgSetSymmetryThresholdResponse.decode(new _m0.Reader(data)));
   }
 
-  CancelUnlockLiquidity(
-    request: MsgCancelUnlock,
-  ): Promise<MsgCancelUnlockResponse> {
+  CancelUnlockLiquidity(request: MsgCancelUnlock): Promise<MsgCancelUnlockResponse> {
     const data = MsgCancelUnlock.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "CancelUnlockLiquidity",
-      data,
-    );
-    return promise.then((data) =>
-      MsgCancelUnlockResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "CancelUnlockLiquidity", data);
+    return promise.then((data) => MsgCancelUnlockResponse.decode(new _m0.Reader(data)));
   }
 
   UpdateLiquidityProtectionParams(
     request: MsgUpdateLiquidityProtectionParams,
   ): Promise<MsgUpdateLiquidityProtectionParamsResponse> {
     const data = MsgUpdateLiquidityProtectionParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "UpdateLiquidityProtectionParams",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateLiquidityProtectionParamsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UpdateLiquidityProtectionParams", data);
+    return promise.then((data) => MsgUpdateLiquidityProtectionParamsResponse.decode(new _m0.Reader(data)));
   }
 
   ModifyLiquidityProtectionRates(
     request: MsgModifyLiquidityProtectionRates,
   ): Promise<MsgModifyLiquidityProtectionRatesResponse> {
     const data = MsgModifyLiquidityProtectionRates.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "ModifyLiquidityProtectionRates",
-      data,
-    );
-    return promise.then((data) =>
-      MsgModifyLiquidityProtectionRatesResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "ModifyLiquidityProtectionRates", data);
+    return promise.then((data) => MsgModifyLiquidityProtectionRatesResponse.decode(new _m0.Reader(data)));
   }
 
   AddProviderDistributionPeriod(
     request: MsgAddProviderDistributionPeriodRequest,
   ): Promise<MsgAddProviderDistributionPeriodResponse> {
-    const data =
-      MsgAddProviderDistributionPeriodRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.clp.v1.Msg",
-      "AddProviderDistributionPeriod",
-      data,
-    );
-    return promise.then((data) =>
-      MsgAddProviderDistributionPeriodResponse.decode(new _m0.Reader(data)),
-    );
+    const data = MsgAddProviderDistributionPeriodRequest.encode(request).finish();
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "AddProviderDistributionPeriod", data);
+    return promise.then((data) => MsgAddProviderDistributionPeriodResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -2888,9 +2369,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

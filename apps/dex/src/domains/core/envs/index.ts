@@ -15,6 +15,8 @@ export function useDexEnvKind(): NetworkEnv {
   const [{ sif_dex_env }, setCookie] = useCookies(["sif_dex_env"]);
   const [resolvedEnv, setResolvedEnv] = useState<NetworkEnv | null>(null);
 
+  const isMarginStandAloneOn = useFeatureFlag("margin-standalone");
+
   useEffect(() => {
     const queryString = new URLSearchParams(window.location.search);
     const envKind = queryString.get("_env");
@@ -24,21 +26,20 @@ export function useDexEnvKind(): NetworkEnv {
     }
   }, [setCookie, sif_dex_env]);
 
-  return useMemo(() => resolvedEnv ?? sif_dex_env ?? "mainnet", [resolvedEnv, sif_dex_env]);
+  return useMemo(() => {
+    if (isMarginStandAloneOn) {
+      return "tempnet";
+    }
+    return resolvedEnv ?? sif_dex_env ?? "mainnet";
+  }, [resolvedEnv, sif_dex_env, isMarginStandAloneOn]);
 }
 
 export function useDexEnvironment() {
   const environment = useDexEnvKind();
 
-  const isMarginStandAloneOn = useFeatureFlag("margin-standalone");
-
-  return useQuery(
-    `dex_env_${environment}`,
-    async () => (isMarginStandAloneOn ? getSdkConfig({ environment: "tempnet" }) : getSdkConfig({ environment })),
-    {
-      staleTime: 3600_000,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery(`dex_env_${environment}`, async () => getSdkConfig({ environment }), {
+    staleTime: 3600_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 }

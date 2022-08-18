@@ -1,4 +1,15 @@
-import { formatDistance, formatRelative } from "date-fns";
+import { formatDistance, formatRelative, intervalToDuration, formatISO9075 } from "date-fns";
+
+export function formatDateISO(date: Date) {
+  return formatISO9075(date, { representation: "date" });
+}
+
+export function formatIntervalToDuration(start: Date, end: Date) {
+  return intervalToDuration({
+    start,
+    end,
+  });
+}
 
 export function formatDateRelative(date: Date): string {
   return formatRelative(date, new Date());

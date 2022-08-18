@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { ChevronDownIcon, formatNumberAsCurrency } from "@sifchain/ui";
+import { ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
 import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
 import { isNil } from "rambda";
@@ -18,10 +18,23 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
-import { formatDateRelative, formatDateDistance } from "./_intl";
-import { findNextOrderAndSortBy, SORT_BY, MARGIN_POSITION, QS_DEFAULTS } from "./_tables";
-import { HtmlUnicode } from "./_trade";
+import {
+  NoResultsRow,
+  PaginationShowItems,
+  PaginationButtons,
+  PillUpdating,
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+} from "./_components";
+import { formatDateDistance, formatDateISO } from "./_intl";
+import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
+import { HtmlUnicode, removeFirstCharC } from "./_trade";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { Decimal } from "@cosmjs/math";
 
 /**
  * ********************************************************************************************
@@ -31,27 +44,21 @@ import { HtmlUnicode } from "./_trade";
  * ********************************************************************************************
  */
 const HISTORY_HEADER_ITEMS = [
-  { title: "Status", order_by: "" },
   { title: "Date Closed", order_by: "" },
-  { title: "Time Open", order_by: "open_date_time" },
+  { title: "Duration", order_by: "open_date_time" },
   { title: "Pool", order_by: "" },
   { title: "Side", order_by: "position" },
   { title: "Asset", order_by: "open_custody_asset" },
-  { title: "Amount", order_by: "open_custody_amount" },
+  { title: "Position", order_by: "open_custody_amount" },
   { title: "Realized P&L", order_by: "" },
 ];
-const MTP_STATUS = {
-  "margin/mtp_open": "OPEN",
-  "margin/mtp_close": "CLOSE",
-  OPEN: "margin/mtp_open",
-  CLOSE: "margin/mtp_close",
-} as Record<string, string>;
 export type HistoryTableProps = {
-  walletAddress: string | undefined;
   classNamePaginationContainer?: string;
 };
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
+  const tokenRegistryQuery = useTokenRegistryQuery();
+  const walletAddress = useSifSignerAddress();
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
@@ -60,46 +67,44 @@ const HistoryTable = (props: HistoryTableProps) => {
   };
   const historyQuery = useHistoryQuery({
     ...queryParams,
-    walletAddress: props.walletAddress ?? "",
+    walletAddress: walletAddress.data ?? "",
   });
   const headers = HISTORY_HEADER_ITEMS;
 
-  if (historyQuery.isSuccess) {
+  if (walletAddress.isIdle) {
+    return <FlashMessageConnectSifChainWallet />;
+  }
+  if (walletAddress.isError) {
+    return <FlashMessageConnectSifChainWalletError />;
+  }
+  if (walletAddress.isLoading) {
+    return <FlashMessageConnectSifChainWalletLoading />;
+  }
+
+  if (historyQuery.isLoading) {
+    return <FlashMessageLoading />;
+  }
+
+  if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+    const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = historyQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <>
-        <div className={clsx("flex flex-row items-center bg-gray-800", props.classNamePaginationContainer)}>
-          {historyQuery.isRefetching && <PillUpdating />}
-          <PaginationShowItems
-            limit={Number(pagination.limit)}
-            offset={Number(pagination.offset)}
-            total={Number(pagination.total)}
-          />
-          <PaginationButtons
-            pages={pages}
-            render={(page) => {
-              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
-              return (
-                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
-                  <a
-                    className={clsx("rounded px-2 py-1", {
-                      "bg-gray-400": pagination.offset === offset,
-                    })}
-                  >
-                    {page}
-                  </a>
-                </Link>
-              );
-            }}
-          />
-        </div>
-        <div className="overflow-x-auto">
+      <section className="flex h-full flex-col">
+        <div className="flex-1 overflow-x-auto">
           <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  if (header.order_by === "") {
+                    return (
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                        {header.title}
+                      </th>
+                    );
+                  }
+
                   const itemActive = pagination.order_by === header.order_by;
                   const { nextOrderBy, nextSortBy } = findNextOrderAndSortBy({
                     itemKey: header.order_by,
@@ -121,7 +126,6 @@ const HistoryTable = (props: HistoryTableProps) => {
                         <a
                           className={clsx("flex flex-row items-center", {
                             "font-semibold text-white": itemActive,
-                            "cursor-not-allowed": header.order_by === "",
                           })}
                         >
                           {header.title}
@@ -144,28 +148,23 @@ const HistoryTable = (props: HistoryTableProps) => {
                 <NoResultsRow colSpan={headers.length} message="History not available. Try again later." />
               )}
               {results.map((item) => {
-                const amountSign = Math.sign(Number(item.open_custody_amount));
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
+                const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+
+                if (!custodyAsset) {
+                  throw new Error("Asset not found");
+                }
+
+                const custodyAmount = Decimal.fromAtomics(
+                  item.open_custody_amount,
+                  custodyAsset.decimals,
+                ).toFloatApproximation();
 
                 return (
-                  <tr key={item.id}>
-                    <td className="px-4 py-3">
-                      {isTruthy(item.type) ? (
-                        <span
-                          className={clsx({
-                            "text-green-400": item.type === MTP_STATUS["OPEN"],
-                            "text-red-400": item.type === MTP_STATUS["CLOSE"],
-                          })}
-                        >
-                          {MTP_STATUS[item.type]}
-                        </span>
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
+                  <tr key={item.id} data-testid={item.id}>
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
-                        formatDateRelative(new Date(item.closed_date_time))
+                        formatDateISO(new Date(item.closed_date_time))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -178,44 +177,21 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.open_custody_asset) ? (
-                        item.open_custody_asset.toUpperCase()
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.pool) ? removeFirstCharC(item.pool.toUpperCase()) : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.position) ? (
-                        <span
-                          className={clsx({
-                            "text-cyan-400": item.position === MARGIN_POSITION.UNSPECIFIED,
-                            "text-green-400": item.position === MARGIN_POSITION.LONG,
-                            "text-red-400": item.position === MARGIN_POSITION.SHORT,
-                          })}
-                        >
-                          {item.position}
-                        </span>
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
+                      {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_asset) ? (
-                        item.open_custody_asset.toUpperCase()
+                        removeFirstCharC(item.open_custody_asset.toUpperCase())
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        <span
-                          className={clsx({
-                            "text-green-400": amountSign === 1,
-                            "text-red-400": amountSign === -1,
-                          })}
-                        >
-                          {formatNumberAsCurrency(Number(item.open_custody_amount), 4)}
-                        </span>
+                        formatNumberAsDecimal(custodyAmount, 6)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -242,15 +218,41 @@ const HistoryTable = (props: HistoryTableProps) => {
             </tbody>
           </table>
         </div>
-      </>
+        <div
+          className={clsx(
+            "mt-auto flex flex-row items-center justify-end bg-gray-800",
+            props.classNamePaginationContainer,
+          )}
+        >
+          {historyQuery.isRefetching && <PillUpdating />}
+          <PaginationShowItems
+            limit={Number(pagination.limit)}
+            offset={Number(pagination.offset)}
+            total={Number(pagination.total)}
+          />
+          <PaginationButtons
+            pages={pages}
+            render={(page) => {
+              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
+              return (
+                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
+                  <a
+                    className={clsx("rounded px-2 py-1", {
+                      "bg-gray-400": pagination.offset === offset,
+                    })}
+                  >
+                    {page}
+                  </a>
+                </Link>
+              );
+            }}
+          />
+        </div>
+      </section>
     );
   }
 
-  if (historyQuery.isError) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
-  }
-
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <FlashMessage5xxError />;
 };
 
 export default HistoryTable;

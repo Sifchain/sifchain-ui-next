@@ -20,19 +20,11 @@ export interface GenesisState {
 }
 
 function createBaseGenesisState(): GenesisState {
-  return {
-    params: undefined,
-    addressWhitelist: [],
-    poolList: [],
-    liquidityProviders: [],
-  };
+  return { params: undefined, addressWhitelist: [], poolList: [], liquidityProviders: [] };
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -65,9 +57,7 @@ export const GenesisState = {
           message.poolList.push(Pool.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.liquidityProviders.push(
-            LiquidityProvider.decode(reader, reader.uint32()),
-          );
+          message.liquidityProviders.push(LiquidityProvider.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -83,68 +73,46 @@ export const GenesisState = {
       addressWhitelist: Array.isArray(object?.addressWhitelist)
         ? object.addressWhitelist.map((e: any) => String(e))
         : [],
-      poolList: Array.isArray(object?.poolList)
-        ? object.poolList.map((e: any) => Pool.fromJSON(e))
-        : [],
+      poolList: Array.isArray(object?.poolList) ? object.poolList.map((e: any) => Pool.fromJSON(e)) : [],
       liquidityProviders: Array.isArray(object?.liquidityProviders)
-        ? object.liquidityProviders.map((e: any) =>
-            LiquidityProvider.fromJSON(e),
-          )
+        ? object.liquidityProviders.map((e: any) => LiquidityProvider.fromJSON(e))
         : [],
     };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     if (message.addressWhitelist) {
       obj.addressWhitelist = message.addressWhitelist.map((e) => e);
     } else {
       obj.addressWhitelist = [];
     }
     if (message.poolList) {
-      obj.poolList = message.poolList.map((e) =>
-        e ? Pool.toJSON(e) : undefined,
-      );
+      obj.poolList = message.poolList.map((e) => (e ? Pool.toJSON(e) : undefined));
     } else {
       obj.poolList = [];
     }
     if (message.liquidityProviders) {
-      obj.liquidityProviders = message.liquidityProviders.map((e) =>
-        e ? LiquidityProvider.toJSON(e) : undefined,
-      );
+      obj.liquidityProviders = message.liquidityProviders.map((e) => (e ? LiquidityProvider.toJSON(e) : undefined));
     } else {
       obj.liquidityProviders = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+      object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
     message.addressWhitelist = object.addressWhitelist?.map((e) => e) || [];
     message.poolList = object.poolList?.map((e) => Pool.fromPartial(e)) || [];
-    message.liquidityProviders =
-      object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) ||
-      [];
+    message.liquidityProviders = object.liquidityProviders?.map((e) => LiquidityProvider.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -161,9 +129,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

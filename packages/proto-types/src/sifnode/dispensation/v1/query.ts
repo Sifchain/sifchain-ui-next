@@ -55,17 +55,11 @@ function createBaseQueryAllDistributionsRequest(): QueryAllDistributionsRequest 
 }
 
 export const QueryAllDistributionsRequest = {
-  encode(
-    _: QueryAllDistributionsRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: QueryAllDistributionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryAllDistributionsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllDistributionsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryAllDistributionsRequest();
@@ -89,9 +83,7 @@ export const QueryAllDistributionsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllDistributionsRequest>, I>>(
-    _: I,
-  ): QueryAllDistributionsRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryAllDistributionsRequest>, I>>(_: I): QueryAllDistributionsRequest {
     const message = createBaseQueryAllDistributionsRequest();
     return message;
   },
@@ -102,10 +94,7 @@ function createBaseQueryAllDistributionsResponse(): QueryAllDistributionsRespons
 }
 
 export const QueryAllDistributionsResponse = {
-  encode(
-    message: QueryAllDistributionsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryAllDistributionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.distributions) {
       Distribution.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -115,10 +104,7 @@ export const QueryAllDistributionsResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryAllDistributionsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllDistributionsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryAllDistributionsResponse();
@@ -126,9 +112,7 @@ export const QueryAllDistributionsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributions.push(
-            Distribution.decode(reader, reader.uint32()),
-          );
+          message.distributions.push(Distribution.decode(reader, reader.uint32()));
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -153,14 +137,11 @@ export const QueryAllDistributionsResponse = {
   toJSON(message: QueryAllDistributionsResponse): unknown {
     const obj: any = {};
     if (message.distributions) {
-      obj.distributions = message.distributions.map((e) =>
-        e ? Distribution.toJSON(e) : undefined,
-      );
+      obj.distributions = message.distributions.map((e) => (e ? Distribution.toJSON(e) : undefined));
     } else {
       obj.distributions = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
@@ -168,12 +149,8 @@ export const QueryAllDistributionsResponse = {
     object: I,
   ): QueryAllDistributionsResponse {
     const message = createBaseQueryAllDistributionsResponse();
-    message.distributions =
-      object.distributions?.map((e) => Distribution.fromPartial(e)) || [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.distributions = object.distributions?.map((e) => Distribution.fromPartial(e)) || [];
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -183,10 +160,7 @@ function createBaseQueryRecordsByDistributionNameRequest(): QueryRecordsByDistri
 }
 
 export const QueryRecordsByDistributionNameRequest = {
-  encode(
-    message: QueryRecordsByDistributionNameRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryRecordsByDistributionNameRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionName !== "") {
       writer.uint32(10).string(message.distributionName);
     }
@@ -196,10 +170,7 @@ export const QueryRecordsByDistributionNameRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryRecordsByDistributionNameRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecordsByDistributionNameRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecordsByDistributionNameRequest();
@@ -222,27 +193,21 @@ export const QueryRecordsByDistributionNameRequest = {
 
   fromJSON(object: any): QueryRecordsByDistributionNameRequest {
     return {
-      distributionName: isSet(object.distributionName)
-        ? String(object.distributionName)
-        : "",
-      status: isSet(object.status)
-        ? distributionStatusFromJSON(object.status)
-        : 0,
+      distributionName: isSet(object.distributionName) ? String(object.distributionName) : "",
+      status: isSet(object.status) ? distributionStatusFromJSON(object.status) : 0,
     };
   },
 
   toJSON(message: QueryRecordsByDistributionNameRequest): unknown {
     const obj: any = {};
-    message.distributionName !== undefined &&
-      (obj.distributionName = message.distributionName);
-    message.status !== undefined &&
-      (obj.status = distributionStatusToJSON(message.status));
+    message.distributionName !== undefined && (obj.distributionName = message.distributionName);
+    message.status !== undefined && (obj.status = distributionStatusToJSON(message.status));
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<QueryRecordsByDistributionNameRequest>, I>,
-  >(object: I): QueryRecordsByDistributionNameRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryRecordsByDistributionNameRequest>, I>>(
+    object: I,
+  ): QueryRecordsByDistributionNameRequest {
     const message = createBaseQueryRecordsByDistributionNameRequest();
     message.distributionName = object.distributionName ?? "";
     message.status = object.status ?? 0;
@@ -255,15 +220,9 @@ function createBaseQueryRecordsByDistributionNameResponse(): QueryRecordsByDistr
 }
 
 export const QueryRecordsByDistributionNameResponse = {
-  encode(
-    message: QueryRecordsByDistributionNameResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryRecordsByDistributionNameResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionRecords !== undefined) {
-      DistributionRecords.encode(
-        message.distributionRecords,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      DistributionRecords.encode(message.distributionRecords, writer.uint32(10).fork()).ldelim();
     }
     if (!message.height.isZero()) {
       writer.uint32(16).int64(message.height);
@@ -271,10 +230,7 @@ export const QueryRecordsByDistributionNameResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryRecordsByDistributionNameResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecordsByDistributionNameResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecordsByDistributionNameResponse();
@@ -282,10 +238,7 @@ export const QueryRecordsByDistributionNameResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributionRecords = DistributionRecords.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.distributionRecords = DistributionRecords.decode(reader, reader.uint32());
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -313,24 +266,19 @@ export const QueryRecordsByDistributionNameResponse = {
       (obj.distributionRecords = message.distributionRecords
         ? DistributionRecords.toJSON(message.distributionRecords)
         : undefined);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<QueryRecordsByDistributionNameResponse>, I>,
-  >(object: I): QueryRecordsByDistributionNameResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryRecordsByDistributionNameResponse>, I>>(
+    object: I,
+  ): QueryRecordsByDistributionNameResponse {
     const message = createBaseQueryRecordsByDistributionNameResponse();
     message.distributionRecords =
-      object.distributionRecords !== undefined &&
-      object.distributionRecords !== null
+      object.distributionRecords !== undefined && object.distributionRecords !== null
         ? DistributionRecords.fromPartial(object.distributionRecords)
         : undefined;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -340,20 +288,14 @@ function createBaseQueryRecordsByRecipientAddrRequest(): QueryRecordsByRecipient
 }
 
 export const QueryRecordsByRecipientAddrRequest = {
-  encode(
-    message: QueryRecordsByRecipientAddrRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryRecordsByRecipientAddrRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryRecordsByRecipientAddrRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecordsByRecipientAddrRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecordsByRecipientAddrRequest();
@@ -383,9 +325,9 @@ export const QueryRecordsByRecipientAddrRequest = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<QueryRecordsByRecipientAddrRequest>, I>,
-  >(object: I): QueryRecordsByRecipientAddrRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryRecordsByRecipientAddrRequest>, I>>(
+    object: I,
+  ): QueryRecordsByRecipientAddrRequest {
     const message = createBaseQueryRecordsByRecipientAddrRequest();
     message.address = object.address ?? "";
     return message;
@@ -397,15 +339,9 @@ function createBaseQueryRecordsByRecipientAddrResponse(): QueryRecordsByRecipien
 }
 
 export const QueryRecordsByRecipientAddrResponse = {
-  encode(
-    message: QueryRecordsByRecipientAddrResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryRecordsByRecipientAddrResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionRecords !== undefined) {
-      DistributionRecords.encode(
-        message.distributionRecords,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      DistributionRecords.encode(message.distributionRecords, writer.uint32(10).fork()).ldelim();
     }
     if (!message.height.isZero()) {
       writer.uint32(16).int64(message.height);
@@ -413,10 +349,7 @@ export const QueryRecordsByRecipientAddrResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryRecordsByRecipientAddrResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecordsByRecipientAddrResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecordsByRecipientAddrResponse();
@@ -424,10 +357,7 @@ export const QueryRecordsByRecipientAddrResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributionRecords = DistributionRecords.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.distributionRecords = DistributionRecords.decode(reader, reader.uint32());
           break;
         case 2:
           message.height = reader.int64() as Long;
@@ -455,24 +385,19 @@ export const QueryRecordsByRecipientAddrResponse = {
       (obj.distributionRecords = message.distributionRecords
         ? DistributionRecords.toJSON(message.distributionRecords)
         : undefined);
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<QueryRecordsByRecipientAddrResponse>, I>,
-  >(object: I): QueryRecordsByRecipientAddrResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryRecordsByRecipientAddrResponse>, I>>(
+    object: I,
+  ): QueryRecordsByRecipientAddrResponse {
     const message = createBaseQueryRecordsByRecipientAddrResponse();
     message.distributionRecords =
-      object.distributionRecords !== undefined &&
-      object.distributionRecords !== null
+      object.distributionRecords !== undefined && object.distributionRecords !== null
         ? DistributionRecords.fromPartial(object.distributionRecords)
         : undefined;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
@@ -482,20 +407,14 @@ function createBaseQueryClaimsByTypeRequest(): QueryClaimsByTypeRequest {
 }
 
 export const QueryClaimsByTypeRequest = {
-  encode(
-    message: QueryClaimsByTypeRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryClaimsByTypeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userClaimType !== 0) {
       writer.uint32(8).int32(message.userClaimType);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryClaimsByTypeRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryClaimsByTypeRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryClaimsByTypeRequest();
@@ -515,22 +434,17 @@ export const QueryClaimsByTypeRequest = {
 
   fromJSON(object: any): QueryClaimsByTypeRequest {
     return {
-      userClaimType: isSet(object.userClaimType)
-        ? distributionTypeFromJSON(object.userClaimType)
-        : 0,
+      userClaimType: isSet(object.userClaimType) ? distributionTypeFromJSON(object.userClaimType) : 0,
     };
   },
 
   toJSON(message: QueryClaimsByTypeRequest): unknown {
     const obj: any = {};
-    message.userClaimType !== undefined &&
-      (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
+    message.userClaimType !== undefined && (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryClaimsByTypeRequest>, I>>(
-    object: I,
-  ): QueryClaimsByTypeRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryClaimsByTypeRequest>, I>>(object: I): QueryClaimsByTypeRequest {
     const message = createBaseQueryClaimsByTypeRequest();
     message.userClaimType = object.userClaimType ?? 0;
     return message;
@@ -542,10 +456,7 @@ function createBaseQueryClaimsResponse(): QueryClaimsResponse {
 }
 
 export const QueryClaimsResponse = {
-  encode(
-    message: QueryClaimsResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryClaimsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.claims) {
       UserClaim.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -578,9 +489,7 @@ export const QueryClaimsResponse = {
 
   fromJSON(object: any): QueryClaimsResponse {
     return {
-      claims: Array.isArray(object?.claims)
-        ? object.claims.map((e: any) => UserClaim.fromJSON(e))
-        : [],
+      claims: Array.isArray(object?.claims) ? object.claims.map((e: any) => UserClaim.fromJSON(e)) : [],
       height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
     };
   },
@@ -588,40 +497,28 @@ export const QueryClaimsResponse = {
   toJSON(message: QueryClaimsResponse): unknown {
     const obj: any = {};
     if (message.claims) {
-      obj.claims = message.claims.map((e) =>
-        e ? UserClaim.toJSON(e) : undefined,
-      );
+      obj.claims = message.claims.map((e) => (e ? UserClaim.toJSON(e) : undefined));
     } else {
       obj.claims = [];
     }
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryClaimsResponse>, I>>(
-    object: I,
-  ): QueryClaimsResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryClaimsResponse>, I>>(object: I): QueryClaimsResponse {
     const message = createBaseQueryClaimsResponse();
     message.claims = object.claims?.map((e) => UserClaim.fromPartial(e)) || [];
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
     return message;
   },
 };
 
 export interface Query {
-  AllDistributions(
-    request: QueryAllDistributionsRequest,
-  ): Promise<QueryAllDistributionsResponse>;
+  AllDistributions(request: QueryAllDistributionsRequest): Promise<QueryAllDistributionsResponse>;
   RecordsByDistributionName(
     request: QueryRecordsByDistributionNameRequest,
   ): Promise<QueryRecordsByDistributionNameResponse>;
-  RecordsByRecipient(
-    request: QueryRecordsByRecipientAddrRequest,
-  ): Promise<QueryRecordsByRecipientAddrResponse>;
+  RecordsByRecipient(request: QueryRecordsByRecipientAddrRequest): Promise<QueryRecordsByRecipientAddrResponse>;
   ClaimsByType(request: QueryClaimsByTypeRequest): Promise<QueryClaimsResponse>;
 }
 
@@ -634,79 +531,38 @@ export class QueryClientImpl implements Query {
     this.RecordsByRecipient = this.RecordsByRecipient.bind(this);
     this.ClaimsByType = this.ClaimsByType.bind(this);
   }
-  AllDistributions(
-    request: QueryAllDistributionsRequest,
-  ): Promise<QueryAllDistributionsResponse> {
+  AllDistributions(request: QueryAllDistributionsRequest): Promise<QueryAllDistributionsResponse> {
     const data = QueryAllDistributionsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Query",
-      "AllDistributions",
-      data,
-    );
-    return promise.then((data) =>
-      QueryAllDistributionsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Query", "AllDistributions", data);
+    return promise.then((data) => QueryAllDistributionsResponse.decode(new _m0.Reader(data)));
   }
 
   RecordsByDistributionName(
     request: QueryRecordsByDistributionNameRequest,
   ): Promise<QueryRecordsByDistributionNameResponse> {
     const data = QueryRecordsByDistributionNameRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Query",
-      "RecordsByDistributionName",
-      data,
-    );
-    return promise.then((data) =>
-      QueryRecordsByDistributionNameResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Query", "RecordsByDistributionName", data);
+    return promise.then((data) => QueryRecordsByDistributionNameResponse.decode(new _m0.Reader(data)));
   }
 
-  RecordsByRecipient(
-    request: QueryRecordsByRecipientAddrRequest,
-  ): Promise<QueryRecordsByRecipientAddrResponse> {
+  RecordsByRecipient(request: QueryRecordsByRecipientAddrRequest): Promise<QueryRecordsByRecipientAddrResponse> {
     const data = QueryRecordsByRecipientAddrRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Query",
-      "RecordsByRecipient",
-      data,
-    );
-    return promise.then((data) =>
-      QueryRecordsByRecipientAddrResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Query", "RecordsByRecipient", data);
+    return promise.then((data) => QueryRecordsByRecipientAddrResponse.decode(new _m0.Reader(data)));
   }
 
-  ClaimsByType(
-    request: QueryClaimsByTypeRequest,
-  ): Promise<QueryClaimsResponse> {
+  ClaimsByType(request: QueryClaimsByTypeRequest): Promise<QueryClaimsResponse> {
     const data = QueryClaimsByTypeRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.dispensation.v1.Query",
-      "ClaimsByType",
-      data,
-    );
-    return promise.then((data) =>
-      QueryClaimsResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.dispensation.v1.Query", "ClaimsByType", data);
+    return promise.then((data) => QueryClaimsResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -723,9 +579,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

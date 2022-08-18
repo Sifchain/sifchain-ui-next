@@ -1,4 +1,3 @@
-import type { GetMarginOpenPositionResponse } from "@sifchain/sif-api";
 import type { UseQueryResult } from "react-query";
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
@@ -18,6 +17,28 @@ type OpenPositionsQueryParams = {
   sortBy: string;
 };
 
+export type OpenPositionsQueryData = {
+  address: string;
+  collateral_amount: string;
+  collateral_asset: string;
+  current_price: string;
+  custody_amount: string;
+  custody_asset: string;
+  custody_entry_price: number;
+  date_opened: string;
+  health: string;
+  id: string;
+  interest_rate: string;
+  leverage: string;
+  next_payment: string;
+  paid_interest: string;
+  pool: string;
+  position: string;
+  time_open: { hours: number; minutes: number; seconds: number };
+  unrealized_pnl: string;
+  unsettled_interest: string;
+};
+
 export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
   return useSifApiQuery(
     "margin.getMarginOpenPosition",
@@ -25,26 +46,12 @@ export function useOpenPositionsQuery(params: OpenPositionsQueryParams) {
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
+      queryHash: JSON.stringify(params),
+      refetchInterval: 6000,
       retry: false,
     },
   ) as UseQueryResult<{
     pagination: Pagination;
-    results: {
-      id: string;
-      address: string;
-      pool: string;
-      position: string;
-      custody_amount: string;
-      unrealized_pnl: string;
-      custody_asset: string;
-      unsettled_interest: string;
-      next_payment: string;
-      date_opened: string;
-      time_open: string;
-      interest_rate: string;
-      paid_interest: string;
-      health: string;
-      leverage: string;
-    }[];
+    results: OpenPositionsQueryData[];
   }>;
 }

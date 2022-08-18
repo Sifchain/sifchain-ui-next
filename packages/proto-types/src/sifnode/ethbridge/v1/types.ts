@@ -95,10 +95,7 @@ function createBaseEthBridgeClaim(): EthBridgeClaim {
 }
 
 export const EthBridgeClaim = {
-  encode(
-    message: EthBridgeClaim,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: EthBridgeClaim, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.ethereumChainId.isZero()) {
       writer.uint32(8).int64(message.ethereumChainId);
     }
@@ -179,69 +176,42 @@ export const EthBridgeClaim = {
 
   fromJSON(object: any): EthBridgeClaim {
     return {
-      ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromValue(object.ethereumChainId)
-        : Long.ZERO,
-      bridgeContractAddress: isSet(object.bridgeContractAddress)
-        ? String(object.bridgeContractAddress)
-        : "",
+      ethereumChainId: isSet(object.ethereumChainId) ? Long.fromValue(object.ethereumChainId) : Long.ZERO,
+      bridgeContractAddress: isSet(object.bridgeContractAddress) ? String(object.bridgeContractAddress) : "",
       nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.ZERO,
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      tokenContractAddress: isSet(object.tokenContractAddress)
-        ? String(object.tokenContractAddress)
-        : "",
-      ethereumSender: isSet(object.ethereumSender)
-        ? String(object.ethereumSender)
-        : "",
-      cosmosReceiver: isSet(object.cosmosReceiver)
-        ? String(object.cosmosReceiver)
-        : "",
-      validatorAddress: isSet(object.validatorAddress)
-        ? String(object.validatorAddress)
-        : "",
+      tokenContractAddress: isSet(object.tokenContractAddress) ? String(object.tokenContractAddress) : "",
+      ethereumSender: isSet(object.ethereumSender) ? String(object.ethereumSender) : "",
+      cosmosReceiver: isSet(object.cosmosReceiver) ? String(object.cosmosReceiver) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
-      claimType: isSet(object.claimType)
-        ? claimTypeFromJSON(object.claimType)
-        : 0,
+      claimType: isSet(object.claimType) ? claimTypeFromJSON(object.claimType) : 0,
     };
   },
 
   toJSON(message: EthBridgeClaim): unknown {
     const obj: any = {};
-    message.ethereumChainId !== undefined &&
-      (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
-    message.bridgeContractAddress !== undefined &&
-      (obj.bridgeContractAddress = message.bridgeContractAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.ZERO).toString());
+    message.ethereumChainId !== undefined && (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
+    message.bridgeContractAddress !== undefined && (obj.bridgeContractAddress = message.bridgeContractAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.ZERO).toString());
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.tokenContractAddress !== undefined &&
-      (obj.tokenContractAddress = message.tokenContractAddress);
-    message.ethereumSender !== undefined &&
-      (obj.ethereumSender = message.ethereumSender);
-    message.cosmosReceiver !== undefined &&
-      (obj.cosmosReceiver = message.cosmosReceiver);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.tokenContractAddress !== undefined && (obj.tokenContractAddress = message.tokenContractAddress);
+    message.ethereumSender !== undefined && (obj.ethereumSender = message.ethereumSender);
+    message.cosmosReceiver !== undefined && (obj.cosmosReceiver = message.cosmosReceiver);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.claimType !== undefined &&
-      (obj.claimType = claimTypeToJSON(message.claimType));
+    message.claimType !== undefined && (obj.claimType = claimTypeToJSON(message.claimType));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<EthBridgeClaim>, I>>(
-    object: I,
-  ): EthBridgeClaim {
+  fromPartial<I extends Exact<DeepPartial<EthBridgeClaim>, I>>(object: I): EthBridgeClaim {
     const message = createBaseEthBridgeClaim();
     message.ethereumChainId =
       object.ethereumChainId !== undefined && object.ethereumChainId !== null
         ? Long.fromValue(object.ethereumChainId)
         : Long.ZERO;
     message.bridgeContractAddress = object.bridgeContractAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.ZERO;
+    message.nonce = object.nonce !== undefined && object.nonce !== null ? Long.fromValue(object.nonce) : Long.ZERO;
     message.symbol = object.symbol ?? "";
     message.tokenContractAddress = object.tokenContractAddress ?? "";
     message.ethereumSender = object.ethereumSender ?? "";
@@ -258,10 +228,7 @@ function createBasePeggyTokens(): PeggyTokens {
 }
 
 export const PeggyTokens = {
-  encode(
-    message: PeggyTokens,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PeggyTokens, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.tokens) {
       writer.uint32(10).string(v!);
     }
@@ -288,9 +255,7 @@ export const PeggyTokens = {
 
   fromJSON(object: any): PeggyTokens {
     return {
-      tokens: Array.isArray(object?.tokens)
-        ? object.tokens.map((e: any) => String(e))
-        : [],
+      tokens: Array.isArray(object?.tokens) ? object.tokens.map((e: any) => String(e)) : [],
     };
   },
 
@@ -304,9 +269,7 @@ export const PeggyTokens = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PeggyTokens>, I>>(
-    object: I,
-  ): PeggyTokens {
+  fromPartial<I extends Exact<DeepPartial<PeggyTokens>, I>>(object: I): PeggyTokens {
     const message = createBasePeggyTokens();
     message.tokens = object.tokens?.map((e) => e) || [];
     return message;
@@ -318,10 +281,7 @@ function createBaseGenesisState(): GenesisState {
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cethReceiveAccount !== "") {
       writer.uint32(10).string(message.cethReceiveAccount);
     }
@@ -354,19 +314,14 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     return {
-      cethReceiveAccount: isSet(object.cethReceiveAccount)
-        ? String(object.cethReceiveAccount)
-        : "",
-      peggyTokens: Array.isArray(object?.peggyTokens)
-        ? object.peggyTokens.map((e: any) => String(e))
-        : [],
+      cethReceiveAccount: isSet(object.cethReceiveAccount) ? String(object.cethReceiveAccount) : "",
+      peggyTokens: Array.isArray(object?.peggyTokens) ? object.peggyTokens.map((e: any) => String(e)) : [],
     };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.cethReceiveAccount !== undefined &&
-      (obj.cethReceiveAccount = message.cethReceiveAccount);
+    message.cethReceiveAccount !== undefined && (obj.cethReceiveAccount = message.cethReceiveAccount);
     if (message.peggyTokens) {
       obj.peggyTokens = message.peggyTokens.map((e) => e);
     } else {
@@ -375,9 +330,7 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.cethReceiveAccount = object.cethReceiveAccount ?? "";
     message.peggyTokens = object.peggyTokens?.map((e) => e) || [];
@@ -385,14 +338,7 @@ export const GenesisState = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -409,9 +355,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

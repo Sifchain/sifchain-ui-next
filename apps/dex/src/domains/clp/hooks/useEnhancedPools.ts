@@ -40,6 +40,10 @@ export function useEnhancedPoolsQuery() {
             stats: stats as GetTokenStatsResponsePools & {
               health: number;
               interestRate: number;
+              tvl_24h_change: number;
+              volume_24h_change: number;
+              rowan_24h_change: number;
+              asset_24h_change: number;
             },
             asset: asset as IAsset,
           };
@@ -58,7 +62,7 @@ export function useEnhancedPoolsQuery() {
       return {
         indexedBySymbol: {},
         indexedByDisplaySymbol: {},
-        findBySymbolOrDenom: (symbolOrDenom: string) => undefined,
+        findBySymbolOrDenom: () => undefined,
       };
     }
 

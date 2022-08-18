@@ -151,29 +151,16 @@ export interface MintController {
 }
 
 function createBaseGenesisState(): GenesisState {
-  return {
-    distributionRecords: undefined,
-    distributions: undefined,
-    claims: undefined,
-  };
+  return { distributionRecords: undefined, distributions: undefined, claims: undefined };
 }
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionRecords !== undefined) {
-      DistributionRecords.encode(
-        message.distributionRecords,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      DistributionRecords.encode(message.distributionRecords, writer.uint32(10).fork()).ldelim();
     }
     if (message.distributions !== undefined) {
-      Distributions.encode(
-        message.distributions,
-        writer.uint32(18).fork(),
-      ).ldelim();
+      Distributions.encode(message.distributions, writer.uint32(18).fork()).ldelim();
     }
     if (message.claims !== undefined) {
       UserClaims.encode(message.claims, writer.uint32(26).fork()).ldelim();
@@ -189,10 +176,7 @@ export const GenesisState = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributionRecords = DistributionRecords.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.distributionRecords = DistributionRecords.decode(reader, reader.uint32());
           break;
         case 2:
           message.distributions = Distributions.decode(reader, reader.uint32());
@@ -213,12 +197,8 @@ export const GenesisState = {
       distributionRecords: isSet(object.distributionRecords)
         ? DistributionRecords.fromJSON(object.distributionRecords)
         : undefined,
-      distributions: isSet(object.distributions)
-        ? Distributions.fromJSON(object.distributions)
-        : undefined,
-      claims: isSet(object.claims)
-        ? UserClaims.fromJSON(object.claims)
-        : undefined,
+      distributions: isSet(object.distributions) ? Distributions.fromJSON(object.distributions) : undefined,
+      claims: isSet(object.claims) ? UserClaims.fromJSON(object.claims) : undefined,
     };
   },
 
@@ -229,23 +209,15 @@ export const GenesisState = {
         ? DistributionRecords.toJSON(message.distributionRecords)
         : undefined);
     message.distributions !== undefined &&
-      (obj.distributions = message.distributions
-        ? Distributions.toJSON(message.distributions)
-        : undefined);
-    message.claims !== undefined &&
-      (obj.claims = message.claims
-        ? UserClaims.toJSON(message.claims)
-        : undefined);
+      (obj.distributions = message.distributions ? Distributions.toJSON(message.distributions) : undefined);
+    message.claims !== undefined && (obj.claims = message.claims ? UserClaims.toJSON(message.claims) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I,
-  ): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(object: I): GenesisState {
     const message = createBaseGenesisState();
     message.distributionRecords =
-      object.distributionRecords !== undefined &&
-      object.distributionRecords !== null
+      object.distributionRecords !== undefined && object.distributionRecords !== null
         ? DistributionRecords.fromPartial(object.distributionRecords)
         : undefined;
     message.distributions =
@@ -253,9 +225,7 @@ export const GenesisState = {
         ? Distributions.fromPartial(object.distributions)
         : undefined;
     message.claims =
-      object.claims !== undefined && object.claims !== null
-        ? UserClaims.fromPartial(object.claims)
-        : undefined;
+      object.claims !== undefined && object.claims !== null ? UserClaims.fromPartial(object.claims) : undefined;
     return message;
   },
 };
@@ -274,10 +244,7 @@ function createBaseDistributionRecord(): DistributionRecord {
 }
 
 export const DistributionRecord = {
-  encode(
-    message: DistributionRecord,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DistributionRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionStatus !== 0) {
       writer.uint32(8).int32(message.distributionStatus);
     }
@@ -346,66 +313,42 @@ export const DistributionRecord = {
 
   fromJSON(object: any): DistributionRecord {
     return {
-      distributionStatus: isSet(object.distributionStatus)
-        ? distributionStatusFromJSON(object.distributionStatus)
-        : 0,
-      distributionType: isSet(object.distributionType)
-        ? distributionTypeFromJSON(object.distributionType)
-        : 0,
-      distributionName: isSet(object.distributionName)
-        ? String(object.distributionName)
-        : "",
-      recipientAddress: isSet(object.recipientAddress)
-        ? String(object.recipientAddress)
-        : "",
-      coins: Array.isArray(object?.coins)
-        ? object.coins.map((e: any) => Coin.fromJSON(e))
-        : [],
+      distributionStatus: isSet(object.distributionStatus) ? distributionStatusFromJSON(object.distributionStatus) : 0,
+      distributionType: isSet(object.distributionType) ? distributionTypeFromJSON(object.distributionType) : 0,
+      distributionName: isSet(object.distributionName) ? String(object.distributionName) : "",
+      recipientAddress: isSet(object.recipientAddress) ? String(object.recipientAddress) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
       distributionStartHeight: isSet(object.distributionStartHeight)
         ? Long.fromValue(object.distributionStartHeight)
         : Long.ZERO,
       distributionCompletedHeight: isSet(object.distributionCompletedHeight)
         ? Long.fromValue(object.distributionCompletedHeight)
         : Long.ZERO,
-      authorizedRunner: isSet(object.authorizedRunner)
-        ? String(object.authorizedRunner)
-        : "",
+      authorizedRunner: isSet(object.authorizedRunner) ? String(object.authorizedRunner) : "",
     };
   },
 
   toJSON(message: DistributionRecord): unknown {
     const obj: any = {};
     message.distributionStatus !== undefined &&
-      (obj.distributionStatus = distributionStatusToJSON(
-        message.distributionStatus,
-      ));
-    message.distributionType !== undefined &&
-      (obj.distributionType = distributionTypeToJSON(message.distributionType));
-    message.distributionName !== undefined &&
-      (obj.distributionName = message.distributionName);
-    message.recipientAddress !== undefined &&
-      (obj.recipientAddress = message.recipientAddress);
+      (obj.distributionStatus = distributionStatusToJSON(message.distributionStatus));
+    message.distributionType !== undefined && (obj.distributionType = distributionTypeToJSON(message.distributionType));
+    message.distributionName !== undefined && (obj.distributionName = message.distributionName);
+    message.recipientAddress !== undefined && (obj.recipientAddress = message.recipientAddress);
     if (message.coins) {
       obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
     } else {
       obj.coins = [];
     }
     message.distributionStartHeight !== undefined &&
-      (obj.distributionStartHeight = (
-        message.distributionStartHeight || Long.ZERO
-      ).toString());
+      (obj.distributionStartHeight = (message.distributionStartHeight || Long.ZERO).toString());
     message.distributionCompletedHeight !== undefined &&
-      (obj.distributionCompletedHeight = (
-        message.distributionCompletedHeight || Long.ZERO
-      ).toString());
-    message.authorizedRunner !== undefined &&
-      (obj.authorizedRunner = message.authorizedRunner);
+      (obj.distributionCompletedHeight = (message.distributionCompletedHeight || Long.ZERO).toString());
+    message.authorizedRunner !== undefined && (obj.authorizedRunner = message.authorizedRunner);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DistributionRecord>, I>>(
-    object: I,
-  ): DistributionRecord {
+  fromPartial<I extends Exact<DeepPartial<DistributionRecord>, I>>(object: I): DistributionRecord {
     const message = createBaseDistributionRecord();
     message.distributionStatus = object.distributionStatus ?? 0;
     message.distributionType = object.distributionType ?? 0;
@@ -413,13 +356,11 @@ export const DistributionRecord = {
     message.recipientAddress = object.recipientAddress ?? "";
     message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     message.distributionStartHeight =
-      object.distributionStartHeight !== undefined &&
-      object.distributionStartHeight !== null
+      object.distributionStartHeight !== undefined && object.distributionStartHeight !== null
         ? Long.fromValue(object.distributionStartHeight)
         : Long.ZERO;
     message.distributionCompletedHeight =
-      object.distributionCompletedHeight !== undefined &&
-      object.distributionCompletedHeight !== null
+      object.distributionCompletedHeight !== undefined && object.distributionCompletedHeight !== null
         ? Long.fromValue(object.distributionCompletedHeight)
         : Long.ZERO;
     message.authorizedRunner = object.authorizedRunner ?? "";
@@ -432,10 +373,7 @@ function createBaseDistributionRecords(): DistributionRecords {
 }
 
 export const DistributionRecords = {
-  encode(
-    message: DistributionRecords,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: DistributionRecords, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.distributionRecords) {
       DistributionRecord.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -450,9 +388,7 @@ export const DistributionRecords = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributionRecords.push(
-            DistributionRecord.decode(reader, reader.uint32()),
-          );
+          message.distributionRecords.push(DistributionRecord.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -465,9 +401,7 @@ export const DistributionRecords = {
   fromJSON(object: any): DistributionRecords {
     return {
       distributionRecords: Array.isArray(object?.distributionRecords)
-        ? object.distributionRecords.map((e: any) =>
-            DistributionRecord.fromJSON(e),
-          )
+        ? object.distributionRecords.map((e: any) => DistributionRecord.fromJSON(e))
         : [],
     };
   },
@@ -475,23 +409,16 @@ export const DistributionRecords = {
   toJSON(message: DistributionRecords): unknown {
     const obj: any = {};
     if (message.distributionRecords) {
-      obj.distributionRecords = message.distributionRecords.map((e) =>
-        e ? DistributionRecord.toJSON(e) : undefined,
-      );
+      obj.distributionRecords = message.distributionRecords.map((e) => (e ? DistributionRecord.toJSON(e) : undefined));
     } else {
       obj.distributionRecords = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DistributionRecords>, I>>(
-    object: I,
-  ): DistributionRecords {
+  fromPartial<I extends Exact<DeepPartial<DistributionRecords>, I>>(object: I): DistributionRecords {
     const message = createBaseDistributionRecords();
-    message.distributionRecords =
-      object.distributionRecords?.map((e) =>
-        DistributionRecord.fromPartial(e),
-      ) || [];
+    message.distributionRecords = object.distributionRecords?.map((e) => DistributionRecord.fromPartial(e)) || [];
     return message;
   },
 };
@@ -501,10 +428,7 @@ function createBaseDistributions(): Distributions {
 }
 
 export const Distributions = {
-  encode(
-    message: Distributions,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Distributions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.distributions) {
       Distribution.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -519,9 +443,7 @@ export const Distributions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.distributions.push(
-            Distribution.decode(reader, reader.uint32()),
-          );
+          message.distributions.push(Distribution.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -542,21 +464,16 @@ export const Distributions = {
   toJSON(message: Distributions): unknown {
     const obj: any = {};
     if (message.distributions) {
-      obj.distributions = message.distributions.map((e) =>
-        e ? Distribution.toJSON(e) : undefined,
-      );
+      obj.distributions = message.distributions.map((e) => (e ? Distribution.toJSON(e) : undefined));
     } else {
       obj.distributions = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Distributions>, I>>(
-    object: I,
-  ): Distributions {
+  fromPartial<I extends Exact<DeepPartial<Distributions>, I>>(object: I): Distributions {
     const message = createBaseDistributions();
-    message.distributions =
-      object.distributions?.map((e) => Distribution.fromPartial(e)) || [];
+    message.distributions = object.distributions?.map((e) => Distribution.fromPartial(e)) || [];
     return message;
   },
 };
@@ -566,10 +483,7 @@ function createBaseDistribution(): Distribution {
 }
 
 export const Distribution = {
-  encode(
-    message: Distribution,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: Distribution, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.distributionType !== 0) {
       writer.uint32(8).int32(message.distributionType);
     }
@@ -608,29 +522,21 @@ export const Distribution = {
 
   fromJSON(object: any): Distribution {
     return {
-      distributionType: isSet(object.distributionType)
-        ? distributionTypeFromJSON(object.distributionType)
-        : 0,
-      distributionName: isSet(object.distributionName)
-        ? String(object.distributionName)
-        : "",
+      distributionType: isSet(object.distributionType) ? distributionTypeFromJSON(object.distributionType) : 0,
+      distributionName: isSet(object.distributionName) ? String(object.distributionName) : "",
       runner: isSet(object.runner) ? String(object.runner) : "",
     };
   },
 
   toJSON(message: Distribution): unknown {
     const obj: any = {};
-    message.distributionType !== undefined &&
-      (obj.distributionType = distributionTypeToJSON(message.distributionType));
-    message.distributionName !== undefined &&
-      (obj.distributionName = message.distributionName);
+    message.distributionType !== undefined && (obj.distributionType = distributionTypeToJSON(message.distributionType));
+    message.distributionName !== undefined && (obj.distributionName = message.distributionName);
     message.runner !== undefined && (obj.runner = message.runner);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Distribution>, I>>(
-    object: I,
-  ): Distribution {
+  fromPartial<I extends Exact<DeepPartial<Distribution>, I>>(object: I): Distribution {
     const message = createBaseDistribution();
     message.distributionType = object.distributionType ?? 0;
     message.distributionName = object.distributionName ?? "";
@@ -644,10 +550,7 @@ function createBaseUserClaim(): UserClaim {
 }
 
 export const UserClaim = {
-  encode(
-    message: UserClaim,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: UserClaim, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userAddress !== "") {
       writer.uint32(10).string(message.userAddress);
     }
@@ -687,29 +590,20 @@ export const UserClaim = {
   fromJSON(object: any): UserClaim {
     return {
       userAddress: isSet(object.userAddress) ? String(object.userAddress) : "",
-      userClaimType: isSet(object.userClaimType)
-        ? distributionTypeFromJSON(object.userClaimType)
-        : 0,
-      userClaimTime: isSet(object.userClaimTime)
-        ? String(object.userClaimTime)
-        : "",
+      userClaimType: isSet(object.userClaimType) ? distributionTypeFromJSON(object.userClaimType) : 0,
+      userClaimTime: isSet(object.userClaimTime) ? String(object.userClaimTime) : "",
     };
   },
 
   toJSON(message: UserClaim): unknown {
     const obj: any = {};
-    message.userAddress !== undefined &&
-      (obj.userAddress = message.userAddress);
-    message.userClaimType !== undefined &&
-      (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
-    message.userClaimTime !== undefined &&
-      (obj.userClaimTime = message.userClaimTime);
+    message.userAddress !== undefined && (obj.userAddress = message.userAddress);
+    message.userClaimType !== undefined && (obj.userClaimType = distributionTypeToJSON(message.userClaimType));
+    message.userClaimTime !== undefined && (obj.userClaimTime = message.userClaimTime);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserClaim>, I>>(
-    object: I,
-  ): UserClaim {
+  fromPartial<I extends Exact<DeepPartial<UserClaim>, I>>(object: I): UserClaim {
     const message = createBaseUserClaim();
     message.userAddress = object.userAddress ?? "";
     message.userClaimType = object.userClaimType ?? 0;
@@ -723,10 +617,7 @@ function createBaseUserClaims(): UserClaims {
 }
 
 export const UserClaims = {
-  encode(
-    message: UserClaims,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: UserClaims, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.userClaims) {
       UserClaim.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -753,30 +644,23 @@ export const UserClaims = {
 
   fromJSON(object: any): UserClaims {
     return {
-      userClaims: Array.isArray(object?.userClaims)
-        ? object.userClaims.map((e: any) => UserClaim.fromJSON(e))
-        : [],
+      userClaims: Array.isArray(object?.userClaims) ? object.userClaims.map((e: any) => UserClaim.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: UserClaims): unknown {
     const obj: any = {};
     if (message.userClaims) {
-      obj.userClaims = message.userClaims.map((e) =>
-        e ? UserClaim.toJSON(e) : undefined,
-      );
+      obj.userClaims = message.userClaims.map((e) => (e ? UserClaim.toJSON(e) : undefined));
     } else {
       obj.userClaims = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserClaims>, I>>(
-    object: I,
-  ): UserClaims {
+  fromPartial<I extends Exact<DeepPartial<UserClaims>, I>>(object: I): UserClaims {
     const message = createBaseUserClaims();
-    message.userClaims =
-      object.userClaims?.map((e) => UserClaim.fromPartial(e)) || [];
+    message.userClaims = object.userClaims?.map((e) => UserClaim.fromPartial(e)) || [];
     return message;
   },
 };
@@ -786,10 +670,7 @@ function createBaseMintController(): MintController {
 }
 
 export const MintController = {
-  encode(
-    message: MintController,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MintController, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.totalCounter !== undefined) {
       Coin.encode(message.totalCounter, writer.uint32(10).fork()).ldelim();
     }
@@ -816,24 +697,18 @@ export const MintController = {
 
   fromJSON(object: any): MintController {
     return {
-      totalCounter: isSet(object.totalCounter)
-        ? Coin.fromJSON(object.totalCounter)
-        : undefined,
+      totalCounter: isSet(object.totalCounter) ? Coin.fromJSON(object.totalCounter) : undefined,
     };
   },
 
   toJSON(message: MintController): unknown {
     const obj: any = {};
     message.totalCounter !== undefined &&
-      (obj.totalCounter = message.totalCounter
-        ? Coin.toJSON(message.totalCounter)
-        : undefined);
+      (obj.totalCounter = message.totalCounter ? Coin.toJSON(message.totalCounter) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MintController>, I>>(
-    object: I,
-  ): MintController {
+  fromPartial<I extends Exact<DeepPartial<MintController>, I>>(object: I): MintController {
     const message = createBaseMintController();
     message.totalCounter =
       object.totalCounter !== undefined && object.totalCounter !== null
@@ -843,14 +718,7 @@ export const MintController = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -867,9 +735,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

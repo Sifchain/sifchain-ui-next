@@ -98,19 +98,11 @@ export const Asset = {
 };
 
 function createBaseLiquidityProvider(): LiquidityProvider {
-  return {
-    asset: undefined,
-    liquidityProviderUnits: "",
-    liquidityProviderAddress: "",
-    unlocks: [],
-  };
+  return { asset: undefined, liquidityProviderUnits: "", liquidityProviderAddress: "", unlocks: [] };
 }
 
 export const LiquidityProvider = {
-  encode(
-    message: LiquidityProvider,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProvider, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.asset !== undefined) {
       Asset.encode(message.asset, writer.uint32(10).fork()).ldelim();
     }
@@ -156,48 +148,31 @@ export const LiquidityProvider = {
   fromJSON(object: any): LiquidityProvider {
     return {
       asset: isSet(object.asset) ? Asset.fromJSON(object.asset) : undefined,
-      liquidityProviderUnits: isSet(object.liquidityProviderUnits)
-        ? String(object.liquidityProviderUnits)
-        : "",
-      liquidityProviderAddress: isSet(object.liquidityProviderAddress)
-        ? String(object.liquidityProviderAddress)
-        : "",
-      unlocks: Array.isArray(object?.unlocks)
-        ? object.unlocks.map((e: any) => LiquidityUnlock.fromJSON(e))
-        : [],
+      liquidityProviderUnits: isSet(object.liquidityProviderUnits) ? String(object.liquidityProviderUnits) : "",
+      liquidityProviderAddress: isSet(object.liquidityProviderAddress) ? String(object.liquidityProviderAddress) : "",
+      unlocks: Array.isArray(object?.unlocks) ? object.unlocks.map((e: any) => LiquidityUnlock.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: LiquidityProvider): unknown {
     const obj: any = {};
-    message.asset !== undefined &&
-      (obj.asset = message.asset ? Asset.toJSON(message.asset) : undefined);
-    message.liquidityProviderUnits !== undefined &&
-      (obj.liquidityProviderUnits = message.liquidityProviderUnits);
-    message.liquidityProviderAddress !== undefined &&
-      (obj.liquidityProviderAddress = message.liquidityProviderAddress);
+    message.asset !== undefined && (obj.asset = message.asset ? Asset.toJSON(message.asset) : undefined);
+    message.liquidityProviderUnits !== undefined && (obj.liquidityProviderUnits = message.liquidityProviderUnits);
+    message.liquidityProviderAddress !== undefined && (obj.liquidityProviderAddress = message.liquidityProviderAddress);
     if (message.unlocks) {
-      obj.unlocks = message.unlocks.map((e) =>
-        e ? LiquidityUnlock.toJSON(e) : undefined,
-      );
+      obj.unlocks = message.unlocks.map((e) => (e ? LiquidityUnlock.toJSON(e) : undefined));
     } else {
       obj.unlocks = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProvider>, I>>(
-    object: I,
-  ): LiquidityProvider {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProvider>, I>>(object: I): LiquidityProvider {
     const message = createBaseLiquidityProvider();
-    message.asset =
-      object.asset !== undefined && object.asset !== null
-        ? Asset.fromPartial(object.asset)
-        : undefined;
+    message.asset = object.asset !== undefined && object.asset !== null ? Asset.fromPartial(object.asset) : undefined;
     message.liquidityProviderUnits = object.liquidityProviderUnits ?? "";
     message.liquidityProviderAddress = object.liquidityProviderAddress ?? "";
-    message.unlocks =
-      object.unlocks?.map((e) => LiquidityUnlock.fromPartial(e)) || [];
+    message.unlocks = object.unlocks?.map((e) => LiquidityUnlock.fromPartial(e)) || [];
     return message;
   },
 };
@@ -207,10 +182,7 @@ function createBaseLiquidityUnlock(): LiquidityUnlock {
 }
 
 export const LiquidityUnlock = {
-  encode(
-    message: LiquidityUnlock,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityUnlock, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.requestHeight.isZero()) {
       writer.uint32(8).int64(message.requestHeight);
     }
@@ -243,24 +215,19 @@ export const LiquidityUnlock = {
 
   fromJSON(object: any): LiquidityUnlock {
     return {
-      requestHeight: isSet(object.requestHeight)
-        ? Long.fromValue(object.requestHeight)
-        : Long.ZERO,
+      requestHeight: isSet(object.requestHeight) ? Long.fromValue(object.requestHeight) : Long.ZERO,
       units: isSet(object.units) ? String(object.units) : "",
     };
   },
 
   toJSON(message: LiquidityUnlock): unknown {
     const obj: any = {};
-    message.requestHeight !== undefined &&
-      (obj.requestHeight = (message.requestHeight || Long.ZERO).toString());
+    message.requestHeight !== undefined && (obj.requestHeight = (message.requestHeight || Long.ZERO).toString());
     message.units !== undefined && (obj.units = message.units);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityUnlock>, I>>(
-    object: I,
-  ): LiquidityUnlock {
+  fromPartial<I extends Exact<DeepPartial<LiquidityUnlock>, I>>(object: I): LiquidityUnlock {
     const message = createBaseLiquidityUnlock();
     message.requestHeight =
       object.requestHeight !== undefined && object.requestHeight !== null
@@ -276,10 +243,7 @@ function createBasePmtpEpoch(): PmtpEpoch {
 }
 
 export const PmtpEpoch = {
-  encode(
-    message: PmtpEpoch,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: PmtpEpoch, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.epochCounter.isZero()) {
       writer.uint32(8).int64(message.epochCounter);
     }
@@ -312,27 +276,19 @@ export const PmtpEpoch = {
 
   fromJSON(object: any): PmtpEpoch {
     return {
-      epochCounter: isSet(object.epochCounter)
-        ? Long.fromValue(object.epochCounter)
-        : Long.ZERO,
-      blockCounter: isSet(object.blockCounter)
-        ? Long.fromValue(object.blockCounter)
-        : Long.ZERO,
+      epochCounter: isSet(object.epochCounter) ? Long.fromValue(object.epochCounter) : Long.ZERO,
+      blockCounter: isSet(object.blockCounter) ? Long.fromValue(object.blockCounter) : Long.ZERO,
     };
   },
 
   toJSON(message: PmtpEpoch): unknown {
     const obj: any = {};
-    message.epochCounter !== undefined &&
-      (obj.epochCounter = (message.epochCounter || Long.ZERO).toString());
-    message.blockCounter !== undefined &&
-      (obj.blockCounter = (message.blockCounter || Long.ZERO).toString());
+    message.epochCounter !== undefined && (obj.epochCounter = (message.epochCounter || Long.ZERO).toString());
+    message.blockCounter !== undefined && (obj.blockCounter = (message.blockCounter || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PmtpEpoch>, I>>(
-    object: I,
-  ): PmtpEpoch {
+  fromPartial<I extends Exact<DeepPartial<PmtpEpoch>, I>>(object: I): PmtpEpoch {
     const message = createBasePmtpEpoch();
     message.epochCounter =
       object.epochCounter !== undefined && object.epochCounter !== null
@@ -351,10 +307,7 @@ function createBaseWhiteList(): WhiteList {
 }
 
 export const WhiteList = {
-  encode(
-    message: WhiteList,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: WhiteList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.validatorList) {
       writer.uint32(10).string(v!);
     }
@@ -381,9 +334,7 @@ export const WhiteList = {
 
   fromJSON(object: any): WhiteList {
     return {
-      validatorList: Array.isArray(object?.validatorList)
-        ? object.validatorList.map((e: any) => String(e))
-        : [],
+      validatorList: Array.isArray(object?.validatorList) ? object.validatorList.map((e: any) => String(e)) : [],
     };
   },
 
@@ -397,9 +348,7 @@ export const WhiteList = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<WhiteList>, I>>(
-    object: I,
-  ): WhiteList {
+  fromPartial<I extends Exact<DeepPartial<WhiteList>, I>>(object: I): WhiteList {
     const message = createBaseWhiteList();
     message.validatorList = object.validatorList?.map((e) => e) || [];
     return message;
@@ -407,23 +356,13 @@ export const WhiteList = {
 };
 
 function createBaseLiquidityProviderData(): LiquidityProviderData {
-  return {
-    liquidityProvider: undefined,
-    nativeAssetBalance: "",
-    externalAssetBalance: "",
-  };
+  return { liquidityProvider: undefined, nativeAssetBalance: "", externalAssetBalance: "" };
 }
 
 export const LiquidityProviderData = {
-  encode(
-    message: LiquidityProviderData,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: LiquidityProviderData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.liquidityProvider !== undefined) {
-      LiquidityProvider.encode(
-        message.liquidityProvider,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      LiquidityProvider.encode(message.liquidityProvider, writer.uint32(10).fork()).ldelim();
     }
     if (message.nativeAssetBalance !== "") {
       writer.uint32(18).string(message.nativeAssetBalance);
@@ -434,10 +373,7 @@ export const LiquidityProviderData = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): LiquidityProviderData {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidityProviderData {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLiquidityProviderData();
@@ -445,10 +381,7 @@ export const LiquidityProviderData = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidityProvider = LiquidityProvider.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.liquidityProvider = LiquidityProvider.decode(reader, reader.uint32());
           break;
         case 2:
           message.nativeAssetBalance = reader.string();
@@ -469,12 +402,8 @@ export const LiquidityProviderData = {
       liquidityProvider: isSet(object.liquidityProvider)
         ? LiquidityProvider.fromJSON(object.liquidityProvider)
         : undefined,
-      nativeAssetBalance: isSet(object.nativeAssetBalance)
-        ? String(object.nativeAssetBalance)
-        : "",
-      externalAssetBalance: isSet(object.externalAssetBalance)
-        ? String(object.externalAssetBalance)
-        : "",
+      nativeAssetBalance: isSet(object.nativeAssetBalance) ? String(object.nativeAssetBalance) : "",
+      externalAssetBalance: isSet(object.externalAssetBalance) ? String(object.externalAssetBalance) : "",
     };
   },
 
@@ -484,20 +413,15 @@ export const LiquidityProviderData = {
       (obj.liquidityProvider = message.liquidityProvider
         ? LiquidityProvider.toJSON(message.liquidityProvider)
         : undefined);
-    message.nativeAssetBalance !== undefined &&
-      (obj.nativeAssetBalance = message.nativeAssetBalance);
-    message.externalAssetBalance !== undefined &&
-      (obj.externalAssetBalance = message.externalAssetBalance);
+    message.nativeAssetBalance !== undefined && (obj.nativeAssetBalance = message.nativeAssetBalance);
+    message.externalAssetBalance !== undefined && (obj.externalAssetBalance = message.externalAssetBalance);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LiquidityProviderData>, I>>(
-    object: I,
-  ): LiquidityProviderData {
+  fromPartial<I extends Exact<DeepPartial<LiquidityProviderData>, I>>(object: I): LiquidityProviderData {
     const message = createBaseLiquidityProviderData();
     message.liquidityProvider =
-      object.liquidityProvider !== undefined &&
-      object.liquidityProvider !== null
+      object.liquidityProvider !== undefined && object.liquidityProvider !== null
         ? LiquidityProvider.fromPartial(object.liquidityProvider)
         : undefined;
     message.nativeAssetBalance = object.nativeAssetBalance ?? "";
@@ -511,10 +435,7 @@ function createBaseEventPolicy(): EventPolicy {
 }
 
 export const EventPolicy = {
-  encode(
-    message: EventPolicy,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: EventPolicy, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.eventType !== "") {
       writer.uint32(10).string(message.eventType);
     }
@@ -554,28 +475,20 @@ export const EventPolicy = {
   fromJSON(object: any): EventPolicy {
     return {
       eventType: isSet(object.eventType) ? String(object.eventType) : "",
-      pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock)
-        ? String(object.pmtpPeriodStartBlock)
-        : "",
-      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock)
-        ? String(object.pmtpPeriodEndBlock)
-        : "",
+      pmtpPeriodStartBlock: isSet(object.pmtpPeriodStartBlock) ? String(object.pmtpPeriodStartBlock) : "",
+      pmtpPeriodEndBlock: isSet(object.pmtpPeriodEndBlock) ? String(object.pmtpPeriodEndBlock) : "",
     };
   },
 
   toJSON(message: EventPolicy): unknown {
     const obj: any = {};
     message.eventType !== undefined && (obj.eventType = message.eventType);
-    message.pmtpPeriodStartBlock !== undefined &&
-      (obj.pmtpPeriodStartBlock = message.pmtpPeriodStartBlock);
-    message.pmtpPeriodEndBlock !== undefined &&
-      (obj.pmtpPeriodEndBlock = message.pmtpPeriodEndBlock);
+    message.pmtpPeriodStartBlock !== undefined && (obj.pmtpPeriodStartBlock = message.pmtpPeriodStartBlock);
+    message.pmtpPeriodEndBlock !== undefined && (obj.pmtpPeriodEndBlock = message.pmtpPeriodEndBlock);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<EventPolicy>, I>>(
-    object: I,
-  ): EventPolicy {
+  fromPartial<I extends Exact<DeepPartial<EventPolicy>, I>>(object: I): EventPolicy {
     const message = createBaseEventPolicy();
     message.eventType = object.eventType ?? "";
     message.pmtpPeriodStartBlock = object.pmtpPeriodStartBlock ?? "";
@@ -585,19 +498,11 @@ export const EventPolicy = {
 };
 
 function createBaseRemovalQueue(): RemovalQueue {
-  return {
-    count: Long.ZERO,
-    id: Long.ZERO,
-    startHeight: Long.ZERO,
-    totalValue: "",
-  };
+  return { count: Long.ZERO, id: Long.ZERO, startHeight: Long.ZERO, totalValue: "" };
 }
 
 export const RemovalQueue = {
-  encode(
-    message: RemovalQueue,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: RemovalQueue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.count.isZero()) {
       writer.uint32(8).int64(message.count);
     }
@@ -644,53 +549,32 @@ export const RemovalQueue = {
     return {
       count: isSet(object.count) ? Long.fromValue(object.count) : Long.ZERO,
       id: isSet(object.id) ? Long.fromValue(object.id) : Long.ZERO,
-      startHeight: isSet(object.startHeight)
-        ? Long.fromValue(object.startHeight)
-        : Long.ZERO,
+      startHeight: isSet(object.startHeight) ? Long.fromValue(object.startHeight) : Long.ZERO,
       totalValue: isSet(object.totalValue) ? String(object.totalValue) : "",
     };
   },
 
   toJSON(message: RemovalQueue): unknown {
     const obj: any = {};
-    message.count !== undefined &&
-      (obj.count = (message.count || Long.ZERO).toString());
+    message.count !== undefined && (obj.count = (message.count || Long.ZERO).toString());
     message.id !== undefined && (obj.id = (message.id || Long.ZERO).toString());
-    message.startHeight !== undefined &&
-      (obj.startHeight = (message.startHeight || Long.ZERO).toString());
+    message.startHeight !== undefined && (obj.startHeight = (message.startHeight || Long.ZERO).toString());
     message.totalValue !== undefined && (obj.totalValue = message.totalValue);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RemovalQueue>, I>>(
-    object: I,
-  ): RemovalQueue {
+  fromPartial<I extends Exact<DeepPartial<RemovalQueue>, I>>(object: I): RemovalQueue {
     const message = createBaseRemovalQueue();
-    message.count =
-      object.count !== undefined && object.count !== null
-        ? Long.fromValue(object.count)
-        : Long.ZERO;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.ZERO;
+    message.count = object.count !== undefined && object.count !== null ? Long.fromValue(object.count) : Long.ZERO;
+    message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.ZERO;
     message.startHeight =
-      object.startHeight !== undefined && object.startHeight !== null
-        ? Long.fromValue(object.startHeight)
-        : Long.ZERO;
+      object.startHeight !== undefined && object.startHeight !== null ? Long.fromValue(object.startHeight) : Long.ZERO;
     message.totalValue = object.totalValue ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -707,9 +591,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

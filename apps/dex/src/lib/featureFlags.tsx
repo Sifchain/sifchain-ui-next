@@ -45,6 +45,7 @@ export function withRedirectOnMount<T>(
   InnerComponent: FC<T>,
   options: {
     redirectTo: string;
+    // eslint-disable-next-line no-unused-vars
     redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
     fallback?: ReactNode;
   },

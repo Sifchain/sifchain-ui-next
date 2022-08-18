@@ -24,10 +24,7 @@ function createBaseMsgAddAccount(): MsgAddAccount {
 }
 
 export const MsgAddAccount = {
-  encode(
-    message: MsgAddAccount,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgAddAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -61,31 +58,22 @@ export const MsgAddAccount = {
   fromJSON(object: any): MsgAddAccount {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      account: isSet(object.account)
-        ? AdminAccount.fromJSON(object.account)
-        : undefined,
+      account: isSet(object.account) ? AdminAccount.fromJSON(object.account) : undefined,
     };
   },
 
   toJSON(message: MsgAddAccount): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.account !== undefined &&
-      (obj.account = message.account
-        ? AdminAccount.toJSON(message.account)
-        : undefined);
+    message.account !== undefined && (obj.account = message.account ? AdminAccount.toJSON(message.account) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddAccount>, I>>(
-    object: I,
-  ): MsgAddAccount {
+  fromPartial<I extends Exact<DeepPartial<MsgAddAccount>, I>>(object: I): MsgAddAccount {
     const message = createBaseMsgAddAccount();
     message.signer = object.signer ?? "";
     message.account =
-      object.account !== undefined && object.account !== null
-        ? AdminAccount.fromPartial(object.account)
-        : undefined;
+      object.account !== undefined && object.account !== null ? AdminAccount.fromPartial(object.account) : undefined;
     return message;
   },
 };
@@ -95,17 +83,11 @@ function createBaseMsgAddAccountResponse(): MsgAddAccountResponse {
 }
 
 export const MsgAddAccountResponse = {
-  encode(
-    _: MsgAddAccountResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgAddAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgAddAccountResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddAccountResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgAddAccountResponse();
@@ -129,9 +111,7 @@ export const MsgAddAccountResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddAccountResponse>, I>>(
-    _: I,
-  ): MsgAddAccountResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgAddAccountResponse>, I>>(_: I): MsgAddAccountResponse {
     const message = createBaseMsgAddAccountResponse();
     return message;
   },
@@ -142,10 +122,7 @@ function createBaseMsgRemoveAccount(): MsgRemoveAccount {
 }
 
 export const MsgRemoveAccount = {
-  encode(
-    message: MsgRemoveAccount,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRemoveAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -179,31 +156,22 @@ export const MsgRemoveAccount = {
   fromJSON(object: any): MsgRemoveAccount {
     return {
       signer: isSet(object.signer) ? String(object.signer) : "",
-      account: isSet(object.account)
-        ? AdminAccount.fromJSON(object.account)
-        : undefined,
+      account: isSet(object.account) ? AdminAccount.fromJSON(object.account) : undefined,
     };
   },
 
   toJSON(message: MsgRemoveAccount): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
-    message.account !== undefined &&
-      (obj.account = message.account
-        ? AdminAccount.toJSON(message.account)
-        : undefined);
+    message.account !== undefined && (obj.account = message.account ? AdminAccount.toJSON(message.account) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveAccount>, I>>(
-    object: I,
-  ): MsgRemoveAccount {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveAccount>, I>>(object: I): MsgRemoveAccount {
     const message = createBaseMsgRemoveAccount();
     message.signer = object.signer ?? "";
     message.account =
-      object.account !== undefined && object.account !== null
-        ? AdminAccount.fromPartial(object.account)
-        : undefined;
+      object.account !== undefined && object.account !== null ? AdminAccount.fromPartial(object.account) : undefined;
     return message;
   },
 };
@@ -213,17 +181,11 @@ function createBaseMsgRemoveAccountResponse(): MsgRemoveAccountResponse {
 }
 
 export const MsgRemoveAccountResponse = {
-  encode(
-    _: MsgRemoveAccountResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRemoveAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRemoveAccountResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveAccountResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRemoveAccountResponse();
@@ -247,9 +209,7 @@ export const MsgRemoveAccountResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRemoveAccountResponse>, I>>(
-    _: I,
-  ): MsgRemoveAccountResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveAccountResponse>, I>>(_: I): MsgRemoveAccountResponse {
     const message = createBaseMsgRemoveAccountResponse();
     return message;
   },
@@ -269,45 +229,22 @@ export class MsgClientImpl implements Msg {
   }
   AddAccount(request: MsgAddAccount): Promise<MsgAddAccountResponse> {
     const data = MsgAddAccount.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.admin.v1.Msg",
-      "AddAccount",
-      data,
-    );
-    return promise.then((data) =>
-      MsgAddAccountResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.admin.v1.Msg", "AddAccount", data);
+    return promise.then((data) => MsgAddAccountResponse.decode(new _m0.Reader(data)));
   }
 
   RemoveAccount(request: MsgRemoveAccount): Promise<MsgRemoveAccountResponse> {
     const data = MsgRemoveAccount.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.admin.v1.Msg",
-      "RemoveAccount",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRemoveAccountResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.admin.v1.Msg", "RemoveAccount", data);
+    return promise.then((data) => MsgRemoveAccountResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -324,9 +261,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

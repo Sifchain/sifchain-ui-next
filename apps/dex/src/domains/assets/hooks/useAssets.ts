@@ -1,5 +1,5 @@
 import type { NetworkKind } from "@sifchain/common";
-import { compose, prop, propEq, toLower } from "rambda";
+import { compose, prop, toLower } from "rambda";
 import { indexBy } from "rambda";
 import { useMemo } from "react";
 

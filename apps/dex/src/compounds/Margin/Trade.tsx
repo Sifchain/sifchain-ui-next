@@ -1,22 +1,23 @@
-import { Decimal } from "@cosmjs/math";
-import type { IAsset } from "@sifchain/common";
-import clsx from "clsx";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { pathOr } from "rambda";
 import type { ChangeEvent, SyntheticEvent } from "react";
+import type { IAsset } from "@sifchain/common";
+import type { NextPage } from "next";
+
+import { Button, formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import { Decimal } from "@cosmjs/math";
+import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
-
-import { Button, formatNumberAsCurrency, Maybe, Modal, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
+import clsx from "clsx";
+import Head from "next/head";
 
-import AssetIcon from "~/compounds/AssetIcon";
-import { PortfolioTable } from "~/compounds/Margin/PortfolioTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginParamsQuery, useOpenMTPMutation } from "~/domains/margin/hooks";
+import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
+import { useMarginParamsQuery } from "~/domains/margin/hooks";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
 /**
  * ********************************************************************************************
@@ -28,7 +29,13 @@ import { useSifSignerAddress } from "~/hooks/useSifSigner";
  * ********************************************************************************************
  */
 import { ROWAN } from "~/domains/assets";
-import { PoolOverview } from "./_components";
+import {
+  FlashMessage5xxError,
+  FlashMessageAccountNotWhitelisted,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageLoading,
+  PoolOverview,
+} from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -40,7 +47,9 @@ import {
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
+  removeFirstCharC,
 } from "./_trade";
+import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
 
 const calculateOpenPosition = (positionTokenAmount: number, positionPriceUsd: number) => {
   return positionTokenAmount / positionPriceUsd;
@@ -70,18 +79,21 @@ const TradeCompound: NextPage = () => {
   const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPrice = useRowanPriceQuery();
   const govParams = useMarginParamsQuery();
-  // const addressList = useMarginAllowedAddressList();
+  const walletAddress = useSifSignerAddress();
+  const isWhitelistedAccount = useMarginIsWhitelistedAccount({
+    walletAddress: walletAddress.data ?? "",
+  });
 
-  if (
-    [
-      enhancedPools,
-      enhancedRowan,
-      rowanPrice,
-      govParams,
-      // addressList
-    ].some((query) => query.isError)
-  ) {
-    return <div className="bg-gray-850 p-10 text-center text-gray-100">Try again later.</div>;
+  if ([enhancedPools, enhancedRowan, rowanPrice, govParams, isWhitelistedAccount].some((query) => query.isError)) {
+    return <FlashMessage5xxError />;
+  }
+
+  if (!isWhitelistedAccount.data) {
+    return <FlashMessageConnectSifChainWallet />;
+  }
+
+  if (isWhitelistedAccount.data && isWhitelistedAccount.data.isWhitelisted === false) {
+    return <FlashMessageAccountNotWhitelisted />;
   }
 
   if (
@@ -89,13 +101,14 @@ const TradeCompound: NextPage = () => {
     enhancedRowan.isSuccess &&
     rowanPrice.isSuccess &&
     govParams.isSuccess &&
-    // addressList.isSuccess &&
+    isWhitelistedAccount.isSuccess &&
     enhancedPools.data &&
     enhancedRowan.data &&
     rowanPrice.data &&
     govParams.data &&
-    // addressList.data &&
-    govParams.data.params
+    govParams.data.params &&
+    isWhitelistedAccount.data &&
+    isWhitelistedAccount.data.isWhitelisted === true
   ) {
     const { params } = govParams.data;
     const allowedPools = params.pools;
@@ -103,7 +116,6 @@ const TradeCompound: NextPage = () => {
       allowedPools.includes(pool.asset.symbol.toLowerCase()),
     );
     enhancedRowan.data.priceUsd = rowanPrice.data;
-    // console.log(addressList);
     return (
       <Trade
         enhancedPools={filteredEnhancedPools}
@@ -115,7 +127,7 @@ const TradeCompound: NextPage = () => {
     );
   }
 
-  return <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>;
+  return <FlashMessageLoading />;
 };
 
 export default TradeCompound;
@@ -140,11 +152,11 @@ type TradeProps = {
 };
 
 const ROWAN_DENOM = "rowan";
-const mutateDisplaySymbol = (displaySymbol: string) => `${displaySymbol.toUpperCase()} · ${ROWAN_DENOM.toUpperCase()}`;
+const mutateDisplaySymbol = (displaySymbol: string) =>
+  `${removeFirstCharC(displaySymbol.toUpperCase())} · ${ROWAN_DENOM.toUpperCase()}`;
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const walletAddress = useSifSignerAddress({ enabled: true });
   const { enhancedPools, enhancedRowan } = props;
 
   /**
@@ -172,7 +184,7 @@ const Trade = (props: TradeProps) => {
         const modifiedPool = { ...pool };
         modifiedPool.asset = {
           ...pool.asset,
-          displaySymbol: mutateDisplaySymbol(pool.asset.displaySymbol),
+          displaySymbol: mutateDisplaySymbol(pool.asset.symbol),
           priceUsd: pool.stats.priceToken,
         } as IAsset & { priceUsd: number };
         return modifiedPool;
@@ -310,41 +322,9 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const [checkbox01, setCheckbox01] = useState(false);
-  const [checkbox02, setCheckbox02] = useState(false);
   const computedBorrowAmount = useMemo(() => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
-
-  const confirmOpenPositionMutation = useOpenMTPMutation();
-  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
-    isOpen: false,
-  });
-
-  const isDisabledConfirmOpenPosition = useMemo(() => {
-    return checkbox01 === false || checkbox02 === false;
-  }, [checkbox01, checkbox02]);
-
-  const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    try {
-      const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
-      const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
-
-      const req = await confirmOpenPositionMutation.mutateAsync({
-        collateralAsset: selectedCollateral.symbol.toLowerCase(),
-        borrowAsset: selectedPosition.symbol.toLowerCase(),
-        position: 1, // LONG
-        collateralAmount,
-        leverage: leverage,
-      });
-      if (req && req.data) {
-        setModalConfirmOpenPosition({ isOpen: false });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
     selectedCollateral.denom ?? selectedCollateral.symbol,
@@ -476,6 +456,11 @@ const Trade = (props: TradeProps) => {
     });
   };
 
+  const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
+  const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
+  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
+    isOpen: false,
+  });
   const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
@@ -535,8 +520,9 @@ const Trade = (props: TradeProps) => {
           </div>
         )}
       </section>
-      <section className="mt-4 grid grid-cols-7 gap-x-5 text-xs">
-        <aside className="border-gold-800 col-span-2 flex flex-col rounded border bg-gray-800">
+
+      <section className="mt-4 grid grid-cols-7 gap-x-5">
+        <article className="border-gold-800 col-span-2 flex flex-col rounded border bg-gray-800 text-xs">
           <ul className="border-gold-800 flex flex-col gap-0 border-b p-4">
             <li className="flex flex-col">
               <div className="mb-1 flex flex-row text-xs">
@@ -550,10 +536,10 @@ const Trade = (props: TradeProps) => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedCollateral && selectedCollateral.denom ? (
+                  {selectedCollateral && selectedCollateral.symbol ? (
                     <>
-                      <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                      <span>{selectedCollateral.name}</span>
+                      <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                      <span>{removeFirstCharC(selectedCollateral.symbol)}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -609,10 +595,10 @@ const Trade = (props: TradeProps) => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedPosition && selectedPosition.denom ? (
+                  {selectedPosition && selectedPosition.symbol ? (
                     <>
-                      <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                      <span>{selectedPosition.name}</span>
+                      <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                      <span>{removeFirstCharC(selectedPosition.symbol)}</span>
                     </>
                   ) : null}
                 </div>
@@ -675,24 +661,24 @@ const Trade = (props: TradeProps) => {
             </li>
           </ul>
           {selectedCollateral &&
-          selectedCollateral.denom &&
+          selectedCollateral.symbol &&
           selectedPosition &&
-          selectedPosition.denom &&
+          selectedPosition.symbol &&
           selectedPosition.priceUsd ? (
             <>
               <div className="p-4">
                 <p className="text-center text-base">Review trade</p>
                 <ul className="mt-4 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedCollateral.name.toUpperCase()}</span>
+                    <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                    <span className="ml-1">{removeFirstCharC(selectedCollateral.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
-                        <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -701,15 +687,15 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
-                        <AssetIcon symbol={selectedCollateral.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
                 </ul>
                 <ul className="mt-8 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                    <span className="ml-1">{selectedPosition.name.toUpperCase()}</span>
+                    <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                    <span className="ml-1">{removeFirstCharC(selectedPosition.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -722,7 +708,7 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Position size</span>
                       <div className="flex flex-row items-center">
                         <span className="mr-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
-                        <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -730,7 +716,6 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
-                        <HtmlUnicode name="MinusSign" />
                         <span>{formatNumberAsCurrency(openPositionFee * selectedPosition.priceUsd)}</span>
                       </div>
                     </div>
@@ -747,7 +732,7 @@ const Trade = (props: TradeProps) => {
                               : 0,
                           )}
                         </span>
-                        <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -784,7 +769,7 @@ const Trade = (props: TradeProps) => {
                   disabled={isDisabledOpenPosition}
                   onClick={onClickOpenPosition}
                 >
-                  Open position
+                  Open trade
                 </Button>
               </div>
             </>
@@ -793,129 +778,37 @@ const Trade = (props: TradeProps) => {
               <RacetrackSpinnerIcon />
             </div>
           )}
-        </aside>
-        <section className="border-gold-800 col-span-5 rounded border">
-          <PortfolioTable
-            walletAddress={walletAddress.data}
-            extraQuerystring={{ pool: poolActive?.asset.denom }}
-            openPositions={{
-              hideColumns: ["Pool", "Unsettled Interest", "Next Payment", "Paid Interest"],
-            }}
-          />
-        </section>
+        </article>
+        <article className="border-gold-800 col-span-5 rounded border">
+          <OpenPositionsTable hideColumns={["Pool", "Paid Interest"]} />
+        </article>
       </section>
-      <Modal
-        className="text-sm"
-        isOpen={modalConfirmOpenPosition.isOpen}
-        onTransitionEnd={() => {
-          setCheckbox01(false);
-          setCheckbox02(false);
+
+      <ModalReviewOpenPosition
+        data={{
+          collateralAmount: collateralAmount,
+          fromDenom: selectedCollateral.symbol.toLowerCase(),
+          leverage: leverage,
+          poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
+          positionPriceUsd: selectedPosition.priceUsd,
+          positionTokenAmount: formatNumberAsDecimal(
+            Number(inputPosition.value) > 0
+              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd)) -
+                  openPositionFee * selectedPosition.priceUsd
+              : 0,
+          ),
+          toDenom: selectedPosition.symbol.toLowerCase(),
         }}
+        isOpen={modalConfirmOpenPosition.isOpen}
         onClose={() => {
           if (modalConfirmOpenPosition.isOpen) {
             setModalConfirmOpenPosition({ isOpen: false });
           }
         }}
-      >
-        <>
-          <h1 className="text-center text-lg font-bold">Review opening trade</h1>
-          {selectedPosition ? (
-            <ul className="mt-6 flex flex-col gap-3">
-              <li>
-                <div className="flex flex-row items-center">
-                  <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">
-                      {formatNumberAsDecimal(
-                        Number(inputPosition.value) > 0
-                          ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd))
-                          : 0,
-                      )}
-                    </span>
-                    {selectedPosition.denom ? (
-                      <AssetIcon symbol={selectedPosition.denom} network="sifchain" size="sm" />
-                    ) : null}
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-                  <span>{formatNumberAsCurrency(selectedPosition.priceUsd, 4)}</span>
-                </div>
-              </li>
-              <li>
-                <div className="flex flex-row">
-                  <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                  {poolActive ? <span>{formatNumberAsPercent(Number(poolActive.stats.interestRate))}</span> : null}
-                </div>
-              </li>
-            </ul>
-          ) : (
-            <div className="bg-gray-850 mt-6 flex items-center justify-center rounded p-2 text-4xl">
-              <RacetrackSpinnerIcon />
-            </div>
-          )}
-          <ul className="mt-6">
-            <li>
-              <label htmlFor="checkbox01" className="flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-                <input
-                  id="checkbox01"
-                  name="checkbox01"
-                  type="checkbox"
-                  checked={checkbox01}
-                  onChange={() => {
-                    setCheckbox01(!checkbox01);
-                  }}
-                />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                  eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam
-                  quae saepe quaerat.
-                </p>
-              </label>
-            </li>
-            <li>
-              <label htmlFor="checkbox02" className="mt-4 flex flex-row items-start gap-2 rounded bg-gray-700 p-4">
-                <input
-                  id="checkbox02"
-                  name="checkbox02"
-                  type="checkbox"
-                  checked={checkbox02}
-                  onChange={() => {
-                    setCheckbox02(!checkbox02);
-                  }}
-                />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet
-                  eligendi vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam
-                  quae saepe quaerat.
-                </p>
-              </label>
-            </li>
-          </ul>
-          {confirmOpenPositionMutation.isLoading ? (
-            <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
-          ) : (
-            <Button
-              variant="primary"
-              as="button"
-              size="md"
-              className="mt-6 w-full"
-              disabled={isDisabledConfirmOpenPosition}
-              onClick={onClickConfirmOpenPosition}
-            >
-              Confirm open position
-            </Button>
-          )}
-          {confirmOpenPositionMutation.isError ? (
-            <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-              <span className="mr-1">An error occurred:</span>
-              <span>{(confirmOpenPositionMutation.error as Error).message}</span>
-            </p>
-          ) : null}
-        </>
-      </Modal>
+        onMutationSuccess={() => {
+          setModalConfirmOpenPosition({ isOpen: false });
+        }}
+      />
     </>
   );
 };

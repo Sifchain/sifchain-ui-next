@@ -44,10 +44,7 @@ function createBaseQueryEthProphecyRequest(): QueryEthProphecyRequest {
 }
 
 export const QueryEthProphecyRequest = {
-  encode(
-    message: QueryEthProphecyRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryEthProphecyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.ethereumChainId.isZero()) {
       writer.uint32(8).int64(message.ethereumChainId);
     }
@@ -69,10 +66,7 @@ export const QueryEthProphecyRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryEthProphecyRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEthProphecyRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryEthProphecyRequest();
@@ -107,52 +101,34 @@ export const QueryEthProphecyRequest = {
 
   fromJSON(object: any): QueryEthProphecyRequest {
     return {
-      ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromValue(object.ethereumChainId)
-        : Long.ZERO,
-      bridgeContractAddress: isSet(object.bridgeContractAddress)
-        ? String(object.bridgeContractAddress)
-        : "",
+      ethereumChainId: isSet(object.ethereumChainId) ? Long.fromValue(object.ethereumChainId) : Long.ZERO,
+      bridgeContractAddress: isSet(object.bridgeContractAddress) ? String(object.bridgeContractAddress) : "",
       nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.ZERO,
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      tokenContractAddress: isSet(object.tokenContractAddress)
-        ? String(object.tokenContractAddress)
-        : "",
-      ethereumSender: isSet(object.ethereumSender)
-        ? String(object.ethereumSender)
-        : "",
+      tokenContractAddress: isSet(object.tokenContractAddress) ? String(object.tokenContractAddress) : "",
+      ethereumSender: isSet(object.ethereumSender) ? String(object.ethereumSender) : "",
     };
   },
 
   toJSON(message: QueryEthProphecyRequest): unknown {
     const obj: any = {};
-    message.ethereumChainId !== undefined &&
-      (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
-    message.bridgeContractAddress !== undefined &&
-      (obj.bridgeContractAddress = message.bridgeContractAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.ZERO).toString());
+    message.ethereumChainId !== undefined && (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
+    message.bridgeContractAddress !== undefined && (obj.bridgeContractAddress = message.bridgeContractAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.ZERO).toString());
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.tokenContractAddress !== undefined &&
-      (obj.tokenContractAddress = message.tokenContractAddress);
-    message.ethereumSender !== undefined &&
-      (obj.ethereumSender = message.ethereumSender);
+    message.tokenContractAddress !== undefined && (obj.tokenContractAddress = message.tokenContractAddress);
+    message.ethereumSender !== undefined && (obj.ethereumSender = message.ethereumSender);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryEthProphecyRequest>, I>>(
-    object: I,
-  ): QueryEthProphecyRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryEthProphecyRequest>, I>>(object: I): QueryEthProphecyRequest {
     const message = createBaseQueryEthProphecyRequest();
     message.ethereumChainId =
       object.ethereumChainId !== undefined && object.ethereumChainId !== null
         ? Long.fromValue(object.ethereumChainId)
         : Long.ZERO;
     message.bridgeContractAddress = object.bridgeContractAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.ZERO;
+    message.nonce = object.nonce !== undefined && object.nonce !== null ? Long.fromValue(object.nonce) : Long.ZERO;
     message.symbol = object.symbol ?? "";
     message.tokenContractAddress = object.tokenContractAddress ?? "";
     message.ethereumSender = object.ethereumSender ?? "";
@@ -165,10 +141,7 @@ function createBaseQueryEthProphecyResponse(): QueryEthProphecyResponse {
 }
 
 export const QueryEthProphecyResponse = {
-  encode(
-    message: QueryEthProphecyResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryEthProphecyResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -181,10 +154,7 @@ export const QueryEthProphecyResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryEthProphecyResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEthProphecyResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryEthProphecyResponse();
@@ -212,38 +182,28 @@ export const QueryEthProphecyResponse = {
     return {
       id: isSet(object.id) ? String(object.id) : "",
       status: isSet(object.status) ? Status.fromJSON(object.status) : undefined,
-      claims: Array.isArray(object?.claims)
-        ? object.claims.map((e: any) => EthBridgeClaim.fromJSON(e))
-        : [],
+      claims: Array.isArray(object?.claims) ? object.claims.map((e: any) => EthBridgeClaim.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: QueryEthProphecyResponse): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.status !== undefined &&
-      (obj.status = message.status ? Status.toJSON(message.status) : undefined);
+    message.status !== undefined && (obj.status = message.status ? Status.toJSON(message.status) : undefined);
     if (message.claims) {
-      obj.claims = message.claims.map((e) =>
-        e ? EthBridgeClaim.toJSON(e) : undefined,
-      );
+      obj.claims = message.claims.map((e) => (e ? EthBridgeClaim.toJSON(e) : undefined));
     } else {
       obj.claims = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryEthProphecyResponse>, I>>(
-    object: I,
-  ): QueryEthProphecyResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryEthProphecyResponse>, I>>(object: I): QueryEthProphecyResponse {
     const message = createBaseQueryEthProphecyResponse();
     message.id = object.id ?? "";
     message.status =
-      object.status !== undefined && object.status !== null
-        ? Status.fromPartial(object.status)
-        : undefined;
-    message.claims =
-      object.claims?.map((e) => EthBridgeClaim.fromPartial(e)) || [];
+      object.status !== undefined && object.status !== null ? Status.fromPartial(object.status) : undefined;
+    message.claims = object.claims?.map((e) => EthBridgeClaim.fromPartial(e)) || [];
     return message;
   },
 };
@@ -253,17 +213,11 @@ function createBaseQueryBlacklistRequest(): QueryBlacklistRequest {
 }
 
 export const QueryBlacklistRequest = {
-  encode(
-    _: QueryBlacklistRequest,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: QueryBlacklistRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryBlacklistRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryBlacklistRequest();
@@ -287,9 +241,7 @@ export const QueryBlacklistRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBlacklistRequest>, I>>(
-    _: I,
-  ): QueryBlacklistRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryBlacklistRequest>, I>>(_: I): QueryBlacklistRequest {
     const message = createBaseQueryBlacklistRequest();
     return message;
   },
@@ -300,20 +252,14 @@ function createBaseQueryBlacklistResponse(): QueryBlacklistResponse {
 }
 
 export const QueryBlacklistResponse = {
-  encode(
-    message: QueryBlacklistResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: QueryBlacklistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.addresses) {
       writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): QueryBlacklistResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryBlacklistResponse();
@@ -333,9 +279,7 @@ export const QueryBlacklistResponse = {
 
   fromJSON(object: any): QueryBlacklistResponse {
     return {
-      addresses: Array.isArray(object?.addresses)
-        ? object.addresses.map((e: any) => String(e))
-        : [],
+      addresses: Array.isArray(object?.addresses) ? object.addresses.map((e: any) => String(e)) : [],
     };
   },
 
@@ -349,9 +293,7 @@ export const QueryBlacklistResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBlacklistResponse>, I>>(
-    object: I,
-  ): QueryBlacklistResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryBlacklistResponse>, I>>(object: I): QueryBlacklistResponse {
     const message = createBaseQueryBlacklistResponse();
     message.addresses = object.addresses?.map((e) => e) || [];
     return message;
@@ -361,9 +303,7 @@ export const QueryBlacklistResponse = {
 /** Query service for queries */
 export interface Query {
   /** EthProphecy queries an EthProphecy */
-  EthProphecy(
-    request: QueryEthProphecyRequest,
-  ): Promise<QueryEthProphecyResponse>;
+  EthProphecy(request: QueryEthProphecyRequest): Promise<QueryEthProphecyResponse>;
   GetBlacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse>;
 }
 
@@ -374,51 +314,24 @@ export class QueryClientImpl implements Query {
     this.EthProphecy = this.EthProphecy.bind(this);
     this.GetBlacklist = this.GetBlacklist.bind(this);
   }
-  EthProphecy(
-    request: QueryEthProphecyRequest,
-  ): Promise<QueryEthProphecyResponse> {
+  EthProphecy(request: QueryEthProphecyRequest): Promise<QueryEthProphecyResponse> {
     const data = QueryEthProphecyRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Query",
-      "EthProphecy",
-      data,
-    );
-    return promise.then((data) =>
-      QueryEthProphecyResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Query", "EthProphecy", data);
+    return promise.then((data) => QueryEthProphecyResponse.decode(new _m0.Reader(data)));
   }
 
-  GetBlacklist(
-    request: QueryBlacklistRequest,
-  ): Promise<QueryBlacklistResponse> {
+  GetBlacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse> {
     const data = QueryBlacklistRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Query",
-      "GetBlacklist",
-      data,
-    );
-    return promise.then((data) =>
-      QueryBlacklistResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Query", "GetBlacklist", data);
+    return promise.then((data) => QueryBlacklistResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -435,9 +348,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

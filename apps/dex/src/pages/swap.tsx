@@ -12,7 +12,7 @@ import { SwapConfirmationModal } from "~/compounds/Swap";
 import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedTokenQuery, useSwapMutation, useSwapSimulation } from "~/domains/clp";
-import useSifSigner from "~/hooks/useSifSigner";
+import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
 

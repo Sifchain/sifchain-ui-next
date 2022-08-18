@@ -147,44 +147,22 @@ export const Pool = {
 
   fromJSON(object: any): Pool {
     return {
-      externalAsset: isSet(object.externalAsset)
-        ? Asset.fromJSON(object.externalAsset)
-        : undefined,
-      nativeAssetBalance: isSet(object.nativeAssetBalance)
-        ? String(object.nativeAssetBalance)
-        : "",
-      externalAssetBalance: isSet(object.externalAssetBalance)
-        ? String(object.externalAssetBalance)
-        : "",
+      externalAsset: isSet(object.externalAsset) ? Asset.fromJSON(object.externalAsset) : undefined,
+      nativeAssetBalance: isSet(object.nativeAssetBalance) ? String(object.nativeAssetBalance) : "",
+      externalAssetBalance: isSet(object.externalAssetBalance) ? String(object.externalAssetBalance) : "",
       poolUnits: isSet(object.poolUnits) ? String(object.poolUnits) : "",
-      swapPriceNative: isSet(object.swapPriceNative)
-        ? String(object.swapPriceNative)
-        : "",
-      swapPriceExternal: isSet(object.swapPriceExternal)
-        ? String(object.swapPriceExternal)
-        : "",
+      swapPriceNative: isSet(object.swapPriceNative) ? String(object.swapPriceNative) : "",
+      swapPriceExternal: isSet(object.swapPriceExternal) ? String(object.swapPriceExternal) : "",
       rewardPeriodNativeDistributed: isSet(object.rewardPeriodNativeDistributed)
         ? String(object.rewardPeriodNativeDistributed)
         : "",
-      externalLiabilities: isSet(object.externalLiabilities)
-        ? String(object.externalLiabilities)
-        : "",
-      externalCustody: isSet(object.externalCustody)
-        ? String(object.externalCustody)
-        : "",
-      nativeLiabilities: isSet(object.nativeLiabilities)
-        ? String(object.nativeLiabilities)
-        : "",
-      nativeCustody: isSet(object.nativeCustody)
-        ? String(object.nativeCustody)
-        : "",
+      externalLiabilities: isSet(object.externalLiabilities) ? String(object.externalLiabilities) : "",
+      externalCustody: isSet(object.externalCustody) ? String(object.externalCustody) : "",
+      nativeLiabilities: isSet(object.nativeLiabilities) ? String(object.nativeLiabilities) : "",
+      nativeCustody: isSet(object.nativeCustody) ? String(object.nativeCustody) : "",
       health: isSet(object.health) ? String(object.health) : "",
-      interestRate: isSet(object.interestRate)
-        ? String(object.interestRate)
-        : "",
-      lastHeightInterestRateComputed: isSet(
-        object.lastHeightInterestRateComputed,
-      )
+      interestRate: isSet(object.interestRate) ? String(object.interestRate) : "",
+      lastHeightInterestRateComputed: isSet(object.lastHeightInterestRateComputed)
         ? Long.fromValue(object.lastHeightInterestRateComputed)
         : Long.ZERO,
     };
@@ -193,36 +171,22 @@ export const Pool = {
   toJSON(message: Pool): unknown {
     const obj: any = {};
     message.externalAsset !== undefined &&
-      (obj.externalAsset = message.externalAsset
-        ? Asset.toJSON(message.externalAsset)
-        : undefined);
-    message.nativeAssetBalance !== undefined &&
-      (obj.nativeAssetBalance = message.nativeAssetBalance);
-    message.externalAssetBalance !== undefined &&
-      (obj.externalAssetBalance = message.externalAssetBalance);
+      (obj.externalAsset = message.externalAsset ? Asset.toJSON(message.externalAsset) : undefined);
+    message.nativeAssetBalance !== undefined && (obj.nativeAssetBalance = message.nativeAssetBalance);
+    message.externalAssetBalance !== undefined && (obj.externalAssetBalance = message.externalAssetBalance);
     message.poolUnits !== undefined && (obj.poolUnits = message.poolUnits);
-    message.swapPriceNative !== undefined &&
-      (obj.swapPriceNative = message.swapPriceNative);
-    message.swapPriceExternal !== undefined &&
-      (obj.swapPriceExternal = message.swapPriceExternal);
+    message.swapPriceNative !== undefined && (obj.swapPriceNative = message.swapPriceNative);
+    message.swapPriceExternal !== undefined && (obj.swapPriceExternal = message.swapPriceExternal);
     message.rewardPeriodNativeDistributed !== undefined &&
-      (obj.rewardPeriodNativeDistributed =
-        message.rewardPeriodNativeDistributed);
-    message.externalLiabilities !== undefined &&
-      (obj.externalLiabilities = message.externalLiabilities);
-    message.externalCustody !== undefined &&
-      (obj.externalCustody = message.externalCustody);
-    message.nativeLiabilities !== undefined &&
-      (obj.nativeLiabilities = message.nativeLiabilities);
-    message.nativeCustody !== undefined &&
-      (obj.nativeCustody = message.nativeCustody);
+      (obj.rewardPeriodNativeDistributed = message.rewardPeriodNativeDistributed);
+    message.externalLiabilities !== undefined && (obj.externalLiabilities = message.externalLiabilities);
+    message.externalCustody !== undefined && (obj.externalCustody = message.externalCustody);
+    message.nativeLiabilities !== undefined && (obj.nativeLiabilities = message.nativeLiabilities);
+    message.nativeCustody !== undefined && (obj.nativeCustody = message.nativeCustody);
     message.health !== undefined && (obj.health = message.health);
-    message.interestRate !== undefined &&
-      (obj.interestRate = message.interestRate);
+    message.interestRate !== undefined && (obj.interestRate = message.interestRate);
     message.lastHeightInterestRateComputed !== undefined &&
-      (obj.lastHeightInterestRateComputed = (
-        message.lastHeightInterestRateComputed || Long.ZERO
-      ).toString());
+      (obj.lastHeightInterestRateComputed = (message.lastHeightInterestRateComputed || Long.ZERO).toString());
     return obj;
   },
 
@@ -237,8 +201,7 @@ export const Pool = {
     message.poolUnits = object.poolUnits ?? "";
     message.swapPriceNative = object.swapPriceNative ?? "";
     message.swapPriceExternal = object.swapPriceExternal ?? "";
-    message.rewardPeriodNativeDistributed =
-      object.rewardPeriodNativeDistributed ?? "";
+    message.rewardPeriodNativeDistributed = object.rewardPeriodNativeDistributed ?? "";
     message.externalLiabilities = object.externalLiabilities ?? "";
     message.externalCustody = object.externalCustody ?? "";
     message.nativeLiabilities = object.nativeLiabilities ?? "";
@@ -246,22 +209,14 @@ export const Pool = {
     message.health = object.health ?? "";
     message.interestRate = object.interestRate ?? "";
     message.lastHeightInterestRateComputed =
-      object.lastHeightInterestRateComputed !== undefined &&
-      object.lastHeightInterestRateComputed !== null
+      object.lastHeightInterestRateComputed !== undefined && object.lastHeightInterestRateComputed !== null
         ? Long.fromValue(object.lastHeightInterestRateComputed)
         : Long.ZERO;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -278,9 +233,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

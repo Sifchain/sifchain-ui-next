@@ -67,21 +67,11 @@ export interface MsgSetBlacklist {
 export interface MsgSetBlacklistResponse {}
 
 function createBaseMsgLock(): MsgLock {
-  return {
-    cosmosSender: "",
-    amount: "",
-    symbol: "",
-    ethereumChainId: Long.ZERO,
-    ethereumReceiver: "",
-    cethAmount: "",
-  };
+  return { cosmosSender: "", amount: "", symbol: "", ethereumChainId: Long.ZERO, ethereumReceiver: "", cethAmount: "" };
 }
 
 export const MsgLock = {
-  encode(
-    message: MsgLock,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgLock, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cosmosSender !== "") {
       writer.uint32(10).string(message.cosmosSender);
     }
@@ -138,31 +128,22 @@ export const MsgLock = {
 
   fromJSON(object: any): MsgLock {
     return {
-      cosmosSender: isSet(object.cosmosSender)
-        ? String(object.cosmosSender)
-        : "",
+      cosmosSender: isSet(object.cosmosSender) ? String(object.cosmosSender) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromValue(object.ethereumChainId)
-        : Long.ZERO,
-      ethereumReceiver: isSet(object.ethereumReceiver)
-        ? String(object.ethereumReceiver)
-        : "",
+      ethereumChainId: isSet(object.ethereumChainId) ? Long.fromValue(object.ethereumChainId) : Long.ZERO,
+      ethereumReceiver: isSet(object.ethereumReceiver) ? String(object.ethereumReceiver) : "",
       cethAmount: isSet(object.cethAmount) ? String(object.cethAmount) : "",
     };
   },
 
   toJSON(message: MsgLock): unknown {
     const obj: any = {};
-    message.cosmosSender !== undefined &&
-      (obj.cosmosSender = message.cosmosSender);
+    message.cosmosSender !== undefined && (obj.cosmosSender = message.cosmosSender);
     message.amount !== undefined && (obj.amount = message.amount);
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.ethereumChainId !== undefined &&
-      (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
-    message.ethereumReceiver !== undefined &&
-      (obj.ethereumReceiver = message.ethereumReceiver);
+    message.ethereumChainId !== undefined && (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
+    message.ethereumReceiver !== undefined && (obj.ethereumReceiver = message.ethereumReceiver);
     message.cethAmount !== undefined && (obj.cethAmount = message.cethAmount);
     return obj;
   },
@@ -187,10 +168,7 @@ function createBaseMsgLockResponse(): MsgLockResponse {
 }
 
 export const MsgLockResponse = {
-  encode(
-    _: MsgLockResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgLockResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -218,30 +196,18 @@ export const MsgLockResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgLockResponse>, I>>(
-    _: I,
-  ): MsgLockResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgLockResponse>, I>>(_: I): MsgLockResponse {
     const message = createBaseMsgLockResponse();
     return message;
   },
 };
 
 function createBaseMsgBurn(): MsgBurn {
-  return {
-    cosmosSender: "",
-    amount: "",
-    symbol: "",
-    ethereumChainId: Long.ZERO,
-    ethereumReceiver: "",
-    cethAmount: "",
-  };
+  return { cosmosSender: "", amount: "", symbol: "", ethereumChainId: Long.ZERO, ethereumReceiver: "", cethAmount: "" };
 }
 
 export const MsgBurn = {
-  encode(
-    message: MsgBurn,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgBurn, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cosmosSender !== "") {
       writer.uint32(10).string(message.cosmosSender);
     }
@@ -298,31 +264,22 @@ export const MsgBurn = {
 
   fromJSON(object: any): MsgBurn {
     return {
-      cosmosSender: isSet(object.cosmosSender)
-        ? String(object.cosmosSender)
-        : "",
+      cosmosSender: isSet(object.cosmosSender) ? String(object.cosmosSender) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
       symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      ethereumChainId: isSet(object.ethereumChainId)
-        ? Long.fromValue(object.ethereumChainId)
-        : Long.ZERO,
-      ethereumReceiver: isSet(object.ethereumReceiver)
-        ? String(object.ethereumReceiver)
-        : "",
+      ethereumChainId: isSet(object.ethereumChainId) ? Long.fromValue(object.ethereumChainId) : Long.ZERO,
+      ethereumReceiver: isSet(object.ethereumReceiver) ? String(object.ethereumReceiver) : "",
       cethAmount: isSet(object.cethAmount) ? String(object.cethAmount) : "",
     };
   },
 
   toJSON(message: MsgBurn): unknown {
     const obj: any = {};
-    message.cosmosSender !== undefined &&
-      (obj.cosmosSender = message.cosmosSender);
+    message.cosmosSender !== undefined && (obj.cosmosSender = message.cosmosSender);
     message.amount !== undefined && (obj.amount = message.amount);
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.ethereumChainId !== undefined &&
-      (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
-    message.ethereumReceiver !== undefined &&
-      (obj.ethereumReceiver = message.ethereumReceiver);
+    message.ethereumChainId !== undefined && (obj.ethereumChainId = (message.ethereumChainId || Long.ZERO).toString());
+    message.ethereumReceiver !== undefined && (obj.ethereumReceiver = message.ethereumReceiver);
     message.cethAmount !== undefined && (obj.cethAmount = message.cethAmount);
     return obj;
   },
@@ -347,10 +304,7 @@ function createBaseMsgBurnResponse(): MsgBurnResponse {
 }
 
 export const MsgBurnResponse = {
-  encode(
-    _: MsgBurnResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgBurnResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -378,9 +332,7 @@ export const MsgBurnResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgBurnResponse>, I>>(
-    _: I,
-  ): MsgBurnResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgBurnResponse>, I>>(_: I): MsgBurnResponse {
     const message = createBaseMsgBurnResponse();
     return message;
   },
@@ -391,23 +343,14 @@ function createBaseMsgCreateEthBridgeClaim(): MsgCreateEthBridgeClaim {
 }
 
 export const MsgCreateEthBridgeClaim = {
-  encode(
-    message: MsgCreateEthBridgeClaim,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgCreateEthBridgeClaim, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.ethBridgeClaim !== undefined) {
-      EthBridgeClaim.encode(
-        message.ethBridgeClaim,
-        writer.uint32(10).fork(),
-      ).ldelim();
+      EthBridgeClaim.encode(message.ethBridgeClaim, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreateEthBridgeClaim {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateEthBridgeClaim {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateEthBridgeClaim();
@@ -415,10 +358,7 @@ export const MsgCreateEthBridgeClaim = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.ethBridgeClaim = EthBridgeClaim.decode(
-            reader,
-            reader.uint32(),
-          );
+          message.ethBridgeClaim = EthBridgeClaim.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -430,24 +370,18 @@ export const MsgCreateEthBridgeClaim = {
 
   fromJSON(object: any): MsgCreateEthBridgeClaim {
     return {
-      ethBridgeClaim: isSet(object.ethBridgeClaim)
-        ? EthBridgeClaim.fromJSON(object.ethBridgeClaim)
-        : undefined,
+      ethBridgeClaim: isSet(object.ethBridgeClaim) ? EthBridgeClaim.fromJSON(object.ethBridgeClaim) : undefined,
     };
   },
 
   toJSON(message: MsgCreateEthBridgeClaim): unknown {
     const obj: any = {};
     message.ethBridgeClaim !== undefined &&
-      (obj.ethBridgeClaim = message.ethBridgeClaim
-        ? EthBridgeClaim.toJSON(message.ethBridgeClaim)
-        : undefined);
+      (obj.ethBridgeClaim = message.ethBridgeClaim ? EthBridgeClaim.toJSON(message.ethBridgeClaim) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateEthBridgeClaim>, I>>(
-    object: I,
-  ): MsgCreateEthBridgeClaim {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateEthBridgeClaim>, I>>(object: I): MsgCreateEthBridgeClaim {
     const message = createBaseMsgCreateEthBridgeClaim();
     message.ethBridgeClaim =
       object.ethBridgeClaim !== undefined && object.ethBridgeClaim !== null
@@ -462,17 +396,11 @@ function createBaseMsgCreateEthBridgeClaimResponse(): MsgCreateEthBridgeClaimRes
 }
 
 export const MsgCreateEthBridgeClaimResponse = {
-  encode(
-    _: MsgCreateEthBridgeClaimResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgCreateEthBridgeClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgCreateEthBridgeClaimResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateEthBridgeClaimResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateEthBridgeClaimResponse();
@@ -496,9 +424,7 @@ export const MsgCreateEthBridgeClaimResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateEthBridgeClaimResponse>, I>>(
-    _: I,
-  ): MsgCreateEthBridgeClaimResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateEthBridgeClaimResponse>, I>>(_: I): MsgCreateEthBridgeClaimResponse {
     const message = createBaseMsgCreateEthBridgeClaimResponse();
     return message;
   },
@@ -509,10 +435,7 @@ function createBaseMsgUpdateWhiteListValidator(): MsgUpdateWhiteListValidator {
 }
 
 export const MsgUpdateWhiteListValidator = {
-  encode(
-    message: MsgUpdateWhiteListValidator,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateWhiteListValidator, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cosmosSender !== "") {
       writer.uint32(10).string(message.cosmosSender);
     }
@@ -525,10 +448,7 @@ export const MsgUpdateWhiteListValidator = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateWhiteListValidator {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateWhiteListValidator {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateWhiteListValidator();
@@ -554,29 +474,21 @@ export const MsgUpdateWhiteListValidator = {
 
   fromJSON(object: any): MsgUpdateWhiteListValidator {
     return {
-      cosmosSender: isSet(object.cosmosSender)
-        ? String(object.cosmosSender)
-        : "",
+      cosmosSender: isSet(object.cosmosSender) ? String(object.cosmosSender) : "",
       validator: isSet(object.validator) ? String(object.validator) : "",
-      operationType: isSet(object.operationType)
-        ? String(object.operationType)
-        : "",
+      operationType: isSet(object.operationType) ? String(object.operationType) : "",
     };
   },
 
   toJSON(message: MsgUpdateWhiteListValidator): unknown {
     const obj: any = {};
-    message.cosmosSender !== undefined &&
-      (obj.cosmosSender = message.cosmosSender);
+    message.cosmosSender !== undefined && (obj.cosmosSender = message.cosmosSender);
     message.validator !== undefined && (obj.validator = message.validator);
-    message.operationType !== undefined &&
-      (obj.operationType = message.operationType);
+    message.operationType !== undefined && (obj.operationType = message.operationType);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateWhiteListValidator>, I>>(
-    object: I,
-  ): MsgUpdateWhiteListValidator {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateWhiteListValidator>, I>>(object: I): MsgUpdateWhiteListValidator {
     const message = createBaseMsgUpdateWhiteListValidator();
     message.cosmosSender = object.cosmosSender ?? "";
     message.validator = object.validator ?? "";
@@ -590,17 +502,11 @@ function createBaseMsgUpdateWhiteListValidatorResponse(): MsgUpdateWhiteListVali
 }
 
 export const MsgUpdateWhiteListValidatorResponse = {
-  encode(
-    _: MsgUpdateWhiteListValidatorResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateWhiteListValidatorResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateWhiteListValidatorResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateWhiteListValidatorResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateWhiteListValidatorResponse();
@@ -624,9 +530,9 @@ export const MsgUpdateWhiteListValidatorResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgUpdateWhiteListValidatorResponse>, I>,
-  >(_: I): MsgUpdateWhiteListValidatorResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateWhiteListValidatorResponse>, I>>(
+    _: I,
+  ): MsgUpdateWhiteListValidatorResponse {
     const message = createBaseMsgUpdateWhiteListValidatorResponse();
     return message;
   },
@@ -637,10 +543,7 @@ function createBaseMsgUpdateCethReceiverAccount(): MsgUpdateCethReceiverAccount 
 }
 
 export const MsgUpdateCethReceiverAccount = {
-  encode(
-    message: MsgUpdateCethReceiverAccount,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgUpdateCethReceiverAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cosmosSender !== "") {
       writer.uint32(10).string(message.cosmosSender);
     }
@@ -650,10 +553,7 @@ export const MsgUpdateCethReceiverAccount = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateCethReceiverAccount {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCethReceiverAccount {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateCethReceiverAccount();
@@ -676,27 +576,19 @@ export const MsgUpdateCethReceiverAccount = {
 
   fromJSON(object: any): MsgUpdateCethReceiverAccount {
     return {
-      cosmosSender: isSet(object.cosmosSender)
-        ? String(object.cosmosSender)
-        : "",
-      cethReceiverAccount: isSet(object.cethReceiverAccount)
-        ? String(object.cethReceiverAccount)
-        : "",
+      cosmosSender: isSet(object.cosmosSender) ? String(object.cosmosSender) : "",
+      cethReceiverAccount: isSet(object.cethReceiverAccount) ? String(object.cethReceiverAccount) : "",
     };
   },
 
   toJSON(message: MsgUpdateCethReceiverAccount): unknown {
     const obj: any = {};
-    message.cosmosSender !== undefined &&
-      (obj.cosmosSender = message.cosmosSender);
-    message.cethReceiverAccount !== undefined &&
-      (obj.cethReceiverAccount = message.cethReceiverAccount);
+    message.cosmosSender !== undefined && (obj.cosmosSender = message.cosmosSender);
+    message.cethReceiverAccount !== undefined && (obj.cethReceiverAccount = message.cethReceiverAccount);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateCethReceiverAccount>, I>>(
-    object: I,
-  ): MsgUpdateCethReceiverAccount {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCethReceiverAccount>, I>>(object: I): MsgUpdateCethReceiverAccount {
     const message = createBaseMsgUpdateCethReceiverAccount();
     message.cosmosSender = object.cosmosSender ?? "";
     message.cethReceiverAccount = object.cethReceiverAccount ?? "";
@@ -709,17 +601,11 @@ function createBaseMsgUpdateCethReceiverAccountResponse(): MsgUpdateCethReceiver
 }
 
 export const MsgUpdateCethReceiverAccountResponse = {
-  encode(
-    _: MsgUpdateCethReceiverAccountResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgUpdateCethReceiverAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgUpdateCethReceiverAccountResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCethReceiverAccountResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateCethReceiverAccountResponse();
@@ -743,9 +629,9 @@ export const MsgUpdateCethReceiverAccountResponse = {
     return obj;
   },
 
-  fromPartial<
-    I extends Exact<DeepPartial<MsgUpdateCethReceiverAccountResponse>, I>,
-  >(_: I): MsgUpdateCethReceiverAccountResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCethReceiverAccountResponse>, I>>(
+    _: I,
+  ): MsgUpdateCethReceiverAccountResponse {
     const message = createBaseMsgUpdateCethReceiverAccountResponse();
     return message;
   },
@@ -756,10 +642,7 @@ function createBaseMsgRescueCeth(): MsgRescueCeth {
 }
 
 export const MsgRescueCeth = {
-  encode(
-    message: MsgRescueCeth,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRescueCeth, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cosmosSender !== "") {
       writer.uint32(10).string(message.cosmosSender);
     }
@@ -798,29 +681,21 @@ export const MsgRescueCeth = {
 
   fromJSON(object: any): MsgRescueCeth {
     return {
-      cosmosSender: isSet(object.cosmosSender)
-        ? String(object.cosmosSender)
-        : "",
-      cosmosReceiver: isSet(object.cosmosReceiver)
-        ? String(object.cosmosReceiver)
-        : "",
+      cosmosSender: isSet(object.cosmosSender) ? String(object.cosmosSender) : "",
+      cosmosReceiver: isSet(object.cosmosReceiver) ? String(object.cosmosReceiver) : "",
       cethAmount: isSet(object.cethAmount) ? String(object.cethAmount) : "",
     };
   },
 
   toJSON(message: MsgRescueCeth): unknown {
     const obj: any = {};
-    message.cosmosSender !== undefined &&
-      (obj.cosmosSender = message.cosmosSender);
-    message.cosmosReceiver !== undefined &&
-      (obj.cosmosReceiver = message.cosmosReceiver);
+    message.cosmosSender !== undefined && (obj.cosmosSender = message.cosmosSender);
+    message.cosmosReceiver !== undefined && (obj.cosmosReceiver = message.cosmosReceiver);
     message.cethAmount !== undefined && (obj.cethAmount = message.cethAmount);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRescueCeth>, I>>(
-    object: I,
-  ): MsgRescueCeth {
+  fromPartial<I extends Exact<DeepPartial<MsgRescueCeth>, I>>(object: I): MsgRescueCeth {
     const message = createBaseMsgRescueCeth();
     message.cosmosSender = object.cosmosSender ?? "";
     message.cosmosReceiver = object.cosmosReceiver ?? "";
@@ -834,17 +709,11 @@ function createBaseMsgRescueCethResponse(): MsgRescueCethResponse {
 }
 
 export const MsgRescueCethResponse = {
-  encode(
-    _: MsgRescueCethResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRescueCethResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgRescueCethResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRescueCethResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRescueCethResponse();
@@ -868,9 +737,7 @@ export const MsgRescueCethResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRescueCethResponse>, I>>(
-    _: I,
-  ): MsgRescueCethResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRescueCethResponse>, I>>(_: I): MsgRescueCethResponse {
     const message = createBaseMsgRescueCethResponse();
     return message;
   },
@@ -881,10 +748,7 @@ function createBaseMsgSetBlacklist(): MsgSetBlacklist {
 }
 
 export const MsgSetBlacklist = {
-  encode(
-    message: MsgSetBlacklist,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgSetBlacklist, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -918,9 +782,7 @@ export const MsgSetBlacklist = {
   fromJSON(object: any): MsgSetBlacklist {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      addresses: Array.isArray(object?.addresses)
-        ? object.addresses.map((e: any) => String(e))
-        : [],
+      addresses: Array.isArray(object?.addresses) ? object.addresses.map((e: any) => String(e)) : [],
     };
   },
 
@@ -935,9 +797,7 @@ export const MsgSetBlacklist = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetBlacklist>, I>>(
-    object: I,
-  ): MsgSetBlacklist {
+  fromPartial<I extends Exact<DeepPartial<MsgSetBlacklist>, I>>(object: I): MsgSetBlacklist {
     const message = createBaseMsgSetBlacklist();
     message.from = object.from ?? "";
     message.addresses = object.addresses?.map((e) => e) || [];
@@ -950,17 +810,11 @@ function createBaseMsgSetBlacklistResponse(): MsgSetBlacklistResponse {
 }
 
 export const MsgSetBlacklistResponse = {
-  encode(
-    _: MsgSetBlacklistResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgSetBlacklistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgSetBlacklistResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetBlacklistResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgSetBlacklistResponse();
@@ -984,9 +838,7 @@ export const MsgSetBlacklistResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetBlacklistResponse>, I>>(
-    _: I,
-  ): MsgSetBlacklistResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgSetBlacklistResponse>, I>>(_: I): MsgSetBlacklistResponse {
     const message = createBaseMsgSetBlacklistResponse();
     return message;
   },
@@ -996,15 +848,9 @@ export const MsgSetBlacklistResponse = {
 export interface Msg {
   Lock(request: MsgLock): Promise<MsgLockResponse>;
   Burn(request: MsgBurn): Promise<MsgBurnResponse>;
-  CreateEthBridgeClaim(
-    request: MsgCreateEthBridgeClaim,
-  ): Promise<MsgCreateEthBridgeClaimResponse>;
-  UpdateWhiteListValidator(
-    request: MsgUpdateWhiteListValidator,
-  ): Promise<MsgUpdateWhiteListValidatorResponse>;
-  UpdateCethReceiverAccount(
-    request: MsgUpdateCethReceiverAccount,
-  ): Promise<MsgUpdateCethReceiverAccountResponse>;
+  CreateEthBridgeClaim(request: MsgCreateEthBridgeClaim): Promise<MsgCreateEthBridgeClaimResponse>;
+  UpdateWhiteListValidator(request: MsgUpdateWhiteListValidator): Promise<MsgUpdateWhiteListValidatorResponse>;
+  UpdateCethReceiverAccount(request: MsgUpdateCethReceiverAccount): Promise<MsgUpdateCethReceiverAccountResponse>;
   RescueCeth(request: MsgRescueCeth): Promise<MsgRescueCethResponse>;
   SetBlacklist(request: MsgSetBlacklist): Promise<MsgSetBlacklistResponse>;
 }
@@ -1033,89 +879,42 @@ export class MsgClientImpl implements Msg {
     return promise.then((data) => MsgBurnResponse.decode(new _m0.Reader(data)));
   }
 
-  CreateEthBridgeClaim(
-    request: MsgCreateEthBridgeClaim,
-  ): Promise<MsgCreateEthBridgeClaimResponse> {
+  CreateEthBridgeClaim(request: MsgCreateEthBridgeClaim): Promise<MsgCreateEthBridgeClaimResponse> {
     const data = MsgCreateEthBridgeClaim.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Msg",
-      "CreateEthBridgeClaim",
-      data,
-    );
-    return promise.then((data) =>
-      MsgCreateEthBridgeClaimResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Msg", "CreateEthBridgeClaim", data);
+    return promise.then((data) => MsgCreateEthBridgeClaimResponse.decode(new _m0.Reader(data)));
   }
 
-  UpdateWhiteListValidator(
-    request: MsgUpdateWhiteListValidator,
-  ): Promise<MsgUpdateWhiteListValidatorResponse> {
+  UpdateWhiteListValidator(request: MsgUpdateWhiteListValidator): Promise<MsgUpdateWhiteListValidatorResponse> {
     const data = MsgUpdateWhiteListValidator.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Msg",
-      "UpdateWhiteListValidator",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateWhiteListValidatorResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Msg", "UpdateWhiteListValidator", data);
+    return promise.then((data) => MsgUpdateWhiteListValidatorResponse.decode(new _m0.Reader(data)));
   }
 
-  UpdateCethReceiverAccount(
-    request: MsgUpdateCethReceiverAccount,
-  ): Promise<MsgUpdateCethReceiverAccountResponse> {
+  UpdateCethReceiverAccount(request: MsgUpdateCethReceiverAccount): Promise<MsgUpdateCethReceiverAccountResponse> {
     const data = MsgUpdateCethReceiverAccount.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Msg",
-      "UpdateCethReceiverAccount",
-      data,
-    );
-    return promise.then((data) =>
-      MsgUpdateCethReceiverAccountResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Msg", "UpdateCethReceiverAccount", data);
+    return promise.then((data) => MsgUpdateCethReceiverAccountResponse.decode(new _m0.Reader(data)));
   }
 
   RescueCeth(request: MsgRescueCeth): Promise<MsgRescueCethResponse> {
     const data = MsgRescueCeth.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Msg",
-      "RescueCeth",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRescueCethResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Msg", "RescueCeth", data);
+    return promise.then((data) => MsgRescueCethResponse.decode(new _m0.Reader(data)));
   }
 
   SetBlacklist(request: MsgSetBlacklist): Promise<MsgSetBlacklistResponse> {
     const data = MsgSetBlacklist.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.ethbridge.v1.Msg",
-      "SetBlacklist",
-      data,
-    );
-    return promise.then((data) =>
-      MsgSetBlacklistResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.ethbridge.v1.Msg", "SetBlacklist", data);
+    return promise.then((data) => MsgSetBlacklistResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -1132,9 +931,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

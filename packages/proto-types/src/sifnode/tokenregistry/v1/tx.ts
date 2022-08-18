@@ -31,10 +31,7 @@ function createBaseMsgRegister(): MsgRegister {
 }
 
 export const MsgRegister = {
-  encode(
-    message: MsgRegister,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgRegister, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -68,31 +65,22 @@ export const MsgRegister = {
   fromJSON(object: any): MsgRegister {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      entry: isSet(object.entry)
-        ? RegistryEntry.fromJSON(object.entry)
-        : undefined,
+      entry: isSet(object.entry) ? RegistryEntry.fromJSON(object.entry) : undefined,
     };
   },
 
   toJSON(message: MsgRegister): unknown {
     const obj: any = {};
     message.from !== undefined && (obj.from = message.from);
-    message.entry !== undefined &&
-      (obj.entry = message.entry
-        ? RegistryEntry.toJSON(message.entry)
-        : undefined);
+    message.entry !== undefined && (obj.entry = message.entry ? RegistryEntry.toJSON(message.entry) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRegister>, I>>(
-    object: I,
-  ): MsgRegister {
+  fromPartial<I extends Exact<DeepPartial<MsgRegister>, I>>(object: I): MsgRegister {
     const message = createBaseMsgRegister();
     message.from = object.from ?? "";
     message.entry =
-      object.entry !== undefined && object.entry !== null
-        ? RegistryEntry.fromPartial(object.entry)
-        : undefined;
+      object.entry !== undefined && object.entry !== null ? RegistryEntry.fromPartial(object.entry) : undefined;
     return message;
   },
 };
@@ -102,10 +90,7 @@ function createBaseMsgRegisterResponse(): MsgRegisterResponse {
 }
 
 export const MsgRegisterResponse = {
-  encode(
-    _: MsgRegisterResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgRegisterResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -133,9 +118,7 @@ export const MsgRegisterResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRegisterResponse>, I>>(
-    _: I,
-  ): MsgRegisterResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRegisterResponse>, I>>(_: I): MsgRegisterResponse {
     const message = createBaseMsgRegisterResponse();
     return message;
   },
@@ -146,10 +129,7 @@ function createBaseMsgSetRegistry(): MsgSetRegistry {
 }
 
 export const MsgSetRegistry = {
-  encode(
-    message: MsgSetRegistry,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgSetRegistry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -183,31 +163,22 @@ export const MsgSetRegistry = {
   fromJSON(object: any): MsgSetRegistry {
     return {
       from: isSet(object.from) ? String(object.from) : "",
-      registry: isSet(object.registry)
-        ? Registry.fromJSON(object.registry)
-        : undefined,
+      registry: isSet(object.registry) ? Registry.fromJSON(object.registry) : undefined,
     };
   },
 
   toJSON(message: MsgSetRegistry): unknown {
     const obj: any = {};
     message.from !== undefined && (obj.from = message.from);
-    message.registry !== undefined &&
-      (obj.registry = message.registry
-        ? Registry.toJSON(message.registry)
-        : undefined);
+    message.registry !== undefined && (obj.registry = message.registry ? Registry.toJSON(message.registry) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetRegistry>, I>>(
-    object: I,
-  ): MsgSetRegistry {
+  fromPartial<I extends Exact<DeepPartial<MsgSetRegistry>, I>>(object: I): MsgSetRegistry {
     const message = createBaseMsgSetRegistry();
     message.from = object.from ?? "";
     message.registry =
-      object.registry !== undefined && object.registry !== null
-        ? Registry.fromPartial(object.registry)
-        : undefined;
+      object.registry !== undefined && object.registry !== null ? Registry.fromPartial(object.registry) : undefined;
     return message;
   },
 };
@@ -217,17 +188,11 @@ function createBaseMsgSetRegistryResponse(): MsgSetRegistryResponse {
 }
 
 export const MsgSetRegistryResponse = {
-  encode(
-    _: MsgSetRegistryResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgSetRegistryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgSetRegistryResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetRegistryResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgSetRegistryResponse();
@@ -251,9 +216,7 @@ export const MsgSetRegistryResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgSetRegistryResponse>, I>>(
-    _: I,
-  ): MsgSetRegistryResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgSetRegistryResponse>, I>>(_: I): MsgSetRegistryResponse {
     const message = createBaseMsgSetRegistryResponse();
     return message;
   },
@@ -264,10 +227,7 @@ function createBaseMsgDeregister(): MsgDeregister {
 }
 
 export const MsgDeregister = {
-  encode(
-    message: MsgDeregister,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(message: MsgDeregister, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -312,9 +272,7 @@ export const MsgDeregister = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeregister>, I>>(
-    object: I,
-  ): MsgDeregister {
+  fromPartial<I extends Exact<DeepPartial<MsgDeregister>, I>>(object: I): MsgDeregister {
     const message = createBaseMsgDeregister();
     message.from = object.from ?? "";
     message.denom = object.denom ?? "";
@@ -327,17 +285,11 @@ function createBaseMsgDeregisterResponse(): MsgDeregisterResponse {
 }
 
 export const MsgDeregisterResponse = {
-  encode(
-    _: MsgDeregisterResponse,
-    writer: _m0.Writer = _m0.Writer.create(),
-  ): _m0.Writer {
+  encode(_: MsgDeregisterResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number,
-  ): MsgDeregisterResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeregisterResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgDeregisterResponse();
@@ -361,9 +313,7 @@ export const MsgDeregisterResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeregisterResponse>, I>>(
-    _: I,
-  ): MsgDeregisterResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgDeregisterResponse>, I>>(_: I): MsgDeregisterResponse {
     const message = createBaseMsgDeregisterResponse();
     return message;
   },
@@ -385,57 +335,28 @@ export class MsgClientImpl implements Msg {
   }
   Register(request: MsgRegister): Promise<MsgRegisterResponse> {
     const data = MsgRegister.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.tokenregistry.v1.Msg",
-      "Register",
-      data,
-    );
-    return promise.then((data) =>
-      MsgRegisterResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.tokenregistry.v1.Msg", "Register", data);
+    return promise.then((data) => MsgRegisterResponse.decode(new _m0.Reader(data)));
   }
 
   Deregister(request: MsgDeregister): Promise<MsgDeregisterResponse> {
     const data = MsgDeregister.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.tokenregistry.v1.Msg",
-      "Deregister",
-      data,
-    );
-    return promise.then((data) =>
-      MsgDeregisterResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.tokenregistry.v1.Msg", "Deregister", data);
+    return promise.then((data) => MsgDeregisterResponse.decode(new _m0.Reader(data)));
   }
 
   SetRegistry(request: MsgSetRegistry): Promise<MsgSetRegistryResponse> {
     const data = MsgSetRegistry.encode(request).finish();
-    const promise = this.rpc.request(
-      "sifnode.tokenregistry.v1.Msg",
-      "SetRegistry",
-      data,
-    );
-    return promise.then((data) =>
-      MsgSetRegistryResponse.decode(new _m0.Reader(data)),
-    );
+    const promise = this.rpc.request("sifnode.tokenregistry.v1.Msg", "SetRegistry", data);
+    return promise.then((data) => MsgSetRegistryResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array,
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -452,9 +373,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
