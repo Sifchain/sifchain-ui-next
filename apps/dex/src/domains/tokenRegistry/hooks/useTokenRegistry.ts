@@ -1,7 +1,7 @@
 import type { IAsset, NetworkKind } from "@sifchain/common";
 import { Maybe, StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
-import { memoizeWith } from "ramda";
+import { memoizeWith } from "@sifchain/utils";
 import { useMemo } from "react";
 
 import { useAssetsQuery } from "~/domains/assets";

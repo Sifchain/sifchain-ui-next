@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ascend, descend } from "ramda";
+import { ascend, descend } from "@sifchain/utils";
 import { useCallback, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";

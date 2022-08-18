@@ -555,7 +555,12 @@ importers:
   packages/utils:
     specifiers:
       '@tsconfig/node16-strictest-esm': ^1.0.3
+      '@types/ramda': ^0.28.15
+      ramda: ^0.28.0
       typescript: 4.7.4
+    dependencies:
+      '@types/ramda': 0.28.15
+      ramda: 0.28.0
     devDependencies:
       '@tsconfig/node16-strictest-esm': 1.0.3
       typescript: 4.7.4
@@ -6427,7 +6432,6 @@ packages:
     resolution: {integrity: sha512-FCaLNVZry65jW8x/FDnKgjgkCNQxgc5AYMQwdNn6yW5M+62R+0nt2Y36U43dTNora9hcquemfrY5gxhE5pcilQ==}
     dependencies:
       ts-toolbelt: 6.15.5
-    dev: true
 
   /@types/react-dom/18.0.3:
     resolution: {integrity: sha512-1RRW9kst+67gveJRYPxGmVy8eVJ05O43hg77G2j5m76/RFJtMbcfAs2viQ2UNsvvDg8F7OfQZx8qQcl6ymygaQ==}
@@ -18155,7 +18159,6 @@ packages:
 
   /ramda/0.28.0:
     resolution: {integrity: sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==}
-    dev: true
 
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -20787,7 +20790,6 @@ packages:
 
   /ts-toolbelt/6.15.5:
     resolution: {integrity: sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==}
-    dev: true
 
   /tsconfig-paths-webpack-plugin/3.5.2:
     resolution: {integrity: sha512-EhnfjHbzm5IYI9YPNVIxx1moxMI4bpHD2e0zTXeDNQcwjjRaGepP7IhTHJkyDBG0CAOoxRfe7jCG630Ou+C6Pw==}

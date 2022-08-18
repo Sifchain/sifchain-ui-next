@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { formatDistanceToNow } from "date-fns";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ascend, descend } from "ramda";
+import { ascend, descend } from "@sifchain/utils";
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
 
