@@ -33,15 +33,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString(),
   );
 
-  const totalInterestPaid = Number(props.data.interest_rate ?? "0");
+  const totalInterestPaid = Number(props.data.interest_paid ?? "0");
 
   const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
+  const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
 
   const currentPositionWithLeverage = useMemo(() => {
-    const positionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
-
-    return positionAsNumber * Number(props.data.leverage) - totalInterestPaid;
-  }, [currentPositionRaw, positionDecimals, props.data.leverage, totalInterestPaid]);
+    return currentPositionAsNumber * Number(props.data.leverage) - totalInterestPaid;
+  }, [currentPositionAsNumber, props.data.leverage, totalInterestPaid]);
 
   const currentPrice = Number(positionTokenQuery.data?.priceUsd ?? "0");
 
@@ -49,6 +48,10 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     () => formatNumberAsCurrency(currentPositionWithLeverage * currentPrice, 4),
     [currentPositionWithLeverage, currentPrice],
   );
+
+  const borrowAmount = useMemo(() => {
+    return currentPositionWithLeverage - currentPositionAsNumber;
+  }, [currentPositionAsNumber, currentPositionWithLeverage]);
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -126,7 +129,9 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.paid_interest ?? <HtmlUnicode name="EmDash" />}</span>
+                <span className="mr-1">
+                  {formatNumberAsDecimal(totalInterestPaid, 6) ?? <HtmlUnicode name="EmDash" />}
+                </span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -184,8 +189,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{currentPositionSwap.liquidityProviderFee}</span>
-                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
+                <span className="mr-1">{formatNumberAsDecimal(borrowAmount, 4)}</span>
+                <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
           </li>
