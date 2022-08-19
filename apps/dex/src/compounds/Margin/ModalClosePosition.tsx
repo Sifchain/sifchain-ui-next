@@ -143,7 +143,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsCurrency(currentPrice, 4) ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
