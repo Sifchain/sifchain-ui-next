@@ -72,8 +72,18 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     () => formatNumberAsCurrency(currentPositionAsNumber * currentPriceAsNumber, 4),
     [currentPositionAsNumber, currentPriceAsNumber],
   );
+  const openingPositionValue = useMemo(
+    () =>
+      formatNumberAsCurrency(
+        BigNumber(custodyAmountAsDecimal.toString()).multipliedBy(currentPriceAsNumber).toNumber(),
+        4,
+      ),
+    [custodyAmountAsDecimal, currentPriceAsNumber],
+  );
 
   const borrowAmountAsNumber = currentPositionAsNumber / leverageAsNumber;
+
+  const unrealizedPnl = props.data.unrealized_pnl ?? 0;
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -145,7 +155,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span className="mr-1">{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span className="mr-1">{openingPositionValue}</span>
             </div>
           </li>
           <li className="px-4">
@@ -236,7 +246,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Unrealized P&L</span>
-              <span>{props.data.unrealized_pnl ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsDecimal(unrealizedPnl, 4)}</span>
             </div>
           </li>
         </ul>
