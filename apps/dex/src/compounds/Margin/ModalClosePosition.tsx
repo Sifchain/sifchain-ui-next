@@ -43,6 +43,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     return positionAsNumber * Number(props.data.leverage) - totalInterestPaid;
   }, [currentPositionRaw, positionDecimals, props.data.leverage, totalInterestPaid]);
 
+  const currentPrice = Number(positionTokenQuery.data?.priceUsd ?? "0");
+
+  const currentValue = useMemo(
+    () => formatNumberAsCurrency(currentPositionWithLeverage * currentPrice, 4),
+    [currentPositionWithLeverage, currentPrice],
+  );
+
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
@@ -142,7 +149,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{currentValue ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
