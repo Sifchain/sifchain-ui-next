@@ -10,6 +10,8 @@ import { useCloseMTPMutation, transformMTPMutationErrors } from "~/domains/margi
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import AssetIcon from "~/compounds/AssetIcon";
 import { Decimal } from "@cosmjs/math";
+import { formatNumberAsPercent } from "./_intl";
+import BigNumber from "bignumber.js";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -27,31 +29,52 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const positionDecimals = positionTokenQuery.data?.decimals ?? 0;
   const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
 
+  const collateralAmountAsDecimal = Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals);
+  const custodyAmountAsDecimal = Decimal.fromAtomics(props.data.custody_amount, positionDecimals);
+  const leverageAsNumber = Number(props.data.leverage);
+
+  const collateralAmountWithLeverage = BigNumber(collateralAmountAsDecimal.toString())
+    .times(leverageAsNumber)
+    .toNumber();
+
   const { data: currentPositionSwap } = useSwapSimulation(
     props.data.collateral_asset,
     props.data.custody_asset,
-    Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString(),
+    collateralAmountWithLeverage.toString(),
   );
-
-  const totalInterestPaid = Number(props.data.interest_paid ?? "0");
-
   const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
   const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
 
-  const currentPositionWithLeverage = useMemo(() => {
-    return currentPositionAsNumber * Number(props.data.leverage) - totalInterestPaid;
-  }, [currentPositionAsNumber, props.data.leverage, totalInterestPaid]);
+  const totalInterestPaid = Number(props.data.interest_paid ?? "0");
 
-  const currentPrice = Number(positionTokenQuery.data?.priceUsd ?? "0");
+  const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimal.toString()).div(leverageAsNumber).toNumber();
 
-  const currentValue = useMemo(
-    () => formatNumberAsCurrency(currentPositionWithLeverage * currentPrice, 4),
-    [currentPositionWithLeverage, currentPrice],
+  const { data: closingPositionSwap } = useSwapSimulation(
+    props.data.custody_asset,
+    props.data.collateral_asset,
+    custodyAmountlWithLeverage.toString(),
   );
 
-  const borrowAmount = useMemo(() => {
-    return currentPositionWithLeverage - currentPositionAsNumber;
-  }, [currentPositionAsNumber, currentPositionWithLeverage]);
+  const closingPositionRaw = closingPositionSwap?.rawReceiving ?? "0";
+  const closingPositionMinReceivingRaw = closingPositionSwap?.minimumReceiving ?? "0";
+
+  const closingPositionAsNumber = Decimal.fromAtomics(closingPositionRaw, collateralDecimals).toFloatApproximation();
+
+  const closingPositionMinReceivingAsNumber = Decimal.fromAtomics(
+    closingPositionMinReceivingRaw,
+    collateralDecimals,
+  ).toFloatApproximation();
+
+  const closingPositionFees = closingPositionAsNumber - closingPositionMinReceivingAsNumber;
+
+  const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
+
+  const currentValueAsCurrency = useMemo(
+    () => formatNumberAsCurrency(currentPositionAsNumber * currentPriceAsNumber, 4),
+    [currentPositionAsNumber, currentPriceAsNumber],
+  );
+
+  const borrowAmountAsNumber = currentPositionAsNumber / leverageAsNumber;
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -82,7 +105,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     positionTokenQuery.data &&
     positionTokenQuery.isSuccess &&
     positionTokenQuery.data &&
-    currentPositionSwap
+    currentPositionSwap &&
+    closingPositionSwap
   ) {
     content = (
       <>
@@ -140,7 +164,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(currentPositionWithLeverage, 4)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(currentPositionAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -148,13 +172,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>{formatNumberAsCurrency(currentPrice, 4) ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsCurrency(currentPriceAsNumber, 4) ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>{currentValue ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{currentValueAsCurrency ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
@@ -172,15 +196,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">
-                  {formatNumberAsDecimal(
-                    Decimal.fromAtomics(
-                      props.data.collateral_amount,
-                      collateralTokenQuery.data?.decimals ?? 0,
-                    ).toFloatApproximation(),
-                    4,
-                  )}
-                </span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -189,7 +205,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(borrowAmount, 4)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(borrowAmountAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -198,7 +214,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{currentPositionSwap.liquidityProviderFee}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionFees, 6)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -206,14 +222,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              <span>{currentPositionSwap.priceImpact}</span>
+              <span>{formatNumberAsPercent(closingPositionSwap.priceImpact, 4)}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{currentPositionSwap.rawReceiving}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionMinReceivingAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
