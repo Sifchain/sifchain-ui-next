@@ -1,17 +1,16 @@
-import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
-
-import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
-import { SyntheticEvent, useCallback, useMemo } from "react";
-import Long from "long";
-
-import { FlashMessageLoading } from "./_components";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
-import { useCloseMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
-import AssetIcon from "~/compounds/AssetIcon";
 import { Decimal } from "@cosmjs/math";
-import { formatNumberAsPercent } from "./_intl";
+import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
+import Long from "long";
+import { SyntheticEvent, useCallback, useMemo } from "react";
+
+import AssetIcon from "~/compounds/AssetIcon";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
+import { transformMTPMutationErrors, useCloseMTPMutation } from "~/domains/margin/hooks";
+import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { FlashMessageLoading } from "./_components";
+import { formatNumberAsPercent } from "./_intl";
+import { HtmlUnicode, removeFirstCharC } from "./_trade";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
