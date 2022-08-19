@@ -24,7 +24,7 @@ export function formatNumberAsCurrency(number: number, decimals = 2): string {
 export function formatNumberAsDecimal(number: number, decimals = 2): string {
   const formatter = Intl.NumberFormat(undefined, {
     style: "decimal",
-    minimumFractionDigits: decimals,
+    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
   });
 
