@@ -33,13 +33,15 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString(),
   );
 
+  const totalInterestPaid = Number(props.data.interest_rate ?? "0");
+
   const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
 
   const currentPositionWithLeverage = useMemo(() => {
-    return (
-      Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation() * Number(props.data.leverage)
-    );
-  }, [currentPositionRaw, positionDecimals, props.data.leverage]);
+    const positionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
+
+    return positionAsNumber * Number(props.data.leverage) - totalInterestPaid;
+  }, [currentPositionRaw, positionDecimals, props.data.leverage, totalInterestPaid]);
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
