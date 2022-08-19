@@ -16,8 +16,9 @@ export function useCloseMTPMutation() {
 
   async function mutation(variables: CloseMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
+    invariant(signingStargateClient !== undefined, "Sif signing stargate client is not defined");
 
-    return await signingStargateClient?.signAndBroadcast(
+    return await signingStargateClient.signAndBroadcast(
       signerAddress,
       [
         {

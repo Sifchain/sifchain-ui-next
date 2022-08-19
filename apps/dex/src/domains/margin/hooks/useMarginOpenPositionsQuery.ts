@@ -57,6 +57,7 @@ export type OpenPositionsQueryData = {
   health: string;
   id: string;
   interest_rate: string;
+  interest_paid: string;
   leverage: string;
   next_payment: string;
   paid_interest: string;
