@@ -58,7 +58,7 @@ const ImportModal = (
   );
 
   const error = useMemo(() => {
-    if (isEvmBridgedCoin(props.denom) && isNil(evmAccount)) {
+    if (isEvmBridgedCoin(props.denom) && !evmAccount.isConnected) {
       return new Error("Please connect Ethereum wallet");
     }
 
