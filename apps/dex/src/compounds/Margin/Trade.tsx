@@ -495,6 +495,18 @@ const Trade = (props: TradeProps) => {
         scroll: false,
       },
     );
+    setInputCollateral({
+      value: "",
+      error: "",
+    });
+    setInputPosition({
+      value: "",
+      error: "",
+    });
+    setInputLeverage({
+      value: maxLeverageDecimal.toString(),
+      error: "",
+    });
   };
 
   const onClickSwitch = (event: SyntheticEvent<HTMLButtonElement>) => {
