@@ -52,7 +52,9 @@ const WalletConnector: FC = () => {
       return [];
     }
 
-    return Object.entries(data.chainConfigsByNetwork).map(
+    const walletConnectorSupportedChains = [data.chainConfigsByNetwork.sifchain, data.chainConfigsByNetwork.ethereum];
+
+    return Object.entries(walletConnectorSupportedChains).map(
       ([id, config]): ChainEntry => ({
         id,
         type: config.chainType,
