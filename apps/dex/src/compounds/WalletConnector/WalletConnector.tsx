@@ -75,6 +75,7 @@ const WalletConnector: FC = () => {
   const {
     connectors: cosmosConnectors,
     connect: connectCosmos,
+    disconnect: disconnectCosmos,
     isConnected: isCosmosConnected,
     activeConnector: cosmosActiveConnector,
   } = useCosmConnect();
@@ -260,7 +261,9 @@ const WalletConnector: FC = () => {
 
       switch (selected.type) {
         case "ibc":
-          // nothing to do here
+          if (cosmosActiveConnector !== undefined) {
+            disconnectCosmos(cosmosActiveConnector);
+          }
           break;
         case "eth": {
           disconnectEVM();
@@ -270,7 +273,7 @@ const WalletConnector: FC = () => {
       setAccounts(omit([chainId]));
       actions.disableChain(selected.id);
     },
-    [actions, chains, disconnectEVM],
+    [actions, chains, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
   );
 
   return (
