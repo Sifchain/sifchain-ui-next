@@ -54,20 +54,20 @@ const WalletConnector: FC = () => {
 
     const walletConnectorSupportedChains = [data.chainConfigsByNetwork.sifchain, data.chainConfigsByNetwork.ethereum];
 
-    return Object.entries(walletConnectorSupportedChains).map(
-      ([id, config]): ChainEntry => ({
-        id,
-        type: config.chainType,
-        chainId: config.chainId as any,
-        name: config.displayName,
-        nativeAssetSymbol: config.nativeAssetSymbol,
+    return walletConnectorSupportedChains.map(
+      (chain): ChainEntry => ({
+        id: chain.chainId.toString(),
+        type: chain.chainType,
+        chainId: chain.chainId as any,
+        name: chain.displayName,
+        nativeAssetSymbol: chain.nativeAssetSymbol,
         connected: false,
         icon: (
           <figure
             className={clsx("h-6 w-6 -translate-x-1 rounded-full bg-white bg-cover", {
-              "border-black bg-black invert": ["ixo"].includes(id),
+              "border-black bg-black invert": ["ixo"].includes(chain.chainId.toString()),
             })}
-            style={{ backgroundImage: `url('/chains/${id}.png')` }}
+            style={{ backgroundImage: `url('/chains/${chain.network}.png')` }}
           />
         ),
       }),
