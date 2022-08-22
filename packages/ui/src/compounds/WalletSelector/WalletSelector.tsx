@@ -62,11 +62,11 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
       case "await-confirmation":
         navigate("choose-wallet");
     }
-  }, [step]);
+  }, [navigate, props, resetState, step]);
 
-  const selectedNetwork = useMemo(() => props.chains.find((x) => x.id === networkId), [networkId]);
+  const selectedNetwork = useMemo(() => props.chains.find((x) => x.id === networkId), [networkId, props.chains]);
 
-  const selectedWallet = useMemo(() => props.wallets.find((x) => x.id === walletId), [walletId]);
+  const selectedWallet = useMemo(() => props.wallets.find((x) => x.id === walletId), [props.wallets, walletId]);
 
   const [subHeading, content] = useMemo(() => {
     switch (step) {
@@ -171,7 +171,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
       default:
         return [<></>];
     }
-  }, [step, search, props.chains, props.wallets, props.onConnect, props.onCancel]);
+  }, [step, search, props, selectedNetwork, selectedWallet?.name, navigate, networkId, resetState]);
 
   const accountEntries = Object.entries(props.accounts).filter(([, x]) => x.length);
 
