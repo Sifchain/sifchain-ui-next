@@ -112,6 +112,7 @@ const TradeCompound: NextPage = () => {
   ) {
     const { params } = govParams.data;
     const allowedPools = params.pools;
+
     const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
       allowedPools.includes(pool.asset.symbol.toLowerCase()),
     );
@@ -456,8 +457,17 @@ const Trade = (props: TradeProps) => {
     });
   };
 
-  const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
-  const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
+  /**
+   * We using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
+   * Wrapping it in a try..catch to avoid breaking the UI
+   */
+  let collateralAmount = "0";
+  let leverage = "0";
+  try {
+    collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
+    leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
+  } catch (err) {}
+
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });

@@ -28,13 +28,19 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const positionDecimals = positionTokenQuery.data?.decimals ?? 0;
   const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
 
-  const collateralAmountAsDecimal = Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals);
-  const custodyAmountAsDecimal = Decimal.fromAtomics(props.data.custody_amount, positionDecimals);
+  /**
+   * Value-guard for bad data used from tests, we may not need it in "production"
+   * But for feature testing, we do need it
+   */
+  let collateralAmountAsDecimalString = "0";
+  let custodyAmountAsDecimalString = "0";
+  try {
+    collateralAmountAsDecimalString = Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString();
+    custodyAmountAsDecimalString = Decimal.fromAtomics(props.data.custody_amount, positionDecimals).toString();
+  } catch (err) {}
   const leverageAsNumber = Number(props.data.leverage);
 
-  const collateralAmountWithLeverage = BigNumber(collateralAmountAsDecimal.toString())
-    .times(leverageAsNumber)
-    .toNumber();
+  const collateralAmountWithLeverage = BigNumber(collateralAmountAsDecimalString).times(leverageAsNumber).toNumber();
 
   const { data: currentPositionSwap } = useSwapSimulation(
     props.data.collateral_asset,
@@ -46,7 +52,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
 
   const totalInterestPaid = Number(props.data.interest_paid ?? "0");
 
-  const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimal.toString()).div(leverageAsNumber).toNumber();
+  const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimalString).div(leverageAsNumber).toNumber();
 
   const { data: closingPositionSwap } = useSwapSimulation(
     props.data.custody_asset,
@@ -74,16 +80,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   );
   const openingPositionValue = useMemo(
     () =>
-      formatNumberAsCurrency(
-        BigNumber(custodyAmountAsDecimal.toString()).multipliedBy(currentPriceAsNumber).toNumber(),
-        4,
-      ),
-    [custodyAmountAsDecimal, currentPriceAsNumber],
+      formatNumberAsCurrency(BigNumber(custodyAmountAsDecimalString).multipliedBy(currentPriceAsNumber).toNumber(), 4),
+    [custodyAmountAsDecimalString, currentPriceAsNumber],
   );
 
   const borrowAmountAsNumber = currentPositionAsNumber / leverageAsNumber;
 
-  const unrealizedPnl = props.data.unrealized_pnl ?? 0;
+  const unrealizedPnl = Number(props.data.unrealized_pnl ?? "0");
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
