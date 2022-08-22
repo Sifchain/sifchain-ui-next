@@ -35,9 +35,9 @@ type WalletKind = keyof typeof WALLET_ICONS;
 
 const WALLET_LABELS: Record<WalletKind, string> = {
   keplr: "Keplr",
-  keplrWalletConnect: "WallectConnect (Keplr)",
+  keplrWalletConnect: "WalletConnect (Keplr)",
   metaMask: "MetaMask",
-  walletConnect: "WallectConnect",
+  walletConnect: "WalletConnect",
   coinbaseWallet: "Coinbase",
   cosmostation: "Cosmostation",
 };
