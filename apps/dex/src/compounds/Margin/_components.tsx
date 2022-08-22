@@ -11,6 +11,7 @@ import {
 
 import { formatNumberAsPercent } from "./_intl";
 import type { PropsWithChildren } from "react";
+import { removeFirstCharsUC } from "./_trade";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -124,7 +125,7 @@ export function PoolOverview(props: PoolOverviewProps) {
       </li>
       <li className="py-4">
         <div className="flex flex-col">
-          <span className="text-gray-300">{props.pool.asset.label} Price</span>
+          <span className="text-gray-300">{removeFirstCharsUC(props.pool.asset.label as string)} Price</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">
               <span className="mr-1">{formatNumberAsCurrency(Number(props.pool.stats.priceToken))}</span>
