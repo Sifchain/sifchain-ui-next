@@ -24,7 +24,7 @@ export const useEnabledChainsStore = createStore(
     }),
     persist: {
       name: "@sifchain/enabled-chains",
-      version: 1,
+      version: 2,
     },
   },
 );
