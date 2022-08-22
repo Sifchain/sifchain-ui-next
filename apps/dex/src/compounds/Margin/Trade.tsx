@@ -192,6 +192,7 @@ const Trade = (props: TradeProps) => {
     }
     return [];
   }, [enhancedPools]);
+  const poolsAssets = useMemo(() => pools.map((pool) => pool.asset), [pools]);
 
   const poolActive = useMemo(() => {
     if (qsPool) {
@@ -531,7 +532,7 @@ const Trade = (props: TradeProps) => {
         {poolActive ? (
           <PoolOverview
             pool={poolActive}
-            assets={pools.map((pool) => pool.asset)}
+            assets={poolsAssets}
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
           />
