@@ -235,10 +235,10 @@ const WalletConnector: FC = () => {
 
               if (isAuthorized) {
                 const account = await connector.getAccount();
-                setAccounts(assoc("ethereum", [account]));
+                setAccounts(assoc(chainId, [account]));
               } else {
-                const account = await connectEvm({ connector });
-                setAccounts(assoc("ethereum", [account]));
+                const { account } = await connectEvm({ connector });
+                setAccounts(assoc(chainId, [account]));
               }
             }
             break;
