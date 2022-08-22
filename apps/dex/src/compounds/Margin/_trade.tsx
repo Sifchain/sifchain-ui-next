@@ -155,9 +155,10 @@ export function inputValidatorLeverage($input: HTMLInputElement, event: "blur" |
   return payload;
 }
 
-export function removeFirstCharC(param: string) {
+export function removeFirstCharsUC(param: string) {
+  const isFirstU = param.charAt(0).toLowerCase() === "u";
   const isFirstC = param.charAt(0).toLowerCase() === "c";
-  if (isFirstC) {
+  if (isFirstU || isFirstC) {
     return param.slice(1);
   }
   return param;

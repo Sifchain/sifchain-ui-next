@@ -31,7 +31,7 @@ import {
 } from "./_components";
 import { formatDateDistance, formatDateISO } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { Decimal } from "@cosmjs/math";
@@ -177,14 +177,18 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.pool) ? removeFirstCharC(item.pool.toUpperCase()) : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? (
+                        removeFirstCharsUC(item.pool.toUpperCase())
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_asset) ? (
-                        removeFirstCharC(item.open_custody_asset.toUpperCase())
+                        removeFirstCharsUC(item.open_custody_asset.toUpperCase())
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

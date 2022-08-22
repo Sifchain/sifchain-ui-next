@@ -27,8 +27,8 @@ export function useEnhancedPoolsQuery() {
 
       const filtered = poolsRes.pools
         .map((pool) => {
-          const externalAssetSymbol = pool.externalAsset?.symbol.toLowerCase();
-          const asset = externalAssetSymbol ? registryQuery.indexedBySymbol[externalAssetSymbol] : undefined;
+          const externalAssetSymbol = pool.externalAsset?.symbol ?? "";
+          const asset = registryQuery.findBySymbolOrDenom(externalAssetSymbol);
 
           const stats = asset
             ? statsQuery.indexedBySymbol[asset?.symbol.toLowerCase()] ??

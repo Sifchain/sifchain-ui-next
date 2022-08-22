@@ -10,7 +10,7 @@ import { transformMTPMutationErrors, useCloseMTPMutation } from "~/domains/margi
 import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { FlashMessageLoading } from "./_components";
 import { formatNumberAsPercent } from "./_intl";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -130,7 +130,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         <ul className="mt-4 flex flex-col gap-3">
           <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-            <span className="ml-1">{removeFirstCharC(props.data.custody_asset.toUpperCase())}</span>
+            <span className="ml-1">{removeFirstCharsUC(props.data.custody_asset.toUpperCase())}</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
@@ -202,7 +202,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         <ul className="flex flex-col gap-3">
           <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-            <span className="ml-1">{removeFirstCharC(props.data.collateral_asset.toUpperCase())}</span>
+            <span className="ml-1">{removeFirstCharsUC(props.data.collateral_asset.toUpperCase())}</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
