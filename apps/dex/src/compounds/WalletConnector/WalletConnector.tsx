@@ -253,8 +253,8 @@ const WalletConnector: FC = () => {
   );
 
   const handleDisconnectionRequest = useCallback(
-    async ({ chainId = "" }) => {
-      const selected = chains.find((x) => x.chainId === chainId);
+    async ({ chainId }: { chainId: string | number }) => {
+      const selected = chains.find((x) => x.chainId.toString() === chainId.toString());
 
       if (!selected) {
         console.error(`Unknown chain ${chainId}`);
@@ -272,7 +272,7 @@ const WalletConnector: FC = () => {
         }
       }
 
-      setAccounts(omit([chainId]));
+      setAccounts(omit([chainId.toString()]));
       actions.disableChain(selected.id);
     },
     [actions, chains, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
