@@ -59,7 +59,7 @@ export default function useTokenRegistryQuery(networkKind: NetworkKind | Network
 
     const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), entries);
     const indexedByDisplaySymbol = indexBy(compose(toLower, prop("displaySymbol")), entries);
-    const indexedByDenom = indexBy(prop("denom"), entries);
+    const indexedByDenom = indexBy(compose(toLower, prop("denom")), entries);
 
     return {
       indexedBySymbol,
