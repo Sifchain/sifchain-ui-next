@@ -110,7 +110,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     confirmClosePosition.reset();
   }, [confirmClosePosition, props]);
 
-  let content = <FlashMessageLoading />;
+  let content = <FlashMessageLoading size="full-page" />;
 
   if (
     collateralTokenQuery.isSuccess &&
