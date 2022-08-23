@@ -20,4 +20,17 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: [
+    ".next/",
+    ".turbo/",
+    "dist/",
+    "build/",
+    "packages/evm/src/generated/",
+    "packages/proto-types/cosmos/",
+    "packages/proto-types/gogoproto/",
+    "packages/proto-types/google/",
+    "packages/proto-types/sifnode/",
+    "packages/proto-types/src/",
+    "packages/sif-api/src/generated/",
+  ],
 };
