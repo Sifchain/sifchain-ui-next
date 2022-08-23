@@ -7,6 +7,7 @@ import {
   formatNumberAsDecimal,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
+  Tooltip,
 } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
@@ -68,6 +69,9 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
+const TOOLTIP_POOL_HEALTH_TITLE = `What does "Pool health" means?`;
+const TOOLTIP_POOL_HEALTH_CONTENT =
+  "Pool health is defined by taking total assets divided by all assets + outstanding liabilities. This health equation considers assets and liabilities held for both sides of the pool. The value can range from 0 to 100%. With a value of 100% the pool has no outstanding liabilities.";
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
@@ -136,7 +140,12 @@ export function PoolOverview(props: PoolOverviewProps) {
       </li>
       <li className="py-4">
         <div className="flex flex-col">
-          <span className="text-gray-300">Pool Health</span>
+          <span className="text-gray-300">
+            <span className="mr-1">Pool Health</span>
+            <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
+              <span className="rounded-full border border-current px-2 py-0.5 font-serif text-xs ">i</span>
+            </Tooltip>
+          </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
         </div>
       </li>

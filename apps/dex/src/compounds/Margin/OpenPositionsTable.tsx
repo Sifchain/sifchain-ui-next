@@ -1,4 +1,4 @@
-import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
+import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal, Tooltip } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
@@ -48,19 +48,36 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
+const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "Liquidation ratio" means?`;
+const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
+  "Liquidation ratio is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+const HEADERS_TITLES = {
+  DATE_OPENED: "Date Opened",
+  POOL: "Pool",
+  SIDE: "Side",
+  POSITION: "Position",
+  ASSET: "Asset",
+  BASE_LEVERAGE: "Base Leverage",
+  UNREALIZED_PNL: "Unrealized P&L",
+  INTEREST_RATE: "Interest Rate",
+  PAID_INTEREST: "Paid Interest",
+  LIQUIDATION_RATIO: "Liquidation ratio",
+  DURATION: "Duration",
+  CLOSE_POSITION: "Close Position",
+} as const;
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  { title: "Date Opened", order_by: "date_opened" },
-  { title: "Pool", order_by: "" },
-  { title: "Side", order_by: "position" },
-  { title: "Position", order_by: "custody_amount" },
-  { title: "Asset", order_by: "custody_asset" },
-  { title: "Base Leverage", order_by: "leverage" },
-  { title: "Unrealized P&L", order_by: "unrealized_pnl" },
-  { title: "Interest Rate", order_by: "interest_rate" },
-  { title: "Paid Interest", order_by: "paid_interest" },
-  { title: "Liquidation ratio", order_by: "health" },
-  { title: "Duration", order_by: "" },
-  { title: "Close Position", order_by: "" },
+  { title: HEADERS_TITLES.DATE_OPENED, order_by: "date_opened" },
+  { title: HEADERS_TITLES.POOL, order_by: "" },
+  { title: HEADERS_TITLES.SIDE, order_by: "position" },
+  { title: HEADERS_TITLES.POSITION, order_by: "custody_amount" },
+  { title: HEADERS_TITLES.ASSET, order_by: "custody_asset" },
+  { title: HEADERS_TITLES.BASE_LEVERAGE, order_by: "leverage" },
+  { title: HEADERS_TITLES.UNREALIZED_PNL, order_by: "unrealized_pnl" },
+  { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "paid_interest" },
+  { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
+  { title: HEADERS_TITLES.DURATION, order_by: "" },
+  { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
 ];
 const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
@@ -77,7 +94,7 @@ const createTimeOpenLabel = (timeOpen: Duration) => {
     .join(", ");
 };
 
-type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
+type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
   pool?: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   classNamePaginationContainer?: string;
@@ -136,7 +153,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
-                  if (header.title === "Close Position") {
+                  if (header.title === HEADERS_TITLES.CLOSE_POSITION) {
                     return <th key={header.title} />;
                   }
 
@@ -158,37 +175,53 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     itemActive,
                     currentSortBy: pagination.sort_by,
                   });
+                  const linkTagA = (
+                    <a className="flex flex-row items-center">
+                      {header.title}
+                      {itemActive && (
+                        <ChevronDownIcon
+                          className={clsx("ml-1 transition-transform", {
+                            "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                          })}
+                        />
+                      )}
+                    </a>
+                  );
+                  const linkNextEl = (
+                    <Link
+                      href={{
+                        query: {
+                          ...router.query,
+                          orderBy: nextOrderBy,
+                          sortBy: nextSortBy,
+                        },
+                      }}
+                      scroll={false}
+                    >
+                      {linkTagA}
+                    </Link>
+                  );
                   return (
                     <th
                       key={header.title}
                       className="px-4 py-3 font-normal"
                       hidden={hideColumns?.includes(header.title)}
                     >
-                      <Link
-                        href={{
-                          query: {
-                            ...router.query,
-                            orderBy: nextOrderBy,
-                            sortBy: nextSortBy,
-                          },
-                        }}
-                        scroll={false}
+                      <div
+                        className={clsx("flex flex-row items-center", {
+                          "font-semibold text-white": itemActive,
+                        })}
                       >
-                        <a
-                          className={clsx("flex flex-row items-center", {
-                            "font-semibold text-white": itemActive,
-                          })}
-                        >
-                          {header.title}
-                          {itemActive && (
-                            <ChevronDownIcon
-                              className={clsx("ml-1 transition-transform", {
-                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                              })}
-                            />
-                          )}
-                        </a>
-                      </Link>
+                        {linkNextEl}
+                        <div className="mr-1" />
+                        {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
+                          <Tooltip title={TOOLTIP_LIQUIDATION_RATIO_TITLE} content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}>
+                            <span className="rounded-full border border-current px-2 py-0.5 font-serif text-xs ">
+                              i
+                            </span>
+                          </Tooltip>
+                        ) : null}
+                      </div>
                     </th>
                   );
                 })}
