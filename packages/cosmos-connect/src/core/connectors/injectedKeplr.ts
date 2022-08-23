@@ -54,7 +54,11 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
     await this.#keplr.experimentalSuggestChain(this.#chainStore.getChain(chainId).raw);
     await this.#keplr.enable(chainId);
-    return this.#keplr.getOfflineSignerAuto(chainId);
+    const signer = this.#keplr.getOfflineSignerAuto(chainId);
+
+    this.emit("enable", chainId);
+
+    return signer;
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {

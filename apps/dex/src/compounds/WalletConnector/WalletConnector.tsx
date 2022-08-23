@@ -35,9 +35,9 @@ type WalletKind = keyof typeof WALLET_ICONS;
 
 const WALLET_LABELS: Record<WalletKind, string> = {
   keplr: "Keplr",
-  keplrWalletConnect: "WallectConnect (Keplr)",
+  keplrWalletConnect: "WalletConnect (Keplr)",
   metaMask: "MetaMask",
-  walletConnect: "WallectConnect",
+  walletConnect: "WalletConnect",
   coinbaseWallet: "Coinbase",
   cosmostation: "Cosmostation",
 };
@@ -52,20 +52,22 @@ const WalletConnector: FC = () => {
       return [];
     }
 
-    return Object.entries(data.chainConfigsByNetwork).map(
-      ([id, config]): ChainEntry => ({
-        id,
-        type: config.chainType,
-        chainId: config.chainId as any,
-        name: config.displayName,
-        nativeAssetSymbol: config.nativeAssetSymbol,
+    const walletConnectorSupportedChains = [data.chainConfigsByNetwork.sifchain, data.chainConfigsByNetwork.ethereum];
+
+    return walletConnectorSupportedChains.map(
+      (chain): ChainEntry => ({
+        id: chain.chainId.toString(),
+        type: chain.chainType,
+        chainId: chain.chainId as any,
+        name: chain.displayName,
+        nativeAssetSymbol: chain.nativeAssetSymbol,
         connected: false,
         icon: (
           <figure
             className={clsx("h-6 w-6 -translate-x-1 rounded-full bg-white bg-cover", {
-              "border-black bg-black invert": ["ixo"].includes(id),
+              "border-black bg-black invert": ["ixo"].includes(chain.chainId.toString()),
             })}
-            style={{ backgroundImage: `url('/chains/${id}.png')` }}
+            style={{ backgroundImage: `url('/chains/${chain.network}.png')` }}
           />
         ),
       }),
@@ -75,6 +77,7 @@ const WalletConnector: FC = () => {
   const {
     connectors: cosmosConnectors,
     connect: connectCosmos,
+    disconnect: disconnectCosmos,
     isConnected: isCosmosConnected,
     activeConnector: cosmosActiveConnector,
   } = useCosmConnect();
@@ -90,73 +93,87 @@ const WalletConnector: FC = () => {
 
   const [accounts, setAccounts] = useState<Record<string, string[]>>({});
 
-  const syncCosmosAccounts = useCallback(async () => {
-    const enabledChains = chains.filter((x) => enabledChainsState.networks.includes(x.id));
+  useEffect(
+    () =>
+      void (async () => {
+        const enabledChains = chains.filter((x) => enabledChainsState.networks.includes(x.id));
 
-    if (cosmosActiveConnector) {
-      console.log({
-        cosmosActiveConnector,
-        enabledChains: enabledChains,
-      });
-      const entries = await Promise.all(
-        enabledChains
-          .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
-          .flatMap(async (chain) => {
-            try {
-              const signer = await cosmosActiveConnector.getSigner(chain.chainId);
-              const accounts = await signer.getAccounts();
+        if (cosmosActiveConnector) {
+          console.log({
+            cosmosActiveConnector,
+            enabledChains: enabledChains,
+          });
+          const entries = await Promise.all(
+            enabledChains
+              .filter((chain): chain is IbcChainEntry => chain.type === "ibc")
+              .flatMap(async (chain) => {
+                try {
+                  const signer = await cosmosActiveConnector.getSigner(chain.chainId);
+                  const accounts = await signer.getAccounts();
 
-              return [chain.chainId, accounts.map((x) => x.address)] as const;
-            } catch (error) {
-              if (error instanceof Error && error.message.includes("Unknown chain info")) {
-                //
+                  return [chain.chainId, accounts.map((x) => x.address)] as const;
+                } catch (error) {
+                  if (error instanceof Error && error.message.includes("Unknown chain info")) {
+                    //
 
-                console.log("failed to read chain", chain.chainId);
-              }
-              console.log({ failed: (error as Error)?.message });
-              return [chain.chainId, []] as const;
-            }
-          }),
-      );
+                    console.log("failed to read chain", chain.chainId);
+                  }
+                  console.log({ failed: (error as Error)?.message });
+                  return [chain.chainId, []] as const;
+                }
+              }),
+          );
 
-      const cosmosAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
+          const cosmosAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
 
-      setAccounts((accounts) => ({
-        ...accounts,
-        ...cosmosAccounts,
-      }));
-    }
+          setAccounts((accounts) => ({
+            ...accounts,
+            ...cosmosAccounts,
+          }));
+        }
 
-    const ethActiveConnector = evmConnectors.find((x) => x.ready);
+        const ethActiveConnector = evmConnectors.find((x) => x.ready);
 
-    if (ethActiveConnector) {
-      const entries = await Promise.all(
-        enabledChains
-          .filter((chain) => chain.type === "eth")
-          .flatMap(async (chain) => {
-            try {
-              const signer = await ethActiveConnector.getSigner();
-              const account = await signer.getAddress();
+        if (ethActiveConnector) {
+          const entries = await Promise.all(
+            enabledChains
+              .filter((chain) => chain.type === "eth")
+              .flatMap(async (chain) => {
+                try {
+                  const signer = await ethActiveConnector.getSigner();
+                  const account = await signer.getAddress();
 
-              return [chain.id, [account]] as const;
-            } catch (error) {
-              return [chain.id, []] as const;
-            }
-          }),
-      );
+                  return [chain.id, [account]] as const;
+                } catch (error) {
+                  return [chain.id, []] as const;
+                }
+              }),
+          );
 
-      const ethAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
+          const ethAccounts = Object.fromEntries(entries.filter(([, xs]) => xs.length));
 
-      setAccounts((accounts) => ({
-        ...accounts,
-        ...ethAccounts,
-      }));
-    }
-  }, [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors]);
+          setAccounts((accounts) => ({
+            ...accounts,
+            ...ethAccounts,
+          }));
+        }
+      })(),
+    [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors],
+  );
 
   useEffect(() => {
-    syncCosmosAccounts();
-  }, [syncCosmosAccounts]);
+    const listener = (chainIds: string | string[]) => {
+      if (typeof chainIds === "string") {
+        actions.enableNetwork(chainIds);
+      } else {
+        chainIds.forEach(actions.enableNetwork);
+      }
+    };
+
+    cosmosActiveConnector?.addListener("enable", listener);
+
+    return () => void cosmosActiveConnector?.removeListener("enable", listener);
+  }, [actions, cosmosActiveConnector]);
 
   const [wallets, connectorsById] = useMemo(() => {
     const connectors = [
@@ -218,10 +235,10 @@ const WalletConnector: FC = () => {
 
               if (isAuthorized) {
                 const account = await connector.getAccount();
-                setAccounts(assoc("ethereum", [account]));
+                setAccounts(assoc(chainId, [account]));
               } else {
-                const account = await connectEvm({ connector });
-                setAccounts(assoc("ethereum", [account]));
+                const { account } = await connectEvm({ connector });
+                setAccounts(assoc(chainId, [account]));
               }
             }
             break;
@@ -236,8 +253,8 @@ const WalletConnector: FC = () => {
   );
 
   const handleDisconnectionRequest = useCallback(
-    async ({ chainId = "" }) => {
-      const selected = chains.find((x) => x.chainId === chainId);
+    async ({ chainId }: { chainId: string | number }) => {
+      const selected = chains.find((x) => x.chainId.toString() === chainId.toString());
 
       if (!selected) {
         console.error(`Unknown chain ${chainId}`);
@@ -246,17 +263,19 @@ const WalletConnector: FC = () => {
 
       switch (selected.type) {
         case "ibc":
-          // nothing to do here
+          if (cosmosActiveConnector !== undefined) {
+            disconnectCosmos(cosmosActiveConnector);
+          }
           break;
         case "eth": {
           disconnectEVM();
         }
       }
 
-      setAccounts(omit([chainId]));
+      setAccounts(omit([chainId.toString()]));
       actions.disableChain(selected.id);
     },
-    [actions, chains, disconnectEVM],
+    [actions, chains, cosmosActiveConnector, disconnectCosmos, disconnectEVM],
   );
 
   return (

@@ -1,7 +1,7 @@
 declare module "walletconnect-qrcode-modal" {
-  interface IWallectConnectModal {
+  interface IWalletConnectModal {
     open(uri: string): void;
   }
-  const WallectConnectModal: IWallectConnectModal;
-  export default WallectConnectModal;
+  const WalletConnectModal: IWalletConnectModal;
+  export default WalletConnectModal;
 }

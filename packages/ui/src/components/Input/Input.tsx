@@ -112,12 +112,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </label>
         )}
-        <StyledInputContainer className={clsx(containerClassName, SIZE_CLASSES[size ?? "md"])}>
+        <StyledInputContainer
+          className={clsx(SIZE_CLASSES[size ?? "md"], { "bg-gray-800": props.disabled }, containerClassName)}
+        >
           {leadingIcon}
           <StyledInput
             aria-label={typeof label === "string" ? label : ""}
             {...props}
-            className={clsx("disabled:bg-gray-800", inputClassName)}
+            className={inputClassName}
             style={{ appearance: "textfield", ...props.style }}
             id={id}
             ref={inputRef}
