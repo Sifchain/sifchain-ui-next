@@ -1,10 +1,10 @@
-import clsx from "clsx";
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
+import type { PropsWithChildren } from "react";
 
+import clsx from "clsx";
 import {
   formatNumberAsCurrency,
-  formatNumberAsDecimal,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
   Tooltip,
@@ -12,7 +12,6 @@ import {
 } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
-import type { PropsWithChildren } from "react";
 import { removeFirstCharsUC } from "./_trade";
 
 type NoResultsTrProps = {
@@ -165,46 +164,93 @@ function Average24hPercent({ value }: { value: number }) {
   return <span className={cls}>({formatNumberAsPercent(value)})</span>;
 }
 
-export function FlashMessageAccountNotWhitelisted(props: FlashMessageProps) {
+export function FlashMessageAccountNotWhitelisted({ className }: { className?: string }) {
+  const styles = "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
   return (
-    <FlashMessage {...props}>
+    <div className={clsx(styles, className)} role="alert">
       Sorry! Your account has not yet been approved for margin trading. Please reach out to us on
       <a
-        className="mx-1 text-blue-300 underline hover:text-blue-400"
+        className="mx-1 font-semibold text-blue-600 underline hover:text-blue-400"
         href="https://discord.gg/sifchain"
         rel="noopener noreferrer"
       >
         Discord
       </a>
-      to get started
-    </FlashMessage>
+      to get started!
+    </div>
   );
 }
 
-export function FlashMessage5xxError() {
-  return <FlashMessage>Ooops! Something wrong happened, try again later.</FlashMessage>;
-}
-
-export function FlashMessageLoading() {
+export function FlashMessage5xxError({ size, className }: { size?: "full-page"; className?: string }) {
+  const sizeStyles =
+    size === "full-page"
+      ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
+      : "rounded-lg p-4 text-sm text-red-700 bg-red-100";
   return (
-    <FlashMessage>
-      <div className="flex flex-row items-center justify-center">
-        <RacetrackSpinnerIcon className="mr-1 text-2xl" /> Loading...
-      </div>
-    </FlashMessage>
+    <div className={clsx(sizeStyles, className)} role="alert">
+      Ooops! Something wrong happened, try again later.
+    </div>
   );
 }
 
-export function FlashMessageConnectSifChainWallet() {
-  return <FlashMessage>Connect your Sifchain wallet</FlashMessage>;
+export function FlashMessageLoading({ size, className }: { size?: "full-page"; className?: string }) {
+  const sizeStyles =
+    size === "full-page"
+      ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
+      : "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
+  return (
+    <div className={clsx("flex flex-row items-center justify-center", sizeStyles, className)} role="alert">
+      <RacetrackSpinnerIcon className="mr-1 text-2xl" /> Loading...
+    </div>
+  );
 }
 
-export function FlashMessageConnectSifChainWalletError() {
-  return <FlashMessage>Unable to connect your Sifchain wallet. Try again later.</FlashMessage>;
+export function FlashMessageConnectSifChainWallet({ size, className }: { size?: "full-page"; className?: string }) {
+  const sizeStyles =
+    size === "full-page"
+      ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
+      : "rounded-lg bg-blue-100 p-4 text-center text-sm text-blue-700";
+  return (
+    <div className={clsx(sizeStyles, className)} role="alert">
+      Connect your Sifchain wallet
+    </div>
+  );
 }
 
-export function FlashMessageConnectSifChainWalletLoading() {
-  return <FlashMessage>Sifchain wallet connecting...</FlashMessage>;
+export function FlashMessageConnectSifChainWalletError({
+  size,
+  className,
+}: {
+  size?: "full-page";
+  className?: string;
+}) {
+  const sizeStyles =
+    size === "full-page"
+      ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
+      : "rounded-lg text-red-700 bg-red-100 text-center p-4 text-sm";
+  return (
+    <div className={clsx(sizeStyles, className)} role="alert">
+      Unable to connect your Sifchain wallet.
+    </div>
+  );
+}
+
+export function FlashMessageConnectSifChainWalletLoading({
+  size,
+  className,
+}: {
+  size?: "full-page";
+  className?: string;
+}) {
+  const sizeStyles =
+    size === "full-page"
+      ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
+      : "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
+  return (
+    <div className={clsx("flex flex-row items-center justify-center", sizeStyles, className)} role="alert">
+      <RacetrackSpinnerIcon className="mr-1 text-2xl" /> Connecting Sifchain wallet...
+    </div>
+  );
 }
 
 type FlashMessageProps = PropsWithChildren & { className?: string; size?: "small" };

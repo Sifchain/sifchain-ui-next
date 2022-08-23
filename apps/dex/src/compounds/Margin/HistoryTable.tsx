@@ -59,6 +59,9 @@ const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
+
+  const headers = HISTORY_HEADER_ITEMS;
+
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
@@ -69,20 +72,21 @@ const HistoryTable = (props: HistoryTableProps) => {
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
   });
-  const headers = HISTORY_HEADER_ITEMS;
 
   if (walletAddress.isIdle) {
-    return <FlashMessageConnectSifChainWallet />;
+    return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
+
   if (walletAddress.isError) {
-    return <FlashMessageConnectSifChainWalletError />;
+    return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
+
   if (walletAddress.isLoading) {
-    return <FlashMessageConnectSifChainWalletLoading />;
+    return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
   if (historyQuery.isLoading) {
-    return <FlashMessageLoading />;
+    return <FlashMessageLoading size="full-page" />;
   }
 
   if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess) {
@@ -254,7 +258,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
 
-  return <FlashMessage5xxError />;
+  return <FlashMessage5xxError size="full-page" />;
 };
 
 export default HistoryTable;
