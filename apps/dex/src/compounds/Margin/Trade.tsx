@@ -71,6 +71,11 @@ const TradeCompound: NextPage = () => {
   const govParamsQuery = useMarginParamsQuery();
 
   if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
+    console.group("Trade Page Loading Error");
+    console.log({ enhancedPoolsQuery });
+    console.log({ enhancedRowanQuery, rowanPriceQuery });
+    console.log({ govParamsQuery });
+    console.groupEnd();
     return <FlashMessage5xxError size="full-page" />;
   }
 
