@@ -3,7 +3,8 @@ import type { SyntheticEvent } from "react";
 import { FlashMessage, Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
-import { useOpenMTPMutation, friendlyOpenMTPMutationErrorMessage } from "~/domains/margin/hooks";
+import { useMarginMTPOpenMutation, friendlyOpenMTPMutationErrorMessage } from "~/domains/margin/hooks";
+
 import AssetIcon from "~/compounds/AssetIcon";
 
 type ModalReviewOpenPositionProps = {
@@ -23,7 +24,7 @@ type ModalReviewOpenPositionProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
-  const confirmOpenPositionMutation = useOpenMTPMutation();
+  const confirmOpenPositionMutation = useMarginMTPOpenMutation();
 
   const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();

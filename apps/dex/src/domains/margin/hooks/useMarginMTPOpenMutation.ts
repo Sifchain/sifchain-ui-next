@@ -8,32 +8,47 @@ import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
 
-export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
+export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
-export function friendlyCloseMTPMutationErrorMessage(error: string) {
-  if (error.includes("unauthorized")) {
+export function friendlyOpenMTPMutationErrorMessage(error: string) {
+  if (error.includes("unauthorized") || error.includes("address not on whitelist")) {
     return errors.ACCOUNT_NOT_APPROVED_FOR_TRADING;
   }
 
-  console.group("Missing Friendly Error Message for Close MTP error:");
+  if (error.includes("margin not enabled for pool")) {
+    return errors.POOL_TRADE_TEMPORARILY_DISABLED;
+  }
+
+  if (error.includes("max open positions reached")) {
+    return errors.POOL_MAX_OPEN_POSITIONS_REACHED;
+  }
+
+  if (error.includes("user does not have enough balance of the required coin")) {
+    return errors.ACCOUNT_NOT_ENOUGH_BALANCE;
+  }
+
+  if (error.includes("Account does not exist on chain")) {
+    return errors.ACCOUNT_NOT_IN_SIFCHAIN;
+  }
+
+  console.group("Missing Friendly Error Message for Open MTP error:");
   console.log(error);
   console.groupEnd();
-  return errors.DEFAULT_ERROR_CLOSE_POSITION;
+  return errors.DEFAULT_ERROR_OPEN_POSITION;
 }
 
-export function useCloseMTPMutation() {
+export function useMarginMTPOpenMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
 
-  async function mutation(variables: CloseMTPVariables) {
+  async function mutation(variables: OpenMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
-    invariant(signingStargateClient !== undefined, "Sif signing stargate client is not defined");
 
-    return await signingStargateClient.signAndBroadcast(
+    return await signingStargateClient?.signAndBroadcast(
       signerAddress,
       [
         {
-          typeUrl: "/sifnode.margin.v1.MsgClose",
+          typeUrl: "/sifnode.margin.v1.MsgOpen",
           value: {
             signer: signerAddress,
             ...variables,
@@ -48,27 +63,26 @@ export function useCloseMTPMutation() {
 
   return useMutation(mutation, {
     onMutate() {
-      toastId = toast.info("Closing margin position", {
+      toastId = toast.info("Opening margin position", {
         isLoading: true,
         autoClose: false,
       });
     },
-
     onSettled(data, error) {
       toast.dismiss(toastId);
-      console.group("Close MTP Error");
+      console.group("Open MTP Error");
       console.log(data);
       console.log(error);
       console.groupEnd();
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
-          ? friendlyCloseMTPMutationErrorMessage(error.message)
-          : friendlyCloseMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
+          ? friendlyOpenMTPMutationErrorMessage(error.message)
+          : friendlyOpenMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
 
         toast.error(`Error: ${errorMessage}`);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
-        toast.success(`Successfully closed margin position`);
+        toast.success(`Successfully openned margin position`);
       }
     },
   });

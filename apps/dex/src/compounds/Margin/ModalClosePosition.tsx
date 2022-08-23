@@ -13,7 +13,7 @@ import { SyntheticEvent, useCallback, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
-import { friendlyCloseMTPMutationErrorMessage, useCloseMTPMutation } from "~/domains/margin/hooks";
+import { friendlyCloseMTPMutationErrorMessage, useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import AssetIcon from "~/compounds/AssetIcon";
 
@@ -29,7 +29,7 @@ type ModalClosePositionProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalClosePosition(props: ModalClosePositionProps) {
-  const confirmClosePosition = useCloseMTPMutation();
+  const confirmClosePosition = useMarginMTPCloseMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
 
