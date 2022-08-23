@@ -9,7 +9,7 @@ type Pagination = {
   sort_by: string;
 };
 
-export function useHistoryQuery(params: {
+export function useMarginHistoryQuery(params: {
   walletAddress: string;
   offset: string;
   limit: string;

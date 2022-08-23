@@ -1,12 +1,10 @@
 import type { SyntheticEvent } from "react";
 
-import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
+import { FlashMessage, Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
 import { useOpenMTPMutation, friendlyOpenMTPMutationErrorMessage } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
-
-import { FlashMessage } from "./_components";
 
 type ModalReviewOpenPositionProps = {
   data: {
@@ -90,7 +88,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
             <RacetrackSpinnerIcon />
           </div>
         )}
-        <FlashMessage className="my-4 rounded bg-gray-700" size="small">
+        <FlashMessage className="mt-6">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet eligendi
           vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae saepe quaerat.
         </FlashMessage>

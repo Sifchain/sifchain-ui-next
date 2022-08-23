@@ -2,7 +2,15 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
-import { formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  Maybe,
+  RacetrackSpinnerIcon,
+  SwapIcon,
+  TokenEntry,
+  FlashMessage5xxError,
+  FlashMessageLoading,
+} from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
@@ -13,7 +21,7 @@ import Head from "next/head";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginParamsQuery } from "~/domains/margin/hooks";
+import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
@@ -28,7 +36,7 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  */
 import { ROWAN } from "~/domains/assets";
 import { TradeActions } from "./TradeActions";
-import { FlashMessage5xxError, FlashMessageLoading, PoolOverview } from "./_components";
+import { PoolOverview } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -180,6 +188,10 @@ const Trade = (props: TradeProps) => {
 
     return pools.find((pool) => pool.asset.denom === "cusdc");
   }, [pools, qsPool]);
+
+  const openPositionsBySymbolQuery = useMarginOpenPositionsBySymbolQuery({
+    poolSymbol: poolActive?.asset.denom ?? "",
+  });
 
   /**
    * ********************************************************************************************
@@ -765,7 +777,7 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 col-span-5 rounded border">
-          <OpenPositionsTable pool={poolActive} hideColumns={["Pool", "Paid Interest"]} />
+          <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Paid Interest"]} />
         </article>
       </section>
 

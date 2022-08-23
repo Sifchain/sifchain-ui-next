@@ -1,4 +1,21 @@
-import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal, Tooltip } from "@sifchain/ui";
+import type {
+  useOpenPositionsQuery,
+  useMarginOpenPositionsBySymbolQuery,
+  OpenPositionsQueryData,
+} from "~/domains/margin/hooks";
+
+import {
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+  Button,
+  ChevronDownIcon,
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+  Tooltip,
+} from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
@@ -6,7 +23,6 @@ import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { OpenPositionsQueryData, useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
@@ -26,18 +42,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
 import { findNextOrderAndSortBy, QS_DEFAULTS, SORT_BY } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import {
-  NoResultsRow,
-  PaginationButtons,
-  PaginationShowItems,
-  PillUpdating,
-  FlashMessageLoading,
-  FlashMessage5xxError,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageConnectSifChainWalletError,
-  FlashMessageConnectSifChainWalletLoading,
-} from "./_components";
-import type { useEnhancedPoolsQuery } from "~/domains/clp";
+import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -96,7 +101,7 @@ const createTimeOpenLabel = (timeOpen: Duration) => {
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
-  pool?: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
+  openPositionsQuery: ReturnType<typeof useOpenPositionsQuery> | ReturnType<typeof useMarginOpenPositionsBySymbolQuery>;
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };
@@ -104,20 +109,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
+  const { openPositionsQuery } = props;
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
-
-  const queryParams = {
-    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
-    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "date_opened",
-    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
-  };
-  const openPositionsQuery = useOpenPositionsQuery({
-    ...queryParams,
-    walletAddress: walletAddress.data ?? "",
-  });
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;

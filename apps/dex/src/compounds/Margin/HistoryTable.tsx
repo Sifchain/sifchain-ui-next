@@ -2,8 +2,17 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
-import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
+import {
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+  ChevronDownIcon,
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+} from "@sifchain/ui";
+import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
 import { isNil } from "rambda";
 const isTruthy = (target: any) => !isNil(target);
@@ -18,17 +27,7 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import {
-  NoResultsRow,
-  PaginationShowItems,
-  PaginationButtons,
-  PillUpdating,
-  FlashMessageLoading,
-  FlashMessage5xxError,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageConnectSifChainWalletError,
-  FlashMessageConnectSifChainWalletLoading,
-} from "./_components";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 import { formatDateDistance, formatDateISO } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
@@ -68,7 +67,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     orderBy: (router.query["orderBy"] as string) || "address",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-  const historyQuery = useHistoryQuery({
+  const historyQuery = useMarginHistoryQuery({
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
   });

@@ -4,7 +4,7 @@ import { Button } from "@sifchain/ui";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 
-import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
+import { useMarginIsWhitelistedAccountQuery } from "~/domains/margin/hooks/useMarginIsWhitelistedAccountQuery";
 import type { useMarginParamsQuery } from "~/domains/margin/hooks";
 
 import {
@@ -13,7 +13,7 @@ import {
   FlashMessageConnectSifChainWalletLoading,
   FlashMessageLoading,
   FlashMessageAccountNotWhitelisted,
-} from "./_components";
+} from "@sifchain/ui";
 
 type TradeActionsProps = {
   govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
@@ -28,7 +28,7 @@ export function TradeActions({
   onClickOpenPosition,
 }: TradeActionsProps) {
   const walletAddressQuery = useSifSignerAddress();
-  const isWhitelistedAccountQuery = useMarginIsWhitelistedAccount({
+  const isWhitelistedAccountQuery = useMarginIsWhitelistedAccountQuery({
     walletAddress: walletAddressQuery.data ?? "",
   });
   const Layout = ({ children }: PropsWithChildren) => {

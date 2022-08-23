@@ -1,14 +1,22 @@
+import type { OpenPositionsQueryData } from "~/domains/margin/hooks";
+
 import { Decimal } from "@cosmjs/math";
-import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
+import {
+  FlashMessageLoading,
+  ArrowDownIcon,
+  Button,
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+  Modal,
+} from "@sifchain/ui";
+import { SyntheticEvent, useCallback, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import { SyntheticEvent, useCallback, useMemo } from "react";
 
-import AssetIcon from "~/compounds/AssetIcon";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 import { friendlyCloseMTPMutationErrorMessage, useCloseMTPMutation } from "~/domains/margin/hooks";
-import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
-import { FlashMessageLoading } from "./_components";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
+import AssetIcon from "~/compounds/AssetIcon";
+
 import { formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
