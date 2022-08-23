@@ -801,7 +801,7 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 col-span-5 rounded border">
-          <OpenPositionsTable hideColumns={["Pool", "Paid Interest"]} />
+          <OpenPositionsTable pool={poolActive} hideColumns={["Pool", "Paid Interest"]} />
         </article>
       </section>
 

@@ -37,6 +37,7 @@ import {
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
 } from "./_components";
+import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -78,6 +79,7 @@ const createTimeOpenLabel = (timeOpen: Duration) => {
 
 type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
 export type OpenPositionsTableProps = {
+  pool?: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };
