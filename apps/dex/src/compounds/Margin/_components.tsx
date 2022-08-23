@@ -8,6 +8,7 @@ import {
   TokenEntry,
   TokenSelector as BaseTokenSelector,
   Tooltip,
+  RacetrackSpinnerIcon,
 } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
@@ -16,13 +17,12 @@ import { removeFirstCharsUC } from "./_trade";
 
 type NoResultsTrProps = {
   colSpan: number;
-  message: string;
 };
 export function NoResultsRow(props: NoResultsTrProps) {
   return (
     <tr>
       <td colSpan={props.colSpan} className="p-20 text-center text-gray-400">
-        {props.message}
+        No results for your wallet address.
       </td>
     </tr>
   );
@@ -140,10 +140,12 @@ export function PoolOverview(props: PoolOverviewProps) {
       </li>
       <li className="py-4">
         <div className="flex flex-col">
-          <span className="text-gray-300">
+          <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>
             <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
-              <span className="rounded-full border border-current px-2 py-0.5 font-serif text-xs ">i</span>
+              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                i
+              </span>
             </Tooltip>
           </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
@@ -163,9 +165,9 @@ function Average24hPercent({ value }: { value: number }) {
   return <span className={cls}>({formatNumberAsPercent(value)})</span>;
 }
 
-export function FlashMessageAccountNotWhitelisted() {
+export function FlashMessageAccountNotWhitelisted(props: FlashMessageProps) {
   return (
-    <FlashMessage>
+    <FlashMessage {...props}>
       Sorry! Your account has not yet been approved for margin trading. Please reach out to us on
       <a
         className="mx-1 text-blue-300 underline hover:text-blue-400"
@@ -184,7 +186,13 @@ export function FlashMessage5xxError() {
 }
 
 export function FlashMessageLoading() {
-  return <FlashMessage>Loading...</FlashMessage>;
+  return (
+    <FlashMessage>
+      <div className="flex flex-row items-center justify-center">
+        <RacetrackSpinnerIcon className="mr-1 text-2xl" /> Loading...
+      </div>
+    </FlashMessage>
+  );
 }
 
 export function FlashMessageConnectSifChainWallet() {
@@ -202,8 +210,6 @@ export function FlashMessageConnectSifChainWalletLoading() {
 type FlashMessageProps = PropsWithChildren & { className?: string; size?: "small" };
 export function FlashMessage({ children, className, size }: FlashMessageProps) {
   return (
-    <div className={clsx(className ?? "bg-gray-850 text-center text-gray-100", size === "small" ? "p-4" : "p-10")}>
-      {children}
-    </div>
+    <div className={clsx(className ?? "bg-gray-850 text-gray-100", size === "small" ? "p-4" : "p-10")}>{children}</div>
   );
 }

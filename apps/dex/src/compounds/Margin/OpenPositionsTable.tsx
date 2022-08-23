@@ -216,7 +216,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <div className="mr-1" />
                         {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
                           <Tooltip title={TOOLTIP_LIQUIDATION_RATIO_TITLE} content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}>
-                            <span className="rounded-full border border-current px-2 py-0.5 font-serif text-xs ">
+                            <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
                               i
                             </span>
                           </Tooltip>
@@ -228,7 +228,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               </tr>
             </thead>
             <tbody className="bg-gray-850">
-              {results.length <= 0 && <NoResultsRow colSpan={headers.length} message="You have no open positions." />}
+              {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const custodyAsset = findBySymbolOrDenom(item.custody_asset);
                 const collateralAsset = findBySymbolOrDenom(item.collateral_asset);

@@ -75,53 +75,57 @@ const withLeverage = (rawReceiving: string, decimals: number, leverage: string) 
  * ********************************************************************************************
  */
 const TradeCompound: NextPage = () => {
-  const enhancedPools = useEnhancedPoolsQuery();
-  const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
-  const rowanPrice = useRowanPriceQuery();
-  const govParams = useMarginParamsQuery();
-  const walletAddress = useSifSignerAddress();
-  const isWhitelistedAccount = useMarginIsWhitelistedAccount({
-    walletAddress: walletAddress.data ?? "",
+  const enhancedPoolsQuery = useEnhancedPoolsQuery();
+  const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
+  const rowanPriceQuery = useRowanPriceQuery();
+  const govParamsQuery = useMarginParamsQuery();
+  const walletAddressQuery = useSifSignerAddress();
+  const isWhitelistedAccountQuery = useMarginIsWhitelistedAccount({
+    walletAddress: walletAddressQuery.data ?? "",
   });
 
-  if ([enhancedPools, enhancedRowan, rowanPrice, govParams, isWhitelistedAccount].some((query) => query.isError)) {
+  if (
+    [
+      enhancedPoolsQuery,
+      enhancedRowanQuery,
+      rowanPriceQuery,
+      govParamsQuery,
+      walletAddressQuery,
+      isWhitelistedAccountQuery,
+    ].some((query) => query.isError)
+  ) {
     return <FlashMessage5xxError />;
   }
 
-  if (!isWhitelistedAccount.data) {
-    return <FlashMessageConnectSifChainWallet />;
-  }
-
-  if (isWhitelistedAccount.data && isWhitelistedAccount.data.isWhitelisted === false) {
-    return <FlashMessageAccountNotWhitelisted />;
-  }
-
   if (
-    enhancedPools.isSuccess &&
-    enhancedRowan.isSuccess &&
-    rowanPrice.isSuccess &&
-    govParams.isSuccess &&
-    isWhitelistedAccount.isSuccess &&
-    enhancedPools.data &&
-    enhancedRowan.data &&
-    rowanPrice.data &&
-    govParams.data &&
-    govParams.data.params &&
-    isWhitelistedAccount.data &&
-    isWhitelistedAccount.data.isWhitelisted === true
+    enhancedPoolsQuery.isSuccess &&
+    enhancedRowanQuery.isSuccess &&
+    rowanPriceQuery.isSuccess &&
+    govParamsQuery.isSuccess &&
+    isWhitelistedAccountQuery.isSuccess &&
+    enhancedPoolsQuery.data &&
+    enhancedRowanQuery.data &&
+    rowanPriceQuery.data &&
+    govParamsQuery.data &&
+    govParamsQuery.data.params &&
+    isWhitelistedAccountQuery.data
   ) {
-    const { params } = govParams.data;
+    const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
-    const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
+    const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
       allowedPools.includes(pool.asset.denom as string),
     );
-    enhancedRowan.data.priceUsd = rowanPrice.data;
+    enhancedRowanQuery.data.priceUsd = rowanPriceQuery.data;
     return (
       <Trade
         enhancedPools={filteredEnhancedPools}
-        enhancedRowan={enhancedRowan.data}
+        enhancedRowan={enhancedRowanQuery.data}
+        walletAddress={{
+          isWhitelisted: isWhitelistedAccountQuery.data.isWhitelisted,
+        }}
         govParams={{
           leverageMax: params.leverageMax,
+          whitelistingEnabled: params.whitelistingEnabled,
         }}
       />
     );
@@ -146,8 +150,12 @@ export default TradeCompound;
 type TradeProps = {
   enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
   enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
+  walletAddress: {
+    isWhitelisted: boolean;
+  };
   govParams: {
     leverageMax: string;
+    whitelistingEnabled: boolean;
   };
 };
 
@@ -157,7 +165,7 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const { enhancedPools, enhancedRowan } = props;
+  const { enhancedPools, enhancedRowan, walletAddress } = props;
 
   /**
    * ********************************************************************************************
@@ -775,25 +783,34 @@ const Trade = (props: TradeProps) => {
                 </ul>
               </div>
               <div className="mt-4 grid grid-cols-4 gap-2 px-4 pb-4">
-                <Button
-                  variant="tertiary"
-                  as="button"
-                  size="xs"
-                  className="self-center font-normal text-gray-300"
-                  onClick={onClickReset}
-                >
-                  Reset
-                </Button>
-                <Button
-                  variant="primary"
-                  as="button"
-                  size="md"
-                  className="col-span-3"
-                  disabled={isDisabledOpenPosition}
-                  onClick={onClickOpenPosition}
-                >
-                  Open trade
-                </Button>
+                {!props.govParams.whitelistingEnabled ||
+                (props.govParams.whitelistingEnabled && walletAddress.isWhitelisted) ? (
+                  <>
+                    <Button
+                      variant="tertiary"
+                      as="button"
+                      size="xs"
+                      className="self-center font-normal text-gray-300"
+                      onClick={onClickReset}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      variant="primary"
+                      as="button"
+                      size="md"
+                      className="col-span-3"
+                      disabled={isDisabledOpenPosition}
+                      onClick={onClickOpenPosition}
+                    >
+                      Open trade
+                    </Button>
+                  </>
+                ) : (
+                  <div className="col-span-4">
+                    <FlashMessageAccountNotWhitelisted />
+                  </div>
+                )}
               </div>
             </>
           ) : (
