@@ -311,8 +311,8 @@ const Trade = (props: TradeProps) => {
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
       Boolean(inputLeverage.error) ||
-      inputCollateral.value === "0" ||
-      inputPosition.value === "0"
+      Boolean(inputCollateral.value) === false ||
+      Boolean(inputPosition.value) === false
     );
   }, [inputCollateral.error, inputPosition.error, inputLeverage.error, inputCollateral.value, inputPosition.value]);
 
