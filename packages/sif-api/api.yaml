@@ -804,6 +804,63 @@ paths:
                 x-content-type: application/json
       x-swagger-router-controller: Network
 
+  /margin/openposition/{address}/{poolSymbol}:
+    get:
+      tags:
+        - Margin
+      summary: Get margin open position filtered by user
+      description: This endpoint returns open position history filtered per user address
+      operationId: getMarginOpenPositionBySymbol
+      parameters:
+        - in: path
+          name: address
+          description: Wallet address
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - in: path
+          name: poolSymbol
+          description: Pool symbol for filtering (e.g., CETH, CUSDC)
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          schema:
+            type: number
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: number
+          description: The number of items to return
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+          description: column to sort by
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+          description: direction to sort
+
+      responses:
+        '200':
+          description: Margin Open Position
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/getMarginOpenPositionResponse'
+                x-content-type: application/json
+      x-swagger-router-controller: Network
+
   /margin/history/{address}:
     get:
       tags:
