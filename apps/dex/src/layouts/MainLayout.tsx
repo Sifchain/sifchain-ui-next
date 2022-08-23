@@ -31,14 +31,18 @@ const MainLayout: FC<Props> = (props) => {
       <ToastContainer
         hideProgressBar
         toastClassName={`
-          !border-gray-700 !bg-gray-750 
-          !rounded !border 
+          !border-gray-700 !bg-gray-750
+          !rounded !border
           !text-gray-200 !p-4 relative
         `}
         position="top-right"
         limit={4}
         draggablePercent={60}
-        closeButton={<XIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />}
+        closeButton={({ closeToast, ariaLabel = "Close notification" }) => (
+          <button onClick={closeToast} type="button" aria-label={ariaLabel}>
+            <XIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />
+          </button>
+        )}
         icon={({ type }) => {
           switch (type) {
             case "success":
