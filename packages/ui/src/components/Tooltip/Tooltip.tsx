@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { cloneElement, FC, useMemo, useRef, useState } from "react";
 import {
   Placement,
@@ -85,11 +86,11 @@ export const Tooltip: FC<TooltipProps> = (props) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         as="div"
-        className="grid gap-1 rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
+        className="grid gap-1 whitespace-normal rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
         {...floatingProps}
       >
         {props.title && <div className="flex font-semibold text-gray-100">{props.title}</div>}
-        {props.content}
+        <div className="max-w-sm">{props.content}</div>
         <span className="absolute h-2 w-2 rotate-45 bg-gray-700" ref={arrowRef} style={arrowStyle} />
       </Transition>
     </>
