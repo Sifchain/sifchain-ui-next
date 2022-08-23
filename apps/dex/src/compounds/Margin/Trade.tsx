@@ -166,7 +166,8 @@ const Trade = (props: TradeProps) => {
         return pool;
       }
     }
-    return pools[0];
+
+    return pools.find((pool) => pool.asset.denom === "cusdc");
   }, [pools, qsPool]);
 
   /**
