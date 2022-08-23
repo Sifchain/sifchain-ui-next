@@ -2,7 +2,7 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
-import { Button, formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import { formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
@@ -13,9 +13,7 @@ import Head from "next/head";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
 import { useMarginParamsQuery } from "~/domains/margin/hooks";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
@@ -29,13 +27,8 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  * ********************************************************************************************
  */
 import { ROWAN } from "~/domains/assets";
-import {
-  FlashMessage5xxError,
-  FlashMessageAccountNotWhitelisted,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageLoading,
-  PoolOverview,
-} from "./_components";
+import { TradeActions } from "./TradeActions";
+import { FlashMessage5xxError, FlashMessageLoading, PoolOverview } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -51,9 +44,6 @@ import {
 } from "./_trade";
 import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
 
-const calculateOpenPosition = (positionTokenAmount: number, positionPriceUsd: number) => {
-  return positionTokenAmount / positionPriceUsd;
-};
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
 };
@@ -79,22 +69,9 @@ const TradeCompound: NextPage = () => {
   const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPriceQuery = useRowanPriceQuery();
   const govParamsQuery = useMarginParamsQuery();
-  const walletAddressQuery = useSifSignerAddress();
-  const isWhitelistedAccountQuery = useMarginIsWhitelistedAccount({
-    walletAddress: walletAddressQuery.data ?? "",
-  });
 
-  if (
-    [
-      enhancedPoolsQuery,
-      enhancedRowanQuery,
-      rowanPriceQuery,
-      govParamsQuery,
-      walletAddressQuery,
-      isWhitelistedAccountQuery,
-    ].some((query) => query.isError)
-  ) {
-    return <FlashMessage5xxError />;
+  if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
+    return <FlashMessage5xxError size="full-page" />;
   }
 
   if (
@@ -102,13 +79,11 @@ const TradeCompound: NextPage = () => {
     enhancedRowanQuery.isSuccess &&
     rowanPriceQuery.isSuccess &&
     govParamsQuery.isSuccess &&
-    isWhitelistedAccountQuery.isSuccess &&
     enhancedPoolsQuery.data &&
     enhancedRowanQuery.data &&
     rowanPriceQuery.data &&
     govParamsQuery.data &&
-    govParamsQuery.data.params &&
-    isWhitelistedAccountQuery.data
+    govParamsQuery.data.params
   ) {
     const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
@@ -116,22 +91,10 @@ const TradeCompound: NextPage = () => {
       allowedPools.includes(pool.asset.denom as string),
     );
     enhancedRowanQuery.data.priceUsd = rowanPriceQuery.data;
-    return (
-      <Trade
-        enhancedPools={filteredEnhancedPools}
-        enhancedRowan={enhancedRowanQuery.data}
-        walletAddress={{
-          isWhitelisted: isWhitelistedAccountQuery.data.isWhitelisted,
-        }}
-        govParams={{
-          leverageMax: params.leverageMax,
-          whitelistingEnabled: params.whitelistingEnabled,
-        }}
-      />
-    );
+    return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
   }
 
-  return <FlashMessageLoading />;
+  return <FlashMessageLoading size="full-page" />;
 };
 
 export default TradeCompound;
@@ -150,13 +113,7 @@ export default TradeCompound;
 type TradeProps = {
   enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
   enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
-  walletAddress: {
-    isWhitelisted: boolean;
-  };
-  govParams: {
-    leverageMax: string;
-    whitelistingEnabled: boolean;
-  };
+  govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
 };
 
 const ROWAN_DENOM = "rowan";
@@ -165,7 +122,7 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const { enhancedPools, enhancedRowan, walletAddress } = props;
+  const { enhancedPools, enhancedRowan } = props;
 
   /**
    * ********************************************************************************************
@@ -782,36 +739,12 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
-              <div className="mt-4 grid grid-cols-4 gap-2 px-4 pb-4">
-                {!props.govParams.whitelistingEnabled ||
-                (props.govParams.whitelistingEnabled && walletAddress.isWhitelisted) ? (
-                  <>
-                    <Button
-                      variant="tertiary"
-                      as="button"
-                      size="xs"
-                      className="self-center font-normal text-gray-300"
-                      onClick={onClickReset}
-                    >
-                      Reset
-                    </Button>
-                    <Button
-                      variant="primary"
-                      as="button"
-                      size="md"
-                      className="col-span-3"
-                      disabled={isDisabledOpenPosition}
-                      onClick={onClickOpenPosition}
-                    >
-                      Open trade
-                    </Button>
-                  </>
-                ) : (
-                  <div className="col-span-4">
-                    <FlashMessageAccountNotWhitelisted />
-                  </div>
-                )}
-              </div>
+              <TradeActions
+                govParams={props.govParams}
+                onClickReset={onClickReset}
+                isDisabledOpenPosition={isDisabledOpenPosition}
+                onClickOpenPosition={onClickOpenPosition}
+              />
             </>
           ) : (
             <div className="bg-gray-850 m-4 flex items-center justify-center rounded p-2 text-4xl">

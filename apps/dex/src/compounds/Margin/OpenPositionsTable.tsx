@@ -102,19 +102,18 @@ export type OpenPositionsTableProps = {
 };
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
+  const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
+
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
     orderBy: (router.query["orderBy"] as string) || "date_opened",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-
-  const { findBySymbolOrDenom } = useTokenRegistryQuery();
-
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
@@ -129,27 +128,30 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   });
 
   if (walletAddress.isIdle) {
-    return <FlashMessageConnectSifChainWallet />;
+    return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
+
   if (walletAddress.isError) {
-    return <FlashMessageConnectSifChainWalletError />;
+    return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
+
   if (walletAddress.isLoading) {
-    return <FlashMessageConnectSifChainWalletLoading />;
+    return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
   if (openPositionsQuery.isLoading) {
-    return <FlashMessageLoading />;
+    return <FlashMessageLoading size="full-page" />;
   }
 
-  if (openPositionsQuery.isSuccess) {
+  if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+    const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
       <section className="flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
-          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
+          <table className="h-full w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
@@ -400,7 +402,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     );
   }
 
-  return <FlashMessage5xxError />;
+  return <FlashMessage5xxError size="full-page" />;
 };
 
 export default OpenPositionsTable;
