@@ -144,9 +144,7 @@ const HistoryTable = (props: HistoryTableProps) => {
               </tr>
             </thead>
             <tbody className="bg-gray-850">
-              {results.length <= 0 && (
-                <NoResultsRow colSpan={headers.length} message="History not available. Try again later." />
-              )}
+              {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
                 const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
