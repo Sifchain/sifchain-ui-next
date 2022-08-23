@@ -53,6 +53,9 @@ export function useOpenMTPMutation() {
     },
     onSettled(data, error) {
       toast.dismiss(toastId);
+      console.group("Open MTP Error");
+      console.log(error);
+      console.groupEnd();
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)

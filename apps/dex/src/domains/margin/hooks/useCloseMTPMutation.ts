@@ -45,6 +45,9 @@ export function useCloseMTPMutation() {
 
     onSettled(data, error) {
       toast.dismiss(toastId);
+      console.group("Close MTP Error");
+      console.log(error);
+      console.groupEnd();
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
