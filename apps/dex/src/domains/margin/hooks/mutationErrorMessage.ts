@@ -8,4 +8,4 @@ export const DEFAULT_ERROR_OPEN_POSITION = "Failed to open margin position. Try 
 
 export const POOL_MAX_OPEN_POSITIONS_REACHED =
   "The selected pool has reached it's limit for open margin positions. Please try again later.";
-export const POOL_TRADE_TEMPORARILY_DISABLED = "Trade is temporarily disabled for this pool.";
+export const POOL_TRADE_TEMPORARILY_DISABLED = "Margin trading is temporarily disabled for this pool.";
