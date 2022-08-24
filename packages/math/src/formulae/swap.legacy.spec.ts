@@ -5,7 +5,7 @@ import {
   calculateLiquidityProviderFee,
   calculateSwapAmountNeeded,
   calculateSwapResult,
-} from "./swap";
+} from "./swap.legacy";
 
 import BigNumber from "bignumber.js";
 import pmtpSwapFixture from "../../__fixtures__/pmtp_swap.json";
