@@ -6,24 +6,25 @@ import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import * as errors from "./mutationErrorMessage";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
-const OPEN_MTP_ERRORS = {
-  NOT_ENOUGH_BALANCE: "You dont have enough balance of the required coin",
-};
-
 export function friendlyOpenMTPMutationErrorMessage(error: string) {
-  if (error.includes("unauthorized")) {
-    return "Your account has not yet been approved for margin trading.";
+  if (error.includes("unauthorized") || error.includes("address not on whitelist")) {
+    return errors.ACCOUNT_NOT_APPROVED_FOR_TRADING;
   }
 
   if (error.includes("margin not enabled for pool")) {
-    return "Trade is temporarily disabled for this pool.";
+    return errors.TRADE_TEMPORARILY_DISABLED;
   }
 
   if (error.includes("max open positions reached")) {
-    return "Pool limit for open positions reached. Try again later.";
+    return errors.TRADE_MAX_OPEN_POSITIONS_REACHED;
+  }
+
+  if (error.includes("user does not have enough balance of the required coin")) {
+    return errors.NOT_ENOUGH_BALANCE;
   }
 
   if (error.includes("Account does not exist on chain")) {
@@ -33,7 +34,7 @@ export function friendlyOpenMTPMutationErrorMessage(error: string) {
   console.group("Missing Friendly Error Message for Open MTP error:");
   console.log(error);
   console.groupEnd();
-  return "Failed to open margin position";
+  return errors.DEFAULT_ERROR_OPEN;
 }
 
 export function useOpenMTPMutation() {
@@ -43,7 +44,7 @@ export function useOpenMTPMutation() {
   async function mutation(variables: OpenMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
 
-    const req = await signingStargateClient?.signAndBroadcast(
+    return await signingStargateClient?.signAndBroadcast(
       signerAddress,
       [
         {
@@ -56,12 +57,6 @@ export function useOpenMTPMutation() {
       ],
       DEFAULT_FEE,
     );
-
-    if (req?.rawLog?.includes("user does not have enough balance of the required coin")) {
-      throw new Error(OPEN_MTP_ERRORS.NOT_ENOUGH_BALANCE);
-    }
-
-    return req;
   }
 
   let toastId: string | number;

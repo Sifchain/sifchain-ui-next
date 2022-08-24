@@ -6,18 +6,19 @@ import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+import * as errors from "./mutationErrorMessage";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
 export function friendlyCloseMTPMutationErrorMessage(error: string) {
   if (error.includes("unauthorized")) {
-    return "Your account has not yet been approved for margin trading.";
+    return errors.ACCOUNT_NOT_APPROVED_FOR_TRADING;
   }
 
   console.group("Missing Friendly Error Message for Close MTP error:");
   console.log(error);
   console.groupEnd();
-  return "Failed to close margin position";
+  return errors.DEFAULT_ERROR_CLOSE_POSITION;
 }
 
 export function useCloseMTPMutation() {
