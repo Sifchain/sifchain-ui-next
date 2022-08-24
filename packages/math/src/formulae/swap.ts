@@ -248,3 +248,22 @@ export function calculateSwapFeeToRowan({
 
   return term1.div(term2.times(term3));
 }
+
+export function calculateSwap(params: SwapParams, toRowan: boolean) {
+  const fn = toRowan ? calculateSwapToRowan : calculateSwapFromRowan;
+
+  return fn(params);
+}
+
+export function calculateSwapFee(params: SwapParams, toRowan: boolean) {
+  const fn = toRowan ? calculateSwapFeeToRowan : calculateSwapFeeFromRowan;
+
+  return fn(params);
+}
+
+export function calculateSwapWithFee(params: SwapParams, toRowan: boolean) {
+  return {
+    swap: calculateSwap(params, toRowan),
+    fee: calculateSwapFee(params, toRowan),
+  };
+}
