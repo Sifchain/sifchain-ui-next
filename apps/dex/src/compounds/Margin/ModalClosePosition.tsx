@@ -6,7 +6,7 @@ import { SyntheticEvent, useCallback, useMemo } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
-import { transformMTPMutationErrors, useCloseMTPMutation } from "~/domains/margin/hooks";
+import { friendlyCloseMTPMutationErrorMessage, useCloseMTPMutation } from "~/domains/margin/hooks";
 import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { FlashMessageLoading } from "./_components";
 import { formatNumberAsPercent } from "./_intl";
@@ -263,7 +263,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         {confirmClosePosition.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
             <b className="mr-1">Failed to close margin position:</b>
-            <span>{transformMTPMutationErrors((confirmClosePosition.error as Error).message)}</span>
+            <span>{friendlyCloseMTPMutationErrorMessage((confirmClosePosition.error as Error).message)}</span>
           </p>
         ) : null}
       </>

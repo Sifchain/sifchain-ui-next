@@ -6,13 +6,35 @@ import { isError, useMutation } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
-import { transformMTPMutationErrors } from "./transformMTPMutationErrors";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
 const OPEN_MTP_ERRORS = {
   NOT_ENOUGH_BALANCE: "You dont have enough balance of the required coin",
 };
+
+export function friendlyOpenMTPMutationErrorMessage(error: string) {
+  if (error.includes("unauthorized")) {
+    return "Your account has not yet been approved for margin trading.";
+  }
+
+  if (error.includes("margin not enabled for pool")) {
+    return "Trade is temporarily disabled for this pool.";
+  }
+
+  if (error.includes("max open positions reached")) {
+    return "Pool limit for open positions reached. Try again later.";
+  }
+
+  if (error.includes("Account does not exist on chain")) {
+    return error;
+  }
+
+  console.group("Missing Friendly Error Message for Open MTP error:");
+  console.log(error);
+  console.groupEnd();
+  return "Failed to open margin position";
+}
 
 export function useOpenMTPMutation() {
   const { data: signerAddress } = useSifSignerAddress();
@@ -60,8 +82,8 @@ export function useOpenMTPMutation() {
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)
-          ? `Failed to open margin position: ${transformMTPMutationErrors(error.message)}`
-          : data?.rawLog ?? "Failed to open margin position";
+          ? friendlyOpenMTPMutationErrorMessage(error.message)
+          : friendlyOpenMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
 
         toast.error(errorMessage);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
