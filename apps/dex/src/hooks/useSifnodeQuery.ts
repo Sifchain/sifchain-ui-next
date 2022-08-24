@@ -57,7 +57,7 @@ export default function useSifnodeQuery<
       return await method(...args);
     },
     {
-      enabled: "enabled" in options ? options.enabled && Boolean(client) : Boolean(client),
+      enabled: "enabled" in options ? options.enabled : Boolean(client),
       ...(omit(["enabled"], options) as {}),
     },
   );
