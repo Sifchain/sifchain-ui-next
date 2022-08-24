@@ -54,7 +54,11 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
       };
     },
     {
-      enabled: Boolean(denom) && registryQuery.isSuccess && (denom === "rowan" || poolQuery.isSuccess),
+      enabled:
+        Boolean(denom) &&
+        registryQuery.isSuccess &&
+        allBalancesQuery.isSuccess &&
+        (denom === "rowan" || poolQuery.isSuccess),
     },
   );
 
