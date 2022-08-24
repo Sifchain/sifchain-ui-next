@@ -264,8 +264,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
     },
     pmtpBlockRate?: string,
     slippage?: number | string,
+    swapFeeRate?: string,
   ) {
-    const result = this.#simulateAutoCompositePoolSwap(fromCoin, toCoin, pmtpBlockRate, slippage);
+    const result = this.#simulateAutoCompositePoolSwap(fromCoin, toCoin, pmtpBlockRate, swapFeeRate, slippage);
+
     return {
       rawReceiving: result.rawReceiving.integerValue().toFixed(0),
       minimumReceiving: result.minimumReceiving.integerValue().toFixed(0),
@@ -313,7 +315,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
       ]);
     })();
 
-    const pmtpParamsRes = await queryClient.clp.getPmtpParams({});
+    const [pmtpParamsRes, swapFeeRateRes] = await Promise.all([
+      queryClient.clp.getPmtpParams({}),
+      queryClient.clp.getSwapFeeRate({}),
+    ]);
 
     const swapResult = this.#simulateAutoCompositePoolSwap(
       {
@@ -327,6 +332,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolExternalAssetBalance: secondPoolRes.pool?.externalAssetBalance ?? "0",
       },
       pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+      swapFeeRateRes.swapFeeRate,
       slippage,
     );
 
@@ -343,6 +349,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       poolNativeAssetBalance: string;
     },
     pmtpBlockRate?: string,
+    swapFeeRate?: string,
     slippage?: number | string,
   ) {
     if (fromCoin.denom === toCoin.denom) {
@@ -362,6 +369,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
           denom: toCoin.denom,
         },
         pmtpBlockRate,
+        swapFeeRate,
         slippage,
       );
     }
@@ -379,6 +387,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
           denom: toCoin.denom,
         },
         pmtpBlockRate,
+        swapFeeRate,
         slippage,
       );
     }
@@ -395,6 +404,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         denom: NATIVE_ASSET_DENOM,
       },
       pmtpBlockRate,
+      swapFeeRate,
     );
 
     const firstSwapConvertedLpFee = this.#simulateSwap(
@@ -407,6 +417,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
         poolBalance: toCoin.poolExternalAssetBalance,
         denom: toCoin.denom,
       },
+      pmtpBlockRate,
+      swapFeeRate,
     );
 
     const secondSwap = this.#simulateSwap(
@@ -420,6 +432,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         denom: toCoin.denom,
       },
       pmtpBlockRate,
+      swapFeeRate,
       slippage,
     );
 
@@ -441,6 +454,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       denom: string;
     },
     pmtpBlockRate?: string,
+    swapFeeRate?: string,
     slippage?: number | string,
   ) {
     const swapParams: SwapParams = {
@@ -448,7 +462,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
       inputBalanceInPool: fromCoin.poolBalance,
       outputBalanceInPool: toCoin.poolBalance,
       currentRatioShiftingRate: pmtpBlockRate ?? "0",
-      swapFeeRate: "0",
+      swapFeeRate: swapFeeRate ?? "0",
     };
     const isSwappingToNativeCoin = this.#isNativeCoin(toCoin.denom);
     const { swap, fee } = calculateSwapWithFee(swapParams, isSwappingToNativeCoin);
