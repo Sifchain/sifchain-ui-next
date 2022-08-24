@@ -95,7 +95,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <section className="flex h-full flex-col">
+      <section className="bg-gray-850 flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
           <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
