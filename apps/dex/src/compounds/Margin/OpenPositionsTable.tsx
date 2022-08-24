@@ -86,12 +86,12 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
 ];
 const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
-  const yearsLabel = years ? `${years} ${years > 1 ? "years" : "year"}` : null;
-  const monthsLabel = months ? `${months} ${months > 1 ? "months" : "month"}` : null;
-  const daysLabel = days ? `${days} ${days > 1 ? "days" : "day"}` : null;
-  const hoursLabel = hours ? `${hours} ${hours > 1 ? "hours" : "hour"}` : null;
-  const minutesLabel = minutes ? `${minutes} ${minutes > 1 ? "minutes" : "minute"}` : null;
-  const secondsLabel = seconds ? `${seconds} ${seconds > 1 ? "seconds" : "second"}` : null;
+  const yearsLabel = years ? `${years}y` : null;
+  const monthsLabel = months ? `${months}m` : null;
+  const daysLabel = days ? `${days}d` : null;
+  const hoursLabel = hours ? `${hours}h` : null;
+  const minutesLabel = minutes ? `${minutes}min` : null;
+  const secondsLabel = seconds ? `${seconds}s` : null;
   const isSeconds = [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel].every((item) => item === null);
   const maybeSecondsLabel = isSeconds ? secondsLabel : null;
   return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, maybeSecondsLabel]
