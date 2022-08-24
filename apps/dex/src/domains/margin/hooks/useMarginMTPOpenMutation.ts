@@ -10,33 +10,6 @@ import * as errors from "./mutationErrorMessage";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
-export function friendlyOpenMTPMutationErrorMessage(error: string) {
-  if (error.includes("unauthorized") || error.includes("address not on whitelist")) {
-    return errors.ACCOUNT_NOT_APPROVED_FOR_TRADING;
-  }
-
-  if (error.includes("margin not enabled for pool")) {
-    return errors.POOL_TRADE_TEMPORARILY_DISABLED;
-  }
-
-  if (error.includes("max open positions reached")) {
-    return errors.POOL_MAX_OPEN_POSITIONS_REACHED;
-  }
-
-  if (error.includes("user does not have enough balance of the required coin")) {
-    return errors.ACCOUNT_NOT_ENOUGH_BALANCE;
-  }
-
-  if (error.includes("Account does not exist on chain")) {
-    return errors.ACCOUNT_NOT_IN_SIFCHAIN;
-  }
-
-  console.group("Missing Friendly Error Message for Open MTP error:");
-  console.log(error);
-  console.groupEnd();
-  return errors.DEFAULT_ERROR_OPEN_POSITION;
-}
-
 export function useMarginMTPOpenMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
@@ -44,7 +17,7 @@ export function useMarginMTPOpenMutation() {
   async function mutation(variables: OpenMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
 
-    return await signingStargateClient?.signAndBroadcast(
+    const res = await signingStargateClient?.signAndBroadcast(
       signerAddress,
       [
         {
@@ -57,6 +30,40 @@ export function useMarginMTPOpenMutation() {
       ],
       DEFAULT_FEE,
     );
+
+    if (res && isDeliverTxFailure(res) && res.rawLog) {
+      console.group("Open MTP Error");
+      console.log({ error: res });
+      console.groupEnd();
+
+      if (
+        res.rawLog.includes("unauthorized") ||
+        res.rawLog.includes("unauthorised") ||
+        res.rawLog.includes("address not on whitelist")
+      ) {
+        throw new Error(errors.ACCOUNT_NOT_APPROVED_FOR_TRADING);
+      }
+
+      if (res.rawLog.includes("margin not enabled for pool")) {
+        throw new Error(errors.POOL_TRADE_TEMPORARILY_DISABLED);
+      }
+
+      if (res.rawLog.includes("max open positions reached")) {
+        throw new Error(errors.POOL_MAX_OPEN_POSITIONS_REACHED);
+      }
+
+      if (res.rawLog.includes("user does not have enough balance of the required coin")) {
+        throw new Error(errors.ACCOUNT_NOT_ENOUGH_BALANCE);
+      }
+
+      if (res.rawLog.includes("Account does not exist on chain")) {
+        throw new Error(errors.ACCOUNT_NOT_IN_SIFCHAIN);
+      }
+
+      throw new Error(errors.DEFAULT_ERROR_OPEN_POSITION);
+    }
+
+    return res;
   }
 
   let toastId: string | number;
@@ -70,17 +77,9 @@ export function useMarginMTPOpenMutation() {
     },
     onSettled(data, error) {
       toast.dismiss(toastId);
-      console.group("Open MTP Error");
-      console.log(data);
-      console.log(error);
-      console.groupEnd();
-
-      if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
-        const errorMessage = isError(error)
-          ? friendlyOpenMTPMutationErrorMessage(error.message)
-          : friendlyOpenMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
-
-        toast.error(`Error: ${errorMessage}`);
+      if (data === undefined && Boolean(error)) {
+        const { message } = error as Error;
+        toast.error(message);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
         toast.success(`Successfully openned margin position`);
       }

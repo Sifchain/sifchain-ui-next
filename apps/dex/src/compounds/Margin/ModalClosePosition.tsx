@@ -13,10 +13,10 @@ import { SyntheticEvent, useCallback, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
-import { friendlyCloseMTPMutationErrorMessage, useMarginMTPCloseMutation } from "~/domains/margin/hooks";
+import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
-import AssetIcon from "~/compounds/AssetIcon";
 
+import AssetIcon from "~/compounds/AssetIcon";
 import { formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
@@ -270,8 +270,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         )}
         {confirmClosePosition.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Error:</b>
-            <span>{friendlyCloseMTPMutationErrorMessage((confirmClosePosition.error as Error).message)}</span>
+            <b className="mr-1">Failed to close position:</b>
+            <span>{(confirmClosePosition.error as Error).message}</span>
           </p>
         ) : null}
       </>

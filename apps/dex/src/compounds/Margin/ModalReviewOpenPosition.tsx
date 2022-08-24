@@ -3,7 +3,7 @@ import type { SyntheticEvent } from "react";
 import { FlashMessage, Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
-import { useMarginMTPOpenMutation, friendlyOpenMTPMutationErrorMessage } from "~/domains/margin/hooks";
+import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
 
 import AssetIcon from "~/compounds/AssetIcon";
 
@@ -102,8 +102,8 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
         )}
         {confirmOpenPositionMutation.isError ? (
           <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Error:</b>
-            <span>{friendlyOpenMTPMutationErrorMessage((confirmOpenPositionMutation.error as Error).message)}</span>
+            <b className="mr-1">Failed to open position:</b>
+            <span>{(confirmOpenPositionMutation.error as Error).message}</span>
           </p>
         ) : null}
       </>

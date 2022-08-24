@@ -10,17 +10,6 @@ import * as errors from "./mutationErrorMessage";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
-export function friendlyCloseMTPMutationErrorMessage(error: string) {
-  if (error.includes("unauthorized")) {
-    return errors.ACCOUNT_NOT_APPROVED_FOR_TRADING;
-  }
-
-  console.group("Missing Friendly Error Message for Close MTP error:");
-  console.log(error);
-  console.groupEnd();
-  return errors.DEFAULT_ERROR_CLOSE_POSITION;
-}
-
 export function useMarginMTPCloseMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
@@ -29,7 +18,7 @@ export function useMarginMTPCloseMutation() {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
     invariant(signingStargateClient !== undefined, "Sif signing stargate client is not defined");
 
-    return await signingStargateClient.signAndBroadcast(
+    const res = await signingStargateClient.signAndBroadcast(
       signerAddress,
       [
         {
@@ -42,6 +31,28 @@ export function useMarginMTPCloseMutation() {
       ],
       DEFAULT_FEE,
     );
+
+    if (res && isDeliverTxFailure(res) && res.rawLog) {
+      console.group("Close MTP Error");
+      console.log({ error: res });
+      console.groupEnd();
+
+      if (
+        res.rawLog.includes("unauthorized") ||
+        res.rawLog.includes("unauthorised") ||
+        res.rawLog.includes("address not on whitelist")
+      ) {
+        throw new Error(errors.ACCOUNT_NOT_APPROVED_FOR_TRADING);
+      }
+
+      if (res.rawLog.includes("mtp not found")) {
+        throw new Error(errors.MTP_NOT_FOUND);
+      }
+
+      throw new Error(errors.DEFAULT_ERROR_CLOSE_POSITION);
+    }
+
+    return res;
   }
 
   let toastId: string | number;
@@ -56,17 +67,9 @@ export function useMarginMTPCloseMutation() {
 
     onSettled(data, error) {
       toast.dismiss(toastId);
-      console.group("Close MTP Error");
-      console.log(data);
-      console.log(error);
-      console.groupEnd();
-
-      if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
-        const errorMessage = isError(error)
-          ? friendlyCloseMTPMutationErrorMessage(error.message)
-          : friendlyCloseMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
-
-        toast.error(`Error: ${errorMessage}`);
+      if (data === undefined && Boolean(error)) {
+        const { message } = error as Error;
+        toast.error(message);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
         toast.success(`Successfully closed margin position`);
       }
