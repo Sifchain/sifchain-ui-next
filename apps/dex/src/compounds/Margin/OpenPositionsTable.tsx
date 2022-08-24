@@ -39,7 +39,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
  * ********************************************************************************************
  */
 
-import { findNextOrderAndSortBy, QS_DEFAULTS, SORT_BY } from "./_tables";
+import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";

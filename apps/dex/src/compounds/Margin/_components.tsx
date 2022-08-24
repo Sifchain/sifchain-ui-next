@@ -2,13 +2,7 @@ import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 import clsx from "clsx";
-import {
-  formatNumberAsCurrency,
-  TokenEntry,
-  TokenSelector as BaseTokenSelector,
-  Tooltip,
-  RacetrackSpinnerIcon,
-} from "@sifchain/ui";
+import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector, Tooltip } from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";

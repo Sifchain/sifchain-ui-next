@@ -59,8 +59,6 @@ export type TokenSelectorProps = {
   hideColumns?: string[];
 };
 
-type SortKeys = keyof TokenEntry;
-
 const SORT_KEYS: SortOptions<TokenEntry>[] = [
   {
     sortKey: "name",
