@@ -18,6 +18,7 @@ export function useOpenPositionsQuery() {
     orderBy: (router.query["orderBy"] as string) || "date_opened",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
+
   return useSifApiQuery(
     "margin.getMarginOpenPosition",
     [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],

@@ -17,6 +17,7 @@ import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
 
 import AssetIcon from "~/compounds/AssetIcon";
+
 import { formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
@@ -225,8 +226,8 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(borrowAmountAsNumber, 4)}</span>
-                <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
+                <span className="mr-1">{formatNumberAsDecimal(props.data.liabilities, 4)}</span>
+                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
           </li>
