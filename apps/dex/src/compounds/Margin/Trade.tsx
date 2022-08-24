@@ -752,12 +752,7 @@ const Trade = (props: TradeProps) => {
                     <li className="px-4">
                       <div className="flex flex-row items-center">
                         <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>
-                          {formatNumberAsPercent(
-                            Decimal.fromAtomics(poolActive.interestRate, ROWAN.decimals).toFloatApproximation() * 100,
-                            8,
-                          )}
-                        </span>
+                        <span>{formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10)}</span>
                       </div>
                     </li>
                   ) : null}
