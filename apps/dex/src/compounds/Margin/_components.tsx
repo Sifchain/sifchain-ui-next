@@ -188,7 +188,7 @@ export function FlashMessage5xxError({ size, className }: { size?: "full-page"; 
       : "rounded-lg p-4 text-sm text-red-700 bg-red-100";
   return (
     <div className={clsx(sizeStyles, className)} role="alert">
-      Ooops! Something wrong happened, try again later.
+      Ooops! Something wrong happened. Try again later.
     </div>
   );
 }

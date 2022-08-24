@@ -262,7 +262,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         )}
         {confirmClosePosition.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to close margin position:</b>
+            <b className="mr-1">Error:</b>
             <span>{friendlyCloseMTPMutationErrorMessage((confirmClosePosition.error as Error).message)}</span>
           </p>
         ) : null}

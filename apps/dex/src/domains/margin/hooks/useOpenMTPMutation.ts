@@ -28,7 +28,7 @@ export function friendlyOpenMTPMutationErrorMessage(error: string) {
   }
 
   if (error.includes("Account does not exist on chain")) {
-    return error;
+    return errors.ACCOUNT_NOT_ON_CHAIN;
   }
 
   console.group("Missing Friendly Error Message for Open MTP error:");
@@ -80,7 +80,7 @@ export function useOpenMTPMutation() {
           ? friendlyOpenMTPMutationErrorMessage(error.message)
           : friendlyOpenMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
 
-        toast.error(errorMessage);
+        toast.error(`Error: ${errorMessage}`);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
         toast.success(`Successfully openned margin position`);
       }

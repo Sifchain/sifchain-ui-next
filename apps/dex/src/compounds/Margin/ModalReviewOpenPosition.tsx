@@ -103,7 +103,7 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
         )}
         {confirmOpenPositionMutation.isError ? (
           <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to open margin position:</b>
+            <b className="mr-1">Error:</b>
             <span>{friendlyOpenMTPMutationErrorMessage((confirmOpenPositionMutation.error as Error).message)}</span>
           </p>
         ) : null}

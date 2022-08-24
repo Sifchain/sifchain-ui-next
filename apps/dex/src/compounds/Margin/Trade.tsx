@@ -70,8 +70,14 @@ const TradeCompound: NextPage = () => {
   const rowanPriceQuery = useRowanPriceQuery();
   const govParamsQuery = useMarginParamsQuery();
 
+  console.group("Trade Page Query");
+  console.log({ enhancedPoolsQuery });
+  console.log({ enhancedRowanQuery, rowanPriceQuery });
+  console.log({ govParamsQuery });
+  console.groupEnd();
+
   if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
-    console.group("Trade Page Loading Error");
+    console.group("Trade Page Query Error");
     console.log({ enhancedPoolsQuery });
     console.log({ enhancedRowanQuery, rowanPriceQuery });
     console.log({ govParamsQuery });

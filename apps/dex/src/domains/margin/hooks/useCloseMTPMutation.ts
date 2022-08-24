@@ -66,7 +66,7 @@ export function useCloseMTPMutation() {
           ? friendlyCloseMTPMutationErrorMessage(error.message)
           : friendlyCloseMTPMutationErrorMessage(data && data.rawLog ? data.rawLog : "");
 
-        toast.error(errorMessage);
+        toast.error(`Error: ${errorMessage}`);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
         toast.success(`Successfully closed margin position`);
       }
