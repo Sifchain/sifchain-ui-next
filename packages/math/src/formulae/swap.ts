@@ -1,3 +1,13 @@
+/**
+ * @TODO update the link once it's merged
+ *
+ *  Implements the spec for `Fixed Rate Swap Fees`
+ *
+ * - proposal - https://github.com/Sifchain/sifnode/blob/feature/swap_formula/docs/proposals/fixed_rate_swap_fees.md
+ * - tutorial - https://github.com/Sifchain/sifnode/blob/feature/swap_formula/docs/tutorials/swap-fee-rate.md
+ *
+ */
+
 import BigNumber from "bignumber.js";
 
 const ONE = BigNumber(1);
@@ -16,7 +26,7 @@ export type SwapParams = {
    */
   outputBalanceInPool: BigNumber.Value;
   /**
-   * current swap fee rate
+   * current swap fee rate (sifnode gov param)
    */
   swapFeeRate: BigNumber.Value;
   /**
