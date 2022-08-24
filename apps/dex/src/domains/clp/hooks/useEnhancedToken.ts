@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
-import { usePoolStatsQuery } from ".";
+import { usePoolStatsQuery } from "./usePoolStats";
 
 /**
  * Aggregates pool, tokenStats, and tokenBalances for a token.
