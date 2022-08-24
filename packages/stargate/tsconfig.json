@@ -4,6 +4,5 @@
     "moduleResolution": "Node",
     "declaration": true
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src"]
 }
