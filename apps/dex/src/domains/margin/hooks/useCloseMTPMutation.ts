@@ -44,7 +44,7 @@ export function useCloseMTPMutation() {
     },
 
     onSettled(data, error) {
-      toast.dismiss(toastId);
+      // toast.dismiss(toastId);
       console.group("Close MTP Error");
       console.log(error);
       console.groupEnd();
