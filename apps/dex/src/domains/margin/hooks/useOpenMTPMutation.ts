@@ -16,25 +16,25 @@ export function friendlyOpenMTPMutationErrorMessage(error: string) {
   }
 
   if (error.includes("margin not enabled for pool")) {
-    return errors.TRADE_TEMPORARILY_DISABLED;
+    return errors.POOL_TRADE_TEMPORARILY_DISABLED;
   }
 
   if (error.includes("max open positions reached")) {
-    return errors.TRADE_MAX_OPEN_POSITIONS_REACHED;
+    return errors.POOL_MAX_OPEN_POSITIONS_REACHED;
   }
 
   if (error.includes("user does not have enough balance of the required coin")) {
-    return errors.NOT_ENOUGH_BALANCE;
+    return errors.ACCOUNT_NOT_ENOUGH_BALANCE;
   }
 
   if (error.includes("Account does not exist on chain")) {
-    return errors.ACCOUNT_NOT_ON_CHAIN;
+    return errors.ACCOUNT_NOT_IN_SIFCHAIN;
   }
 
   console.group("Missing Friendly Error Message for Open MTP error:");
   console.log(error);
   console.groupEnd();
-  return errors.DEFAULT_ERROR_OPEN;
+  return errors.DEFAULT_ERROR_OPEN_POSITION;
 }
 
 export function useOpenMTPMutation() {
