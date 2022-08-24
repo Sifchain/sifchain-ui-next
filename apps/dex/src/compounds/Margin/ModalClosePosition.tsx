@@ -1,15 +1,16 @@
-import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
-
-import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
-import { SyntheticEvent, useCallback } from "react";
-import Long from "long";
-
-import { FlashMessageLoading } from "./_components";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
-import { useCloseMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
-import AssetIcon from "~/compounds/AssetIcon";
 import { Decimal } from "@cosmjs/math";
+import { ArrowDownIcon, Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
+import Long from "long";
+import { SyntheticEvent, useCallback, useMemo } from "react";
+
+import AssetIcon from "~/compounds/AssetIcon";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
+import { transformMTPMutationErrors, useCloseMTPMutation } from "~/domains/margin/hooks";
+import type { OpenPositionsQueryData } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
+import { FlashMessageLoading } from "./_components";
+import { formatNumberAsPercent } from "./_intl";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
 type ModalClosePositionProps = {
   data: OpenPositionsQueryData;
@@ -23,11 +24,70 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const confirmClosePosition = useCloseMTPMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
-  const collateralToPositionSwap = useSwapSimulation(
+
+  const positionDecimals = positionTokenQuery.data?.decimals ?? 0;
+  const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
+
+  /**
+   * Value-guard for bad data used from tests, we may not need it in "production"
+   * But for feature testing, we do need it
+   */
+  let collateralAmountAsDecimalString = "0";
+  let custodyAmountAsDecimalString = "0";
+  try {
+    collateralAmountAsDecimalString = Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString();
+    custodyAmountAsDecimalString = Decimal.fromAtomics(props.data.custody_amount, positionDecimals).toString();
+  } catch (err) {}
+  const leverageAsNumber = Number(props.data.leverage);
+
+  const collateralAmountWithLeverage = BigNumber(collateralAmountAsDecimalString).times(leverageAsNumber).toNumber();
+
+  const { data: currentPositionSwap } = useSwapSimulation(
     props.data.collateral_asset,
     props.data.custody_asset,
-    props.data.collateral_amount,
+    collateralAmountWithLeverage.toString(),
   );
+  const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
+  const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
+
+  const totalInterestPaid = Number(props.data.interest_paid ?? "0");
+
+  const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimalString).div(leverageAsNumber).toNumber();
+
+  const { data: closingPositionSwap } = useSwapSimulation(
+    props.data.custody_asset,
+    props.data.collateral_asset,
+    custodyAmountlWithLeverage.toString(),
+  );
+
+  const closingPositionRaw = closingPositionSwap?.rawReceiving ?? "0";
+  const closingPositionMinReceivingRaw = closingPositionSwap?.minimumReceiving ?? "0";
+
+  const closingPositionAsNumber = Decimal.fromAtomics(closingPositionRaw, collateralDecimals).toFloatApproximation();
+
+  const closingPositionMinReceivingAsNumber = Decimal.fromAtomics(
+    closingPositionMinReceivingRaw,
+    collateralDecimals,
+  ).toFloatApproximation();
+
+  const closingPositionFees = closingPositionAsNumber - closingPositionMinReceivingAsNumber;
+
+  const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
+
+  const currentValueAsCurrency = useMemo(
+    () => formatNumberAsCurrency(currentPositionAsNumber * currentPriceAsNumber, 4),
+    [currentPositionAsNumber, currentPriceAsNumber],
+  );
+  const openingPositionValue = useMemo(
+    () =>
+      formatNumberAsCurrency(BigNumber(custodyAmountAsDecimalString).multipliedBy(currentPriceAsNumber).toNumber(), 4),
+    [custodyAmountAsDecimalString, currentPriceAsNumber],
+  );
+
+  const borrowAmountAsNumber = currentPositionAsNumber / leverageAsNumber;
+
+  const unrealizedPnl = Number(props.data.unrealized_pnl ?? "0");
+
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
@@ -50,14 +110,15 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
     confirmClosePosition.reset();
   }, [confirmClosePosition, props]);
 
-  let content = <FlashMessageLoading />;
+  let content = <FlashMessageLoading size="full-page" />;
 
   if (
     collateralTokenQuery.isSuccess &&
     positionTokenQuery.data &&
     positionTokenQuery.isSuccess &&
     positionTokenQuery.data &&
-    collateralToPositionSwap.data
+    currentPositionSwap &&
+    closingPositionSwap
   ) {
     content = (
       <>
@@ -69,7 +130,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         <ul className="mt-4 flex flex-col gap-3">
           <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-            <span className="ml-1">{removeFirstCharC(props.data.custody_asset.toUpperCase())}</span>
+            <span className="ml-1">{removeFirstCharsUC(props.data.custody_asset.toUpperCase())}</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
@@ -97,14 +158,16 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span className="mr-1">{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span className="mr-1">{openingPositionValue}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.paid_interest ?? <HtmlUnicode name="EmDash" />}</span>
+                <span className="mr-1">
+                  {formatNumberAsDecimal(totalInterestPaid, 6) ?? <HtmlUnicode name="EmDash" />}
+                </span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -113,7 +176,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+                <span className="mr-1">{formatNumberAsDecimal(currentPositionAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -121,13 +184,13 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsCurrency(currentPriceAsNumber, 4) ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>{props.data.custody_entry_price ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{currentValueAsCurrency ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
@@ -139,14 +202,23 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
         <ul className="flex flex-col gap-3">
           <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-            <span className="ml-1">{removeFirstCharC(props.data.collateral_asset.toUpperCase())}</span>
+            <span className="ml-1">{removeFirstCharsUC(props.data.collateral_asset.toUpperCase())}</span>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.collateral_amount}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
+              </div>
+            </div>
+          </li>
+          <li className="px-4">
+            <div className="flex flex-row items-center">
+              <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">{formatNumberAsDecimal(borrowAmountAsNumber, 4)}</span>
+                <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
           </li>
@@ -154,7 +226,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{collateralToPositionSwap.data.liquidityProviderFee}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionFees, 6)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -162,14 +234,14 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              <span>{collateralToPositionSwap.data.priceImpact}</span>
+              <span>{formatNumberAsPercent(closingPositionSwap.priceImpact, 4)}</span>
             </div>
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{collateralToPositionSwap.data.rawReceiving}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionMinReceivingAsNumber, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -177,7 +249,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Unrealized P&L</span>
-              <span>{props.data.unrealized_pnl ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsDecimal(unrealizedPnl, 4)}</span>
             </div>
           </li>
         </ul>

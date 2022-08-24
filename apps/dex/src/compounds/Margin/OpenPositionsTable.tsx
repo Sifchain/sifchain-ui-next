@@ -1,4 +1,4 @@
-import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
+import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal, Tooltip } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
@@ -25,7 +25,7 @@ import { ModalClosePosition } from "./ModalClosePosition";
 
 import { findNextOrderAndSortBy, QS_DEFAULTS, SORT_BY } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import {
   NoResultsRow,
   PaginationButtons,
@@ -37,6 +37,7 @@ import {
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
 } from "./_components";
+import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -47,19 +48,36 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
+const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "Liquidation ratio" means?`;
+const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
+  "Liquidation ratio is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+const HEADERS_TITLES = {
+  DATE_OPENED: "Date Opened",
+  POOL: "Pool",
+  SIDE: "Side",
+  POSITION: "Position",
+  ASSET: "Asset",
+  BASE_LEVERAGE: "Base Leverage",
+  UNREALIZED_PNL: "Unrealized P&L",
+  INTEREST_RATE: "Interest Rate",
+  PAID_INTEREST: "Paid Interest",
+  LIQUIDATION_RATIO: "Liquidation ratio",
+  DURATION: "Duration",
+  CLOSE_POSITION: "Close Position",
+} as const;
 const OPEN_POSITIONS_HEADER_ITEMS = [
-  { title: "Date Opened", order_by: "date_opened" },
-  { title: "Pool", order_by: "" },
-  { title: "Side", order_by: "position" },
-  { title: "Position", order_by: "custody_amount" },
-  { title: "Asset", order_by: "custody_asset" },
-  { title: "Base Leverage", order_by: "leverage" },
-  { title: "Unrealized P&L", order_by: "unrealized_pnl" },
-  { title: "Interest Rate", order_by: "interest_rate" },
-  { title: "Paid Interest", order_by: "paid_interest" },
-  { title: "Liquidation ratio", order_by: "health" },
-  { title: "Duration", order_by: "" },
-  { title: "Close Position", order_by: "" },
+  { title: HEADERS_TITLES.DATE_OPENED, order_by: "date_opened" },
+  { title: HEADERS_TITLES.POOL, order_by: "" },
+  { title: HEADERS_TITLES.SIDE, order_by: "position" },
+  { title: HEADERS_TITLES.POSITION, order_by: "custody_amount" },
+  { title: HEADERS_TITLES.ASSET, order_by: "custody_asset" },
+  { title: HEADERS_TITLES.BASE_LEVERAGE, order_by: "leverage" },
+  { title: HEADERS_TITLES.UNREALIZED_PNL, order_by: "unrealized_pnl" },
+  { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "paid_interest" },
+  { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
+  { title: HEADERS_TITLES.DURATION, order_by: "" },
+  { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
 ];
 const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
@@ -76,26 +94,26 @@ const createTimeOpenLabel = (timeOpen: Duration) => {
     .join(", ");
 };
 
-type HideColsUnion = typeof OPEN_POSITIONS_HEADER_ITEMS[number]["title"];
+type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
+  pool?: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
+  const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
+
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
     orderBy: (router.query["orderBy"] as string) || "date_opened",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-
-  const { findBySymbolOrDenom } = useTokenRegistryQuery();
-
   const openPositionsQuery = useOpenPositionsQuery({
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
@@ -110,31 +128,34 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   });
 
   if (walletAddress.isIdle) {
-    return <FlashMessageConnectSifChainWallet />;
+    return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
+
   if (walletAddress.isError) {
-    return <FlashMessageConnectSifChainWalletError />;
+    return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
+
   if (walletAddress.isLoading) {
-    return <FlashMessageConnectSifChainWalletLoading />;
+    return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
   if (openPositionsQuery.isLoading) {
-    return <FlashMessageLoading />;
+    return <FlashMessageLoading size="full-page" />;
   }
 
-  if (openPositionsQuery.isSuccess) {
+  if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+    const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
       <section className="flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
-          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
+          <table className="h-full w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
-                  if (header.title === "Close Position") {
+                  if (header.title === HEADERS_TITLES.CLOSE_POSITION) {
                     return <th key={header.title} />;
                   }
 
@@ -156,44 +177,60 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     itemActive,
                     currentSortBy: pagination.sort_by,
                   });
+                  const linkTagA = (
+                    <a className="flex flex-row items-center">
+                      {header.title}
+                      {itemActive && (
+                        <ChevronDownIcon
+                          className={clsx("ml-1 transition-transform", {
+                            "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                          })}
+                        />
+                      )}
+                    </a>
+                  );
+                  const linkNextEl = (
+                    <Link
+                      href={{
+                        query: {
+                          ...router.query,
+                          orderBy: nextOrderBy,
+                          sortBy: nextSortBy,
+                        },
+                      }}
+                      scroll={false}
+                    >
+                      {linkTagA}
+                    </Link>
+                  );
                   return (
                     <th
                       key={header.title}
                       className="px-4 py-3 font-normal"
                       hidden={hideColumns?.includes(header.title)}
                     >
-                      <Link
-                        href={{
-                          query: {
-                            ...router.query,
-                            orderBy: nextOrderBy,
-                            sortBy: nextSortBy,
-                          },
-                        }}
-                        scroll={false}
+                      <div
+                        className={clsx("flex flex-row items-center", {
+                          "font-semibold text-white": itemActive,
+                        })}
                       >
-                        <a
-                          className={clsx("flex flex-row items-center", {
-                            "font-semibold text-white": itemActive,
-                          })}
-                        >
-                          {header.title}
-                          {itemActive && (
-                            <ChevronDownIcon
-                              className={clsx("ml-1 transition-transform", {
-                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                              })}
-                            />
-                          )}
-                        </a>
-                      </Link>
+                        {linkNextEl}
+                        <div className="mr-1" />
+                        {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
+                          <Tooltip title={TOOLTIP_LIQUIDATION_RATIO_TITLE} content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}>
+                            <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                              i
+                            </span>
+                          </Tooltip>
+                        ) : null}
+                      </div>
                     </th>
                   );
                 })}
               </tr>
             </thead>
             <tbody className="bg-gray-850">
-              {results.length <= 0 && <NoResultsRow colSpan={headers.length} message="You have no open positions." />}
+              {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const custodyAsset = findBySymbolOrDenom(item.custody_asset);
                 const collateralAsset = findBySymbolOrDenom(item.collateral_asset);
@@ -221,7 +258,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? removeFirstCharC(item.pool).toUpperCase() : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? (
+                        removeFirstCharsUC(item.pool).toUpperCase()
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
@@ -235,7 +276,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.custody_asset) ? (
-                        removeFirstCharC(item.custody_asset.toUpperCase())
+                        removeFirstCharsUC(item.custody_asset.toUpperCase())
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -361,7 +402,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     );
   }
 
-  return <FlashMessage5xxError />;
+  return <FlashMessage5xxError size="full-page" />;
 };
 
 export default OpenPositionsTable;

@@ -16,8 +16,9 @@ export function useCloseMTPMutation() {
 
   async function mutation(variables: CloseMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
+    invariant(signingStargateClient !== undefined, "Sif signing stargate client is not defined");
 
-    return await signingStargateClient?.signAndBroadcast(
+    return await signingStargateClient.signAndBroadcast(
       signerAddress,
       [
         {
@@ -44,6 +45,9 @@ export function useCloseMTPMutation() {
 
     onSettled(data, error) {
       toast.dismiss(toastId);
+      console.group("Close MTP Error");
+      console.log(error);
+      console.groupEnd();
 
       if (data === undefined || Boolean(error) || isDeliverTxFailure(data)) {
         const errorMessage = isError(error)

@@ -2,7 +2,7 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
-import { Button, formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import { formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
@@ -13,9 +13,7 @@ import Head from "next/head";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginIsWhitelistedAccount } from "~/domains/margin/hooks/useMarginIsWhitelistedAccount";
 import { useMarginParamsQuery } from "~/domains/margin/hooks";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
@@ -29,13 +27,8 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  * ********************************************************************************************
  */
 import { ROWAN } from "~/domains/assets";
-import {
-  FlashMessage5xxError,
-  FlashMessageAccountNotWhitelisted,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageLoading,
-  PoolOverview,
-} from "./_components";
+import { TradeActions } from "./TradeActions";
+import { FlashMessage5xxError, FlashMessageLoading, PoolOverview } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -47,13 +40,10 @@ import {
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
-  removeFirstCharC,
+  removeFirstCharsUC,
 } from "./_trade";
 import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
 
-const calculateOpenPosition = (positionTokenAmount: number, positionPriceUsd: number) => {
-  return positionTokenAmount / positionPriceUsd;
-};
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
 };
@@ -75,59 +65,41 @@ const withLeverage = (rawReceiving: string, decimals: number, leverage: string) 
  * ********************************************************************************************
  */
 const TradeCompound: NextPage = () => {
-  const enhancedPools = useEnhancedPoolsQuery();
-  const enhancedRowan = useEnhancedTokenQuery(ROWAN_DENOM);
-  const rowanPrice = useRowanPriceQuery();
-  const govParams = useMarginParamsQuery();
-  const walletAddress = useSifSignerAddress();
-  const isWhitelistedAccount = useMarginIsWhitelistedAccount({
-    walletAddress: walletAddress.data ?? "",
-  });
+  const enhancedPoolsQuery = useEnhancedPoolsQuery();
+  const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
+  const rowanPriceQuery = useRowanPriceQuery();
+  const govParamsQuery = useMarginParamsQuery();
 
-  if ([enhancedPools, enhancedRowan, rowanPrice, govParams, isWhitelistedAccount].some((query) => query.isError)) {
-    return <FlashMessage5xxError />;
-  }
-
-  if (!isWhitelistedAccount.data) {
-    return <FlashMessageConnectSifChainWallet />;
-  }
-
-  if (isWhitelistedAccount.data && isWhitelistedAccount.data.isWhitelisted === false) {
-    return <FlashMessageAccountNotWhitelisted />;
+  if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
+    console.group("Trade Page Loading Error");
+    console.log({ enhancedPoolsQuery });
+    console.log({ enhancedRowanQuery, rowanPriceQuery });
+    console.log({ govParamsQuery });
+    console.groupEnd();
+    return <FlashMessage5xxError size="full-page" />;
   }
 
   if (
-    enhancedPools.isSuccess &&
-    enhancedRowan.isSuccess &&
-    rowanPrice.isSuccess &&
-    govParams.isSuccess &&
-    isWhitelistedAccount.isSuccess &&
-    enhancedPools.data &&
-    enhancedRowan.data &&
-    rowanPrice.data &&
-    govParams.data &&
-    govParams.data.params &&
-    isWhitelistedAccount.data &&
-    isWhitelistedAccount.data.isWhitelisted === true
+    enhancedPoolsQuery.isSuccess &&
+    enhancedRowanQuery.isSuccess &&
+    rowanPriceQuery.isSuccess &&
+    govParamsQuery.isSuccess &&
+    enhancedPoolsQuery.data &&
+    enhancedRowanQuery.data &&
+    rowanPriceQuery.data &&
+    govParamsQuery.data &&
+    govParamsQuery.data.params
   ) {
-    const { params } = govParams.data;
+    const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
-    const filteredEnhancedPools = enhancedPools.data.filter((pool) =>
-      allowedPools.includes(pool.asset.symbol.toLowerCase()),
+    const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
+      allowedPools.includes(pool.asset.denom as string),
     );
-    enhancedRowan.data.priceUsd = rowanPrice.data;
-    return (
-      <Trade
-        enhancedPools={filteredEnhancedPools}
-        enhancedRowan={enhancedRowan.data}
-        govParams={{
-          leverageMax: params.leverageMax,
-        }}
-      />
-    );
+    enhancedRowanQuery.data.priceUsd = rowanPriceQuery.data;
+    return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
   }
 
-  return <FlashMessageLoading />;
+  return <FlashMessageLoading size="full-page" />;
 };
 
 export default TradeCompound;
@@ -146,14 +118,12 @@ export default TradeCompound;
 type TradeProps = {
   enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
   enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
-  govParams: {
-    leverageMax: string;
-  };
+  govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
 };
 
 const ROWAN_DENOM = "rowan";
 const mutateDisplaySymbol = (displaySymbol: string) =>
-  `${removeFirstCharC(displaySymbol.toUpperCase())} · ${ROWAN_DENOM.toUpperCase()}`;
+  `${removeFirstCharsUC(displaySymbol.toUpperCase())} · ${ROWAN_DENOM.toUpperCase()}`;
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
@@ -192,6 +162,7 @@ const Trade = (props: TradeProps) => {
     }
     return [];
   }, [enhancedPools]);
+  const poolsAssets = useMemo(() => pools.map((pool) => pool.asset), [pools]);
 
   const poolActive = useMemo(() => {
     if (qsPool) {
@@ -200,7 +171,8 @@ const Trade = (props: TradeProps) => {
         return pool;
       }
     }
-    return pools[0];
+
+    return pools.find((pool) => pool.asset.denom === "cusdc");
   }, [pools, qsPool]);
 
   /**
@@ -251,12 +223,12 @@ const Trade = (props: TradeProps) => {
    * ********************************************************************************************
    */
   const [inputCollateral, setInputCollateral] = useState({
-    value: String(COLLATERAL_MIN_VALUE),
+    value: "",
     error: "",
   });
 
   const [inputPosition, setInputPosition] = useState({
-    value: String(POSITION_MIN_VALUE),
+    value: "",
     error: "",
   });
 
@@ -310,6 +282,8 @@ const Trade = (props: TradeProps) => {
       Boolean(inputCollateral.error) ||
       Boolean(inputPosition.error) ||
       Boolean(inputLeverage.error) ||
+      Boolean(inputCollateral.value) === false ||
+      Boolean(inputPosition.value) === false ||
       inputCollateral.value === "0" ||
       inputPosition.value === "0"
     );
@@ -335,9 +309,9 @@ const Trade = (props: TradeProps) => {
   const openPositionFee = useMemo(
     () =>
       Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-        Decimal.fromAtomics(x, ROWAN.decimals).toFloatApproximation(),
+        Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
       ),
-    [swapSimulation],
+    [swapSimulation, selectedPosition],
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
@@ -443,11 +417,11 @@ const Trade = (props: TradeProps) => {
   const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setInputCollateral({
-      value: String(COLLATERAL_MIN_VALUE),
+      value: "",
       error: "",
     });
     setInputPosition({
-      value: String(POSITION_MIN_VALUE),
+      value: "",
       error: "",
     });
     setInputLeverage({
@@ -456,8 +430,17 @@ const Trade = (props: TradeProps) => {
     });
   };
 
-  const { atomics: collateralAmount } = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals);
-  const { atomics: leverage } = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals);
+  /**
+   * We using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
+   * Wrapping it in a try..catch to avoid breaking the UI
+   */
+  let collateralAmount = "0";
+  let leverage = "0";
+  try {
+    collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
+    leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
+  } catch (err) {}
+
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
@@ -486,6 +469,18 @@ const Trade = (props: TradeProps) => {
         scroll: false,
       },
     );
+    setInputCollateral({
+      value: "",
+      error: "",
+    });
+    setInputPosition({
+      value: "",
+      error: "",
+    });
+    setInputLeverage({
+      value: maxLeverageDecimal.toString(),
+      error: "",
+    });
   };
 
   const onClickSwitch = (event: SyntheticEvent<HTMLButtonElement>) => {
@@ -510,7 +505,7 @@ const Trade = (props: TradeProps) => {
         {poolActive ? (
           <PoolOverview
             pool={poolActive}
-            assets={pools.map((pool) => pool.asset)}
+            assets={poolsAssets}
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
           />
@@ -539,7 +534,7 @@ const Trade = (props: TradeProps) => {
                   {selectedCollateral && selectedCollateral.symbol ? (
                     <>
                       <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharC(selectedCollateral.symbol)}</span>
+                      <span>{removeFirstCharsUC(selectedCollateral.symbol)}</span>
                     </>
                   ) : (
                     <RacetrackSpinnerIcon />
@@ -547,14 +542,14 @@ const Trade = (props: TradeProps) => {
                 </div>
                 <input
                   type="number"
-                  placeholder="Collateral amount"
+                  placeholder="0"
                   step="0.01"
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
                   onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold", {
+                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
                   })}
                 />
@@ -598,20 +593,20 @@ const Trade = (props: TradeProps) => {
                   {selectedPosition && selectedPosition.symbol ? (
                     <>
                       <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharC(selectedPosition.symbol)}</span>
+                      <span>{removeFirstCharsUC(selectedPosition.symbol)}</span>
                     </>
                   ) : null}
                 </div>
                 <input
                   type="number"
-                  placeholder="Position amount"
+                  placeholder="0"
                   step="0.01"
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
                   onBlur={onBlurPosition}
                   onChange={onChangePosition}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold", {
+                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
                   })}
                 />
@@ -671,7 +666,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-4 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{removeFirstCharC(selectedCollateral.symbol)}</span>
+                    <span className="ml-1">{removeFirstCharsUC(selectedCollateral.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -695,7 +690,7 @@ const Trade = (props: TradeProps) => {
                 <ul className="mt-8 flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{removeFirstCharC(selectedPosition.symbol)}</span>
+                    <span className="ml-1">{removeFirstCharsUC(selectedPosition.symbol)}</span>
                   </li>
                   <li className="px-4">
                     <div className="flex flex-row items-center">
@@ -716,7 +711,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
-                        <span>{formatNumberAsCurrency(openPositionFee * selectedPosition.priceUsd)}</span>
+                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -726,10 +722,8 @@ const Trade = (props: TradeProps) => {
                       <div className="flex flex-row items-center">
                         <span className="mr-1">
                           {formatNumberAsDecimal(
-                            Number(inputPosition.value) > 0
-                              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd)) -
-                                  openPositionFee * selectedPosition.priceUsd
-                              : 0,
+                            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+                            4,
                           )}
                         </span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
@@ -751,27 +745,12 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
-              <div className="mt-4 grid grid-cols-4 gap-2 px-4 pb-4">
-                <Button
-                  variant="tertiary"
-                  as="button"
-                  size="xs"
-                  className="self-center font-normal text-gray-300"
-                  onClick={onClickReset}
-                >
-                  Reset
-                </Button>
-                <Button
-                  variant="primary"
-                  as="button"
-                  size="md"
-                  className="col-span-3"
-                  disabled={isDisabledOpenPosition}
-                  onClick={onClickOpenPosition}
-                >
-                  Open trade
-                </Button>
-              </div>
+              <TradeActions
+                govParams={props.govParams}
+                onClickReset={onClickReset}
+                isDisabledOpenPosition={isDisabledOpenPosition}
+                onClickOpenPosition={onClickOpenPosition}
+              />
             </>
           ) : (
             <div className="bg-gray-850 m-4 flex items-center justify-center rounded p-2 text-4xl">
@@ -780,7 +759,7 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 col-span-5 rounded border">
-          <OpenPositionsTable hideColumns={["Pool", "Paid Interest"]} />
+          <OpenPositionsTable pool={poolActive} hideColumns={["Pool", "Paid Interest"]} />
         </article>
       </section>
 
@@ -792,18 +771,14 @@ const Trade = (props: TradeProps) => {
           poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: formatNumberAsDecimal(
-            Number(inputPosition.value) > 0
-              ? calculateOpenPosition(Number(inputPosition.value), Number(selectedPosition.priceUsd)) -
-                  openPositionFee * selectedPosition.priceUsd
-              : 0,
+            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+            4,
           ),
           toDenom: selectedPosition.symbol.toLowerCase(),
         }}
         isOpen={modalConfirmOpenPosition.isOpen}
         onClose={() => {
-          if (modalConfirmOpenPosition.isOpen) {
-            setModalConfirmOpenPosition({ isOpen: false });
-          }
+          setModalConfirmOpenPosition({ isOpen: false });
         }}
         onMutationSuccess={() => {
           setModalConfirmOpenPosition({ isOpen: false });

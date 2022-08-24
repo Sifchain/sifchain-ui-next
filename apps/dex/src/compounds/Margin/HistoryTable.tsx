@@ -31,7 +31,7 @@ import {
 } from "./_components";
 import { formatDateDistance, formatDateISO } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
-import { HtmlUnicode, removeFirstCharC } from "./_trade";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { Decimal } from "@cosmjs/math";
@@ -59,6 +59,9 @@ const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
+
+  const headers = HISTORY_HEADER_ITEMS;
+
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
@@ -69,20 +72,21 @@ const HistoryTable = (props: HistoryTableProps) => {
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
   });
-  const headers = HISTORY_HEADER_ITEMS;
 
   if (walletAddress.isIdle) {
-    return <FlashMessageConnectSifChainWallet />;
+    return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
+
   if (walletAddress.isError) {
-    return <FlashMessageConnectSifChainWalletError />;
+    return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
+
   if (walletAddress.isLoading) {
-    return <FlashMessageConnectSifChainWalletLoading />;
+    return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
   if (historyQuery.isLoading) {
-    return <FlashMessageLoading />;
+    return <FlashMessageLoading size="full-page" />;
   }
 
   if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess) {
@@ -144,9 +148,7 @@ const HistoryTable = (props: HistoryTableProps) => {
               </tr>
             </thead>
             <tbody className="bg-gray-850">
-              {results.length <= 0 && (
-                <NoResultsRow colSpan={headers.length} message="History not available. Try again later." />
-              )}
+              {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
                 const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
@@ -177,14 +179,18 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.pool) ? removeFirstCharC(item.pool.toUpperCase()) : <HtmlUnicode name="EmDash" />}
+                      {isTruthy(item.pool) ? (
+                        removeFirstCharsUC(item.pool.toUpperCase())
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_asset) ? (
-                        removeFirstCharC(item.open_custody_asset.toUpperCase())
+                        removeFirstCharsUC(item.open_custody_asset.toUpperCase())
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -252,7 +258,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
 
-  return <FlashMessage5xxError />;
+  return <FlashMessage5xxError size="full-page" />;
 };
 
 export default HistoryTable;
