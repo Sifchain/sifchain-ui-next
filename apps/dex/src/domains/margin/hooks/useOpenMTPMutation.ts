@@ -54,6 +54,7 @@ export function useOpenMTPMutation() {
     onSettled(data, error) {
       // toast.dismiss(toastId);
       console.group("Open MTP Error");
+      console.log(data);
       console.log(error);
       console.groupEnd();
 
