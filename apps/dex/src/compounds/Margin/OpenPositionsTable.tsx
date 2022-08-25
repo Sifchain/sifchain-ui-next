@@ -280,9 +280,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   item.current_interest_paid_custody,
                   custodyAsset.decimals,
                 ).toFloatApproximation();
-                if (item.id === "49") {
-                  console.log(item);
-                }
 
                 // this is slightly hacky, only doing it bexause we're getting a float returned here
                 const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;

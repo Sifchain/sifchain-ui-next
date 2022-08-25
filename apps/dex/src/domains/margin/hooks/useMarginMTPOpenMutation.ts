@@ -84,9 +84,9 @@ export function useMarginMTPOpenMutation() {
         let payload;
         try {
           payload = JSON.parse(data.rawLog) as MTPOpenResponse;
-        } catch (err) {
+        } catch (error) {
           console.group("JSON.parse MTP Open Optimistic Updates Error");
-          console.log({ err });
+          console.log({ error });
           console.groupEnd();
         }
 

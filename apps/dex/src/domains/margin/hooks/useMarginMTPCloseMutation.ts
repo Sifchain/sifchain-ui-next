@@ -71,9 +71,9 @@ export function useMarginMTPCloseMutation() {
         let payload;
         try {
           payload = JSON.parse(data.rawLog) as MTPCloseResponse;
-        } catch (err) {
+        } catch (error) {
           console.group("JSON.parse MTP Close Optimistic Updates Error");
-          console.log({ err });
+          console.log({ error });
           console.groupEnd();
         }
 
