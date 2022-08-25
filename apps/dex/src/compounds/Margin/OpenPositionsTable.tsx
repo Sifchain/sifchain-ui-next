@@ -25,7 +25,7 @@ import Link from "next/link";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-
+import AssetIcon from "~/compounds/AssetIcon";
 import { ModalMTPClose } from "./ModalMTPClose";
 
 /**
@@ -53,20 +53,23 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "Liquidation ratio" means?`;
+const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
-  "Liquidation ratio is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+  "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+const TOOLTIP_NPV_TITLE = `What does "NPV" means?`;
+const TOOLTIP_NPV_CONTENT =
+  "Net present value (NPV) represents the value of the position given spot prices for each asset involved in the trade. NPV does not represent the final amount you would receive in proceeds if you close the position";
 const HEADERS_TITLES = {
   DATE_OPENED: "Date Opened",
   POOL: "Pool",
   SIDE: "Side",
   POSITION: "Position",
   ASSET: "Asset",
-  BASE_LEVERAGE: "Base Leverage",
-  UNREALIZED_PNL: "Unrealized P&L",
+  LEVERAGE: "Leverage",
+  NPV: "NPV",
   INTEREST_RATE: "Interest Rate",
   INTEREST_PAID: "Interest Paid",
-  LIQUIDATION_RATIO: "Liquidation ratio",
+  LIQUIDATION_RATIO: "LR",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
 } as const;
@@ -76,8 +79,8 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.SIDE, order_by: "position" },
   { title: HEADERS_TITLES.POSITION, order_by: "custody_amount" },
   { title: HEADERS_TITLES.ASSET, order_by: "custody_asset" },
-  { title: HEADERS_TITLES.BASE_LEVERAGE, order_by: "leverage" },
-  { title: HEADERS_TITLES.UNREALIZED_PNL, order_by: "unrealized_pnl" },
+  { title: HEADERS_TITLES.LEVERAGE, order_by: "leverage" },
+  { title: HEADERS_TITLES.NPV, order_by: "" },
   { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
   { title: HEADERS_TITLES.INTEREST_PAID, order_by: "interest_paid_custody" },
   { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
@@ -158,10 +161,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     return (
                       <th
                         key={header.title}
-                        className="cursor-not-allowed px-4 py-3 text-center font-normal"
+                        // className=""
+                        className="flex flex-row items-center justify-center px-4 py-3 font-normal"
                         hidden={hideColumns?.includes(header.title)}
                       >
-                        {header.title}
+                        <span className="cursor-not-allowed">{header.title}</span>
+                        {header.title === HEADERS_TITLES.NPV ? (
+                          <>
+                            <div className="mr-1" />
+                            <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
+                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                                i
+                              </span>
+                            </Tooltip>
+                          </>
+                        ) : null}
                       </th>
                     );
                   }
@@ -233,17 +247,42 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
                 const item = x as OpenPositionsQueryData & { _optimistic: boolean };
-                const custodyAsset = findBySymbolOrDenom(item.custody_asset);
-                const collateralAsset = findBySymbolOrDenom(item.collateral_asset);
+
+                let custodyAsset;
+                let collateralAsset;
+                try {
+                  custodyAsset = findBySymbolOrDenom(item.custody_asset);
+                  collateralAsset = findBySymbolOrDenom(item.collateral_asset);
+                } catch (err) {}
 
                 if (!custodyAsset || !collateralAsset) {
-                  throw new Error("Asset not found");
+                  console.group("Open Positions Missing Custody or Collateral Asset Error");
+                  console.log({ item: x });
+                  console.groupEnd();
+                  return (
+                    <tr>
+                      {Array.from({ length: headers.length }, () => {
+                        return (
+                          <td className="px-4 py-3">
+                            <HtmlUnicode name="EmDash" />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
                 }
 
                 const custodyAmount = Decimal.fromAtomics(
                   item.custody_amount,
                   custodyAsset.decimals,
                 ).toFloatApproximation();
+                const currentInterestPaidCustody = Decimal.fromAtomics(
+                  item.current_interest_paid_custody,
+                  custodyAsset.decimals,
+                ).toFloatApproximation();
+                if (item.id === "49") {
+                  console.log(item);
+                }
 
                 // this is slightly hacky, only doing it bexause we're getting a float returned here
                 const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;
@@ -270,7 +309,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 6)
+                        formatNumberAsDecimal(custodyAmount, 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -297,7 +336,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         })}
                       >
                         {isTruthy(item.unrealized_pnl) ? (
-                          formatNumberAsDecimal(unrealizedPnl, 6)
+                          <div className="flex flex-row items-center justify-center">
+                            <span className="mr-1">
+                              {formatNumberAsDecimal(unrealizedPnl, 4) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
+                            <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
+                          </div>
                         ) : (
                           <HtmlUnicode name="EmDash" />
                         )}
@@ -311,8 +355,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3" hidden={hideColumns?.includes("Interest Paid")}>
-                      {isTruthy(item.interest_paid_custody) ? (
-                        formatNumberAsDecimal(Number(item.interest_paid_custody), 4)
+                      {isTruthy(item.current_interest_paid_custody) ? (
+                        <div className="flex flex-row items-center justify-center">
+                          <span className="mr-1">
+                            {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
+                          </span>
+                          <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
+                        </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -405,6 +454,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     );
   }
 
+  console.group("Open Positions Query Error");
+  console.log({ openPositionsQuery, tokenRegistryQuery });
+  console.groupEnd();
   return <FlashMessage5xxError size="full-page" />;
 };
 

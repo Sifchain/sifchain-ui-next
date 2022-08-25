@@ -101,7 +101,7 @@ export function useMarginMTPOpenMutation() {
             _collateral_amount,
             custody_asset, // Open Positions Column: Asset (ROWAN|USDC)
             custody_amount, // Open Positions Column: Position (Token amount)
-            leverage, // Open Positions Column: Base Leverage (2x)
+            leverage, // Open Positions Column: Leverage (2x)
             _liabilities,
             _interest_paid_collateral,
             interest_paid_custody, // Open Positions Column: Interest Paid (Token amount)

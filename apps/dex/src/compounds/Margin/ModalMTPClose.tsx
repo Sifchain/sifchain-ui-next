@@ -59,7 +59,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
   const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
 
-  const totalInterestPaid = Number(props.data.interest_paid_custody ?? "0");
+  const totalInterestPaid = Decimal.fromAtomics(
+    props.data.current_interest_paid_custody,
+    positionDecimals,
+  ).toFloatApproximation();
 
   const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimalString).div(leverageAsNumber).toNumber();
 
@@ -93,7 +96,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     [custodyAmountAsDecimalString, currentPriceAsNumber],
   );
 
-  const unrealizedPnl = Number(props.data.unrealized_pnl) / 10 ** collateralDecimals;
+  const unrealizedPnl = Number(props.data.unrealized_pnl) / 10 ** positionDecimals;
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -220,7 +223,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(props.data.liabilities, 4)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(Number(props.data.liabilities), 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -229,7 +232,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Fees</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(closingPositionFees, 6)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(closingPositionFees, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -251,9 +254,11 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           </li>
           <li className="px-4">
             <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Unrealized P&L</span>
+              <span className="mr-auto min-w-fit text-gray-300">
+                P<HtmlUnicode name="Ampersand" />L
+              </span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(unrealizedPnl, 6)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(unrealizedPnl, 4)}</span>
                 <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
               </div>
             </div>

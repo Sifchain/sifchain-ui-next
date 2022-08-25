@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
+import { Decimal } from "@cosmjs/math";
 
+import AssetIcon from "~/compounds/AssetIcon";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import {
   FlashMessageLoading,
   FlashMessage5xxError,
@@ -27,13 +31,10 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
-import { formatDateDistance, formatDateISO } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
+import { formatDateDistance, formatDateISO } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { Decimal } from "@cosmjs/math";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 
 /**
  * ********************************************************************************************
@@ -151,10 +152,27 @@ const HistoryTable = (props: HistoryTableProps) => {
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
-                const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+
+                let custodyAsset;
+                try {
+                  custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+                } catch (err) {}
 
                 if (!custodyAsset) {
-                  throw new Error("Asset not found");
+                  console.group("History Missing Custody or Collateral Asset Error");
+                  console.log({ item });
+                  console.groupEnd();
+                  return (
+                    <tr>
+                      {Array.from({ length: headers.length }, () => {
+                        return (
+                          <td className="px-4 py-3">
+                            <HtmlUnicode name="EmDash" />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
                 }
 
                 const custodyAmount = Decimal.fromAtomics(
@@ -197,14 +215,21 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 6)
+                        formatNumberAsDecimal(custodyAmount, 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.close_interest_paid_custody) ? (
-                        formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4)
+                        <div className="flex flex-row items-center justify-center">
+                          <span className="mr-1">
+                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4) ?? (
+                              <HtmlUnicode name="EmDash" />
+                            )}
+                          </span>
+                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
+                        </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -265,6 +290,9 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
 
+  console.group("History Query Error");
+  console.log({ historyQuery, tokenRegistryQuery });
+  console.groupEnd();
   return <FlashMessage5xxError size="full-page" />;
 };
 
