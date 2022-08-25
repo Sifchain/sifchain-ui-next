@@ -41,3 +41,33 @@ export type TimeOpen = {
   minutes: number;
   seconds: number;
 };
+
+export interface HistoryQueryData {
+  address: string;
+  id: string;
+  pool: string;
+  open_custody_amount: string;
+  open_custody_asset: string;
+  open_collateral_amount: string;
+  open_collateral_asset: string;
+  open_date_time: string;
+  closed_date_time: string;
+  open_health: string;
+  open_leverage: string;
+  position: string;
+  realized_pnl: any;
+  type: string;
+  open_interest_paid_collateral: string;
+  open_interest_paid_custody: string;
+  open_liabilities: string;
+  close_interest_paid_collateral: string;
+  close_interest_paid_custody: string;
+  close_liabilities: string;
+  next_payment: any;
+  paid_interest: any;
+  unsettled_interest: any;
+  mtp_close_custody_amount: number;
+  mtp_close_execution_price: any;
+  mtp_open_custody_amount: number;
+  mtp_open_execution_price: any;
+}

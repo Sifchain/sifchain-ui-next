@@ -49,6 +49,7 @@ const HISTORY_HEADER_ITEMS = [
   { title: "Side", order_by: "position" },
   { title: "Asset", order_by: "open_custody_asset" },
   { title: "Position", order_by: "open_custody_amount" },
+  { title: "Interest Paid", order_by: "close_interest_paid_custody" },
   { title: "Realized P&L", order_by: "" },
 ];
 export type HistoryTableProps = {
@@ -197,6 +198,13 @@ const HistoryTable = (props: HistoryTableProps) => {
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
                         formatNumberAsDecimal(custodyAmount, 6)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.close_interest_paid_custody) ? (
+                        formatNumberAsDecimal(Number(item.close_interest_paid_custody))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
