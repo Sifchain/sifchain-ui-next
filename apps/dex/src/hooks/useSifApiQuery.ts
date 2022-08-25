@@ -39,7 +39,7 @@ export default function useSifApiQuery<
   const { data: client } = useSifApiClient();
 
   return useQuery(
-    [query, client],
+    [query, ...args],
     // @ts-ignore
     async (): Awaited<ReturnType<VanirPublicClient[T][P]>> => {
       if (!client) {
