@@ -113,6 +113,12 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
           </dd>
         </div>
       </dl>
+      <div className="bg-gray-750 mb-4 flex items-center gap-4 rounded-lg p-4">
+        <p className="text-lg">ℹ️</p>
+        <p className="text-xs text-gray-200">
+          Deposits are used to underwrite margin trading. Utilized capital may be locked.
+        </p>
+      </div>
       <Button className="w-full" disabled={addLiquidityMutation.isLoading || validationError !== undefined}>
         {buttonMessage}
       </Button>
