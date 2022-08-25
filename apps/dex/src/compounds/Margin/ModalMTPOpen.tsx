@@ -1,6 +1,6 @@
 import type { SyntheticEvent } from "react";
 
-import { FlashMessage, Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
+import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
 import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
@@ -89,10 +89,6 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
             <RacetrackSpinnerIcon />
           </div>
         )}
-        <FlashMessage className="mt-6">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet eligendi
-          vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae saepe quaerat.
-        </FlashMessage>
         {confirmOpenPositionMutation.isLoading ? (
           <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
         ) : (
