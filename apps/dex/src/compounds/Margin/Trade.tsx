@@ -746,7 +746,7 @@ const Trade = (props: TradeProps) => {
                     <li className="px-4">
                       <div className="flex flex-row items-center">
                         <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>{formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10)}</span>
+                        <span>{formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 20)}</span>
                       </div>
                     </li>
                   ) : null}
@@ -766,7 +766,7 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 col-span-5 rounded border">
-          <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Paid Interest"]} />
+          <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Interest Paid"]} />
         </article>
       </section>
 

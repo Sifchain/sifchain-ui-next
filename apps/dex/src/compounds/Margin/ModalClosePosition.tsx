@@ -175,7 +175,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
                 <span className="mr-1">
-                  {formatNumberAsDecimal(totalInterestPaid, 6) ?? <HtmlUnicode name="EmDash" />}
+                  {formatNumberAsDecimal(totalInterestPaid, 4) ?? <HtmlUnicode name="EmDash" />}
                 </span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>

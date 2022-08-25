@@ -204,7 +204,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.close_interest_paid_custody) ? (
-                        formatNumberAsDecimal(Number(item.close_interest_paid_custody))
+                        formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

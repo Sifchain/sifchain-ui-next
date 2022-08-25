@@ -306,7 +306,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3" hidden={hideColumns?.includes("Interest Paid")}>
                       {isTruthy(item.interest_paid_custody) ? (
-                        formatNumberAsDecimal(Number(item.interest_paid_custody))
+                        formatNumberAsDecimal(Number(item.interest_paid_custody), 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
