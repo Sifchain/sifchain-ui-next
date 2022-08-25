@@ -153,6 +153,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  if (hideColumns?.includes(header.title)) {
+                    return null;
+                  }
+
                   if (header.title === HEADERS_TITLES.CLOSE_POSITION) {
                     return <th key={header.title} />;
                   }
@@ -161,9 +165,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     return (
                       <th
                         key={header.title}
-                        // className=""
                         className="flex flex-row items-center justify-center px-4 py-3 font-normal"
-                        hidden={hideColumns?.includes(header.title)}
                       >
                         <span className="cursor-not-allowed">{header.title}</span>
                         {header.title === HEADERS_TITLES.NPV ? (
@@ -213,11 +215,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </Link>
                   );
                   return (
-                    <th
-                      key={header.title}
-                      className="px-4 py-3 font-normal"
-                      hidden={hideColumns?.includes(header.title)}
-                    >
+                    <th key={header.title} className="px-4 py-3 font-normal">
                       <div
                         className={clsx("flex flex-row items-center justify-center", {
                           "font-semibold text-white": itemActive,
@@ -294,13 +292,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? (
-                        removeFirstCharsUC(item.pool).toUpperCase()
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
+                    {hideColumns?.includes(HEADERS_TITLES.POOL) ? null : (
+                      <td className="px-4 py-3">
+                        {isTruthy(item.pool) ? (
+                          removeFirstCharsUC(item.pool).toUpperCase()
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
@@ -351,18 +351,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Interest Paid")}>
-                      {isTruthy(item.current_interest_paid_custody) ? (
-                        <div className="flex flex-row items-center justify-center">
-                          <span className="mr-1">
-                            {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
-                          </span>
-                          <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
-                        </div>
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
+                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
+                      <td className="px-4 py-3">
+                        {isTruthy(item.current_interest_paid_custody) ? (
+                          <div className="flex flex-row items-center justify-center">
+                            <span className="mr-1">
+                              {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
+                            <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
+                          </div>
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       {isTruthy(item.health) ? (
                         formatNumberAsDecimal(Number(item.health))
