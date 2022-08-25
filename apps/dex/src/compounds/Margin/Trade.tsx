@@ -50,7 +50,7 @@ import {
   inputValidatorPosition,
   removeFirstCharsUC,
 } from "./_trade";
-import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
+import { ModalMTPOpen } from "./ModalMTPOpen";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
@@ -772,7 +772,7 @@ const Trade = (props: TradeProps) => {
         </article>
       </section>
 
-      <ModalReviewOpenPosition
+      <ModalMTPOpen
         data={{
           collateralAmount: collateralAmount,
           fromDenom: selectedCollateral.symbol.toLowerCase(),

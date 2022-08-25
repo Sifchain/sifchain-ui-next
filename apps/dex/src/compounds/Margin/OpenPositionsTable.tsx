@@ -26,7 +26,7 @@ import Link from "next/link";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 
-import { ModalClosePosition } from "./ModalClosePosition";
+import { ModalMTPClose } from "./ModalMTPClose";
 
 /**
  * ********************************************************************************************
@@ -375,7 +375,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           />
         </div>
         {positionToClose.value && (
-          <ModalClosePosition
+          <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
             onClose={() => {

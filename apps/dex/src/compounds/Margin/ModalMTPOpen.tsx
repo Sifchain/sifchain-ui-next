@@ -7,7 +7,7 @@ import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
 
 import AssetIcon from "~/compounds/AssetIcon";
 
-type ModalReviewOpenPositionProps = {
+type ModalMTPOpenProps = {
   data: {
     collateralAmount: string;
     fromDenom: string;
@@ -23,7 +23,7 @@ type ModalReviewOpenPositionProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
-export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
+export function ModalMTPOpen(props: ModalMTPOpenProps) {
   const confirmOpenPositionMutation = useMarginMTPOpenMutation();
 
   const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {

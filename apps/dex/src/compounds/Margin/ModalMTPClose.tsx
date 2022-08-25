@@ -21,7 +21,7 @@ import AssetIcon from "~/compounds/AssetIcon";
 import { formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
-type ModalClosePositionProps = {
+type ModalMTPCloseProps = {
   data: OpenPositionsQueryData;
   isOpen: boolean;
   onClose: () => void;
@@ -29,7 +29,7 @@ type ModalClosePositionProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
-export function ModalClosePosition(props: ModalClosePositionProps) {
+export function ModalMTPClose(props: ModalMTPCloseProps) {
   const confirmClosePosition = useMarginMTPCloseMutation();
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
