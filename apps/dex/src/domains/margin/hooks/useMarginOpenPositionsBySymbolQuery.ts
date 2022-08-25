@@ -32,7 +32,6 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
     {
       enabled: Boolean(params.walletAddress) && Boolean(params.poolSymbol),
       keepPreviousData: true,
-      queryHash: JSON.stringify(params),
       refetchInterval: 6000,
       retry: false,
     },

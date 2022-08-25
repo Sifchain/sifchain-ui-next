@@ -16,7 +16,6 @@ export function useMarginHistoryQuery(params: {
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
-      queryHash: JSON.stringify(params),
       refetchInterval: 6000,
       retry: false,
     },
