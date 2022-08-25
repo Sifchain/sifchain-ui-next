@@ -22,13 +22,13 @@ export function useMarginHistoryQuery(params: {
        * increasing the refresh time in "useMarginHistory"
        * to allow Data Services to do their job
        *
-       * If in the next fetch window (after 20 seconds), Data Services response
+       * If in the next fetch window (after 15 seconds), Data Services response
        * DOESN'T remove the old item, the item will APPEAR again in the UI
        * we are not doing a diff in the Data Service response x local cache
        *
        * Data Services response is our source of truth
        */
-      refetchInterval: 20 * 1000,
+      refetchInterval: 15 * 1000,
       retry: false,
     },
   ) as UseQueryResult<{
