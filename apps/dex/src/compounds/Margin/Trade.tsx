@@ -508,6 +508,8 @@ const Trade = (props: TradeProps) => {
     setSwitchCollateralAndPosition((prev) => !prev);
   };
 
+  const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
+
   return (
     <>
       <Head>
@@ -746,7 +748,7 @@ const Trade = (props: TradeProps) => {
                     <li className="px-4">
                       <div className="flex flex-row items-center">
                         <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>{formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 20)}</span>
+                        <span>{poolInterestRate}</span>
                       </div>
                     </li>
                   ) : null}
@@ -775,7 +777,7 @@ const Trade = (props: TradeProps) => {
           collateralAmount: collateralAmount,
           fromDenom: selectedCollateral.symbol.toLowerCase(),
           leverage: leverage,
-          poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
+          poolInterestRate: poolInterestRate,
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: formatNumberAsDecimal(
             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,

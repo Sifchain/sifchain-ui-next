@@ -299,7 +299,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
-                        formatNumberAsPercent(Number(item.interest_rate), 10)
+                        `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
