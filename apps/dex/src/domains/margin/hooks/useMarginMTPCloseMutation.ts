@@ -2,17 +2,19 @@ import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { isError, useMutation } from "react-query";
+import { isError, useMutation, useQueryClient } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
+import type { HistoryQueryData, MTPCloseResponse, OpenPositionsQueryData, Pagination } from "./types";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
 export function useMarginMTPCloseMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
+  const queryClient = useQueryClient();
 
   async function mutation(variables: CloseMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
@@ -64,7 +66,94 @@ export function useMarginMTPCloseMutation() {
         autoClose: false,
       });
     },
+    async onSuccess(data) {
+      if (data && data.rawLog) {
+        let payload;
+        try {
+          payload = JSON.parse(data.rawLog) as MTPCloseResponse;
+        } catch (err) {
+          console.group("JSON.parse MTP Close Optimistic Updates Error");
+          console.log({ err });
+          console.groupEnd();
+        }
 
+        if (payload) {
+          const [_coinReceived, _coinSpent, marginMtpClose] = payload[0].events;
+          const [
+            id, // MTP ID
+            position, // History Column: Side (LONG|SHORT)
+            _address,
+            collateral_asset,
+            _collateral_amount,
+            custody_asset,
+            custody_amount,
+            _repay_amount,
+            _leverage,
+            _liabilities,
+            _interest_paid_collateral,
+            interest_paid_custody,
+            _interest_unpaid_collateral,
+            _health,
+          ] = marginMtpClose.attributes;
+
+          const queriesNameToRemoveData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
+
+          queryClient.setQueriesData(
+            {
+              predicate(query) {
+                return queriesNameToRemoveData.includes(query.queryKey[0] as string);
+              },
+            },
+            (state) => {
+              const draft = state as { pagination: Pagination; results: Partial<OpenPositionsQueryData>[] } | undefined;
+              if (draft) {
+                draft.pagination = {
+                  ...draft.pagination,
+                  limit: `${Number(draft.pagination.limit) - 1}`,
+                  total: `${Number(draft.pagination.total) - 1}`,
+                };
+                draft.results = [...draft.results.filter((x) => x.id !== id.value)];
+              }
+              return draft;
+            },
+          );
+
+          const queriesNameToAddData = ["margin.getMarginHistory"];
+
+          const newHistoryPosition = {
+            close_interest_paid_custody: interest_paid_custody.value,
+            closed_date_time: undefined,
+            id: id.value,
+            open_custody_amount: custody_amount.value,
+            open_custody_asset: custody_asset.value,
+            open_date_time: undefined,
+            pool: collateral_asset.value,
+            position: position.value,
+            realized_pnl: undefined,
+          };
+
+          queryClient.setQueriesData(
+            {
+              predicate(query) {
+                return queriesNameToAddData.includes(query.queryKey[0] as string);
+              },
+            },
+            (state) => {
+              const draft = state as { pagination: Pagination; results: Partial<HistoryQueryData>[] } | undefined;
+              if (draft) {
+                draft.pagination = {
+                  ...draft.pagination,
+                  limit: `${Number(draft.pagination.limit) + 1}`,
+                  total: `${Number(draft.pagination.total) + 1}`,
+                };
+                draft.results = [newHistoryPosition, ...draft.results];
+              }
+              return draft;
+            },
+          );
+        }
+      }
+    },
     onSettled(data, error) {
       toast.dismiss(toastId);
       if (data === undefined && Boolean(error)) {

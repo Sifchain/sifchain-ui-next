@@ -65,7 +65,7 @@ const HistoryTable = (props: HistoryTableProps) => {
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "address",
+    orderBy: (router.query["orderBy"] as string) || "open_date_time",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
   const historyQuery = useMarginHistoryQuery({
@@ -103,7 +103,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 {headers.map((header) => {
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 text-center font-normal">
                         {header.title}
                       </th>
                     );
@@ -128,7 +128,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         scroll={false}
                       >
                         <a
-                          className={clsx("flex flex-row items-center", {
+                          className={clsx("flex flex-row items-center justify-center", {
                             "font-semibold text-white": itemActive,
                           })}
                         >
@@ -147,7 +147,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850">
+            <tbody className="bg-gray-850 text-center">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));

@@ -71,3 +71,108 @@ export interface HistoryQueryData {
   mtp_open_custody_amount: number;
   mtp_open_execution_price: any;
 }
+
+export interface EventCoinReceived {
+  type: "coin_received";
+  attributes: [
+    {
+      key: "receiver";
+      value: string;
+    },
+    {
+      key: "amount";
+      value: string;
+    },
+  ];
+}
+
+export interface EventCoinSpent {
+  type: "coin_spent";
+  attributes: [
+    {
+      key: "spender";
+      value: string;
+    },
+    {
+      key: "amount";
+      value: string;
+    },
+  ];
+}
+
+export interface EventMarginMtpClose {
+  type: "margin/mtp_close";
+  attributes: [
+    { key: "id"; value: string },
+    { key: "position"; value: string },
+    { key: "address"; value: string },
+    { key: "collateral_asset"; value: string },
+    { key: "collateral_amount"; value: string },
+    { key: "custody_asset"; value: string },
+    { key: "custody_amount"; value: string },
+    { key: "repay_amount"; value: string },
+    { key: "leverage"; value: string },
+    { key: "liabilities"; value: string },
+    { key: "interest_paid_collateral"; value: string },
+    { key: "interest_paid_custody"; value: string },
+    { key: "interest_unpaid_collateral"; value: string },
+    { key: "health"; value: string },
+  ];
+}
+
+export interface EventMarginMtpOpen {
+  type: "margin/mtp_open";
+  attributes: [
+    { key: "id"; value: string },
+    { key: "position"; value: string },
+    { key: "address"; value: string },
+    { key: "collateral_asset"; value: string },
+    { key: "collateral_amount"; value: string },
+    { key: "custody_asset"; value: string },
+    { key: "custody_amount"; value: string },
+    { key: "leverage"; value: string },
+    { key: "liabilities"; value: string },
+    { key: "interest_paid_collateral"; value: string },
+    { key: "interest_paid_custody"; value: string },
+    { key: "interest_unpaid_collateral"; value: string },
+    { key: "health"; value: string },
+  ];
+}
+
+export interface EventMessage {
+  type: "message";
+  attributes: [
+    { key: "action"; value: string },
+    {
+      key: "sender";
+      value: string;
+    },
+  ];
+}
+
+export interface EventTransfer {
+  type: "transfer";
+  attributes: [
+    {
+      key: "recipient";
+      value: string;
+    },
+    {
+      key: "sender";
+      value: string;
+    },
+    { key: "amount"; value: string },
+  ];
+}
+
+export type MTPOpenResponse = [
+  {
+    events: [EventCoinReceived, EventCoinSpent, EventMarginMtpOpen, EventMessage, EventTransfer];
+  },
+];
+
+export type MTPCloseResponse = [
+  {
+    events: [EventCoinReceived, EventCoinSpent, EventMarginMtpClose, EventMessage, EventTransfer];
+  },
+];

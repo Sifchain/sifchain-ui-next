@@ -158,7 +158,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     return (
                       <th
                         key={header.title}
-                        className="cursor-not-allowed px-4 py-3 font-normal"
+                        className="cursor-not-allowed px-4 py-3 text-center font-normal"
                         hidden={hideColumns?.includes(header.title)}
                       >
                         {header.title}
@@ -173,7 +173,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   const linkTagA = (
-                    <a className="flex flex-row items-center">
+                    <a className="flex flex-row items-center justify-center">
                       {header.title}
                       {itemActive && (
                         <ChevronDownIcon
@@ -205,18 +205,23 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       hidden={hideColumns?.includes(header.title)}
                     >
                       <div
-                        className={clsx("flex flex-row items-center", {
+                        className={clsx("flex flex-row items-center justify-center", {
                           "font-semibold text-white": itemActive,
                         })}
                       >
                         {linkNextEl}
-                        <div className="mr-1" />
                         {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
-                          <Tooltip title={TOOLTIP_LIQUIDATION_RATIO_TITLE} content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}>
-                            <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                              i
-                            </span>
-                          </Tooltip>
+                          <>
+                            <div className="mr-1" />
+                            <Tooltip
+                              title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
+                              content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
+                            >
+                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                                i
+                              </span>
+                            </Tooltip>
+                          </>
                         ) : null}
                       </div>
                     </th>
@@ -224,7 +229,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850">
+            <tbody className="bg-gray-850 text-center">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
                 const item = x as OpenPositionsQueryData & { _optimistic: boolean };

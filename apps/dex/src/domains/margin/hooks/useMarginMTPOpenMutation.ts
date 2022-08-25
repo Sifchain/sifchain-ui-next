@@ -9,7 +9,7 @@ import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 import * as errors from "./mutationErrorMessage";
-import type { OpenPositionsQueryData, Pagination } from "./types";
+import type { MTPOpenResponse, OpenPositionsQueryData, Pagination } from "./types";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
@@ -83,10 +83,16 @@ export function useMarginMTPOpenMutation() {
       if (data && data.rawLog) {
         let payload;
         try {
-          payload = JSON.parse(data.rawLog);
-        } catch (err) {}
+          payload = JSON.parse(data.rawLog) as MTPOpenResponse;
+        } catch (err) {
+          console.group("JSON.parse MTP Open Optimistic Updates Error");
+          console.log({ err });
+          console.groupEnd();
+        }
+
         if (payload) {
           const [_coinReceived, _coinSpent, marginMtpOpen] = payload[0].events;
+
           const [
             id, // MTP ID
             position, // Open Positions Column: Side (LONG|SHORT)
@@ -102,7 +108,9 @@ export function useMarginMTPOpenMutation() {
             _interest_unpaid_collateral,
             health, // Open Positions Column: Liquidation ratio (From 0 to 1)
           ] = marginMtpOpen.attributes;
-          const queryName = "margin.getMarginOpenPositionBySymbol";
+
+          const queriesNameToAddData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
+
           const newOpenPosition = {
             id: id.value,
             position: position.value,
@@ -121,7 +129,7 @@ export function useMarginMTPOpenMutation() {
            * increasing the refresh time "useMarginOpenPositionsBySymbolQuery"
            * to allow Data Services to do their job
            *
-           * If in the next fetch window (after 15 seconds), Data Services response
+           * If in the next fetch window (after 20 seconds), Data Services response
            * DOESN'T include the new item, the optimistic item will be REMOVED from the UI
            * we are not doing a diff in the Data Service response x local cache
            *
@@ -130,13 +138,17 @@ export function useMarginMTPOpenMutation() {
           queryClient.setQueriesData(
             {
               predicate(query) {
-                return query.queryKey[0] === queryName;
+                return queriesNameToAddData.includes(query.queryKey[0] as string);
               },
             },
             (state) => {
               const draft = state as { pagination: Pagination; results: Partial<OpenPositionsQueryData>[] } | undefined;
               if (draft) {
-                draft.pagination.total = `${Number(draft.pagination.total) + 1}`;
+                draft.pagination = {
+                  ...draft.pagination,
+                  limit: `${Number(draft.pagination.limit) + 1}`,
+                  total: `${Number(draft.pagination.total) + 1}`,
+                };
                 draft.results = [newOpenPosition, ...draft.results];
               }
               return draft;

@@ -27,6 +27,7 @@ type PaginationShowItemsProps = {
 };
 export function PaginationShowItems({ limit, offset, total }: PaginationShowItemsProps) {
   const initial = offset + limit;
+
   return (
     <p className="mx-4 py-3 text-sm">
       <span>Showing</span>

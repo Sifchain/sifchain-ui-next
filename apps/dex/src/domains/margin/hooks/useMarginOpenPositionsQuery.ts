@@ -25,7 +25,19 @@ export function useOpenPositionsQuery() {
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
-      refetchInterval: 6000,
+      /**
+       * We are using React Query Optimistic Updates in "useMarginMTPOpenMutation"
+       * To avoid removing the optimistic item too soon from the UI, we need to
+       * increasing the refresh time in "useMarginOpenPositions"
+       * to allow Data Services to do their job
+       *
+       * If in the next fetch window (after 20 seconds), Data Services response
+       * DOESN'T include the new item, the optimistic item will be REMOVED from the UI
+       * we are not doing a diff in the Data Service response x local cache
+       *
+       * Data Services response is our source of truth
+       */
+      refetchInterval: 20 * 1000,
       retry: false,
     },
   ) as UseQueryResult<{
