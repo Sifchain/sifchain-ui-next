@@ -59,7 +59,7 @@ export function ModalClosePosition(props: ModalClosePositionProps) {
   const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
   const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
 
-  const totalInterestPaid = Number(props.data.interest_paid ?? "0");
+  const totalInterestPaid = Number(props.data.interest_paid_custody ?? "0");
 
   const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimalString).div(leverageAsNumber).toNumber();
 
