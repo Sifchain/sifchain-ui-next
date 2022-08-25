@@ -1,5 +1,4 @@
 import type { OpenPositionsQueryData } from "~/domains/margin/hooks";
-
 import { Decimal } from "@cosmjs/math";
 import {
   FlashMessageLoading,
@@ -9,7 +8,7 @@ import {
   formatNumberAsDecimal,
   Modal,
 } from "@sifchain/ui";
-import { SyntheticEvent, useCallback, useMemo } from "react";
+import { SyntheticEvent, useCallback } from "react";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
@@ -49,16 +48,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   } catch (err) {}
   const leverageAsNumber = Number(props.data.leverage);
 
-  const collateralAmountWithLeverage = BigNumber(collateralAmountAsDecimalString).times(leverageAsNumber).toNumber();
-
-  const { data: currentPositionSwap } = useSwapSimulation(
-    props.data.collateral_asset,
-    props.data.custody_asset,
-    collateralAmountWithLeverage.toString(),
-  );
-  const currentPositionRaw = currentPositionSwap?.rawReceiving ?? "0";
-  const currentPositionAsNumber = Decimal.fromAtomics(currentPositionRaw, positionDecimals).toFloatApproximation();
-
   const totalInterestPaid = Decimal.fromAtomics(
     props.data.current_interest_paid_custody,
     positionDecimals,
@@ -85,16 +74,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const closingPositionFees = closingPositionAsNumber - closingPositionMinReceivingAsNumber;
 
   const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
-
-  const currentValueAsCurrency = useMemo(
-    () => formatNumberAsCurrency(currentPositionAsNumber * currentPriceAsNumber, 4),
-    [currentPositionAsNumber, currentPriceAsNumber],
-  );
-  const openingPositionValue = useMemo(
-    () =>
-      formatNumberAsCurrency(BigNumber(custodyAmountAsDecimalString).multipliedBy(currentPriceAsNumber).toNumber(), 4),
-    [custodyAmountAsDecimalString, currentPriceAsNumber],
-  );
 
   const unrealizedPnl = Number(props.data.unrealized_pnl) / 10 ** positionDecimals;
 
@@ -127,9 +106,18 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     positionTokenQuery.data &&
     positionTokenQuery.isSuccess &&
     positionTokenQuery.data &&
-    currentPositionSwap &&
     closingPositionSwap
   ) {
+    const openingPosition = Decimal.fromAtomics(
+      props.data.custody_amount,
+      positionTokenQuery.data.decimals,
+    ).toFloatApproximation();
+    const openingPositionValue = openingPosition * positionTokenQuery.data.priceUsd;
+    const currentPosition = Decimal.fromAtomics(
+      props.data.current_custody_amount,
+      positionTokenQuery.data.decimals,
+    ).toFloatApproximation();
+    const currentValue = currentPosition * currentPriceAsNumber;
     content = (
       <>
         <h1 className="text-center text-lg font-bold">Review closing trade</h1>
@@ -148,15 +136,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">
-                  {formatNumberAsDecimal(
-                    Decimal.fromAtomics(
-                      props.data.custody_amount,
-                      positionTokenQuery.data.decimals,
-                    ).toFloatApproximation(),
-                    4,
-                  )}
-                </span>
+                <span className="mr-1">{formatNumberAsDecimal(openingPosition, 4)}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -164,7 +144,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              <span className="mr-1">{openingPositionValue}</span>
+              <span className="mr-1">{formatNumberAsCurrency(openingPositionValue, 4)}</span>
             </div>
           </li>
           <li className="px-4">
@@ -182,7 +162,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(currentPositionAsNumber, 4)}</span>
+                <span className="mr-1">{formatNumberAsDecimal(currentPosition, 4)}</span>
                 <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
               </div>
             </div>
@@ -196,7 +176,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              <span>{currentValueAsCurrency ?? <HtmlUnicode name="EmDash" />}</span>
+              <span>{formatNumberAsCurrency(currentValue, 4) ?? <HtmlUnicode name="EmDash" />}</span>
             </div>
           </li>
         </ul>
