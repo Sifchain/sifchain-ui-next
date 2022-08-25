@@ -232,17 +232,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               </div>
             </div>
           </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">
-                P<HtmlUnicode name="Ampersand" />L
-              </span>
-              <div className="flex flex-row items-center">
-                <span className="mr-1">{formatNumberAsDecimal(unrealizedPnl, 4)}</span>
-                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-              </div>
-            </div>
-          </li>
         </ul>
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
