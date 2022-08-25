@@ -93,9 +93,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     [custodyAmountAsDecimalString, currentPriceAsNumber],
   );
 
-  const borrowAmountAsNumber = currentPositionAsNumber / leverageAsNumber;
-
-  const unrealizedPnl = Number(props.data.unrealized_pnl ?? "0");
+  const unrealizedPnl = Number(props.data.unrealized_pnl) / 10 ** collateralDecimals;
 
   const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -254,7 +252,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Unrealized P&L</span>
-              <span>{formatNumberAsDecimal(unrealizedPnl, 4)}</span>
+              <div className="flex flex-row items-center">
+                <span className="mr-1">{formatNumberAsDecimal(unrealizedPnl, 6)}</span>
+                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
+              </div>
             </div>
           </li>
         </ul>

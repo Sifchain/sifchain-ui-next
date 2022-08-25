@@ -297,7 +297,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         })}
                       >
                         {isTruthy(item.unrealized_pnl) ? (
-                          formatNumberAsCurrency(unrealizedPnl, 6)
+                          formatNumberAsDecimal(unrealizedPnl, 6)
                         ) : (
                           <HtmlUnicode name="EmDash" />
                         )}
