@@ -65,7 +65,7 @@ const HEADERS_TITLES = {
   BASE_LEVERAGE: "Base Leverage",
   UNREALIZED_PNL: "Unrealized P&L",
   INTEREST_RATE: "Interest Rate",
-  PAID_INTEREST: "Paid Interest",
+  INTEREST_PAID: "Interest Paid",
   LIQUIDATION_RATIO: "Liquidation ratio",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
@@ -79,7 +79,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.BASE_LEVERAGE, order_by: "leverage" },
   { title: HEADERS_TITLES.UNREALIZED_PNL, order_by: "unrealized_pnl" },
   { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
-  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "paid_interest" },
+  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "interest_paid_custody" },
   { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
@@ -304,7 +304,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Paid Interest")}>
+                    <td className="px-4 py-3" hidden={hideColumns?.includes("Interest Paid")}>
                       {isTruthy(item.interest_paid_custody) ? (
                         formatNumberAsDecimal(Number(item.interest_paid_custody))
                       ) : (
