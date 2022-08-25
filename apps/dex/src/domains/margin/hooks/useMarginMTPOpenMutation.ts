@@ -1,18 +1,22 @@
-import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
+
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { isError, useMutation } from "react-query";
+import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
+import { useMutation, useQueryClient } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
+
 import * as errors from "./mutationErrorMessage";
+import type { OpenPositionsQueryData, Pagination } from "./types";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
 export function useMarginMTPOpenMutation() {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
+  const queryClient = useQueryClient();
 
   async function mutation(variables: OpenMTPVariables) {
     invariant(signerAddress !== undefined, "Sif signer is not defined");
@@ -74,6 +78,72 @@ export function useMarginMTPOpenMutation() {
         isLoading: true,
         autoClose: false,
       });
+    },
+    async onSuccess(data) {
+      if (data && data.rawLog) {
+        let payload;
+        try {
+          payload = JSON.parse(data.rawLog);
+        } catch (err) {}
+        if (payload) {
+          const [_coinReceived, _coinSpent, marginMtpOpen] = payload[0].events;
+          const [
+            id, // MTP ID
+            position, // Open Positions Column: Side (LONG|SHORT)
+            address, // The user that opened a trade wallet address
+            collateral_asset, // Open Positions Column: Pool (USDC|ROWAN)
+            _collateral_amount,
+            custody_asset, // Open Positions Column: Asset (ROWAN|USDC)
+            custody_amount, // Open Positions Column: Position (Token amount)
+            leverage, // Open Positions Column: Base Leverage (2x)
+            _liabilities,
+            _interest_paid_collateral,
+            interest_paid_custody, // Open Positions Column: Interest Paid (Token amount)
+            _interest_unpaid_collateral,
+            health, // Open Positions Column: Liquidation ratio (From 0 to 1)
+          ] = marginMtpOpen.attributes;
+          const queryName = "margin.getMarginOpenPositionBySymbol";
+          const newOpenPosition = {
+            id: id.value,
+            position: position.value,
+            address: address.value,
+            collateral_asset: collateral_asset.value,
+            custody_asset: custody_asset.value,
+            custody_amount: custody_amount.value,
+            leverage: leverage.value,
+            interest_paid_custody: interest_paid_custody.value,
+            health: health.value,
+            _optimistic: true,
+          };
+          /**
+           * We are using React Query Optimistic Updates in "useMarginMTPOpenMutation"
+           * To avoid removing the optimistic item too soon from the UI, we need to
+           * increasing the refresh time "useMarginOpenPositionsBySymbolQuery"
+           * to allow Data Services to do their job
+           *
+           * If in the next fetch window (after 15 seconds), Data Services response
+           * DOESN'T include the new item, the optimistic item will be REMOVED from the UI
+           * we are not doing a diff in the Data Service response x local cache
+           *
+           * Data Services response is our source of truth
+           */
+          queryClient.setQueriesData(
+            {
+              predicate(query) {
+                return query.queryKey[0] === queryName;
+              },
+            },
+            (state) => {
+              const draft = state as { pagination: Pagination; results: Partial<OpenPositionsQueryData>[] } | undefined;
+              if (draft) {
+                draft.pagination.total = `${Number(draft.pagination.total) + 1}`;
+                draft.results = [newOpenPosition, ...draft.results];
+              }
+              return draft;
+            },
+          );
+        }
+      }
     },
     onSettled(data, error) {
       toast.dismiss(toastId);

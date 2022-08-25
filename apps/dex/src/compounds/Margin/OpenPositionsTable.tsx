@@ -226,7 +226,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </thead>
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((item) => {
+              {results.map((x) => {
+                const item = x as OpenPositionsQueryData & { _optimistic: boolean };
                 const custodyAsset = findBySymbolOrDenom(item.custody_asset);
                 const collateralAsset = findBySymbolOrDenom(item.collateral_asset);
 
@@ -326,20 +327,22 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4">
-                      <Button
-                        variant="secondary"
-                        as="button"
-                        size="xs"
-                        className="rounded font-normal"
-                        onClick={() =>
-                          setPositionToClose({
-                            isOpen: true,
-                            value: item,
-                          })
-                        }
-                      >
-                        Close
-                      </Button>
+                      {isTruthy(item._optimistic) ? null : (
+                        <Button
+                          variant="secondary"
+                          as="button"
+                          size="xs"
+                          className="rounded font-normal"
+                          onClick={() =>
+                            setPositionToClose({
+                              isOpen: true,
+                              value: item,
+                            })
+                          }
+                        >
+                          Close
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 );
