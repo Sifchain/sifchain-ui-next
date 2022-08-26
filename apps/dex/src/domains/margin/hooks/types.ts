@@ -8,32 +8,37 @@ export type Pagination = {
 
 export type OpenPositionsQueryData = {
   address: string;
+  date_opened: string;
   pool: string;
-  current_custody_amount: string;
-  current_price: number;
   custody_amount: string;
   custody_asset: string;
+  leverage: string;
+  unrealized_pnl: string;
+  interest_rate: string;
+  current_interest_paid_custody: number;
+  health: string;
+  current_custody_amount: string;
+  current_price: string;
   collateral_amount: string;
   collateral_asset: string;
-  date_opened: string;
   time_open: TimeOpen;
-  health: string;
   id: string;
   liabilities: string;
   interest_paid_custody: string;
   interest_unpaid_collateral: string;
   interest_paid_collateral: string;
-  custody_entry_price: number;
+  custody_entry_price: string;
   current_interest_paid_collateral: string;
-  current_interest_paid_custody: string;
   current_interest_unpaid_collateral: string;
-  interest_rate: string;
-  leverage: string;
   mtp_open_execution_price: string;
   next_payment: any;
   position: string;
   repay_amount: string;
-  unrealized_pnl: string;
+  unrealized_pnl_formula: string;
+  currentCustodyAmount: string;
+  currentPrice: string;
+  openCustodyAmount: string;
+  openPrice: string;
 };
 
 export type TimeOpen = {
