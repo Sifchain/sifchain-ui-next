@@ -1,8 +1,9 @@
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { FC, Fragment, useState } from "react";
+import { useRouter } from "next/router";
+import { FC, Fragment, useEffect, useState } from "react";
 import { CookiesProvider } from "react-cookie";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import useReloadOnAccountChangeEffect from "~/hooks/useReloadOnAccountChangeEffect";
 
@@ -16,27 +17,35 @@ const WalletsWatcher = () => {
   return null;
 };
 
-const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { refetchOnWindowFocus: false },
-        },
-      }),
-  );
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false },
+  },
+});
 
+const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
+  const router = useRouter();
+  const [isEnabledReactQueryDevtools, setIsEnabledReactQueryDevtools] = useState(false);
+  useEffect(() => {
+    const keyName = "_querydevtools";
+    const qsFlag = router.query[keyName] ?? false;
+    const localstorageFlag = localStorage.getItem(keyName) ?? false;
+    if (localstorageFlag && isEnabledReactQueryDevtools === false) {
+      setIsEnabledReactQueryDevtools(true);
+    } else if (qsFlag && isEnabledReactQueryDevtools === false) {
+      localStorage.setItem(keyName, "true");
+      setIsEnabledReactQueryDevtools(true);
+    }
+  }, [isEnabledReactQueryDevtools, router.query]);
   return (
     <ComposeProviders providers={[typeof window !== "undefined" ? CosmConnectProvider : Fragment, WagmiProvider]}>
       <WalletsWatcher />
       <CookiesProvider>
         <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <MainLayout>
-              <Component {...pageProps} />
-            </MainLayout>
-          </Hydrate>
-          <ReactQueryDevtools position="bottom-right" />
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
+          {isEnabledReactQueryDevtools ? <ReactQueryDevtools position="bottom-right" /> : null}
         </QueryClientProvider>
       </CookiesProvider>
     </ComposeProviders>

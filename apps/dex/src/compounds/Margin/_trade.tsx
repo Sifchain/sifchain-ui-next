@@ -2,11 +2,12 @@ import { formatNumberAsCurrency } from "@sifchain/ui";
 
 const UNICODE_CHARS = {
   AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
-  RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
+  Ampersand: "&amp;", // https://www.compart.com/en/unicode/U+0026
+  EmDash: "&mdash;", // https://www.compart.com/en/unicode/U+2014
   EqualsSign: "&equals;", // https://www.compart.com/en/unicode/U+003D
   MiddleDot: "&centerdot;", // https://www.compart.com/en/unicode/U+00B7
   MinusSign: "&minus;", // https://www.compart.com/en/unicode/U+2212
-  EmDash: "&mdash;", // https://www.compart.com/en/unicode/U+2014
+  RightwardsArrow: "&rightarrow;", // https://www.compart.com/en/unicode/U+2192
 };
 
 /**

@@ -1,15 +1,9 @@
 import type { UseQueryResult } from "react-query";
+import type { Pagination, HistoryQueryData } from "./types";
+
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
-type Pagination = {
-  total: string;
-  limit: string;
-  offset: string;
-  order_by: string;
-  sort_by: string;
-};
-
-export function useHistoryQuery(params: {
+export function useMarginHistoryQuery(params: {
   walletAddress: string;
   offset: string;
   limit: string;
@@ -22,31 +16,23 @@ export function useHistoryQuery(params: {
     {
       enabled: Boolean(params.walletAddress),
       keepPreviousData: true,
-      queryHash: JSON.stringify(params),
-      refetchInterval: 6000,
+      /**
+       * We are using React Query Optimistic Updates in "useMarginMTPCloseMutation"
+       * To avoid removing the optimistic item too soon from the UI, we need to
+       * increasing the refresh time in "useMarginHistory"
+       * to allow Data Services to do their job
+       *
+       * If in the next fetch window (after 15 seconds), Data Services response
+       * DOESN'T remove the old item, the item will APPEAR again in the UI
+       * we are not doing a diff in the Data Service response x local cache
+       *
+       * Data Services response is our source of truth
+       */
+      refetchInterval: 15 * 1000,
       retry: false,
     },
   ) as UseQueryResult<{
     pagination: Pagination;
-    results: {
-      closed_date_time: string;
-      id: string;
-      mtp_close_custody_amount: string;
-      mtp_close_execution_price: string;
-      mtp_open_custody_amount: string;
-      mtp_open_execution_price: string;
-      next_payment: string;
-      open_custody_amount: string;
-      open_custody_asset: string;
-      open_date_time: string;
-      open_health: string;
-      open_leverage: string;
-      paid_interest: string;
-      pool: string;
-      position: string;
-      realized_pnl: string;
-      type: string;
-      unsettled_interest: string;
-    }[];
+    results: HistoryQueryData[];
   }>;
 }

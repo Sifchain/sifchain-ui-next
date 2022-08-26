@@ -4,6 +4,7 @@ export * from "./Button";
 export * from "./ButtonGroup";
 export * from "./ComposeProviders";
 export * from "./Fieldset";
+export * from "./FlashMessages";
 export * from "./icons";
 export * from "./Identicon";
 export * from "./Input";

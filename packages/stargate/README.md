@@ -13,7 +13,7 @@ yarn add @sifchain/stargate@snapshot
 ### Query the blockchain
 
 ```ts
-const queryClients = await createQueryClient("https://rpc-testnet.sifchain.finance");
+const queryClients = await createQueryClient("https://proxies.sifchain.finance/api/sifchain-testnet/rpc");
 
 const response = await queryClients.clp.getPools({});
 
@@ -32,7 +32,10 @@ const mnemonic = "some 24 words mnemonic";
 const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
 const [firstAccount, secondAccount] = await wallet.getAccounts();
 
-const signingClient = await SifSigningStargateClient.connectWithSigner("https://rpc-testnet.sifchain.finance", wallet);
+const signingClient = await SifSigningStargateClient.connectWithSigner(
+  "https://proxies.sifchain.finance/api/sifchain-testnet/rpc",
+  wallet,
+);
 
 signingClient.signAndBroadcast(
   firstAccount!.address,
@@ -66,7 +69,10 @@ signingClient.signAndBroadcast(
 ### Import & export tokens
 
 ```ts
-const sifClient = await SifSigningStargateClient.connectWithSigner("https://rpc-testnet.sifchain.finance", wallet);
+const sifClient = await SifSigningStargateClient.connectWithSigner(
+  "https://proxies.sifchain.finance/api/sifchain-testnet/rpc",
+  wallet,
+);
 
 const junoClient = await SigningStargateClient.connectWithSigner("juno_rpc", wallet);
 

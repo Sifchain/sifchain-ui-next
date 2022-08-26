@@ -1,9 +1,22 @@
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
+import { Decimal } from "@cosmjs/math";
 
-import { ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
-import { useHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
+import AssetIcon from "~/compounds/AssetIcon";
+import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import {
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+  ChevronDownIcon,
+  formatNumberAsCurrency,
+  formatNumberAsDecimal,
+} from "@sifchain/ui";
+import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
 import { isNil } from "rambda";
 const isTruthy = (target: any) => !isNil(target);
@@ -18,23 +31,10 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-import {
-  NoResultsRow,
-  PaginationShowItems,
-  PaginationButtons,
-  PillUpdating,
-  FlashMessageLoading,
-  FlashMessage5xxError,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageConnectSifChainWalletError,
-  FlashMessageConnectSifChainWalletLoading,
-} from "./_components";
-import { formatDateDistance, formatDateISO } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
+import { formatDateDistance, formatDateISO } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { Decimal } from "@cosmjs/math";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 
 /**
  * ********************************************************************************************
@@ -50,6 +50,7 @@ const HISTORY_HEADER_ITEMS = [
   { title: "Side", order_by: "position" },
   { title: "Asset", order_by: "open_custody_asset" },
   { title: "Position", order_by: "open_custody_amount" },
+  { title: "Interest Paid", order_by: "close_interest_paid_custody" },
   { title: "Realized P&L", order_by: "" },
 ];
 export type HistoryTableProps = {
@@ -65,10 +66,10 @@ const HistoryTable = (props: HistoryTableProps) => {
   const queryParams = {
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
     offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "address",
+    orderBy: (router.query["orderBy"] as string) || "open_date_time",
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
-  const historyQuery = useHistoryQuery({
+  const historyQuery = useMarginHistoryQuery({
     ...queryParams,
     walletAddress: walletAddress.data ?? "",
   });
@@ -95,7 +96,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <section className="flex h-full flex-col">
+      <section className="bg-gray-850 flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
           <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
@@ -103,7 +104,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 {headers.map((header) => {
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 text-center font-normal">
                         {header.title}
                       </th>
                     );
@@ -128,7 +129,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         scroll={false}
                       >
                         <a
-                          className={clsx("flex flex-row items-center", {
+                          className={clsx("flex flex-row items-center justify-center", {
                             "font-semibold text-white": itemActive,
                           })}
                         >
@@ -147,14 +148,31 @@ const HistoryTable = (props: HistoryTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850">
+            <tbody className="bg-gray-850 text-center">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
-                const custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+
+                let custodyAsset;
+                try {
+                  custodyAsset = findBySymbolOrDenom(item.open_custody_asset);
+                } catch (err) {}
 
                 if (!custodyAsset) {
-                  throw new Error("Asset not found");
+                  console.group("History Missing Custody or Collateral Asset Error");
+                  console.log({ item });
+                  console.groupEnd();
+                  return (
+                    <tr>
+                      {Array.from({ length: headers.length }, () => {
+                        return (
+                          <td className="px-4 py-3">
+                            <HtmlUnicode name="EmDash" />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
                 }
 
                 const custodyAmount = Decimal.fromAtomics(
@@ -197,7 +215,21 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 6)
+                        formatNumberAsDecimal(custodyAmount, 4)
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isTruthy(item.close_interest_paid_custody) ? (
+                        <div className="flex flex-row items-center justify-center">
+                          <span className="mr-1">
+                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4) ?? (
+                              <HtmlUnicode name="EmDash" />
+                            )}
+                          </span>
+                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
+                        </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -258,6 +290,9 @@ const HistoryTable = (props: HistoryTableProps) => {
     );
   }
 
+  console.group("History Query Error");
+  console.log({ historyQuery, tokenRegistryQuery });
+  console.groupEnd();
   return <FlashMessage5xxError size="full-page" />;
 };
 
