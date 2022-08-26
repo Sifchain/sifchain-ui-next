@@ -51,6 +51,7 @@ import {
   removeFirstCharsUC,
 } from "./_trade";
 import { ModalMTPOpen } from "./ModalMTPOpen";
+import { useCallback } from "react";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
@@ -332,11 +333,17 @@ const Trade = (props: TradeProps) => {
     inputPosition.value,
   );
 
-  const calculatePosition = (inputAmount: string, leverage = inputLeverage.value) =>
-    withLeverage(calculateSwap(inputAmount)?.rawReceiving || "0", selectedPosition.decimals, leverage);
+  const calculatePosition = useCallback(
+    (inputAmount: string, leverage = inputLeverage.value) =>
+      withLeverage(calculateSwap(inputAmount)?.rawReceiving || "0", selectedPosition.decimals, leverage),
+    [calculateSwap, inputLeverage.value, selectedPosition.decimals],
+  );
 
-  const calculateCollateral = (inputAmount: string, leverage = inputLeverage.value) =>
-    withLeverage(calculateReverseSwap(inputAmount)?.rawReceiving || "0", selectedCollateral.decimals, leverage);
+  const calculateCollateral = useCallback(
+    (inputAmount: string, leverage = inputLeverage.value) =>
+      withLeverage(calculateReverseSwap(inputAmount)?.rawReceiving || "0", selectedCollateral.decimals, leverage),
+    [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
+  );
 
   /**
    * ********************************************************************************************
@@ -345,24 +352,21 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorCollateral($input, "change");
+  const onChangeCollateral = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorCollateral($input, "change");
 
-    const positionInputAmount = calculatePosition(payload.value);
+      const positionInputAmount = calculatePosition(payload.value);
 
-    setInputCollateral(payload);
-    setInputPosition({
-      value: String(positionInputAmount),
-      error: "",
-    });
-  };
-
-  const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorCollateral($input, "blur");
-    setInputCollateral(payload);
-  };
+      setInputCollateral(payload);
+      setInputPosition({
+        value: String(positionInputAmount),
+        error: "",
+      });
+    },
+    [calculatePosition],
+  );
 
   /**
    * ********************************************************************************************
@@ -371,24 +375,21 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "change");
+  const onChangePosition = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorPosition($input, "change");
 
-    const collateralInputAmount = calculateCollateral(payload.value);
+      const collateralInputAmount = calculateCollateral(payload.value);
 
-    setInputPosition(payload);
-    setInputCollateral({
-      value: String(collateralInputAmount),
-      error: "",
-    });
-  };
-
-  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "blur");
-    setInputPosition(payload);
-  };
+      setInputPosition(payload);
+      setInputCollateral({
+        value: String(collateralInputAmount),
+        error: "",
+      });
+    },
+    [calculateCollateral],
+  );
 
   /**
    * ********************************************************************************************
@@ -397,27 +398,24 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
+  const onChangeLeverage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
 
-    if (!payload.error) {
-      const positionInputAmount = calculatePosition(inputCollateral.value, payload.value);
+      if (!payload.error) {
+        const positionInputAmount = calculatePosition(inputCollateral.value, payload.value);
 
-      setInputPosition({
-        value: positionInputAmount.toString(),
-        error: "",
-      });
-    }
+        setInputPosition({
+          value: positionInputAmount.toString(),
+          error: "",
+        });
+      }
 
-    setInputLeverage(payload);
-  };
-
-  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur", maxLeverageDecimal.toString());
-    setInputLeverage(payload);
-  };
+      setInputLeverage(payload);
+    },
+    [calculatePosition, inputCollateral.value, maxLeverageDecimal],
+  );
 
   /**
    * ********************************************************************************************
@@ -426,40 +424,47 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setInputCollateral({
-      value: "",
-      error: "",
-    });
-    setInputPosition({
-      value: "",
-      error: "",
-    });
-    setInputLeverage({
-      value: maxLeverageDecimal.toString(),
-      error: "",
-    });
-  };
+  const onClickReset = useCallback(
+    (event: SyntheticEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setInputCollateral({
+        value: "",
+        error: "",
+      });
+      setInputPosition({
+        value: "",
+        error: "",
+      });
+      setInputLeverage({
+        value: maxLeverageDecimal.toString(),
+        error: "",
+      });
+    },
+    [maxLeverageDecimal],
+  );
 
   /**
    * We using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
    * Wrapping it in a try..catch to avoid breaking the UI
    */
-  let collateralAmount = "0";
-  let leverage = "0";
-  try {
-    collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
-    leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
-  } catch (err) {}
+  const { collateralAmount, leverage } = useMemo(() => {
+    let collateralAmount = "0";
+    let leverage = "0";
+    try {
+      collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
+      leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
+    } finally {
+      return { collateralAmount, leverage };
+    }
+  }, [inputCollateral.value, inputLeverage.value, selectedCollateral.decimals]);
 
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
-  const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
+  const onClickOpenPosition = useCallback((event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
-  };
+  }, []);
 
   /**
    * ********************************************************************************************
@@ -468,45 +473,51 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangePoolSelector = (token: TokenEntry) => {
-    router.push(
-      {
-        query: {
-          ...router.query,
-          pool: token.symbol.toLowerCase(),
+  const onChangePoolSelector = useCallback(
+    (token: TokenEntry) => {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            pool: token.symbol.toLowerCase(),
+          },
         },
-      },
-      undefined,
-      {
-        scroll: false,
-      },
-    );
-    setInputCollateral({
-      value: "",
-      error: "",
-    });
-    setInputPosition({
-      value: "",
-      error: "",
-    });
-    setInputLeverage({
-      value: maxLeverageDecimal.toString(),
-      error: "",
-    });
-  };
+        undefined,
+        {
+          scroll: false,
+        },
+      );
+      setInputCollateral({
+        value: "",
+        error: "",
+      });
+      setInputPosition({
+        value: "",
+        error: "",
+      });
+      setInputLeverage({
+        value: maxLeverageDecimal.toString(),
+        error: "",
+      });
+    },
+    [maxLeverageDecimal, router],
+  );
 
-  const onClickSwitch = (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setInputCollateral((prev) => ({
-      ...prev,
-      value: inputPosition.value,
-    }));
-    setInputPosition((prev) => ({
-      ...prev,
-      value: inputCollateral.value,
-    }));
-    setSwitchCollateralAndPosition((prev) => !prev);
-  };
+  const onClickSwitch = useCallback(
+    (event: SyntheticEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setInputCollateral((prev) => ({
+        ...prev,
+        value: inputPosition.value,
+      }));
+      setInputPosition((prev) => ({
+        ...prev,
+        value: inputCollateral.value,
+      }));
+      setSwitchCollateralAndPosition((prev) => !prev);
+    },
+    [inputCollateral.value, inputPosition.value],
+  );
 
   const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
 
@@ -561,7 +572,6 @@ const Trade = (props: TradeProps) => {
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
-                  onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
@@ -618,7 +628,6 @@ const Trade = (props: TradeProps) => {
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
-                  onBlur={onBlurPosition}
                   onChange={onChangePosition}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
@@ -656,7 +665,6 @@ const Trade = (props: TradeProps) => {
                   max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
-                  onBlur={onBlurLeverage}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputLeverage.error,
                   })}
