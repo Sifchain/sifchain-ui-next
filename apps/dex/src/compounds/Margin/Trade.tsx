@@ -10,6 +10,7 @@ import {
   TokenEntry,
   FlashMessage5xxError,
   FlashMessageLoading,
+  FlashMessage,
 } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
@@ -319,13 +320,18 @@ const Trade = (props: TradeProps) => {
     inputCollateral.value,
   );
 
-  const openPositionFee = useMemo(
-    () =>
-      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+  const openPositionFee = useMemo(() => {
+    try {
+      return Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
         Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
-      ),
-    [swapSimulation, selectedPosition],
-  );
+      );
+    } catch (error) {
+      console.group("Open Position Fee Swap LP Fee");
+      console.log({ error });
+      console.groupEnd();
+      return 0;
+    }
+  }, [swapSimulation, selectedPosition]);
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
     selectedPosition.denom ?? selectedPosition.symbol,
@@ -762,6 +768,10 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
+              <FlashMessage className="m-4">
+                <b>Warning:</b> The field <b>Fees</b> have been disabled in all calculations until we implement the Flat
+                Fee rate.
+              </FlashMessage>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
