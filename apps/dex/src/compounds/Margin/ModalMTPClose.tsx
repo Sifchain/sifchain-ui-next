@@ -9,7 +9,6 @@ import {
   Modal,
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
-import BigNumber from "bignumber.js";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
@@ -33,32 +32,13 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
 
-  const positionDecimals = positionTokenQuery.data?.decimals ?? 0;
   const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
-
-  /**
-   * Value-guard for bad data used from tests, we may not need it in "production"
-   * But for feature testing, we do need it
-   */
-  let collateralAmountAsDecimalString = "0";
-  let custodyAmountAsDecimalString = "0";
-  try {
-    collateralAmountAsDecimalString = Decimal.fromAtomics(props.data.collateral_amount, collateralDecimals).toString();
-    custodyAmountAsDecimalString = Decimal.fromAtomics(props.data.custody_amount, positionDecimals).toString();
-  } catch (err) {}
-  const leverageAsNumber = Number(props.data.leverage);
-
-  const totalInterestPaid = Decimal.fromAtomics(
-    props.data.current_interest_paid_custody,
-    positionDecimals,
-  ).toFloatApproximation();
-
-  const custodyAmountlWithLeverage = BigNumber(custodyAmountAsDecimalString).div(leverageAsNumber).toNumber();
+  const totalInterestPaid = Number(props.data.current_interest_paid_custody ?? "0");
 
   const { data: closingPositionSwap } = useSwapSimulation(
     props.data.custody_asset,
     props.data.collateral_asset,
-    custodyAmountlWithLeverage.toString(),
+    props.data.current_custody_amount,
   );
 
   const closingPositionRaw = closingPositionSwap?.rawReceiving ?? "0";
@@ -75,23 +55,24 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
 
   const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
 
-  const unrealizedPnl = Number(props.data.unrealized_pnl) / 10 ** positionDecimals;
-
-  const onClickConfirmClose = async (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    try {
-      await confirmClosePosition.mutateAsync({
-        id: Long.fromNumber(Number(props.data.id)),
-      });
-      if (props.onMutationSuccess) {
-        props.onMutationSuccess();
+  const onClickConfirmClose = useCallback(
+    async (event: SyntheticEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      try {
+        await confirmClosePosition.mutateAsync({
+          id: Long.fromNumber(Number(props.data.id)),
+        });
+        if (props.onMutationSuccess) {
+          props.onMutationSuccess();
+        }
+      } catch (err) {
+        if (props.onMutationError) {
+          props.onMutationError(err as Error);
+        }
       }
-    } catch (err) {
-      if (props.onMutationError) {
-        props.onMutationError(err as Error);
-      }
-    }
-  };
+    },
+    [confirmClosePosition, props],
+  );
   const onTransitionEnd = useCallback(() => {
     if (props.onTransitionEnd) {
       props.onTransitionEnd();
@@ -108,15 +89,9 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     positionTokenQuery.data &&
     closingPositionSwap
   ) {
-    const openingPosition = Decimal.fromAtomics(
-      props.data.custody_amount,
-      positionTokenQuery.data.decimals,
-    ).toFloatApproximation();
+    const openingPosition = Number(props.data.custody_amount ?? "0");
     const openingPositionValue = openingPosition * positionTokenQuery.data.priceUsd;
-    const currentPosition = Decimal.fromAtomics(
-      props.data.current_custody_amount,
-      positionTokenQuery.data.decimals,
-    ).toFloatApproximation();
+    const currentPosition = Number(props.data.current_custody_amount ?? "0");
     const currentValue = currentPosition * currentPriceAsNumber;
     content = (
       <>

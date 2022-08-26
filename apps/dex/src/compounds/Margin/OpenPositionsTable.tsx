@@ -12,11 +12,9 @@ import {
   FlashMessageConnectSifChainWalletLoading,
   Button,
   ChevronDownIcon,
-  formatNumberAsCurrency,
   formatNumberAsDecimal,
   Tooltip,
 } from "@sifchain/ui";
-import { Decimal } from "@cosmjs/math";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -40,7 +38,7 @@ import { ModalMTPClose } from "./ModalMTPClose";
  */
 
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
-import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
+import { formatDateISO, formatIntervalToDuration } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
 
@@ -270,17 +268,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   );
                 }
 
-                const custodyAmount = Decimal.fromAtomics(
-                  item.custody_amount,
-                  custodyAsset.decimals,
-                ).toFloatApproximation();
-                const currentInterestPaidCustody = Decimal.fromAtomics(
-                  item.current_interest_paid_custody,
-                  custodyAsset.decimals,
-                ).toFloatApproximation();
+                const custodyAmount = Number(item.custody_amount ?? "0");
+                const currentInterestPaidCustody = Number(item.current_interest_paid_custody ?? "0");
 
-                // this is slightly hacky, only doing it bexause we're getting a float returned here
-                const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;
+                const unrealizedPnl = Number(item.unrealized_pnl ?? "0");
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
