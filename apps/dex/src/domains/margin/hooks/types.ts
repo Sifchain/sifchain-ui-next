@@ -55,21 +55,18 @@ export interface HistoryQueryData {
   open_health: string;
   open_leverage: string;
   position: string;
-  realized_pnl: any;
+  realized_pnl: string;
+  realized_pnl_formula: string;
+  repayAmount: string;
+  openCollateralAmount: string;
+  openLiabilities: string;
   type: string;
-  open_interest_paid_collateral: string;
-  open_interest_paid_custody: string;
   open_liabilities: string;
-  close_interest_paid_collateral: string;
-  close_interest_paid_custody: string;
   close_liabilities: string;
-  next_payment: any;
-  paid_interest: any;
-  unsettled_interest: any;
-  mtp_close_custody_amount: number;
-  mtp_close_execution_price: any;
-  mtp_open_custody_amount: number;
-  mtp_open_execution_price: any;
+  mtp_close_custody_amount: string;
+  mtp_close_execution_price: string;
+  mtp_open_custody_amount: string;
+  mtp_open_execution_price: string;
 }
 
 export interface EventCoinReceived {

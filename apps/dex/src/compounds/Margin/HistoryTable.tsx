@@ -175,11 +175,6 @@ const HistoryTable = (props: HistoryTableProps) => {
                   );
                 }
 
-                const custodyAmount = Decimal.fromAtomics(
-                  item.open_custody_amount,
-                  custodyAsset.decimals,
-                ).toFloatApproximation();
-
                 return (
                   <tr key={item.id} data-testid={item.id}>
                     <td className="px-4 py-3">
@@ -215,18 +210,16 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 4)
+                        formatNumberAsDecimal(Number(item.open_custody_amount), 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.close_interest_paid_custody) ? (
+                      {isTruthy(item.close_liabilities) ? (
                         <div className="flex flex-row items-center justify-center">
                           <span className="mr-1">
-                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4) ?? (
-                              <HtmlUnicode name="EmDash" />
-                            )}
+                            {formatNumberAsDecimal(Number(item.close_liabilities), 4) ?? <HtmlUnicode name="EmDash" />}
                           </span>
                           <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
                         </div>
