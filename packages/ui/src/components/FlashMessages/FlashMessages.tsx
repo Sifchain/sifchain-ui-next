@@ -17,8 +17,7 @@ export function FlashMessage({
       ? "bg-gray-850 flex h-full items-center justify-center p-8 text-sm text-gray-100"
       : "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
   return (
-    <div className={clsx("flex flex-row items-center justify-center", sizeStyles, className)} role="alert">
-      <RacetrackSpinnerIcon className="mr-1 text-2xl" />
+    <div className={clsx(sizeStyles, className)} role="alert">
       {children}
     </div>
   );
