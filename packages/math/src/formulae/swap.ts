@@ -1,130 +1,267 @@
+/**
+ * @TODO update the link once it's merged
+ *
+ *  Implements the spec for `Fixed Rate Swap Fees`
+ *
+ * - proposal - https://github.com/Sifchain/sifnode/blob/feature/swap_formula/docs/proposals/fixed_rate_swap_fees.md
+ * - tutorial - https://github.com/Sifchain/sifnode/blob/feature/swap_formula/docs/tutorials/swap-fee-rate.md
+ *
+ */
+
 import BigNumber from "bignumber.js";
 
+const ONE = BigNumber(1);
+
+export type SwapParams = {
+  /**
+   * amount to be swapped from
+   */
+  inputAmount: BigNumber.Value;
+  /**
+   * amount of input asset in the pool
+   */
+  inputBalanceInPool: BigNumber.Value;
+  /**
+   * amount of output asset in the pool
+   */
+  outputBalanceInPool: BigNumber.Value;
+  /**
+   * current swap fee rate (sifnode gov param)
+   */
+  swapFeeRate: BigNumber.Value;
+  /**
+   * current PMTP ratio shifting rate
+   */
+  currentRatioShiftingRate: BigNumber.Value;
+};
+
 /**
- * calculate Swap Result based on formula ( x * X * Y ) / ( x + X ) ^ 2
- * @param fromAmount
- * @param fromCoinPoolAmount
- * @param toCoinPoolAmount
+ * Calculate Swap Amount from ROWAN to EXTERNAL ASSET based on formula:
+ * - (1 - f) * (1 + r) * x * Y / (x + X)
+ *
+ * where:
+ * - f is the swap fee rate
+ * - x is the input amount
+ * - X is the balance of input token in the pool
+ * - Y is the balance of output token in the pool
+ * - r is the interest rate
+ *
+ * @param params {SwapParams} - swap parameters
+ *
  * @returns amount obtained from swap
+ *
+ * @example
+ *
+ * const inputAmount = BigNumber(200000000000000);
+ * const inputBalanceInPool = BigNumber(1999800619938006200);
+ * const outputBalanceInPool = BigNumber(2000200000000000000);
+ * const swapFeeRate = BigNumber(0.003);
+ * const currentRatioShiftingRate = BigNumber(0);
+ *
+ * calculateSwapFromRowan({
+ *  inputAmount,
+ *  inputBalanceInPool,
+ *  outputBalanceInPool,
+ *  swapFeeRate,
+ *  currentRatioShiftingRate
+ * });
  */
-const _calculateSwapResult = (
-  fromAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
-) => {
-  const f = new BigNumber(fromAmount);
-  const fp = new BigNumber(fromCoinPoolAmount);
-  const tp = new BigNumber(toCoinPoolAmount);
+export function calculateSwapFromRowan({
+  inputAmount,
+  inputBalanceInPool,
+  outputBalanceInPool,
+  swapFeeRate,
+  currentRatioShiftingRate,
+}: SwapParams) {
+  const f = BigNumber(swapFeeRate);
+  const r = BigNumber(currentRatioShiftingRate);
+  const x = BigNumber(inputAmount);
+  const X = BigNumber(inputBalanceInPool);
+  const Y = BigNumber(outputBalanceInPool);
 
-  if (f.isZero() || fp.isZero() || tp.isZero()) {
-    return new BigNumber(0);
-  }
-  const xPlusX = f.plus(fp);
-  return f.times(fp).times(tp).div(xPlusX.times(xPlusX));
-};
+  // consider the formula:
+  // (1 - f) * (1 + r) * x * Y / (x + X)
+  const term1 = ONE.minus(f); // (1 - f)
+  const term2 = ONE.plus(r); // (1 + r)
+  const term3 = x.times(Y); // x * Y
+  const term4 = x.plus(X); // (x + X)
+
+  return term1.times(term2).times(term3).div(term4);
+}
 
 /**
- * calculate Swap Result based on formula (( x * X * Y ) / ( x + X ) ^ 2) * (1 + adjustment / 100)
- * @param fromAmount
- * @param fromCoinPoolAmount
- * @param toCoinPoolAmount
- * @param adjustment PMTP purchasing power adjustment, `undefined` if no adjustment is needed
+ * Calculate Swap Fee from ROWAN to EXTERNAL ASSET based on formula:
+ * - f * (1 + r) * x * Y / (x + X)
+ *
+ * where:
+ * - f is the swap fee rate
+ * - x is the input amount
+ * - X is the balance of input token in the pool
+ * - Y is the balance of output token in the pool
+ * - r is the current ratio shifting running rate
+ *
+ * @param params {SwapParams} - swap parameters
+ *
+ * @returns swap fee amount
+ *
+ * @example
+ *
+ * const inputAmount = BigNumber(200000000000000);
+ * const inputBalanceInPool = BigNumber(1999800619938006200);
+ * const outputBalanceInPool = BigNumber(2000200000000000000);
+ * const swapFeeRate = BigNumber(0.003);
+ * const currentRatioShiftingRate = BigNumber(0);
+ *
+ * calculateSwapFeeFromRowan({
+ *  inputAmount,
+ *  inputBalanceInPool,
+ *  outputBalanceInPool,
+ *  swapFeeRate,
+ *  currentRatioShiftingRate
+ * });
+ */
+export function calculateSwapFeeFromRowan({
+  inputAmount,
+  inputBalanceInPool,
+  outputBalanceInPool,
+  swapFeeRate,
+  currentRatioShiftingRate,
+}: SwapParams) {
+  const f = BigNumber(swapFeeRate);
+  const r = BigNumber(currentRatioShiftingRate);
+  const x = BigNumber(inputAmount);
+  const X = BigNumber(inputBalanceInPool);
+  const Y = BigNumber(outputBalanceInPool);
+
+  // consider the formula:
+  // f * (1 + r) * x * Y / (x + X)
+  const term1 = f.times(ONE.plus(r)); // f * (1 + r)
+  const term2 = x.times(Y); // x * Y
+  const term3 = x.plus(X); // (x + X)
+
+  return term1.times(term2).div(term3);
+}
+
+/**
+ * Calculate Swap Amount from EXTERNAL ASSET to ROWAN based on formula:
+ * - (1 - f) * x * Y / ((x + X)(1 + r))
+ *
+ * where:
+ * - f is the swap fee rate
+ * - x is the input amount
+ * - X is the balance of input token in the pool
+ * - Y is the balance of output token in the pool
+ * - r is the current ratio shifting running rate
+ *
+ * @param params {SwapParams} - swap parameters
+ *
  * @returns amount obtained from swap
+ *
+ * @example
+ *
+ * const inputAmount = BigNumber(200000000000000);
+ * const inputBalanceInPool = BigNumber(1999800619938006200);
+ * const outputBalanceInPool = BigNumber(2000200000000000000);
+ * const swapFeeRate = BigNumber(0.003);
+ * const currentRatioShiftingRate = BigNumber(0);
+ *
+ * calculateSwapToRowan({
+ *  inputAmount,
+ *  inputBalanceInPool,
+ *  outputBalanceInPool,
+ *  swapFeeRate,
+ *  currentRatioShiftingRate
+ * });
  */
-export const calculateSwapResult = (
-  fromAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
-  adjustment?: BigNumber.Value,
-) => {
-  const f = new BigNumber(fromAmount);
-  const fp = new BigNumber(fromCoinPoolAmount);
-  const tp = new BigNumber(toCoinPoolAmount);
+export function calculateSwapToRowan({
+  inputAmount,
+  inputBalanceInPool,
+  outputBalanceInPool,
+  swapFeeRate,
+  currentRatioShiftingRate,
+}: SwapParams) {
+  const f = BigNumber(swapFeeRate);
+  const r = BigNumber(currentRatioShiftingRate);
+  const x = BigNumber(inputAmount);
+  const X = BigNumber(inputBalanceInPool);
+  const Y = BigNumber(outputBalanceInPool);
 
-  if (f.isZero() || fp.isZero() || tp.isZero()) {
-    return new BigNumber(0);
-  }
+  // consider the formula:
+  // (1 - f) * x * Y / ((x + X)(1 + r))
+  const term1 = ONE.minus(f); // (1 - f)
+  const term2 = x.times(Y); // x * Y
+  const term3 = x.plus(X); // (x + X)
+  const term4 = ONE.plus(r); // (1 + r)
 
-  if (adjustment === undefined || new BigNumber(adjustment).isZero()) {
-    return _calculateSwapResult(f, fp, tp);
-  }
-
-  const a = new BigNumber(adjustment);
-
-  const adjustmentPercentage = a.div(100_000_000_000_000_000_000);
-
-  return _calculateSwapResult(f, fp, tp).times(adjustmentPercentage.plus(1));
-};
+  return term1.times(term2).div(term3.times(term4));
+}
 
 /**
- * formula: S = (x * X * Y) / (x + X) ^ 2
- * reverse Formula: x = ( -2*X*S + X*Y - X*sqrt( Y*(Y - 4*S) ) ) / 2*S
- * ok to accept a little precision loss as reverse swap amount can be rough
- * @param targetAmount
- * @param targetCoinPoolAmount
- * @param fromCoinPoolAmount
- * @returns
+ * Calculate Swap Fee from EXTERNAL ASSET to ROWAN based on formula:
+ * - f * x * Y / ((x + X)(1 + r))
+ *
+ * where:
+ * - f is the swap fee rate
+ * - x is the input amount
+ * - X is the balance of input token in the pool
+ * - Y is the balance of output token in the pool
+ * - r is the current ratio shifting running rate
+ *
+ * @param params {SwapParams} - swap parameters
+ *
+ * @returns swap fee amount
+ *
+ * @example
+ *
+ * const inputAmount = BigNumber(200000000000000);
+ * const inputBalanceInPool = BigNumber(1999800619938006200);
+ * const outputBalanceInPool = BigNumber(2000200000000000000);
+ * const swapFeeRate = BigNumber(0.003);
+ * const currentRatioShiftingRate = BigNumber(0);
+ *
+ * calculateSwapFeeToRowan({
+ *  inputAmount,
+ *  inputBalanceInPool,
+ *  outputBalanceInPool,
+ *  swapFeeRate,
+ *  currentRatioShiftingRate
+ * });
  */
-export const calculateSwapAmountNeeded = (
-  targetAmount: BigNumber.Value,
-  targetCoinPoolAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
-) => {
-  const t = new BigNumber(targetAmount);
-  const tp = new BigNumber(targetCoinPoolAmount);
-  const fp = new BigNumber(fromCoinPoolAmount);
-  // Adding a check here because sqrt of a negative number will throw an exception
-  if (t.isZero() || tp.isZero() || t.times(4).gt(fp)) {
-    return new BigNumber(0);
-  }
-  const term1 = new BigNumber(-2).times(tp).times(t);
-  const term2 = tp.times(fp);
-  const underRoot = fp.times(fp.minus(t.times(4)));
-  const term3 = tp.times(underRoot.sqrt());
-  const numerator = term1.plus(term2).minus(term3);
-  const denominator = t.times(2);
-  const x = numerator.div(denominator);
+export function calculateSwapFeeToRowan({
+  inputAmount,
+  inputBalanceInPool,
+  outputBalanceInPool,
+  swapFeeRate,
+  currentRatioShiftingRate,
+}: SwapParams) {
+  const f = BigNumber(swapFeeRate);
+  const r = BigNumber(currentRatioShiftingRate);
+  const x = BigNumber(inputAmount);
+  const X = BigNumber(inputBalanceInPool);
+  const Y = BigNumber(outputBalanceInPool);
 
-  return x.gte(0) ? x : new BigNumber(0);
+  // consider the formula:
+  // f * x * Y / ((x + X)(1 + r))
+  const term1 = f.times(x).times(Y); // f * x * Y
+  const term2 = x.plus(X); // (x + X)
+  const term3 = ONE.plus(r); // (1 + r)
+
+  return term1.div(term2.times(term3));
+}
+
+export const calculateSwap = (params: SwapParams, toRowan: boolean) => {
+  const fn = toRowan ? calculateSwapToRowan : calculateSwapFromRowan;
+
+  return fn(params);
 };
 
-/**
- * calculate Provider Fee according to the formula: ( x^2 * Y ) / ( x + X )^2
- * @param fromAmount swap Amount
- * @param fromCoinPoolAmount external Balance
- * @param toCoinPoolAmount native Balance
- * @returns providerFee
- */
-export const calculateLiquidityProviderFee = (
-  fromAmount: BigNumber.Value,
-  fromCoinPoolAmount: BigNumber.Value,
-  toCoinPoolAmount: BigNumber.Value,
-) => {
-  const f = new BigNumber(fromAmount);
-  const fp = new BigNumber(fromCoinPoolAmount);
-  const tp = new BigNumber(toCoinPoolAmount);
+export const calculateSwapFee = (params: SwapParams, toRowan: boolean) => {
+  const fn = toRowan ? calculateSwapFeeToRowan : calculateSwapFeeFromRowan;
 
-  if (f.isZero() || fp.isZero() || tp.isZero()) {
-    return new BigNumber(0);
-  }
-
-  const xPlusX = f.plus(fp);
-  return f.times(f).times(tp).div(xPlusX.times(xPlusX));
+  return fn(params);
 };
 
-/**
- * calculate price impact according to the formula (x) / (x + X)
- * @param fromAmount swap Amount
- * @param fromCoinPoolAmount external Balance
- * @returns
- */
-export const calculatePriceImpact = (fromAmount: BigNumber.Value, fromCoinPoolAmount: BigNumber.Value) => {
-  const f = new BigNumber(fromAmount);
-
-  if (f.isZero()) {
-    return new BigNumber(0);
-  }
-
-  const denominator = f.plus(fromCoinPoolAmount);
-  return f.div(denominator);
-};
+export const calculateSwapWithFee = (params: SwapParams, toRowan: boolean) => ({
+  swap: calculateSwap(params, toRowan),
+  fee: calculateSwapFee(params, toRowan),
+});
