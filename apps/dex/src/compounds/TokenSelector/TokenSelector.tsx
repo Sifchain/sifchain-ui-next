@@ -13,7 +13,6 @@ import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTok
 
 export type TokenSelectorProps = Omit<BaseTokenSelectorProps, "tokens" | "value" | "onChange"> & {
   value?: string;
-  // eslint-disable-next-line no-unused-vars
   onChange: (token?: EnhancedRegistryAsset) => unknown;
 };
 

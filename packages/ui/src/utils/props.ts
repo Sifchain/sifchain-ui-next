@@ -14,5 +14,3 @@ export const toPrefixedProps = <P extends string, T extends Record<string, unkno
       [K in Exclude<keyof T, U>]: T[K];
     },
   );
-
-const pp = toPrefixedProps("$", { foo: 1, bar: 2 }, ["foo"]);

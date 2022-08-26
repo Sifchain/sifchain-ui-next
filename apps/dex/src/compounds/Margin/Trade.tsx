@@ -2,7 +2,16 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
-import { formatNumberAsCurrency, Maybe, RacetrackSpinnerIcon, SwapIcon, TokenEntry } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  Maybe,
+  RacetrackSpinnerIcon,
+  SwapIcon,
+  TokenEntry,
+  FlashMessage5xxError,
+  FlashMessageLoading,
+  FlashMessage,
+} from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
 import { useMemo, useState } from "react";
@@ -13,7 +22,7 @@ import Head from "next/head";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginParamsQuery } from "~/domains/margin/hooks";
+import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 
@@ -28,7 +37,7 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  */
 import { ROWAN } from "~/domains/assets";
 import { TradeActions } from "./TradeActions";
-import { FlashMessage5xxError, FlashMessageLoading, PoolOverview } from "./_components";
+import { PoolOverview } from "./_components";
 import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -42,7 +51,8 @@ import {
   inputValidatorPosition,
   removeFirstCharsUC,
 } from "./_trade";
-import { ModalReviewOpenPosition } from "./ModalReviewOpenPosition";
+import { ModalMTPOpen } from "./ModalMTPOpen";
+import { useCallback } from "react";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
@@ -71,7 +81,7 @@ const TradeCompound: NextPage = () => {
   const govParamsQuery = useMarginParamsQuery();
 
   if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
-    console.group("Trade Page Loading Error");
+    console.group("Trade Page Query Error");
     console.log({ enhancedPoolsQuery });
     console.log({ enhancedRowanQuery, rowanPriceQuery });
     console.log({ govParamsQuery });
@@ -174,6 +184,10 @@ const Trade = (props: TradeProps) => {
 
     return pools.find((pool) => pool.asset.denom === "cusdc");
   }, [pools, qsPool]);
+
+  const openPositionsBySymbolQuery = useMarginOpenPositionsBySymbolQuery({
+    poolSymbol: poolActive?.asset.denom ?? "",
+  });
 
   /**
    * ********************************************************************************************
@@ -306,13 +320,18 @@ const Trade = (props: TradeProps) => {
     inputCollateral.value,
   );
 
-  const openPositionFee = useMemo(
-    () =>
-      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+  const openPositionFee = useMemo(() => {
+    try {
+      return Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
         Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
-      ),
-    [swapSimulation, selectedPosition],
-  );
+      );
+    } catch (error) {
+      console.group("Open Position Fee Swap LP Fee");
+      console.log({ error });
+      console.groupEnd();
+      return 0;
+    }
+  }, [swapSimulation, selectedPosition]);
 
   const { recompute: calculateReverseSwap } = useSwapSimulation(
     selectedPosition.denom ?? selectedPosition.symbol,
@@ -320,11 +339,17 @@ const Trade = (props: TradeProps) => {
     inputPosition.value,
   );
 
-  const calculatePosition = (inputAmount: string, leverage = inputLeverage.value) =>
-    withLeverage(calculateSwap(inputAmount)?.rawReceiving || "0", selectedPosition.decimals, leverage);
+  const calculatePosition = useCallback(
+    (inputAmount: string, leverage = inputLeverage.value) =>
+      withLeverage(calculateSwap(inputAmount)?.rawReceiving || "0", selectedPosition.decimals, leverage),
+    [calculateSwap, inputLeverage.value, selectedPosition.decimals],
+  );
 
-  const calculateCollateral = (inputAmount: string, leverage = inputLeverage.value) =>
-    withLeverage(calculateReverseSwap(inputAmount)?.rawReceiving || "0", selectedCollateral.decimals, leverage);
+  const calculateCollateral = useCallback(
+    (inputAmount: string, leverage = inputLeverage.value) =>
+      withLeverage(calculateReverseSwap(inputAmount)?.rawReceiving || "0", selectedCollateral.decimals, leverage),
+    [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
+  );
 
   /**
    * ********************************************************************************************
@@ -333,24 +358,21 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeCollateral = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorCollateral($input, "change");
+  const onChangeCollateral = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorCollateral($input, "change");
 
-    const positionInputAmount = calculatePosition(payload.value);
+      const positionInputAmount = calculatePosition(payload.value);
 
-    setInputCollateral(payload);
-    setInputPosition({
-      value: String(positionInputAmount),
-      error: "",
-    });
-  };
-
-  const onBlurCollateral = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorCollateral($input, "blur");
-    setInputCollateral(payload);
-  };
+      setInputCollateral(payload);
+      setInputPosition({
+        value: String(positionInputAmount),
+        error: "",
+      });
+    },
+    [calculatePosition],
+  );
 
   /**
    * ********************************************************************************************
@@ -359,24 +381,21 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangePosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "change");
+  const onChangePosition = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorPosition($input, "change");
 
-    const collateralInputAmount = calculateCollateral(payload.value);
+      const collateralInputAmount = calculateCollateral(payload.value);
 
-    setInputPosition(payload);
-    setInputCollateral({
-      value: String(collateralInputAmount),
-      error: "",
-    });
-  };
-
-  const onBlurPosition = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorPosition($input, "blur");
-    setInputPosition(payload);
-  };
+      setInputPosition(payload);
+      setInputCollateral({
+        value: String(collateralInputAmount),
+        error: "",
+      });
+    },
+    [calculateCollateral],
+  );
 
   /**
    * ********************************************************************************************
@@ -385,27 +404,24 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
+  const onChangeLeverage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const $input = event.currentTarget;
+      const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
 
-    if (!payload.error) {
-      const positionInputAmount = calculatePosition(inputCollateral.value, payload.value);
+      if (!payload.error) {
+        const positionInputAmount = calculatePosition(inputCollateral.value, payload.value);
 
-      setInputPosition({
-        value: positionInputAmount.toString(),
-        error: "",
-      });
-    }
+        setInputPosition({
+          value: positionInputAmount.toString(),
+          error: "",
+        });
+      }
 
-    setInputLeverage(payload);
-  };
-
-  const onBlurLeverage = (event: ChangeEvent<HTMLInputElement>) => {
-    const $input = event.currentTarget;
-    const payload = inputValidatorLeverage($input, "blur", maxLeverageDecimal.toString());
-    setInputLeverage(payload);
-  };
+      setInputLeverage(payload);
+    },
+    [calculatePosition, inputCollateral.value, maxLeverageDecimal],
+  );
 
   /**
    * ********************************************************************************************
@@ -414,40 +430,47 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onClickReset = (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setInputCollateral({
-      value: "",
-      error: "",
-    });
-    setInputPosition({
-      value: "",
-      error: "",
-    });
-    setInputLeverage({
-      value: maxLeverageDecimal.toString(),
-      error: "",
-    });
-  };
+  const onClickReset = useCallback(
+    (event: SyntheticEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setInputCollateral({
+        value: "",
+        error: "",
+      });
+      setInputPosition({
+        value: "",
+        error: "",
+      });
+      setInputLeverage({
+        value: maxLeverageDecimal.toString(),
+        error: "",
+      });
+    },
+    [maxLeverageDecimal],
+  );
 
   /**
    * We using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
    * Wrapping it in a try..catch to avoid breaking the UI
    */
-  let collateralAmount = "0";
-  let leverage = "0";
-  try {
-    collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
-    leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
-  } catch (err) {}
+  const { collateralAmount, leverage } = useMemo(() => {
+    let collateralAmount = "0";
+    let leverage = "0";
+    try {
+      collateralAmount = Decimal.fromUserInput(inputCollateral.value, selectedCollateral.decimals).atomics;
+      leverage = Decimal.fromUserInput(inputLeverage.value, ROWAN.decimals).atomics;
+    } finally {
+      return { collateralAmount, leverage };
+    }
+  }, [inputCollateral.value, inputLeverage.value, selectedCollateral.decimals]);
 
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
-  const onClickOpenPosition = (event: SyntheticEvent<HTMLButtonElement>) => {
+  const onClickOpenPosition = useCallback((event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
-  };
+  }, []);
 
   /**
    * ********************************************************************************************
@@ -456,45 +479,53 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangePoolSelector = (token: TokenEntry) => {
-    router.push(
-      {
-        query: {
-          ...router.query,
-          pool: token.symbol.toLowerCase(),
+  const onChangePoolSelector = useCallback(
+    (token: TokenEntry) => {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            pool: token.symbol.toLowerCase(),
+          },
         },
-      },
-      undefined,
-      {
-        scroll: false,
-      },
-    );
-    setInputCollateral({
-      value: "",
-      error: "",
-    });
-    setInputPosition({
-      value: "",
-      error: "",
-    });
-    setInputLeverage({
-      value: maxLeverageDecimal.toString(),
-      error: "",
-    });
-  };
+        undefined,
+        {
+          scroll: false,
+        },
+      );
+      setInputCollateral({
+        value: "",
+        error: "",
+      });
+      setInputPosition({
+        value: "",
+        error: "",
+      });
+      setInputLeverage({
+        value: maxLeverageDecimal.toString(),
+        error: "",
+      });
+    },
+    [maxLeverageDecimal, router],
+  );
 
-  const onClickSwitch = (event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setInputCollateral((prev) => ({
-      ...prev,
-      value: inputPosition.value,
-    }));
-    setInputPosition((prev) => ({
-      ...prev,
-      value: inputCollateral.value,
-    }));
-    setSwitchCollateralAndPosition((prev) => !prev);
-  };
+  const onClickSwitch = useCallback(
+    (event: SyntheticEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setInputCollateral((prev) => ({
+        ...prev,
+        value: inputPosition.value,
+      }));
+      setInputPosition((prev) => ({
+        ...prev,
+        value: inputCollateral.value,
+      }));
+      setSwitchCollateralAndPosition((prev) => !prev);
+    },
+    [inputCollateral.value, inputPosition.value],
+  );
+
+  const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
 
   return (
     <>
@@ -547,7 +578,6 @@ const Trade = (props: TradeProps) => {
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
-                  onBlur={onBlurCollateral}
                   onChange={onChangeCollateral}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
@@ -604,7 +634,6 @@ const Trade = (props: TradeProps) => {
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
-                  onBlur={onBlurPosition}
                   onChange={onChangePosition}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
@@ -642,7 +671,6 @@ const Trade = (props: TradeProps) => {
                   max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
                   onChange={onChangeLeverage}
-                  onBlur={onBlurLeverage}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputLeverage.error,
                   })}
@@ -734,17 +762,16 @@ const Trade = (props: TradeProps) => {
                     <li className="px-4">
                       <div className="flex flex-row items-center">
                         <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>
-                          {formatNumberAsPercent(
-                            Decimal.fromAtomics(poolActive.interestRate, ROWAN.decimals).toFloatApproximation() * 100,
-                            8,
-                          )}
-                        </span>
+                        <span>{poolInterestRate}</span>
                       </div>
                     </li>
                   ) : null}
                 </ul>
               </div>
+              <FlashMessage className="m-4">
+                <b>Warning:</b> The field <b>Fees</b> have been disabled in all calculations until we implement the Flat
+                Fee rate.
+              </FlashMessage>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
@@ -759,16 +786,16 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 col-span-5 rounded border">
-          <OpenPositionsTable pool={poolActive} hideColumns={["Pool", "Paid Interest"]} />
+          <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Interest Paid"]} />
         </article>
       </section>
 
-      <ModalReviewOpenPosition
+      <ModalMTPOpen
         data={{
           collateralAmount: collateralAmount,
           fromDenom: selectedCollateral.symbol.toLowerCase(),
           leverage: leverage,
-          poolInterestRate: formatNumberAsPercent(poolActive ? poolActive.stats.interestRate : 0, 10),
+          poolInterestRate: poolInterestRate,
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: formatNumberAsDecimal(
             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,

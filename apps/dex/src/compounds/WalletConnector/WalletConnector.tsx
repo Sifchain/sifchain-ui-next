@@ -99,10 +99,6 @@ const WalletConnector: FC = () => {
         const enabledChains = chains.filter((x) => enabledChainsState.networks.includes(x.id));
 
         if (cosmosActiveConnector) {
-          console.log({
-            cosmosActiveConnector,
-            enabledChains: enabledChains,
-          });
           const entries = await Promise.all(
             enabledChains
               .filter((chain): chain is IbcChainEntry => chain.type === "ibc")

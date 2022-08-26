@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
 import { pathOr } from "rambda";
-import { TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
+import { FlashMessageLoading, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
@@ -94,7 +94,7 @@ const Margin: NextPage = () => {
             )}
           />
         ) : (
-          <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>
+          <FlashMessageLoading size="full-page" />
         )}
       </section>
     </>

@@ -3,12 +3,11 @@ import type { SyntheticEvent } from "react";
 import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
-import { useOpenMTPMutation, transformMTPMutationErrors } from "~/domains/margin/hooks";
+import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
+
 import AssetIcon from "~/compounds/AssetIcon";
 
-import { FlashMessage } from "./_components";
-
-type ModalReviewOpenPositionProps = {
+type ModalMTPOpenProps = {
   data: {
     collateralAmount: string;
     fromDenom: string;
@@ -24,8 +23,8 @@ type ModalReviewOpenPositionProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
-export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
-  const confirmOpenPositionMutation = useOpenMTPMutation();
+export function ModalMTPOpen(props: ModalMTPOpenProps) {
+  const confirmOpenPositionMutation = useMarginMTPOpenMutation();
 
   const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -90,10 +89,6 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
             <RacetrackSpinnerIcon />
           </div>
         )}
-        <FlashMessage className="my-4 rounded bg-gray-700" size="small">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam iusto fugiat iste asperiores, non amet eligendi
-          vitae culpa, aperiam voluptates accusamus voluptatem quibusdam modi maxime facere aliquam quae saepe quaerat.
-        </FlashMessage>
         {confirmOpenPositionMutation.isLoading ? (
           <p className="mt-6 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
         ) : (
@@ -103,8 +98,8 @@ export function ModalReviewOpenPosition(props: ModalReviewOpenPositionProps) {
         )}
         {confirmOpenPositionMutation.isError ? (
           <p className="mt-6 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to open margin position:</b>
-            <span>{transformMTPMutationErrors((confirmOpenPositionMutation.error as Error).message)}</span>
+            <b className="mr-1">Failed to open position:</b>
+            <span>{(confirmOpenPositionMutation.error as Error).message}</span>
           </p>
         ) : null}
       </>

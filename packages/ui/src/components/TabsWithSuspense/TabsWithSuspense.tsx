@@ -1,8 +1,10 @@
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 
 import { FC, Suspense } from "react";
 
 import clsx from "clsx";
+
+import { FlashMessageLoading } from "../FlashMessages";
 
 export type TabsWithSuspenseProps = {
   activeTab: string;
@@ -12,7 +14,7 @@ export type TabsWithSuspenseProps = {
     /**
      * @TODO I could not find a better type here (e.g., JSX.Elements, ReactNode did not worked)
      */
-    content: any;
+    content: ComponentType<Record<string, unknown>>;
   }[];
   renderItem: (title: string, slug: string) => ReactNode;
   fallbackSuspense?: ReactNode;
@@ -22,7 +24,7 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
   activeTab,
   items,
   renderItem,
-  fallbackSuspense = <div className="bg-gray-850 p-10 text-center text-gray-100">Loading...</div>,
+  fallbackSuspense = <FlashMessageLoading size="full-page" />,
 }) => {
   const currentTab = items.find((item) => item.slug === activeTab);
   const TabContent = currentTab?.content || null;

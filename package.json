@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
+    "build:pkgs": "turbo run build --filter=\"./packages/*\"",
     "test": "turbo run test",
     "dev": "turbo run dev --filter=@sifchain/dex",
     "dev:registry": "turbo run dev --filter=@sifchain/registry",

@@ -1,4 +1,4 @@
-import { uniq, without } from "rambda";
+import { without } from "rambda";
 import { createStore } from "zustand-immer-store";
 
 export const useEnabledChainsStore = createStore(

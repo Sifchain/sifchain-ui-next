@@ -156,6 +156,13 @@ export interface MsgAddProviderDistributionPeriodRequest {
 
 export interface MsgAddProviderDistributionPeriodResponse {}
 
+export interface MsgUpdateSwapFeeRateRequest {
+  signer: string;
+  swapFeeRate: string;
+}
+
+export interface MsgUpdateSwapFeeRateResponse {}
+
 function createBaseMsgUpdateStakingRewardParams(): MsgUpdateStakingRewardParams {
   return { signer: "", minter: "", params: "" };
 }
@@ -2191,6 +2198,103 @@ export const MsgAddProviderDistributionPeriodResponse = {
   },
 };
 
+function createBaseMsgUpdateSwapFeeRateRequest(): MsgUpdateSwapFeeRateRequest {
+  return { signer: "", swapFeeRate: "" };
+}
+
+export const MsgUpdateSwapFeeRateRequest = {
+  encode(message: MsgUpdateSwapFeeRateRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.swapFeeRate !== "") {
+      writer.uint32(18).string(message.swapFeeRate);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateSwapFeeRateRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateSwapFeeRateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.swapFeeRate = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateSwapFeeRateRequest {
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      swapFeeRate: isSet(object.swapFeeRate) ? String(object.swapFeeRate) : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateSwapFeeRateRequest): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.swapFeeRate !== undefined && (obj.swapFeeRate = message.swapFeeRate);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateSwapFeeRateRequest>, I>>(object: I): MsgUpdateSwapFeeRateRequest {
+    const message = createBaseMsgUpdateSwapFeeRateRequest();
+    message.signer = object.signer ?? "";
+    message.swapFeeRate = object.swapFeeRate ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateSwapFeeRateResponse(): MsgUpdateSwapFeeRateResponse {
+  return {};
+}
+
+export const MsgUpdateSwapFeeRateResponse = {
+  encode(_: MsgUpdateSwapFeeRateResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateSwapFeeRateResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateSwapFeeRateResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateSwapFeeRateResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateSwapFeeRateResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateSwapFeeRateResponse>, I>>(_: I): MsgUpdateSwapFeeRateResponse {
+    const message = createBaseMsgUpdateSwapFeeRateResponse();
+    return message;
+  },
+};
+
 export interface Msg {
   RemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse>;
   RemoveLiquidityUnits(request: MsgRemoveLiquidityUnits): Promise<MsgRemoveLiquidityUnitsResponse>;
@@ -2215,6 +2319,7 @@ export interface Msg {
   AddProviderDistributionPeriod(
     request: MsgAddProviderDistributionPeriodRequest,
   ): Promise<MsgAddProviderDistributionPeriodResponse>;
+  UpdateSwapFeeRate(request: MsgUpdateSwapFeeRateRequest): Promise<MsgUpdateSwapFeeRateResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2238,6 +2343,7 @@ export class MsgClientImpl implements Msg {
     this.UpdateLiquidityProtectionParams = this.UpdateLiquidityProtectionParams.bind(this);
     this.ModifyLiquidityProtectionRates = this.ModifyLiquidityProtectionRates.bind(this);
     this.AddProviderDistributionPeriod = this.AddProviderDistributionPeriod.bind(this);
+    this.UpdateSwapFeeRate = this.UpdateSwapFeeRate.bind(this);
   }
   RemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse> {
     const data = MsgRemoveLiquidity.encode(request).finish();
@@ -2345,6 +2451,12 @@ export class MsgClientImpl implements Msg {
     const data = MsgAddProviderDistributionPeriodRequest.encode(request).finish();
     const promise = this.rpc.request("sifnode.clp.v1.Msg", "AddProviderDistributionPeriod", data);
     return promise.then((data) => MsgAddProviderDistributionPeriodResponse.decode(new _m0.Reader(data)));
+  }
+
+  UpdateSwapFeeRate(request: MsgUpdateSwapFeeRateRequest): Promise<MsgUpdateSwapFeeRateResponse> {
+    const data = MsgUpdateSwapFeeRateRequest.encode(request).finish();
+    const promise = this.rpc.request("sifnode.clp.v1.Msg", "UpdateSwapFeeRate", data);
+    return promise.then((data) => MsgUpdateSwapFeeRateResponse.decode(new _m0.Reader(data)));
   }
 }
 

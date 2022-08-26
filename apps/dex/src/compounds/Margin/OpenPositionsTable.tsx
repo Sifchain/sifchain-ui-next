@@ -1,16 +1,30 @@
-import { Button, ChevronDownIcon, formatNumberAsCurrency, formatNumberAsDecimal, Tooltip } from "@sifchain/ui";
-import { Decimal } from "@cosmjs/math";
+import type {
+  useOpenPositionsQuery,
+  useMarginOpenPositionsBySymbolQuery,
+  OpenPositionsQueryData,
+} from "~/domains/margin/hooks";
+
+import {
+  FlashMessageLoading,
+  FlashMessage5xxError,
+  FlashMessageConnectSifChainWallet,
+  FlashMessageConnectSifChainWalletError,
+  FlashMessageConnectSifChainWalletLoading,
+  Button,
+  ChevronDownIcon,
+  formatNumberAsDecimal,
+  Tooltip,
+} from "@sifchain/ui";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { OpenPositionsQueryData, useOpenPositionsQuery } from "~/domains/margin/hooks/useMarginOpenPositionsQuery";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-
-import { ModalClosePosition } from "./ModalClosePosition";
+import AssetIcon from "~/compounds/AssetIcon";
+import { ModalMTPClose } from "./ModalMTPClose";
 
 /**
  * ********************************************************************************************
@@ -23,21 +37,10 @@ import { ModalClosePosition } from "./ModalClosePosition";
  * ********************************************************************************************
  */
 
-import { findNextOrderAndSortBy, QS_DEFAULTS, SORT_BY } from "./_tables";
-import { formatDateISO, formatIntervalToDuration, formatNumberAsPercent } from "./_intl";
+import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
+import { formatDateISO, formatIntervalToDuration } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import {
-  NoResultsRow,
-  PaginationButtons,
-  PaginationShowItems,
-  PillUpdating,
-  FlashMessageLoading,
-  FlashMessage5xxError,
-  FlashMessageConnectSifChainWallet,
-  FlashMessageConnectSifChainWalletError,
-  FlashMessageConnectSifChainWalletLoading,
-} from "./_components";
-import type { useEnhancedPoolsQuery } from "~/domains/clp";
+import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -48,20 +51,23 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "Liquidation ratio" means?`;
+const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
-  "Liquidation ratio is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+  "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
+const TOOLTIP_NPV_TITLE = `What does "NPV" means?`;
+const TOOLTIP_NPV_CONTENT =
+  "Net present value (NPV) represents the value of the position given spot prices for each asset involved in the trade. NPV does not represent the final amount you would receive in proceeds if you close the position";
 const HEADERS_TITLES = {
   DATE_OPENED: "Date Opened",
   POOL: "Pool",
   SIDE: "Side",
   POSITION: "Position",
   ASSET: "Asset",
-  BASE_LEVERAGE: "Base Leverage",
-  UNREALIZED_PNL: "Unrealized P&L",
+  LEVERAGE: "Leverage",
+  NPV: "NPV",
   INTEREST_RATE: "Interest Rate",
-  PAID_INTEREST: "Paid Interest",
-  LIQUIDATION_RATIO: "Liquidation ratio",
+  INTEREST_PAID: "Interest Paid",
+  LIQUIDATION_RATIO: "LR",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
 } as const;
@@ -71,22 +77,22 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.SIDE, order_by: "position" },
   { title: HEADERS_TITLES.POSITION, order_by: "custody_amount" },
   { title: HEADERS_TITLES.ASSET, order_by: "custody_asset" },
-  { title: HEADERS_TITLES.BASE_LEVERAGE, order_by: "leverage" },
-  { title: HEADERS_TITLES.UNREALIZED_PNL, order_by: "unrealized_pnl" },
+  { title: HEADERS_TITLES.LEVERAGE, order_by: "leverage" },
+  { title: HEADERS_TITLES.NPV, order_by: "" },
   { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
-  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "paid_interest" },
+  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "interest_paid_custody" },
   { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
 ];
 const createTimeOpenLabel = (timeOpen: Duration) => {
   const { years, months, days, hours, minutes, seconds } = timeOpen;
-  const yearsLabel = years ? `${years} ${years > 1 ? "years" : "year"}` : null;
-  const monthsLabel = months ? `${months} ${months > 1 ? "months" : "month"}` : null;
-  const daysLabel = days ? `${days} ${days > 1 ? "days" : "day"}` : null;
-  const hoursLabel = hours ? `${hours} ${hours > 1 ? "hours" : "hour"}` : null;
-  const minutesLabel = minutes ? `${minutes} ${minutes > 1 ? "minutes" : "minute"}` : null;
-  const secondsLabel = seconds ? `${seconds} ${seconds > 1 ? "seconds" : "second"}` : null;
+  const yearsLabel = years ? `${years}y` : null;
+  const monthsLabel = months ? `${months}m` : null;
+  const daysLabel = days ? `${days}d` : null;
+  const hoursLabel = hours ? `${hours}h` : null;
+  const minutesLabel = minutes ? `${minutes}min` : null;
+  const secondsLabel = seconds ? `${seconds}s` : null;
   const isSeconds = [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel].every((item) => item === null);
   const maybeSecondsLabel = isSeconds ? secondsLabel : null;
   return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, maybeSecondsLabel]
@@ -96,7 +102,7 @@ const createTimeOpenLabel = (timeOpen: Duration) => {
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
-  pool?: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
+  openPositionsQuery: ReturnType<typeof useOpenPositionsQuery> | ReturnType<typeof useMarginOpenPositionsBySymbolQuery>;
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };
@@ -104,20 +110,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
   const walletAddress = useSifSignerAddress();
+  const { openPositionsQuery } = props;
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
-
-  const queryParams = {
-    limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,
-    offset: (router.query["offset"] as string) || QS_DEFAULTS.offset,
-    orderBy: (router.query["orderBy"] as string) || "date_opened",
-    sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
-  };
-  const openPositionsQuery = useOpenPositionsQuery({
-    ...queryParams,
-    walletAddress: walletAddress.data ?? "",
-  });
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
@@ -149,12 +145,16 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
-      <section className="flex h-full flex-col">
+      <section className="bg-gray-850 flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
-          <table className="h-full w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
+          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  if (hideColumns?.includes(header.title)) {
+                    return null;
+                  }
+
                   if (header.title === HEADERS_TITLES.CLOSE_POSITION) {
                     return <th key={header.title} />;
                   }
@@ -163,10 +163,19 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     return (
                       <th
                         key={header.title}
-                        className="cursor-not-allowed px-4 py-3 font-normal"
-                        hidden={hideColumns?.includes(header.title)}
+                        className="flex flex-row items-center justify-center px-4 py-3 font-normal"
                       >
-                        {header.title}
+                        <span className="cursor-not-allowed">{header.title}</span>
+                        {header.title === HEADERS_TITLES.NPV ? (
+                          <>
+                            <div className="mr-1" />
+                            <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
+                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                                i
+                              </span>
+                            </Tooltip>
+                          </>
+                        ) : null}
                       </th>
                     );
                   }
@@ -178,7 +187,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   const linkTagA = (
-                    <a className="flex flex-row items-center">
+                    <a className="flex flex-row items-center justify-center">
                       {header.title}
                       {itemActive && (
                         <ChevronDownIcon
@@ -204,24 +213,25 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </Link>
                   );
                   return (
-                    <th
-                      key={header.title}
-                      className="px-4 py-3 font-normal"
-                      hidden={hideColumns?.includes(header.title)}
-                    >
+                    <th key={header.title} className="px-4 py-3 font-normal">
                       <div
-                        className={clsx("flex flex-row items-center", {
+                        className={clsx("flex flex-row items-center justify-center", {
                           "font-semibold text-white": itemActive,
                         })}
                       >
                         {linkNextEl}
-                        <div className="mr-1" />
                         {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
-                          <Tooltip title={TOOLTIP_LIQUIDATION_RATIO_TITLE} content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}>
-                            <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                              i
-                            </span>
-                          </Tooltip>
+                          <>
+                            <div className="mr-1" />
+                            <Tooltip
+                              title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
+                              content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
+                            >
+                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+                                i
+                              </span>
+                            </Tooltip>
+                          </>
                         ) : null}
                       </div>
                     </th>
@@ -229,23 +239,39 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850">
+            <tbody className="bg-gray-850 text-center">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((item) => {
-                const custodyAsset = findBySymbolOrDenom(item.custody_asset);
-                const collateralAsset = findBySymbolOrDenom(item.collateral_asset);
+              {results.map((x) => {
+                const item = x as OpenPositionsQueryData & { _optimistic: boolean };
+
+                let custodyAsset;
+                let collateralAsset;
+                try {
+                  custodyAsset = findBySymbolOrDenom(item.custody_asset);
+                  collateralAsset = findBySymbolOrDenom(item.collateral_asset);
+                } catch (err) {}
 
                 if (!custodyAsset || !collateralAsset) {
-                  throw new Error("Asset not found");
+                  console.group("Open Positions Missing Custody or Collateral Asset Error");
+                  console.log({ item: x });
+                  console.groupEnd();
+                  return (
+                    <tr>
+                      {Array.from({ length: headers.length }, () => {
+                        return (
+                          <td className="px-4 py-3">
+                            <HtmlUnicode name="EmDash" />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
                 }
 
-                const custodyAmount = Decimal.fromAtomics(
-                  item.custody_amount,
-                  custodyAsset.decimals,
-                ).toFloatApproximation();
+                const custodyAmount = Number(item.custody_amount ?? "0");
+                const currentInterestPaidCustody = Number(item.current_interest_paid_custody ?? "0");
 
-                // this is slightly hacky, only doing it bexause we're getting a float returned here
-                const unrealizedPnl = Number(item.unrealized_pnl) / 10 ** custodyAsset.decimals;
+                const unrealizedPnl = Number(item.unrealized_pnl ?? "0");
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
@@ -257,19 +283,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Pool")}>
-                      {isTruthy(item.pool) ? (
-                        removeFirstCharsUC(item.pool).toUpperCase()
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
+                    {hideColumns?.includes(HEADERS_TITLES.POOL) ? null : (
+                      <td className="px-4 py-3">
+                        {isTruthy(item.pool) ? (
+                          removeFirstCharsUC(item.pool).toUpperCase()
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 6)
+                        formatNumberAsDecimal(custodyAmount, 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -296,7 +324,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         })}
                       >
                         {isTruthy(item.unrealized_pnl) ? (
-                          formatNumberAsCurrency(unrealizedPnl, 6)
+                          <div className="flex flex-row items-center justify-center">
+                            <span className="mr-1">
+                              {formatNumberAsDecimal(unrealizedPnl, 4) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
+                            <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
+                          </div>
                         ) : (
                           <HtmlUnicode name="EmDash" />
                         )}
@@ -304,18 +337,25 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
-                        formatNumberAsPercent(Number(item.interest_rate), 10)
+                        `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3" hidden={hideColumns?.includes("Paid Interest")}>
-                      {isTruthy(item.paid_interest) ? (
-                        formatNumberAsCurrency(Number(item.paid_interest))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
+                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
+                      <td className="px-4 py-3">
+                        {isTruthy(item.current_interest_paid_custody) ? (
+                          <div className="flex flex-row items-center justify-center">
+                            <span className="mr-1">
+                              {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
+                            <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
+                          </div>
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
+                      </td>
+                    )}
                     <td className="px-4 py-3">
                       {isTruthy(item.health) ? (
                         formatNumberAsDecimal(Number(item.health))
@@ -331,20 +371,22 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4">
-                      <Button
-                        variant="secondary"
-                        as="button"
-                        size="xs"
-                        className="rounded font-normal"
-                        onClick={() =>
-                          setPositionToClose({
-                            isOpen: true,
-                            value: item,
-                          })
-                        }
-                      >
-                        Close
-                      </Button>
+                      {isTruthy(item._optimistic) ? null : (
+                        <Button
+                          variant="secondary"
+                          as="button"
+                          size="xs"
+                          className="rounded font-normal"
+                          onClick={() =>
+                            setPositionToClose({
+                              isOpen: true,
+                              value: item,
+                            })
+                          }
+                        >
+                          Close
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 );
@@ -380,7 +422,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           />
         </div>
         {positionToClose.value && (
-          <ModalClosePosition
+          <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
             onClose={() => {
@@ -402,6 +444,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     );
   }
 
+  console.group("Open Positions Query Error");
+  console.log({ openPositionsQuery, tokenRegistryQuery });
+  console.groupEnd();
   return <FlashMessage5xxError size="full-page" />;
 };
 
