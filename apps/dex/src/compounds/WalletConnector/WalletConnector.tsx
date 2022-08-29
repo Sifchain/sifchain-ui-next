@@ -1,14 +1,12 @@
-import type { ChainConfig, NetworkKind } from "@sifchain/common";
+import type { ChainConfig } from "@sifchain/common";
 import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
   CoinbaseIcon,
-  ConnectedAccount,
   CosmostationIcon,
   IbcChainEntry,
   KeplrIcon,
   MetamaskIcon,
-  RenderConnectedAccount,
   WalletconnectCircleIcon,
   WalletSelector,
 } from "@sifchain/ui";
@@ -19,7 +17,6 @@ import { useConnect as useEtherConnect, useDisconnect as useEtherDisconnect } fr
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
-import { useCosmosNativeBalance, useEthNativeBalance } from "./hooks";
 import { useEnabledChainsStore } from "./store";
 
 const WALLET_ICONS = {
@@ -284,45 +281,6 @@ const WalletConnector: FC = () => {
       accounts={accounts}
       onDisconnect={handleDisconnectionRequest}
       onConnect={handleConnectionRequest}
-      renderConnectedAccount={ConnectedAccountItem}
-    />
-  );
-};
-
-const ConnectedAccountItem: RenderConnectedAccount = (props) => {
-  const RenderComponent = props.chainType === "eth" ? EthConnectedAccountItem : IbcConnectedAccountItem;
-
-  return <RenderComponent {...props} />;
-};
-
-const IbcConnectedAccountItem: RenderConnectedAccount = (props) => {
-  const { data } = useCosmosNativeBalance({
-    chainId: props.chainId,
-    networkId: props.networkId as NetworkKind,
-    address: props.account,
-  });
-
-  return (
-    <ConnectedAccount
-      {...props}
-      nativeAssetDollarValue={data?.dollarValue ?? ""}
-      nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={data?.amount?.toFloatApproximation().toFixed(4) ?? ""}
-    />
-  );
-};
-
-const EthConnectedAccountItem: RenderConnectedAccount = ({ networkId, account, ...props }) => {
-  const { data } = useEthNativeBalance({ chainId: networkId }, account);
-
-  return (
-    <ConnectedAccount
-      {...props}
-      account={account}
-      networkId={networkId}
-      nativeAssetDollarValue={data?.dollarValue ?? ""}
-      nativeAssetSymbol={data?.denom?.toUpperCase() ?? ""}
-      nativeAssetBalance={data?.amount?.toString() ?? ""}
     />
   );
 };
