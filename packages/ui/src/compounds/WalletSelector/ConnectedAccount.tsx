@@ -24,10 +24,10 @@ export type ConnectedAccountProps = {
   chainName: string;
   account: string;
   nativeAssetDollarValue?: string;
-  nativeAssetBalance: string;
-  nativeAssetSymbol: string;
-  onDisconnect(): void;
-  onConnectAnotherWallet(): void;
+  nativeAssetBalance?: string;
+  nativeAssetSymbol?: string;
+  onDisconnect(this: void): void;
+  onConnectAnotherWallet(this: void): void;
 };
 
 type OverflowAction = {
@@ -175,7 +175,7 @@ export const ConnectedAccount: FC<ConnectedAccountProps> = (props) => {
                         e.preventDefault();
                         e.stopPropagation();
 
-                        handleAction(action);
+                        void handleAction(action);
                       }}
                     >
                       <figure className="mr-2">{action.icon}</figure>
