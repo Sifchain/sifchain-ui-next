@@ -82,9 +82,7 @@ const TradeCompound: NextPage = () => {
 
   if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
     console.group("Trade Page Query Error");
-    console.log({ enhancedPoolsQuery });
-    console.log({ enhancedRowanQuery, rowanPriceQuery });
-    console.log({ govParamsQuery });
+    console.log({ enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery });
     console.groupEnd();
     return <FlashMessage5xxError size="full-page" />;
   }
