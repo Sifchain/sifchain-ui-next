@@ -16,6 +16,8 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
 
   #keplr: Keplr | undefined = window.keplr;
 
+  #signerPromises: Record<string, Promise<OfflineSigner>> = {};
+
   get connected() {
     return this.#keplr !== undefined;
   }
@@ -47,7 +49,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     return Promise.resolve();
   }
 
-  async getSigner(chainId: string): Promise<OfflineSigner> {
+  async #getSigner(chainId: string): Promise<OfflineSigner> {
     if (this.#keplr === undefined) {
       throw new Error("Keplr instance is undefined");
     }
@@ -61,6 +63,24 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
     return signer;
   }
 
+  // NOTE: work around for Keplr wallet bug where if multiple permission requests happened simultaneously
+  // every subsequent requests return a denied error, even if the user click on accept
+  async getSigner(chainId: string): Promise<OfflineSigner> {
+    const currentPromise = this.#signerPromises[chainId];
+    if (currentPromise !== undefined) {
+      return currentPromise;
+    }
+
+    const promise = this.#getSigner(chainId).then((x) => {
+      delete this.#signerPromises[chainId];
+      return x;
+    });
+
+    this.#signerPromises[chainId] = promise;
+
+    return promise;
+  }
+
   async getStargateClient(chainId: string): Promise<StargateClient> {
     return SigningStargateClient.connect(this.#chainStore.getChain(chainId).rpc);
   }
@@ -68,7 +88,7 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
   async getSigningStargateClient(chainId: string): Promise<SigningStargateClient> {
     return SigningStargateClient.connectWithSigner(
       this.#chainStore.getChain(chainId).rpc,
-      await this.getSigner(chainId),
+      await this.#getSigner(chainId),
     );
   }
 
