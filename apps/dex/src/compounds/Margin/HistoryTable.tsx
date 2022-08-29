@@ -104,7 +104,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 {headers.map((header) => {
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 text-center font-normal">
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
                         {header.title}
                       </th>
                     );
@@ -129,7 +129,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         scroll={false}
                       >
                         <a
-                          className={clsx("flex flex-row items-center justify-center", {
+                          className={clsx("flex flex-row items-center", {
                             "font-semibold text-white": itemActive,
                           })}
                         >
@@ -148,7 +148,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 text-center">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPL = Number(item.realized_pnl ?? "0");
@@ -218,11 +218,11 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.close_liabilities) ? (
-                        <div className="flex flex-row items-center justify-center">
-                          <span className="mr-1">
-                            {formatNumberAsDecimal(Number(item.close_liabilities), 4) ?? <HtmlUnicode name="EmDash" />}
-                          </span>
+                        <div className="flex flex-row items-center justify-start">
                           <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(Number(item.close_liabilities), 6) ?? <HtmlUnicode name="EmDash" />}
+                          </span>
                         </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -230,16 +230,15 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.realized_pnl) && Number.isNaN(realizedPL) === false ? (
-                        <span className="text-green-400">
-                          <span
-                            className={clsx({
-                              "text-green-400": realizedPLSign === 1,
-                              "text-red-400": realizedPLSign === -1,
-                            })}
-                          >
-                            {formatNumberAsDecimal(Number(realizedPL), 4)}
-                          </span>
-                        </span>
+                        <div
+                          className={clsx("flex flex-row items-center justify-start", {
+                            "text-green-400": realizedPLSign === 1 && realizedPL > 0,
+                            "text-red-400": realizedPLSign === -1 && realizedPL < 0,
+                          })}
+                        >
+                          <AssetIcon symbol={item.open_collateral_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">{formatNumberAsDecimal(realizedPL, 6)}</span>
+                        </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

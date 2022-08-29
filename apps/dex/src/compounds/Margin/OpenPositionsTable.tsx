@@ -51,6 +51,11 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
+const TooltipIconText = () => (
+  <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
+    i
+  </span>
+);
 const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
   "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
@@ -161,18 +166,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
                   if (header.order_by === "") {
                     return (
-                      <th
-                        key={header.title}
-                        className="flex flex-row items-center justify-center px-4 py-3 font-normal"
-                      >
+                      <th key={header.title} className="flex flex-row items-center px-4 py-3 font-normal">
                         <span className="cursor-not-allowed">{header.title}</span>
                         {header.title === HEADERS_TITLES.NPV ? (
                           <>
                             <div className="mr-1" />
                             <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
-                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                                i
-                              </span>
+                              <TooltipIconText />
                             </Tooltip>
                           </>
                         ) : null}
@@ -187,7 +187,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   const linkTagA = (
-                    <a className="flex flex-row items-center justify-center">
+                    <a className="flex flex-row items-center">
                       {header.title}
                       {itemActive && (
                         <ChevronDownIcon
@@ -215,7 +215,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   return (
                     <th key={header.title} className="px-4 py-3 font-normal">
                       <div
-                        className={clsx("flex flex-row items-center justify-center", {
+                        className={clsx("flex flex-row items-center", {
                           "font-semibold text-white": itemActive,
                         })}
                       >
@@ -227,9 +227,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                               title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
                               content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
                             >
-                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                                i
-                              </span>
+                              <TooltipIconText />
                             </Tooltip>
                           </>
                         ) : null}
@@ -239,7 +237,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 text-center">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
                 const item = x as OpenPositionsQueryData & { _optimistic: boolean };
@@ -317,23 +315,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-green-400": unrealizedPLSign === 1,
-                          "text-red-400": unrealizedPLSign === -1,
-                        })}
-                      >
-                        {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
-                          <div className="flex flex-row items-center justify-center">
-                            <span className="mr-1">
-                              {formatNumberAsDecimal(unrealizedPnl, 4) ?? <HtmlUnicode name="EmDash" />}
-                            </span>
-                            <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
-                          </div>
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </span>
+                      {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
+                        <div
+                          className={clsx("flex flex-row items-center", {
+                            "text-green-400": unrealizedPLSign === 1 && unrealizedPnl > 0,
+                            "text-red-400": unrealizedPLSign === -1 && unrealizedPnl < 0,
+                          })}
+                        >
+                          <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(unrealizedPnl, 6) ?? <HtmlUnicode name="EmDash" />}
+                          </span>
+                        </div>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
@@ -345,11 +341,11 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
                       <td className="px-4 py-3">
                         {isTruthy(item.current_interest_paid_custody) ? (
-                          <div className="flex flex-row items-center justify-center">
-                            <span className="mr-1">
-                              {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
-                            </span>
+                          <div className="flex flex-row items-center">
                             <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
+                            <span className="ml-1">
+                              {formatNumberAsDecimal(currentInterestPaidCustody, 6) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
                           </div>
                         ) : (
                           <HtmlUnicode name="EmDash" />
