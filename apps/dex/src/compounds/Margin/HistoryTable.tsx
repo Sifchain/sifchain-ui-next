@@ -151,6 +151,7 @@ const HistoryTable = (props: HistoryTableProps) => {
             <tbody className="bg-gray-850 text-center">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
+                const realizedPL = Number(item.realized_pnl ?? "0");
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
                 let custodyAsset;
@@ -228,7 +229,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.realized_pnl) ? (
+                      {isTruthy(item.realized_pnl) && Number.isNaN(realizedPL) === false ? (
                         <span className="text-green-400">
                           <span
                             className={clsx({
@@ -236,7 +237,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                               "text-red-400": realizedPLSign === -1,
                             })}
                           >
-                            {formatNumberAsCurrency(Number(item.realized_pnl), 2)}
+                            {formatNumberAsDecimal(Number(realizedPL), 4)}
                           </span>
                         </span>
                       ) : (

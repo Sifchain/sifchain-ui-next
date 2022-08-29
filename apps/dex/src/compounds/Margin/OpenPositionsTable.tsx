@@ -323,7 +323,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           "text-red-400": unrealizedPLSign === -1,
                         })}
                       >
-                        {isTruthy(item.unrealized_pnl) ? (
+                        {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
                           <div className="flex flex-row items-center justify-center">
                             <span className="mr-1">
                               {formatNumberAsDecimal(unrealizedPnl, 4) ?? <HtmlUnicode name="EmDash" />}
