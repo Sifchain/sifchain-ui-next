@@ -11,7 +11,7 @@ export type ConnectedWalletsProps = {
   isModalOpen: boolean;
   accounts: [chainId: string, accounts: string[]][];
   chains: ChainEntry[];
-  onConnectAnotherWallet(): void;
+  onConnectAnotherWallet(this: void): void;
   onDisconnect?: ((selection: { chainId: string }) => void) | undefined;
   renderConnectedAccount?: RenderConnectedAccount | undefined;
 };
@@ -45,10 +45,6 @@ export const ConnectedWallets: FC<ConnectedWalletsProps> = (props) => {
                 networkId: chain?.id ?? "",
                 chainName: chain?.name ?? chainId,
                 chainType: chain?.type ?? "",
-                nativeAssetSymbol: "ETH",
-                nativeAssetBalance: "0",
-                nativeAssetDollarValue: "$2,000",
-
                 onDisconnect: () => props.onDisconnect?.({ chainId }),
                 onConnectAnotherWallet: props.onConnectAnotherWallet,
               };
