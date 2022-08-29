@@ -71,15 +71,14 @@ export class InjectedKeplrConnector extends BaseCosmConnector<InjectedKeplrConne
       return currentPromise;
     }
 
-    const promise = this.#getSigner(chainId);
+    const promise = this.#getSigner(chainId).then((x) => {
+      delete this.#signerPromises[chainId];
+      return x;
+    });
 
     this.#signerPromises[chainId] = promise;
 
-    const result = await promise;
-
-    delete this.#signerPromises[chainId];
-
-    return result;
+    return promise;
   }
 
   async getStargateClient(chainId: string): Promise<StargateClient> {
