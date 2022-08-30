@@ -14,7 +14,7 @@ import type { MTPOpenResponse, OpenPositionsQueryData, Pagination } from "./type
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
 type UseMarginMTPOpenMutationProps = {
-  _optimisticCustodyAmount: number;
+  _optimisticCustodyAmount: string;
 };
 export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMarginMTPOpenMutationProps) {
   const { data: signerAddress } = useSifSignerAddress();

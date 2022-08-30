@@ -133,6 +133,7 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
             pool: collateral_asset.value,
             position: position.value,
             realized_pnl: undefined,
+            _optimistic: true,
           };
 
           queryClient.setQueriesData(
