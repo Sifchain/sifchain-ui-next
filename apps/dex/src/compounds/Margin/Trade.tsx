@@ -787,10 +787,7 @@ const Trade = (props: TradeProps) => {
           leverage: leverage,
           poolInterestRate: poolInterestRate,
           positionPriceUsd: selectedPosition.priceUsd,
-          positionTokenAmount: formatNumberAsDecimal(
-            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
-            4,
-          ),
+          positionTokenAmount: Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
           toDenom: selectedPosition.symbol.toLowerCase(),
         }}
         isOpen={modalConfirmOpenPosition.isOpen}

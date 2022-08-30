@@ -1,6 +1,6 @@
 import type { SyntheticEvent } from "react";
 
-import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
+import { Button, formatNumberAsCurrency, formatNumberAsDecimal, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
 import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
@@ -14,7 +14,7 @@ type ModalMTPOpenProps = {
     leverage: string;
     poolInterestRate: string;
     positionPriceUsd: number;
-    positionTokenAmount: string;
+    positionTokenAmount: number;
     toDenom: string;
   };
   isOpen: boolean;
@@ -67,7 +67,7 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
-                <span className="mr-1">{props.data.positionTokenAmount}</span>
+                <span className="mr-1">{formatNumberAsDecimal(props.data.positionTokenAmount, 4)}</span>
                 <AssetIcon symbol={props.data.toDenom} network="sifchain" size="sm" />
               </div>
             </div>
