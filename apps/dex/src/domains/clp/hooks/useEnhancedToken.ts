@@ -35,7 +35,7 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
   );
 
   const derivedQuery = useQuery(
-    ["enhanced-token", denom],
+    ["enhanced-token", denom, balanceEntry],
     () => {
       if (!registryEntry) {
         console.log(`Token registry entry not found for ${denom}`);
@@ -54,11 +54,7 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
       };
     },
     {
-      enabled:
-        Boolean(denom) &&
-        registryQuery.isSuccess &&
-        allBalancesQuery.isSuccess &&
-        (denom === "rowan" || poolQuery.isSuccess),
+      enabled: Boolean(denom) && registryQuery.isSuccess && (denom === "rowan" || poolQuery.isSuccess),
     },
   );
 
