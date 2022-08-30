@@ -1,25 +1,24 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
+import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-
 import {
+  FlashMessage5xxError,
+  FlashMessageLoading,
   formatNumberAsCurrency,
   Maybe,
   RacetrackSpinnerIcon,
   SwapIcon,
   TokenEntry,
-  FlashMessage5xxError,
-  FlashMessageLoading,
-  formatNumberAsDecimal,
 } from "@sifchain/ui";
-import { Decimal } from "@cosmjs/math";
-import { pathOr } from "ramda";
-import { useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { pathOr } from "ramda";
+import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import {
   useEnhancedPoolsQuery,
@@ -27,10 +26,7 @@ import {
   useRowanPriceQuery,
   useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
-import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
-import AssetIcon from "~/compounds/AssetIcon";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
-import { ModalMTPOpen } from "./ModalMTPOpen";
+import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
 
 /**
  * ********************************************************************************************
@@ -41,19 +37,22 @@ import { ModalMTPOpen } from "./ModalMTPOpen";
  *
  * ********************************************************************************************
  */
+import { useCallback } from "react";
 import { ROWAN } from "~/domains/assets";
+import { ModalMTPOpen } from "./ModalMTPOpen";
 import { TradeActions } from "./TradeActions";
 import { PoolOverview } from "./_components";
+import { formatNumberAsDecimal } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
-  LEVERAGE_MIN_VALUE,
-  POSITION_MAX_VALUE,
-  POSITION_MIN_VALUE,
   HtmlUnicode,
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
+  LEVERAGE_MIN_VALUE,
+  POSITION_MAX_VALUE,
+  POSITION_MIN_VALUE,
   removeFirstCharsUC,
 } from "./_trade";
 
@@ -70,7 +69,6 @@ const withLeverage = (rawReceiving: string, decimals: number, leverage: string) 
  *   - Query list of Pools
  *   - Query list of Tokens
  *   - Query Rowan price
-     @TODO Add query to load user wallter details
  *   - Query User Wallet details
  *
  * These values are required to bootstrap the Trade page
@@ -321,18 +319,13 @@ const Trade = (props: TradeProps) => {
     inputCollateral.value,
   );
 
-  const openPositionFee = useMemo(() => {
-    try {
-      return Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+  const openPositionFee = useMemo(
+    () =>
+      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
         Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
-      );
-    } catch (error) {
-      console.group("Open Position Fee Swap LP Fee");
-      console.log({ error });
-      console.groupEnd();
-      return 0;
-    }
-  }, [swapSimulation, selectedPosition]);
+      ),
+    [swapSimulation, selectedPosition],
+  );
 
   const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
     selectedPosition.denom ?? selectedPosition.symbol,
