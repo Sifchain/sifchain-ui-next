@@ -17,7 +17,7 @@ import {
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -51,11 +51,16 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-const TooltipIconText = () => (
-  <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-    i
-  </span>
-);
+const TooltipIconText = forwardRef<HTMLSpanElement | null>(function TooltipIconText(_props, ref) {
+  return (
+    <span
+      ref={ref}
+      className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]"
+    >
+      i
+    </span>
+  );
+});
 const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
   "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
