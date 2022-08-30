@@ -21,7 +21,12 @@ import clsx from "clsx";
 import Head from "next/head";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
+import {
+  useEnhancedPoolsQuery,
+  useEnhancedTokenQuery,
+  useRowanPriceQuery,
+  useSwapSimulation,
+} from "~/domains/clp/hooks";
 import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
