@@ -7,6 +7,7 @@ import {
   formatNumberAsCurrency,
   formatNumberAsDecimal,
   Modal,
+  FlashMessage5xxError,
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
@@ -225,6 +226,11 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
         ) : null}
       </>
     );
+  }
+
+  // if (collateralTokenQuery.isError || positionTokenQuery.isError) {
+  if (true) {
+    content = <FlashMessage5xxError size="full-page" />;
   }
 
   return (
