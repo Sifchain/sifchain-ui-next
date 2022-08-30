@@ -242,7 +242,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 italic text-gray-300">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
                 const item = x as OpenPositionsQueryData & { _optimistic: boolean };

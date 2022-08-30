@@ -146,7 +146,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 italic text-gray-300">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((item) => {
                 const realizedPL = Number(item.realized_pnl ?? "0");
