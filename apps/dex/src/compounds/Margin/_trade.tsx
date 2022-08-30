@@ -19,11 +19,12 @@ const UNICODE_CHARS = {
  */
 type HtmlUnicodeProps = {
   name: keyof typeof UNICODE_CHARS;
+  className?: string;
 };
 
-export function HtmlUnicode({ name }: HtmlUnicodeProps) {
+export function HtmlUnicode({ name, className }: HtmlUnicodeProps) {
   const entity = UNICODE_CHARS[name] || `MISSING_UNICODE: ${name}`;
-  return <span dangerouslySetInnerHTML={{ __html: entity }} />;
+  return <span dangerouslySetInnerHTML={{ __html: entity }} className={className} />;
 }
 
 /**
