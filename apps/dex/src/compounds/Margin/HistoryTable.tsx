@@ -1,3 +1,5 @@
+import type { HistoryQueryData } from "~/domains/margin/hooks";
+
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
@@ -148,7 +150,8 @@ const HistoryTable = (props: HistoryTableProps) => {
             </thead>
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((item) => {
+              {results.map((x) => {
+                const item = x as HistoryQueryData & { _optimistic: boolean };
                 const realizedPL = Number(item.realized_pnl ?? "0");
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
@@ -175,7 +178,13 @@ const HistoryTable = (props: HistoryTableProps) => {
                 }
 
                 return (
-                  <tr key={item.id} data-testid={item.id}>
+                  <tr
+                    key={item.id}
+                    data-testid={item.id}
+                    className={clsx({
+                      "italic text-gray-300": item._optimistic,
+                    })}
+                  >
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
                         formatDateISO(new Date(item.closed_date_time))

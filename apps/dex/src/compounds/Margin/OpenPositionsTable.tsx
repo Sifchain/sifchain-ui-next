@@ -278,7 +278,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
-                  <tr key={item.id} data-testid={item.id}>
+                  <tr
+                    key={item.id}
+                    data-testid={item.id}
+                    className={clsx({
+                      "italic text-gray-300": item._optimistic,
+                    })}
+                  >
                     <td className="px-4 py-3">
                       {isTruthy(item.date_opened) ? (
                         formatDateISO(new Date(item.date_opened))
