@@ -694,8 +694,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
                         <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -703,8 +703,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
                         <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -724,8 +724,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Position size</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -733,8 +733,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
-                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -742,13 +742,13 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">
                           {formatNumberAsDecimal(
                             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
                             4,
                           )}
                         </span>
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
