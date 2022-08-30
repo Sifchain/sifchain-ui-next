@@ -5,7 +5,7 @@ import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "@sifchain/utils";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useLiquidityProvidersQuery } from "~/domains/clp";
+import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";

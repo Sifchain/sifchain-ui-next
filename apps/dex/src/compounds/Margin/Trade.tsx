@@ -25,7 +25,7 @@ import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
-  useSwapSimulation,
+  useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
 import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
@@ -317,7 +317,7 @@ const Trade = (props: TradeProps) => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
 
-  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
+  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulationQuery(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
@@ -336,7 +336,7 @@ const Trade = (props: TradeProps) => {
     }
   }, [swapSimulation, selectedPosition]);
 
-  const { recompute: calculateReverseSwap } = useSwapSimulation(
+  const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
     selectedPosition.denom ?? selectedPosition.symbol,
     selectedCollateral.denom ?? selectedCollateral.symbol,
     inputPosition.value,

@@ -12,7 +12,7 @@ import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp/hooks";
+import { useEnhancedTokenQuery, useSwapSimulationQuery } from "~/domains/clp/hooks";
 
 import AssetIcon from "~/compounds/AssetIcon";
 
@@ -35,7 +35,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
   const totalInterestPaid = Number(props.data.current_interest_paid_custody ?? "0");
 
-  const { data: closingPositionSwap } = useSwapSimulation(
+  const { data: closingPositionSwap } = useSwapSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     props.data.current_custody_amount,
