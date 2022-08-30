@@ -12,7 +12,7 @@ import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
-import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp";
+import { useEnhancedTokenQuery, useSwapSimulation } from "~/domains/clp/hooks";
 
 import AssetIcon from "~/compounds/AssetIcon";
 
