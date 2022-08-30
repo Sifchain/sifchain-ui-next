@@ -1,11 +1,13 @@
 import type { SyntheticEvent } from "react";
 
-import { Button, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
+import { Button, FlashMessageLoading, formatNumberAsCurrency, Modal, RacetrackSpinnerIcon } from "@sifchain/ui";
 import { useCallback } from "react";
 
 import { useMarginMTPOpenMutation } from "~/domains/margin/hooks";
 
 import AssetIcon from "~/compounds/AssetIcon";
+import { Decimal } from "@cosmjs/math";
+import { useEnhancedTokenQuery } from "~/domains/clp";
 
 type ModalMTPOpenProps = {
   data: {
@@ -24,7 +26,10 @@ type ModalMTPOpenProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalMTPOpen(props: ModalMTPOpenProps) {
-  const confirmOpenPositionMutation = useMarginMTPOpenMutation();
+  const collateralTokenQuery = useEnhancedTokenQuery(props.data.fromDenom);
+  const confirmOpenPositionMutation = useMarginMTPOpenMutation({
+    _optimisticCustodyAmount: props.data.positionTokenAmount,
+  });
 
   const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -53,8 +58,10 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
     confirmOpenPositionMutation.reset();
   }, [confirmOpenPositionMutation, props]);
 
-  return (
-    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
+  let content = <FlashMessageLoading size="full-page" />;
+
+  if (collateralTokenQuery.isSuccess) {
+    content = (
       <>
         <h1 className="text-center text-lg font-bold">Review trade</h1>
         {props.data.positionTokenAmount &&
@@ -103,6 +110,11 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
           </p>
         ) : null}
       </>
+    );
+  }
+  return (
+    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
+      {content}
     </Modal>
   );
 }

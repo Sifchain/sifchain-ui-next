@@ -28,7 +28,9 @@ type ModalMTPCloseProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalMTPClose(props: ModalMTPCloseProps) {
-  const confirmClosePosition = useMarginMTPCloseMutation();
+  const confirmClosePosition = useMarginMTPCloseMutation({
+    _optimisticCustodyAmount: props.data.custody_amount,
+  });
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
 

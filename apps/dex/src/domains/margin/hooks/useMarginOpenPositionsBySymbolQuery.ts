@@ -38,13 +38,13 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
        * increasing the refresh time in "useMarginOpenPositionsBySymbolQuery"
        * to allow Data Services to do their job
        *
-       * If in the next fetch window (after 15 seconds), Data Services response
+       * If in the next fetch window (after 10 seconds), Data Services response
        * DOESN'T include the new item, the optimistic item will be REMOVED from the UI
        * we are not doing a diff in the Data Service response x local cache
        *
        * Data Services response is our source of truth
        */
-      refetchInterval: 15 * 1000,
+      refetchInterval: 10 * 1000,
       retry: false,
     },
   ) as UseQueryResult<{

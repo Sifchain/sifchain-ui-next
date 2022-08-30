@@ -39,10 +39,6 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
         poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
       };
 
-      console.log({
-        swapFeeRateResult,
-      });
-
       return stargateClient?.simulateSwapSync(
         fromCoin,
         toCoin,

@@ -11,7 +11,10 @@ import type { HistoryQueryData, MTPCloseResponse, OpenPositionsQueryData, Pagina
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
-export function useMarginMTPCloseMutation() {
+type UseMarginMTPCloseMutationProps = {
+  _optimisticCustodyAmount: string;
+};
+export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMarginMTPCloseMutationProps) {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
@@ -124,7 +127,7 @@ export function useMarginMTPCloseMutation() {
             close_interest_paid_custody: interest_paid_custody.value,
             closed_date_time: undefined,
             id: id.value,
-            open_custody_amount: custody_amount.value,
+            open_custody_amount: _optimisticCustodyAmount,
             open_custody_asset: custody_asset.value,
             open_date_time: undefined,
             pool: collateral_asset.value,
@@ -151,6 +154,15 @@ export function useMarginMTPCloseMutation() {
               return draft;
             },
           );
+
+          /**
+           * There's two places we can close a position:
+           *   - Trade (open positions by pool symbol)
+           *   - Positions (all open positions)
+           * We use different queries in each place
+           */
+          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
+          queryClient.cancelQueries(["margin.getMarginOpenPosition"]);
         }
       }
     },

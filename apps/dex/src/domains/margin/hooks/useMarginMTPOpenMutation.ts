@@ -13,7 +13,10 @@ import type { MTPOpenResponse, OpenPositionsQueryData, Pagination } from "./type
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
-export function useMarginMTPOpenMutation() {
+type UseMarginMTPOpenMutationProps = {
+  _optimisticCustodyAmount: string;
+};
+export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMarginMTPOpenMutationProps) {
   const { data: signerAddress } = useSifSignerAddress();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
@@ -117,7 +120,7 @@ export function useMarginMTPOpenMutation() {
             address: address.value,
             collateral_asset: collateral_asset.value,
             custody_asset: custody_asset.value,
-            custody_amount: custody_amount.value,
+            custody_amount: _optimisticCustodyAmount,
             leverage: leverage.value,
             interest_paid_custody: interest_paid_custody.value,
             health: health.value,
@@ -154,6 +157,12 @@ export function useMarginMTPOpenMutation() {
               return draft;
             },
           );
+
+          /**
+           * When opening a new position, the only screen available is Trade
+           * and we use the By Symbol query
+           */
+          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
         }
       }
     },
