@@ -163,6 +163,11 @@ export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMargin
            * and we use the By Symbol query
            */
           queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
+
+          /**
+           * Re-fetch balance after opening a position
+           */
+          queryClient.refetchQueries(["all-balances"]);
         }
       }
     },

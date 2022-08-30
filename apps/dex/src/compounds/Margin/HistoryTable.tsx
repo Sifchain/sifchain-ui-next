@@ -84,7 +84,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
-  if (historyQuery.isLoading) {
+  if (historyQuery.isLoading || tokenRegistryQuery.isLoading) {
     return <FlashMessageLoading size="full-page" />;
   }
 

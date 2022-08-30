@@ -10,7 +10,6 @@ import {
   TokenEntry,
   FlashMessage5xxError,
   FlashMessageLoading,
-  FlashMessage,
   formatNumberAsDecimal,
 } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
@@ -770,10 +769,6 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
-              <FlashMessage className="m-4">
-                <b>Warning:</b> The field <b>Fees</b> have been disabled in all calculations until we implement the Flat
-                Fee rate.
-              </FlashMessage>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}

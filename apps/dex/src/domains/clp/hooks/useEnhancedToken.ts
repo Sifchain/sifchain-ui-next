@@ -55,6 +55,7 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
     },
     {
       enabled: Boolean(denom) && registryQuery.isSuccess && (denom === "rowan" || poolQuery.isSuccess),
+      keepPreviousData: true,
     },
   );
 

@@ -145,7 +145,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
-  if (openPositionsQuery.isLoading) {
+  if (openPositionsQuery.isLoading || tokenRegistryQuery.isLoading) {
     return <FlashMessageLoading size="full-page" />;
   }
 

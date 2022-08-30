@@ -228,8 +228,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     );
   }
 
-  // if (collateralTokenQuery.isError || positionTokenQuery.isError) {
-  if (true) {
+  if (collateralTokenQuery.isError || positionTokenQuery.isError) {
+    console.group("Modal MTP Close Error");
+    console.log({ collateralTokenQuery, positionTokenQuery });
+    console.groupEnd();
     content = <FlashMessage5xxError size="full-page" />;
   }
 
