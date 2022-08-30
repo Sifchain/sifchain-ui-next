@@ -85,6 +85,7 @@ const Margin: NextPage = () => {
         )}
         {router.isReady && activeTab !== null ? (
           <TabsWithSuspense
+            fallbackSuspense={<FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />}
             activeTab={activeTab}
             items={TABS_CONTENT}
             renderItem={(title, slug) => (
@@ -94,7 +95,7 @@ const Margin: NextPage = () => {
             )}
           />
         ) : (
-          <FlashMessageLoading size="full-page" />
+          <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />
         )}
       </section>
     </>

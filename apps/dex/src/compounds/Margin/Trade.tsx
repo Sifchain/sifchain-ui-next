@@ -75,7 +75,7 @@ const withLeverage = (rawReceiving: string, decimals: number, leverage: string) 
  *
  * ********************************************************************************************
  */
-const TradeCompound: NextPage = () => {
+const TradeTab: NextPage = () => {
   const enhancedPoolsQuery = useEnhancedPoolsQuery();
   const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPriceQuery = useRowanPriceQuery();
@@ -85,7 +85,7 @@ const TradeCompound: NextPage = () => {
     console.group("Trade Page Query Error");
     console.log({ enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery });
     console.groupEnd();
-    return <FlashMessage5xxError size="full-page" />;
+    return <FlashMessage5xxError size="full-page" className="border-gold-800 mt-4 rounded border" />;
   }
 
   if (
@@ -108,10 +108,10 @@ const TradeCompound: NextPage = () => {
     return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
   }
 
-  return <FlashMessageLoading size="full-page" />;
+  return <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />;
 };
 
-export default TradeCompound;
+export default TradeTab;
 
 /**
  * ********************************************************************************************
