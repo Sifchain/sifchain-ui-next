@@ -1,7 +1,6 @@
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";

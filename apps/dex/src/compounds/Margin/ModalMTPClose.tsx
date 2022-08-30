@@ -86,8 +86,8 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
 
   if (
     collateralTokenQuery.isSuccess &&
-    positionTokenQuery.data &&
     positionTokenQuery.isSuccess &&
+    collateralTokenQuery.data &&
     positionTokenQuery.data &&
     closingPositionSwap
   ) {

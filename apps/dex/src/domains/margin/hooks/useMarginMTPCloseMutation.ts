@@ -2,7 +2,7 @@ import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { isError, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
@@ -89,7 +89,7 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
             collateral_asset,
             _collateral_amount,
             custody_asset,
-            custody_amount,
+            _custody_amount,
             _repay_amount,
             _leverage,
             _liabilities,

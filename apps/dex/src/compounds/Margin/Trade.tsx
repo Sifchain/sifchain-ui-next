@@ -11,10 +11,11 @@ import {
   FlashMessage5xxError,
   FlashMessageLoading,
   FlashMessage,
+  formatNumberAsDecimal,
 } from "@sifchain/ui";
 import { Decimal } from "@cosmjs/math";
 import { pathOr } from "ramda";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
@@ -30,6 +31,7 @@ import {
 import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
+import { ModalMTPOpen } from "./ModalMTPOpen";
 
 /**
  * ********************************************************************************************
@@ -43,7 +45,6 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { ROWAN } from "~/domains/assets";
 import { TradeActions } from "./TradeActions";
 import { PoolOverview } from "./_components";
-import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
@@ -56,8 +57,6 @@ import {
   inputValidatorPosition,
   removeFirstCharsUC,
 } from "./_trade";
-import { ModalMTPOpen } from "./ModalMTPOpen";
-import { useCallback } from "react";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;

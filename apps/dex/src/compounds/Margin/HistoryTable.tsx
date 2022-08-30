@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
-import { Decimal } from "@cosmjs/math";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useSifSignerAddress } from "~/hooks/useSifSigner";
@@ -13,7 +12,6 @@ import {
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
   ChevronDownIcon,
-  formatNumberAsCurrency,
   formatNumberAsDecimal,
 } from "@sifchain/ui";
 import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
