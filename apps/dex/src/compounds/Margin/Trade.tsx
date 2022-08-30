@@ -14,7 +14,6 @@ import clsx from "clsx";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { pathOr } from "ramda";
 import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
@@ -146,7 +145,7 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const qsPool = pathOr(undefined, ["pool"], router.query);
+  const qsPool = router.query["pool"];
 
   const pools = useMemo(() => {
     if (enhancedPools) {
