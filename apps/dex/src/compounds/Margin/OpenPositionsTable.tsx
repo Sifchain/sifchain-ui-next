@@ -351,7 +351,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
                       <td className="px-4 py-3">
-                        {isTruthy(item.current_interest_paid_custody) ? (
+                        {isTruthy(currentInterestPaidCustody) ? (
                           <div className="flex flex-row items-center">
                             <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
                             <span className="ml-1">
