@@ -224,11 +224,13 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.close_liabilities) ? (
+                      {isTruthy(item.close_interest_paid_custody) ? (
                         <div className="flex flex-row items-center justify-start">
                           <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
                           <span className="ml-1">
-                            {formatNumberAsDecimal(Number(item.close_liabilities), 6) ?? <HtmlUnicode name="EmDash" />}
+                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 6) ?? (
+                              <HtmlUnicode name="EmDash" />
+                            )}
                           </span>
                         </div>
                       ) : (

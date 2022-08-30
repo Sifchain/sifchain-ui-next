@@ -67,6 +67,8 @@ export interface HistoryQueryData {
   openLiabilities: string;
   type: string;
   open_liabilities: string;
+  close_interest_paid_collateral: string;
+  close_interest_paid_custody: string;
   close_liabilities: string;
   mtp_close_custody_amount: string;
   mtp_close_execution_price: string;
