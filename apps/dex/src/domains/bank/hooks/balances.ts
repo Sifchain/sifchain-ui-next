@@ -124,9 +124,9 @@ export function useAllBalancesQuery() {
 }
 
 export function useBalancesWithPool() {
-  const { indexedByDenom, findBySymbolOrDenom } = useTokenRegistryQuery();
+  const { findBySymbolOrDenom: findTokenBySymbolOrDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProvidersQuery();
-  const { data: balances } = useAllBalancesQuery();
+  const { data: balances, findBySymbolOrDenom: findBalanceBySymbolOrDenom } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 
   const totalRowan =
@@ -151,8 +151,9 @@ export function useBalancesWithPool() {
   return useMemo(
     () =>
       Array.from(denomSet).map((x) => {
-        const token = findBySymbolOrDenom(x);
-        const balance = balances?.find((y) => y.denom === x);
+        const token = findTokenBySymbolOrDenom(x);
+        const balance = findBalanceBySymbolOrDenom(x);
+
         const pool = liquidityProviders?.liquidityProviderData.find((y) => y.liquidityProvider?.asset?.symbol === x);
 
         return {
@@ -165,10 +166,10 @@ export function useBalancesWithPool() {
         };
       }),
     [
-      balances,
       denomSet,
       env?.nativeAsset.symbol,
-      indexedByDenom,
+      findBalanceBySymbolOrDenom,
+      findTokenBySymbolOrDenom,
       liquidityProviders?.liquidityProviderData,
       totalRowan,
     ],

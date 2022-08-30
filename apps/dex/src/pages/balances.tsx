@@ -46,7 +46,9 @@ const formatDecimalAsCurrency = (decimal: Decimal): string => {
 const BalancesPage: NextPage = () => {
   const router = useRouter();
   const balances = useBalancesWithPool();
-  const balancesStats = useBalancesStats();
+  const { data: balancesStats } = useBalancesStats();
+
+  console.log("BalancesPage:", { balancesStats: balancesStats });
 
   const [selectedDenom, setSelectedDenom] = useState<string | undefined>();
   const selectedBalance = useMemo(() => balances?.find((x) => x.denom === selectedDenom), [balances, selectedDenom]);
@@ -55,7 +57,6 @@ const BalancesPage: NextPage = () => {
     ["asc" | "desc", "token" | "available" | "balance" | "pooled" | undefined]
   >(["asc", undefined]);
 
-  console.log({ balances, balancesStats });
   const sortedBalances = useMemo(() => {
     const sortFunc = sortByOrder === "asc" ? ascend : descend;
 
@@ -82,18 +83,18 @@ const BalancesPage: NextPage = () => {
     return [
       {
         label: "Available",
-        value: Maybe.of(balancesStats.data?.availableInUsdc).mapOr("...", formatDecimalAsCurrency),
+        value: Maybe.of(balancesStats?.availableInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
       {
         label: "Pooled",
-        value: Maybe.of(balancesStats.data?.pooledInUsdc).mapOr("...", formatDecimalAsCurrency),
+        value: Maybe.of(balancesStats?.pooledInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
       {
         label: "Total",
-        value: Maybe.of(balancesStats.data?.totalInUsdc).mapOr("...", formatDecimalAsCurrency),
+        value: Maybe.of(balancesStats?.totalInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
     ];
-  }, [balancesStats.data?.availableInUsdc, balancesStats.data?.pooledInUsdc, balancesStats.data?.totalInUsdc]);
+  }, [balancesStats?.availableInUsdc, balancesStats?.pooledInUsdc, balancesStats?.totalInUsdc]);
 
   const actions = useMemo(
     () => [

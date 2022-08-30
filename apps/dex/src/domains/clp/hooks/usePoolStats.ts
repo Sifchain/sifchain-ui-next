@@ -21,5 +21,8 @@ export function usePoolStatsQuery() {
     ...query,
     data,
     indexedBySymbol,
+    findBySymbolOrDenom: (symbolOrDenom: string) => {
+      return indexedBySymbol[symbolOrDenom.toLowerCase()];
+    },
   };
 }
