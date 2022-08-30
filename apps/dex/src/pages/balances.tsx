@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { ArrowDownIcon, Button, Modal, PoolsIcon, SwapIcon } from "@sifchain/ui";
+import { ArrowDownIcon, Button, Maybe, Modal, PoolsIcon, SwapIcon } from "@sifchain/ui";
 import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
 import clsx from "clsx";
 import type { NextPage } from "next";
@@ -27,6 +27,22 @@ const TokenFigure = (props: { symbol: string; displaySymbol: string; network: st
   );
 };
 
+const formatDecimalAsCurrency = (decimal: Decimal): string => {
+  const zero = Decimal.zero(decimal.fractionalDigits);
+  try {
+    if (decimal.isLessThan(zero)) {
+      return formatDecimalAsCurrency(zero);
+    }
+    return decimal.toFloatApproximation().toLocaleString(undefined, {
+      style: "currency",
+      currency: "USD",
+    });
+  } catch (error) {
+    console.log({ error, decimal: decimal.toString() });
+    return formatDecimalAsCurrency(zero);
+  }
+};
+
 const BalancesPage: NextPage = () => {
   const router = useRouter();
   const balances = useBalancesWithPool();
@@ -39,24 +55,24 @@ const BalancesPage: NextPage = () => {
     ["asc" | "desc", "token" | "available" | "balance" | "pooled" | undefined]
   >(["asc", undefined]);
 
-  const sortedBalance = useMemo(() => {
+  console.log({ balances, balancesStats });
+  const sortedBalances = useMemo(() => {
     const sortFunc = sortByOrder === "asc" ? ascend : descend;
+
     switch (sortByProperty) {
       case "token":
         return balances.sort(sortFunc((x) => x.displaySymbol ?? ""));
-
       case "available":
         return balances.sort(sortFunc((x) => x.amount?.toFloatApproximation() ?? 0));
       case "balance":
         return balances.sort(
           sortFunc(
             (x) =>
-              x.amount?.plus(x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits)).toFloatApproximation() ?? 0,
+              x.amount?.plus(x.pooledAmount ?? Decimal.zero(x.amount.fractionalDigits))?.toFloatApproximation() ?? 0,
           ),
         );
       case "pooled":
         return balances.sort(sortFunc((x) => x.pooledAmount?.toFloatApproximation() ?? 0));
-      case undefined:
       default:
         return balances;
     }
@@ -66,27 +82,15 @@ const BalancesPage: NextPage = () => {
     return [
       {
         label: "Available",
-        value:
-          balancesStats.data?.availableInUsdc.toFloatApproximation().toLocaleString(undefined, {
-            style: "currency",
-            currency: "USD",
-          }) ?? "...",
+        value: Maybe.of(balancesStats.data?.availableInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
       {
         label: "Pooled",
-        value:
-          balancesStats.data?.pooledInUsdc.toFloatApproximation().toLocaleString(undefined, {
-            style: "currency",
-            currency: "USD",
-          }) ?? "...",
+        value: Maybe.of(balancesStats.data?.pooledInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
       {
         label: "Total",
-        value:
-          balancesStats.data?.totalInUsdc.toFloatApproximation().toLocaleString(undefined, {
-            style: "currency",
-            currency: "USD",
-          }) ?? "...",
+        value: Maybe.of(balancesStats.data?.totalInUsdc).mapOr("...", formatDecimalAsCurrency),
       },
     ];
   }, [balancesStats.data?.availableInUsdc, balancesStats.data?.pooledInUsdc, balancesStats.data?.totalInUsdc]);
@@ -139,7 +143,7 @@ const BalancesPage: NextPage = () => {
           </div>
         </header>
         <div className="flex flex-col gap-4 md:hidden">
-          {sortedBalance?.map((balance) => (
+          {sortedBalances?.map((balance) => (
             <details key={balance.denom} className="[&[open]>summary>div>.marker]:rotate-180">
               <summary className="mb-2 flex items-center justify-between">
                 <TokenFigure
@@ -152,7 +156,7 @@ const BalancesPage: NextPage = () => {
                     {(
                       balance.amount
                         ?.plus(balance.pooledAmount ?? Decimal.zero(balance.amount.fractionalDigits))
-                        .toFloatApproximation() ?? 0
+                        ?.toFloatApproximation() ?? 0
                     ).toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
@@ -215,7 +219,7 @@ const BalancesPage: NextPage = () => {
             ))}
           </thead>
           <tbody>
-            {sortedBalance.map((balance) => (
+            {sortedBalances.map((balance) => (
               <tr key={balance.denom} className="[&>td]:pb-2">
                 <td>
                   <TokenFigure
@@ -238,7 +242,7 @@ const BalancesPage: NextPage = () => {
                   {(
                     balance.amount
                       ?.plus(balance.pooledAmount ?? Decimal.zero(balance.amount.fractionalDigits))
-                      .toFloatApproximation() ?? 0
+                      ?.toFloatApproximation() ?? 0
                   ).toLocaleString(undefined, {
                     maximumFractionDigits: 6,
                   })}

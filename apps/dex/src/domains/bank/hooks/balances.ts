@@ -124,7 +124,7 @@ export function useAllBalancesQuery() {
 }
 
 export function useBalancesWithPool() {
-  const { indexedByDenom } = useTokenRegistryQuery();
+  const { indexedByDenom, findBySymbolOrDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProvidersQuery();
   const { data: balances } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
@@ -151,7 +151,7 @@ export function useBalancesWithPool() {
   return useMemo(
     () =>
       Array.from(denomSet).map((x) => {
-        const token = indexedByDenom[x];
+        const token = findBySymbolOrDenom(x);
         const balance = balances?.find((y) => y.denom === x);
         const pool = liquidityProviders?.liquidityProviderData.find((y) => y.liquidityProvider?.asset?.symbol === x);
 
