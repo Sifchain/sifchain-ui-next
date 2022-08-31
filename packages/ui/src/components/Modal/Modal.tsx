@@ -64,23 +64,23 @@ export const Modal: FC<ModalProps> = (props) => {
                     </button>
                   </div>
                 )}
-                <header className="grid gap-2 py-4">
+                <header className="grid gap-2 pt-6 pb-6">
                   <div className="flex gap-2">
                     {typeof props.onGoBack === "function" && (
-                      <button className="-my-4 -mr-4 p-4 text-gray-50" onClick={props.onGoBack}>
+                      <button className="-mr-6 pl-6 text-gray-50" onClick={props.onGoBack}>
                         <ArrowLeftIcon className="h-6 w-6" />
                       </button>
                     )}
                     <Dialog.Title
                       as="h3"
-                      className="relative px-4 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50"
+                      className="relative px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50"
                     >
                       {props.title}
                     </Dialog.Title>
                   </div>
                   {props.subTitle && <div className="border-gray-750 border-b p-4 pt-0 ">{props.subTitle}</div>}
                 </header>
-                <div className="p-4">{props.children}</div>
+                <div className="px-6 pb-6">{props.children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
