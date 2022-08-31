@@ -50,14 +50,19 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const closingPositionRaw = closingPositionSwap?.rawReceiving ?? "0";
   const closingPositionMinReceivingRaw = closingPositionSwap?.minimumReceiving ?? "0";
 
-  const closingPositionAsNumber = Decimal.fromAtomics(closingPositionRaw, collateralDecimals).toFloatApproximation();
+  const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionRaw, collateralDecimals);
 
-  const closingPositionMinReceivingAsNumber = Decimal.fromAtomics(
-    closingPositionMinReceivingRaw,
-    collateralDecimals,
-  ).toFloatApproximation();
+  const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
 
-  const closingPositionFees = closingPositionAsNumber - closingPositionMinReceivingAsNumber;
+  const closingPositionMinReceivingAsDecimal = Decimal.fromAtomics(closingPositionMinReceivingRaw, collateralDecimals);
+
+  const closingPositionFees = closingPositionAsDecimal
+    .minus(closingPositionMinReceivingAsDecimal)
+    .toFloatApproximation();
+
+  const finalPositionWithLiabilitiesAsNumber = closingPositionMinReceivingAsDecimal
+    .minus(liabilitiesAsDecimal)
+    .toFloatApproximation();
 
   const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
 
@@ -99,7 +104,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const openingPositionValue = openingPosition * positionTokenQuery.data.priceUsd;
     const currentPosition = Number(props.data.current_custody_amount ?? "0");
     const currentValue = currentPosition * currentPriceAsNumber;
-    const tradePnlValue = closingPositionMinReceivingAsNumber - Number(props.data.collateral_amount);
+    const tradePnlValue = finalPositionWithLiabilitiesAsNumber - Number(props.data.collateral_amount);
     const tradePnlValueSign = Math.sign(tradePnlValue);
     content = (
       <>
@@ -220,12 +225,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
               <div className="flex flex-row items-center">
-                {isNil(closingPositionAsNumber) ? (
+                {isNil(closingPositionAsDecimal) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">{formatNumberAsDecimal(closingPositionAsNumber, 4)}</span>
+                    <span className="ml-1">
+                      {formatNumberAsDecimal(closingPositionAsDecimal.toFloatApproximation(), 4)}
+                    </span>
                   </>
                 )}
               </div>
@@ -277,12 +284,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
               <div className="flex flex-row items-center">
-                {isNil(closingPositionMinReceivingAsNumber) ? (
+                {isNil(finalPositionWithLiabilitiesAsNumber) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <b className="ml-1">{formatNumberAsDecimal(closingPositionMinReceivingAsNumber, 4)}</b>
+                    <b className="ml-1">{formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}</b>
                   </>
                 )}
               </div>
