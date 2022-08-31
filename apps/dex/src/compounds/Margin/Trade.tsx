@@ -653,7 +653,7 @@ const Trade = (props: TradeProps) => {
                 Long
               </p>
               <div className="col-span-3 flex flex-col">
-                <span className="mb-1 text-xs text-gray-300">
+                <span className="mb-1 text-right text-xs text-gray-300">
                   <span className="mr-1">Leverage</span>
                   <span className="text-gray-400">
                     <span>Up to </span>
