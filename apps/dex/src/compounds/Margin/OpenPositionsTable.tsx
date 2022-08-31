@@ -354,8 +354,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       </td>
                     )}
                     <td className="px-4 py-3">
-                      {isTruthy(item.health) ? (
-                        formatNumberAsDecimal(Number(item.health))
+                      {isTruthy(item.current_health) ? (
+                        formatNumberAsDecimal(Number(item.current_health))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

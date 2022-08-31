@@ -17,6 +17,7 @@ export type OpenPositionsQueryData = {
   interest_rate: string;
   current_interest_paid_custody: number;
   health: string;
+  current_health: string;
   current_custody_amount: string;
   current_price: string;
   collateral_amount: string;
