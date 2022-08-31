@@ -648,7 +648,7 @@ const Trade = (props: TradeProps) => {
                 </span>
               )}
             </li>
-            <li className="mt-2 grid grid-cols-6 gap-2">
+            <li className="mt-4 grid grid-cols-6 gap-2">
               <p className="col-span-3 self-end rounded bg-gray-500 p-2 text-center text-sm font-semibold text-gray-200">
                 Long
               </p>

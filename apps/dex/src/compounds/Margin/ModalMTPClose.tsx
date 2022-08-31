@@ -103,8 +103,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const tradePnlValueSign = Math.sign(tradePnlValue);
     content = (
       <>
-        <h1 className="text-center text-lg font-bold">Review closing trade</h1>
-        <ul className="mt-4 flex flex-col gap-3">
+        <ul className="flex flex-col gap-3">
           <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
             {isNil(props.data.custody_asset) ? (
               <HtmlUnicode name="EmDash" />
@@ -337,7 +336,13 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   }
 
   return (
-    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
+    <Modal
+      title="Review closing trade"
+      className="text-sm"
+      isOpen={props.isOpen}
+      onTransitionEnd={onTransitionEnd}
+      onClose={props.onClose}
+    >
       {content}
     </Modal>
   );

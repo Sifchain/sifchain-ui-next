@@ -57,12 +57,11 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
 
   let content = (
     <>
-      <h1 className="text-center text-lg font-bold">Review trade</h1>
       {props.data.positionTokenAmount &&
       props.data.toDenom &&
       props.data.positionPriceUsd &&
       props.data.poolInterestRate ? (
-        <ul className="mt-6 flex flex-col gap-3">
+        <ul className="flex flex-col gap-3">
           <li>
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
@@ -107,7 +106,13 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
   );
 
   return (
-    <Modal className="text-sm" isOpen={props.isOpen} onTransitionEnd={onTransitionEnd} onClose={props.onClose}>
+    <Modal
+      title="Review trade"
+      className="text-sm"
+      isOpen={props.isOpen}
+      onTransitionEnd={onTransitionEnd}
+      onClose={props.onClose}
+    >
       {content}
     </Modal>
   );
