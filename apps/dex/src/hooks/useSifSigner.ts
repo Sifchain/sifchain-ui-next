@@ -17,7 +17,7 @@ export function useSifSignerAddressQuery() {
     async () => {
       invariant(signer !== undefined, "Sif signer is not defined");
 
-      const accounts = await signer?.getAccounts();
+      const accounts = await signer.getAccounts();
 
       return accounts?.[0]?.address ?? "";
     },

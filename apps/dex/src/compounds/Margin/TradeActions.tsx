@@ -62,7 +62,7 @@ export function TradeActions({
    * Wallet address scenarios
    * This is linekd with WalletConnector / Keplr behaviour
    */
-  if (walletAddressQuery.fetchStatus === "idle") {
+  if (walletAddressQuery.isPaused) {
     return (
       <Layout>
         <FlashMessageConnectSifChainWallet className="col-span-4" />
@@ -71,6 +71,9 @@ export function TradeActions({
   }
 
   if (walletAddressQuery.isError) {
+    console.log({
+      walletAddressQueryError: walletAddressQuery.error,
+    });
     return (
       <Layout>
         <FlashMessageConnectSifChainWalletError className="col-span-4" />
