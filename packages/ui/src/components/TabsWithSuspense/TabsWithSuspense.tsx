@@ -30,14 +30,14 @@ export const TabsWithSuspense: FC<TabsWithSuspenseProps> = ({
   const TabContent = currentTab?.content || null;
   return (
     <>
-      <ul className="flex flex-row border-b-2 border-gray-600">
+      <ul className="flex flex-row border-b border-gray-600">
         {items.map(({ title, slug }, index) => {
           const isTabActive = currentTab?.slug === slug;
           return (
             <li
               key={slug}
               className={clsx(
-                "relative -mb-0.5 border-b-2 border-transparent text-lg",
+                "relative -mb-[1px] border-b border-transparent text-lg",
                 { "ml-4": index > 0 },
                 isTabActive ? "border-current font-bold text-white" : "text-gray-400",
               )}
