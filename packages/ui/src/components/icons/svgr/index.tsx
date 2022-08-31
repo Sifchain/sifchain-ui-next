@@ -12,6 +12,7 @@ export { default as DotsVerticalIcon } from "./DotsVerticalIcon";
 export { default as EthereumCircleIcon } from "./EthereumCircleIcon";
 export { default as EthereumIcon } from "./EthereumIcon";
 export { default as ExternalLinkIcon } from "./ExternalLinkIcon";
+export { default as InfoIcon } from "./InfoIcon";
 export { default as KeplrIcon } from "./KeplrIcon";
 export { default as LockIcon } from "./LockIcon";
 export { default as LogoutIcon } from "./LogoutIcon";

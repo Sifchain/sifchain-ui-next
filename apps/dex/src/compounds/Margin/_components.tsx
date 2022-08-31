@@ -2,10 +2,24 @@ import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 import clsx from "clsx";
-import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector, Tooltip } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  InfoIcon,
+  TokenEntry,
+  TokenSelector as BaseTokenSelector,
+  Tooltip,
+} from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";
+import { forwardRef } from "react";
+
+export const InfoIconForwardRef = forwardRef<HTMLSpanElement | null>((props, ref) => (
+  <span ref={ref}>
+    <InfoIcon width="16px" height="16px" {...props} />
+  </span>
+));
+InfoIconForwardRef.displayName = "InfoIconForwardRef";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -136,9 +150,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>
             <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
-              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                i
-              </span>
+              <InfoIconForwardRef />
             </Tooltip>
           </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>

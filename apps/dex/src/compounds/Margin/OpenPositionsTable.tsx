@@ -40,7 +40,7 @@ import { ModalMTPClose } from "./ModalMTPClose";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { formatDateISO, formatIntervalToDuration } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating, InfoIconForwardRef } from "./_components";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -51,16 +51,6 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-const TooltipIconText = forwardRef<HTMLSpanElement | null>(function TooltipIconText(_props, ref) {
-  return (
-    <span
-      ref={ref}
-      className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]"
-    >
-      i
-    </span>
-  );
-});
 const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
   "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
@@ -177,7 +167,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           <>
                             <div className="mr-1" />
                             <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
-                              <TooltipIconText />
+                              <InfoIconForwardRef />
                             </Tooltip>
                           </>
                         ) : null}
@@ -232,7 +222,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                               title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
                               content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
                             >
-                              <TooltipIconText />
+                              <InfoIconForwardRef />
                             </Tooltip>
                           </>
                         ) : null}
