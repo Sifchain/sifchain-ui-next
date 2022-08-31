@@ -15,10 +15,7 @@ export type OpenPositionsQueryData = {
   leverage: string;
   unrealized_pnl: string;
   interest_rate: string;
-  current_interest_paid_custody: number;
   health: string;
-  current_health: string;
-  current_custody_amount: string;
   current_price: string;
   collateral_amount: string;
   collateral_asset: string;
@@ -29,17 +26,20 @@ export type OpenPositionsQueryData = {
   interest_unpaid_collateral: string;
   interest_paid_collateral: string;
   custody_entry_price: string;
-  current_interest_paid_collateral: string;
-  current_interest_unpaid_collateral: string;
   mtp_open_execution_price: string;
   next_payment: any;
   position: string;
   repay_amount: string;
   unrealized_pnl_formula: string;
-  currentCustodyAmount: string;
+  currentCustodyAmount?: string;
   currentPrice: string;
   openCustodyAmount: string;
   openPrice: string;
+  current_interest_paid_custody?: number;
+  current_health?: string;
+  current_custody_amount?: string;
+  current_interest_paid_collateral?: string;
+  current_interest_unpaid_collateral?: string;
 };
 
 export type TimeOpen = {
