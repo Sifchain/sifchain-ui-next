@@ -277,7 +277,7 @@ const HistoryTable = (props: HistoryTableProps) => {
               return (
                 <Link href={{ query: { ...router.query, offset } }} scroll={false}>
                   <a
-                    className={clsx("rounded px-2 py-1", {
+                    className={clsx("inline-grid h-[20px] w-[20px] place-items-center rounded", {
                       "bg-gray-400": pagination.offset === offset,
                     })}
                   >

@@ -43,7 +43,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
   const initial = offset + limit;
 
   return (
-    <p className="mx-4 py-3 text-sm">
+    <p className="mx-4 py-3 text-xs">
       <span>Showing</span>
       <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
@@ -59,7 +59,7 @@ type PaginationButtonsProps = {
 };
 export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
   return (
-    <ul className="mx-4 flex flex-row text-sm">
+    <ul className="mx-4 flex flex-row text-xs">
       {Array.from({ length: pages }, (_, index) => {
         const page = ++index;
         return (
