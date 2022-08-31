@@ -96,7 +96,7 @@ export function PoolOverview(props: PoolOverviewProps) {
 
   return (
     <ul className="grid grid-cols-7 gap-5">
-      <li className="col-span-2 py-4 pl-4">
+      <li className="col-span-2 py-4 px-4">
         <BaseTokenSelector
           textPlaceholder="Search pools"
           modalTitle="Select Pool"
@@ -107,7 +107,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           onChange={props.onChangePoolSelector}
         />
       </li>
-      <li className="py-4">
+      <li className="py-4 pl-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
