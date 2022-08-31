@@ -78,7 +78,7 @@ export const Modal: FC<ModalProps> = (props) => {
                       {props.title}
                     </Dialog.Title>
                   </div>
-                  {props.subTitle && <div className="border-gray-750 border-b p-4 pt-0 ">{props.subTitle}</div>}
+                  {props.subTitle && <div className="border-gray-750 border-b px-6 pt-2 pb-6">{props.subTitle}</div>}
                 </header>
                 <div className="px-6 pb-6">{props.children}</div>
               </Dialog.Panel>
