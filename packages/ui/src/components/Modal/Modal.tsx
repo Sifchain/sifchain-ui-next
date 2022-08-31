@@ -53,7 +53,7 @@ export const Modal: FC<ModalProps> = (props) => {
                 )}
               >
                 {!props.hideCloseButton && (
-                  <div className="absolute top-0 right-0 z-10 hidden pt-4 pr-4 sm:block">
+                  <div className="absolute top-0 right-0 z-10 hidden pt-6 pr-6 sm:block">
                     <button
                       type="button"
                       className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none dark:bg-gray-800"
