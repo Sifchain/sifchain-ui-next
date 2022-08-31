@@ -18,7 +18,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
   return (
     <div
       role="button"
-      className={clsx("flex items-center gap-4 py-1 px-8 transition-colors", {
+      className={clsx("flex items-center gap-4 px-2 transition-colors", {
         "bg-gray-600": props.active || props.selected,
       })}
     >
