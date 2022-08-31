@@ -18,7 +18,8 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
   const allBalancesQuery = useAllBalancesQuery();
   const poolStatsQuery = usePoolStatsQuery();
 
-  const registryEntry = registryQuery.indexedByDenom[denom];
+  const registryEntry = registryQuery.findBySymbolOrDenom(denom);
+
   const balanceEntry = useMemo(
     () => allBalancesQuery.data?.find((entry) => entry.denom === denom || entry.denom === registryEntry?.denom),
     [allBalancesQuery.data, registryEntry?.denom, denom],
@@ -28,7 +29,7 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
     "clp.getPool",
     [
       {
-        symbol: denom,
+        symbol: registryEntry?.denom ?? denom,
       },
     ],
     options,

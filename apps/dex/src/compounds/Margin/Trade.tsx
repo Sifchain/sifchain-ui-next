@@ -103,7 +103,7 @@ const TradeTab: NextPage = () => {
     const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
       allowedPools.includes(pool.asset.denom as string),
     );
-    enhancedRowanQuery.data.priceUsd = rowanPriceQuery.data;
+
     return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
   }
 
@@ -174,7 +174,11 @@ const Trade = (props: TradeProps) => {
 
   const poolActive = useMemo(() => {
     if (qsPool) {
-      const pool = pools.find((pool) => pool.asset.denom === qsPool);
+      const poolQueryString = String(qsPool).toLowerCase();
+      const pool = pools.find(
+        (pool) =>
+          pool.asset.denom?.toLowerCase() === poolQueryString || pool.asset.symbol.toLowerCase() === poolQueryString,
+      );
       if (pool) {
         return pool;
       }
