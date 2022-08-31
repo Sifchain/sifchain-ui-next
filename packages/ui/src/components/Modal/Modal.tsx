@@ -48,7 +48,7 @@ export const Modal: FC<ModalProps> = (props) => {
             >
               <Dialog.Panel
                 className={clsx(
-                  "relative w-full transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all dark:bg-gray-800 dark:text-white sm:my-8 sm:w-full sm:max-w-lg md:max-w-md",
+                  "relative w-full transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all dark:bg-gray-800 dark:text-white sm:my-8 sm:w-full sm:max-w-lg",
                   props.className,
                 )}
               >
@@ -74,7 +74,7 @@ export const Modal: FC<ModalProps> = (props) => {
                     <Dialog.Title
                       as="h3"
                       className={clsx(
-                        "relative px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50",
+                        "relative flex-1 px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50",
                         {
                           "pl-0": typeof props.onGoBack === "function",
                         },
