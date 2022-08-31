@@ -322,12 +322,8 @@ const Trade = (props: TradeProps) => {
     inputCollateral.value,
   );
 
-  const openPositionFee = useMemo(
-    () =>
-      Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-        Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
-      ),
-    [swapSimulation, selectedPosition],
+  const openPositionFee = Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+    Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
