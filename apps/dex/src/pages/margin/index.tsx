@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
-import { FlashMessageLoading, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
-import { useMemo } from "react";
+import { FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -51,6 +51,7 @@ const Margin: NextPage = () => {
     return null;
   }, [router.isReady, router.query]);
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   return (
     <>
@@ -79,6 +80,23 @@ const Margin: NextPage = () => {
           <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />
         )}
       </section>
+
+      <Modal
+        title={
+          <>
+            Welcome to Margin Trading v1.0
+            <br />
+            The Long Game!
+          </>
+        }
+        isOpen={isModalOpen}
+        onClose={useCallback(() => setIsModalOpen(false), [])}
+      >
+        <p className="text-center">
+          v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
+          for Margin, please reference our product documentation **here**
+        </p>
+      </Modal>
     </>
   );
 };
