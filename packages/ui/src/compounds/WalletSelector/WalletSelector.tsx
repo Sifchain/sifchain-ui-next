@@ -8,11 +8,11 @@ import type { ChainEntry, WalletEntry } from "./types";
 export type WalletSelectorStep = "choose-network" | "choose-wallet" | "await-confirmation";
 
 const ListContainer = tw.ul`
-  grid gap-2 max-h-64 overflow-y-scroll -mx-3
+  grid gap-6 max-h-64
 `;
 
 const ListItem = tw.li`
-  flex items-center justify-between p-4 hover:opacity-60 rounded
+  flex items-center justify-between hover:opacity-60 rounded
 `;
 
 export type WalletSelectorProps = {
@@ -99,7 +99,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                     }}
                   >
                     <div className="flex items-center gap-2">
-                      <figure className="h-5 w-5">{x.icon}</figure>
+                      {x.icon}
                       {x.name}
                     </div>
                     <ArrowLeftIcon className="rotate-180 text-gray-400" />
@@ -132,8 +132,8 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
                     }}
                   >
                     <div className="flex items-center gap-2">
-                      <figure className="text-lg">{x.icon}</figure>
-                      {x.name}{" "}
+                      {x.icon}
+                      {x.name}
                     </div>
                     <ArrowLeftIcon className="rotate-180 text-gray-400" />
                   </ListItem>
@@ -192,7 +192,7 @@ export const WalletSelector: FC<WalletSelectorProps> = (props) => {
           onClick={setIsModalOpen.bind(null, true)}
           className="w-full whitespace-nowrap md:w-auto"
         >
-          <WalletIcon className="-translate-y-0.5" /> Connect wallets
+          <WalletIcon /> Connect wallets
         </Button>
       )}
       <Modal

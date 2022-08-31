@@ -60,8 +60,8 @@ const WalletConnector: FC = () => {
         nativeAssetSymbol: chain.nativeAssetSymbol,
         connected: false,
         icon: (
-          <figure
-            className={clsx("h-6 w-6 -translate-x-1 rounded-full bg-white bg-cover", {
+          <div
+            className={clsx("h-6 w-6 rounded-full bg-white bg-cover", {
               "border-black bg-black invert": ["ixo"].includes(chain.chainId.toString()),
             })}
             style={{ backgroundImage: `url('/chains/${chain.network}.png')` }}
