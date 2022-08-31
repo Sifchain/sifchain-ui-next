@@ -67,13 +67,18 @@ export const Modal: FC<ModalProps> = (props) => {
                 <header className="grid gap-2 pt-6 pb-6">
                   <div className="flex gap-2">
                     {typeof props.onGoBack === "function" && (
-                      <button className="-mr-6 pl-6 text-gray-50" onClick={props.onGoBack}>
+                      <button className="pl-6 text-gray-50" onClick={props.onGoBack}>
                         <ArrowLeftIcon className="h-6 w-6" />
                       </button>
                     )}
                     <Dialog.Title
                       as="h3"
-                      className="relative px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50"
+                      className={clsx(
+                        "relative px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50",
+                        {
+                          "pl-0": typeof props.onGoBack === "function",
+                        },
+                      )}
                     >
                       {props.title}
                     </Dialog.Title>
