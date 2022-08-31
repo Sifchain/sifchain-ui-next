@@ -32,7 +32,7 @@ const isTruthy = (target: any) => !isNil(target);
  * ********************************************************************************************
  */
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
-import { formatDateDistance, formatDateISO } from "./_intl";
+import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 
@@ -193,8 +193,10 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.open_date_time) ? (
-                        formatDateDistance(new Date(item.open_date_time))
+                      {isTruthy(item.closed_date_time) && isTruthy(item.open_date_time) ? (
+                        createDurationLabel(
+                          formatIntervalToDuration(new Date(item.open_date_time), new Date(item.closed_date_time)),
+                        )
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}

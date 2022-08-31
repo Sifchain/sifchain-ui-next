@@ -17,7 +17,7 @@ import {
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -38,7 +38,7 @@ import { ModalMTPClose } from "./ModalMTPClose";
  */
 
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
-import { formatDateISO, formatIntervalToDuration } from "./_intl";
+import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating, InfoIconForwardRef } from "./_components";
 
@@ -85,20 +85,6 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
 ];
-const createTimeOpenLabel = (timeOpen: Duration) => {
-  const { years, months, days, hours, minutes, seconds } = timeOpen;
-  const yearsLabel = years ? `${years}y` : null;
-  const monthsLabel = months ? `${months}m` : null;
-  const daysLabel = days ? `${days}d` : null;
-  const hoursLabel = hours ? `${hours}h` : null;
-  const minutesLabel = minutes ? `${minutes}min` : null;
-  const secondsLabel = seconds ? `${seconds}s` : null;
-  const isSeconds = [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel].every((item) => item === null);
-  const maybeSecondsLabel = isSeconds ? secondsLabel : null;
-  return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, maybeSecondsLabel]
-    .filter((label) => Boolean(label))
-    .join(", ");
-};
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
@@ -362,7 +348,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.date_opened) ? (
-                        createTimeOpenLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
+                        createDurationLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
