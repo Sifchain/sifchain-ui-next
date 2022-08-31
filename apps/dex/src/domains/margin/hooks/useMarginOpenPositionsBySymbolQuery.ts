@@ -1,5 +1,5 @@
 import type { Pagination, OpenPositionsQueryData } from "./types";
-import type { UseQueryResult } from "react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 import { useRouter } from "next/router";
 

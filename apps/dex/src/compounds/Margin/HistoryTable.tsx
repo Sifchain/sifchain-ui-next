@@ -74,7 +74,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     walletAddress: walletAddress.data ?? "",
   });
 
-  if (walletAddress.isIdle) {
+  if (walletAddress.fetchStatus === "idle") {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 

@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { useSigner } from "@sifchain/cosmos-connect";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
@@ -24,7 +24,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockHeight } = useCurrentBlockHeight();
 
   return useQuery(
-    LIQUIDITY_PROVIDER_QUERY_KEY,
+    [LIQUIDITY_PROVIDER_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -83,7 +83,7 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockHeight } = useCurrentBlockHeight();
 
   return useQuery(
-    LIQUIDITY_PROVIDERS_QUERY_KEY,
+    [LIQUIDITY_PROVIDERS_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({

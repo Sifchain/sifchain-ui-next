@@ -1,4 +1,4 @@
-import type { UseQueryResult } from "react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 import type { Pagination, HistoryQueryData } from "./types";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";

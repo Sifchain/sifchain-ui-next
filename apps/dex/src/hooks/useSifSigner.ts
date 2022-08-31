@@ -1,6 +1,6 @@
 import { useSigner } from "@sifchain/cosmos-connect";
 import { invariant } from "@sifchain/ui";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 
 export function useSifSigner() {
@@ -12,7 +12,7 @@ export function useSifSignerAddress() {
   const { signer } = useSifSigner();
 
   return useQuery(
-    "sifchain-signer-address",
+    ["sifchain-signer-address"],
     async () => {
       invariant(signer !== undefined, "Sif signer is not defined");
 

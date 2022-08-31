@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { toast } from "@sifchain/ui";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifSigner } from "~/hooks/useSifSigner";

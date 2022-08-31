@@ -109,7 +109,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     value: null,
   });
 
-  if (walletAddress.isIdle) {
+  if (walletAddress.fetchStatus === "idle") {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 
