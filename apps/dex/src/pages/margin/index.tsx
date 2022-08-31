@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 
-import { FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
-import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import { FlashMessageLoading, Maybe, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
 
 const TABS = {
@@ -40,6 +40,8 @@ const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   },
 ];
 
+const DISCLAIMER_STORAGE_KEY = "@@marginDisclaimerModal";
+
 const Margin: NextPage = () => {
   const router = useRouter();
   const activeTab = useMemo(() => {
@@ -51,7 +53,17 @@ const Margin: NextPage = () => {
     return null;
   }, [router.isReady, router.query]);
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(
+    typeof window === "undefined"
+      ? true
+      : Maybe.of(sessionStorage.getItem(DISCLAIMER_STORAGE_KEY)).mapOr(true, JSON.parse),
+  );
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      sessionStorage.setItem(DISCLAIMER_STORAGE_KEY, JSON.stringify(false));
+    }
+  }, [isModalOpen]);
 
   return (
     <>
