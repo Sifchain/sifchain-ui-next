@@ -21,7 +21,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import AssetIcon from "~/compounds/AssetIcon";
 import { ModalMTPClose } from "./ModalMTPClose";
@@ -95,7 +95,7 @@ export type OpenPositionsTableProps = {
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddress();
+  const walletAddress = useSifSignerAddressQuery();
   const { openPositionsQuery } = props;
 
   const { hideColumns, classNamePaginationContainer } = props;

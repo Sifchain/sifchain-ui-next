@@ -2,7 +2,7 @@ import type { PropsWithChildren, SyntheticEvent } from "react";
 
 import { Button } from "@sifchain/ui";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 
 import { useMarginIsWhitelistedAccountQuery } from "~/domains/margin/hooks/useMarginIsWhitelistedAccountQuery";
 import type { useMarginParamsQuery } from "~/domains/margin/hooks";
@@ -27,7 +27,7 @@ export function TradeActions({
   isDisabledOpenPosition,
   onClickOpenPosition,
 }: TradeActionsProps) {
-  const walletAddressQuery = useSifSignerAddress();
+  const walletAddressQuery = useSifSignerAddressQuery();
   const isWhitelistedAccountQuery = useMarginIsWhitelistedAccountQuery({
     walletAddress: walletAddressQuery.data ?? "",
   });
