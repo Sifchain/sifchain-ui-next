@@ -1,7 +1,7 @@
 import { AsyncImage, SearchInput, useCopyToClipboard } from "@sifchain/ui";
 import clsx from "clsx";
 import React, { FC, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { CheckIcon, DuplicateIcon } from "@heroicons/react/outline";
 
 import type { AssetConfig } from "~/types";
