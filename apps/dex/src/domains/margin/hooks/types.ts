@@ -1,11 +1,11 @@
 export type MarginHistoryResponse = {
   pagination: Pagination;
-  results: MarginHistoryQueryData[];
+  results: MarginHistoryData[];
 };
 
 export type MarginOpenPositionsResponse = {
   pagination: Pagination;
-  results: MarginOpenPositionsQueryData[];
+  results: MarginOpenPositionsData[];
 };
 
 export type Pagination = {
@@ -16,7 +16,7 @@ export type Pagination = {
   sort_by: string;
 };
 
-export type MarginOpenPositionsQueryData = {
+export type MarginOpenPositionsQueryDataResponse = {
   address: string;
   date_opened: string;
   pool: string;
@@ -51,6 +51,7 @@ export type MarginOpenPositionsQueryData = {
   current_interest_paid_collateral?: string;
   current_interest_unpaid_collateral?: string;
 };
+export type MarginOpenPositionsData = MarginOpenPositionsQueryDataResponse & { _optimistic: boolean };
 
 export type TimeOpen = {
   hours: number;
@@ -58,7 +59,7 @@ export type TimeOpen = {
   seconds: number;
 };
 
-export interface MarginHistoryQueryData {
+export interface MarginHistoryQueryDataResponse {
   address: string;
   id: string;
   pool: string;
@@ -86,6 +87,7 @@ export interface MarginHistoryQueryData {
   mtp_open_custody_amount: string;
   mtp_open_execution_price: string;
 }
+export type MarginHistoryData = MarginHistoryQueryDataResponse & { _optimistic: boolean };
 
 export interface EventCoinReceived {
   type: "coin_received";

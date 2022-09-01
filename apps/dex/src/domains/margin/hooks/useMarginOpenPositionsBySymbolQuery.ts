@@ -46,7 +46,7 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
        *
        * Data Services response is our source of truth
        */
-      refetchInterval: 10 * 1000,
+      refetchInterval: 3 * 1000,
       retry: false,
       structuralSharing(
         oldData: MarginOpenPositionsResponse | undefined,

@@ -4,12 +4,12 @@ import { mergeDeepRight } from "rambda";
 
 export type SyncCacheWithServerInput = {
   pagination: Pagination;
-  results: { id: string }[];
+  results: { id: string; _optimistic: boolean }[];
 };
 export function syncCacheWithServer<T extends SyncCacheWithServerInput>(oldData: T, newData: T) {
   const draft = mergeDeepRight<T>({}, newData);
   const newDataIds = newData.results.map((x) => x.id);
-  const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id));
+  const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id) && x._optimistic);
 
   if (oldDataDiff.length) {
     const mergedDiff = oldDataDiff.concat(newData.results);
