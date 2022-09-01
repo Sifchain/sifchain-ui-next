@@ -9,5 +9,5 @@ export const middleware: NextMiddleware = () => {
 };
 
 export const config = {
-  matcher: ["/api/assets/:network/:env", "/api/providers", "/api/providers/:id"],
+  matcher: ["/api/assets/:path*", "/api/providers/:path*"],
 };
