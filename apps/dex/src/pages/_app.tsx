@@ -1,20 +1,14 @@
 import { ComposeProviders } from "@sifchain/ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
 import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import useReloadOnAccountChangeEffect from "~/hooks/useReloadOnAccountChangeEffect";
 
 import MainLayout from "~/layouts/MainLayout";
 import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
 import "~/styles/globals.css";
-
-const WalletsWatcher = () => {
-  useReloadOnAccountChangeEffect();
-  return null;
-};
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   const [queryClient] = useState(
@@ -28,7 +22,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <ComposeProviders providers={[typeof window !== "undefined" ? CosmConnectProvider : Fragment, WagmiProvider]}>
-      <WalletsWatcher />
       <CookiesProvider>
         <QueryClientProvider client={queryClient}>
           <MainLayout>
