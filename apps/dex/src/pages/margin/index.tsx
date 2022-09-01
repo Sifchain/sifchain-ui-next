@@ -56,12 +56,12 @@ const Margin: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(
     typeof window === "undefined"
       ? true
-      : Maybe.of(sessionStorage.getItem(DISCLAIMER_STORAGE_KEY)).mapOr(true, JSON.parse),
+      : Maybe.of(localStorage.getItem(DISCLAIMER_STORAGE_KEY)).mapOr(true, JSON.parse),
   );
 
   useEffect(() => {
     if (!isModalOpen) {
-      sessionStorage.setItem(DISCLAIMER_STORAGE_KEY, JSON.stringify(false));
+      localStorage.setItem(DISCLAIMER_STORAGE_KEY, JSON.stringify(false));
     }
   }, [isModalOpen]);
 
