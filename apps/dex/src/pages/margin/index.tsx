@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
-import { useStorageState } from "~/utils/useStorageState";
+import { useStorageState } from "@sifchain/utils/react";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
