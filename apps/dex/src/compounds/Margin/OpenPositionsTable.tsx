@@ -17,7 +17,7 @@ import {
 } from "@sifchain/ui";
 import { isNil } from "rambda";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -108,6 +108,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     isOpen: false,
     value: null,
   });
+
+  const onClose = useCallback(() => {
+    if (positionToClose.isOpen) {
+      setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+    }
+  }, [positionToClose.isOpen]);
+  const onMutationSuccess = useCallback(() => {
+    setPositionToClose({ isOpen: false, value: null });
+  }, []);
+  const onTransitionEnd = useCallback(() => {
+    if (positionToClose.value !== null) {
+      setPositionToClose((prev) => ({ ...prev, value: null }));
+    }
+  }, [positionToClose.value]);
 
   if (walletAddress.isIdle) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
@@ -408,19 +422,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
-            onClose={() => {
-              if (positionToClose.isOpen) {
-                setPositionToClose((prev) => ({ ...prev, isOpen: false }));
-              }
-            }}
-            onMutationSuccess={() => {
-              setPositionToClose({ isOpen: false, value: null });
-            }}
-            onTransitionEnd={() => {
-              if (positionToClose.value !== null) {
-                setPositionToClose((prev) => ({ ...prev, value: null }));
-              }
-            }}
+            onClose={onClose}
+            onMutationSuccess={onMutationSuccess}
+            onTransitionEnd={onTransitionEnd}
           />
         )}
       </section>
