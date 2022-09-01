@@ -43,7 +43,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
   const initial = offset + limit;
 
   return (
-    <p className="mx-4 py-3 text-xs">
+    <p className="mx-4 py-2 text-xs">
       <span>Showing</span>
       <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>

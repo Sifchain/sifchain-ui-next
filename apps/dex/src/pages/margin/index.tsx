@@ -58,7 +58,7 @@ const Margin: NextPage = () => {
         <title>Sichain Dex - Margin</title>
       </Head>
 
-      <section className="md:container-2xl bg-black p-4 md:mx-auto">
+      <section className="mx-auto w-full bg-black p-4 md:container">
         {!isMarginStandaloneOn && (
           <header className="mb-6">
             <h2 className="text-2xl font-bold text-white">Margin</h2>

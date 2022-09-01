@@ -262,7 +262,7 @@ const HistoryTable = (props: HistoryTableProps) => {
         </div>
         <div
           className={clsx(
-            "mt-auto flex flex-row items-center justify-end bg-gray-800",
+            "mt-auto flex flex-col items-center justify-end bg-gray-800 p-2 md:flex-row",
             props.classNamePaginationContainer,
           )}
         >
