@@ -1,3 +1,13 @@
+export type MarginHistoryResponse = {
+  pagination: Pagination;
+  results: MarginHistoryQueryData[];
+};
+
+export type MarginOpenPositionsResponse = {
+  pagination: Pagination;
+  results: MarginOpenPositionsQueryData[];
+};
+
 export type Pagination = {
   total: string;
   limit: string;
@@ -6,7 +16,7 @@ export type Pagination = {
   sort_by: string;
 };
 
-export type OpenPositionsQueryData = {
+export type MarginOpenPositionsQueryData = {
   address: string;
   date_opened: string;
   pool: string;
@@ -48,7 +58,7 @@ export type TimeOpen = {
   seconds: number;
 };
 
-export interface HistoryQueryData {
+export interface MarginHistoryQueryData {
   address: string;
   id: string;
   pool: string;

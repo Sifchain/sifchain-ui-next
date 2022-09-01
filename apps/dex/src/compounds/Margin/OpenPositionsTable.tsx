@@ -1,5 +1,5 @@
 import type {
-  OpenPositionsQueryData,
+  MarginOpenPositionsQueryData,
   useMarginOpenPositionsBySymbolQuery,
   useOpenPositionsQuery,
 } from "~/domains/margin/hooks";
@@ -103,7 +103,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
-    value: OpenPositionsQueryData | null;
+    value: MarginOpenPositionsQueryData | null;
   }>({
     isOpen: false,
     value: null,
@@ -235,7 +235,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
-                const item = x as OpenPositionsQueryData & { _optimistic: boolean };
+                const item = x as MarginOpenPositionsQueryData & { _optimistic: boolean };
 
                 let custodyAsset;
                 let collateralAsset;

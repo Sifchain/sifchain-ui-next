@@ -1,4 +1,4 @@
-import type { Pagination, OpenPositionsQueryData } from "./types";
+import type { MarginOpenPositionsResponse } from "./types";
 import type { UseQueryResult } from "@tanstack/react-query";
 
 import { useRouter } from "next/router";
@@ -46,9 +46,20 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
        */
       refetchInterval: 10 * 1000,
       retry: false,
+      structuralSharing(
+        oldData: MarginOpenPositionsResponse | undefined,
+        newData: MarginOpenPositionsResponse | undefined,
+      ) {
+        if (oldData && newData) {
+          const newDataIds = newData.results.map((x) => x.id);
+          const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id));
+          newData.results = oldDataDiff.concat(newData.results);
+          newData.pagination.total = String(newData.results.length);
+          newData.pagination.limit = String(Number(newData.pagination.limit) + oldDataDiff.length);
+          return newData;
+        }
+        return newData;
+      },
     },
-  ) as UseQueryResult<{
-    pagination: Pagination;
-    results: OpenPositionsQueryData[];
-  }>;
+  ) as UseQueryResult<MarginOpenPositionsResponse>;
 }
