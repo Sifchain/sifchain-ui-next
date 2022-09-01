@@ -1,10 +1,10 @@
 import {
-  XIcon,
+  XMarkIcon,
   CheckCircleIcon,
   InformationCircleIcon,
   XCircleIcon,
   ExclamationCircleIcon,
-} from "@heroicons/react/outline";
+} from "@heroicons/react/24/outline";
 import { ToastContainer } from "@sifchain/ui";
 import type { FC, PropsWithChildren } from "react";
 import tw from "tailwind-styled-components";
@@ -40,7 +40,7 @@ const MainLayout: FC<Props> = (props) => {
         draggablePercent={60}
         closeButton={({ closeToast, ariaLabel = "Close notification" }) => (
           <button onClick={closeToast} type="button" aria-label={ariaLabel}>
-            <XIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />
+            <XMarkIcon className="absolute top-2 right-2 h-[17.5px] w-[17.5px] text-gray-200" />
           </button>
         )}
         icon={({ type }) => {

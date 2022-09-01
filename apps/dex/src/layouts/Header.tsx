@@ -1,5 +1,5 @@
 import { Disclosure, Menu } from "@headlessui/react";
-import { ChevronDownIcon, XIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   AppearTransition,
   BalanceIcon,
@@ -86,7 +86,7 @@ const Header = () => {
                 </Link>
                 <div className="md:hidden">
                   <Disclosure.Button className="p-4">
-                    {open ? <XIcon className="h-6 w-6" /> : <ChevronDownIcon className="h-6 w-6" />}
+                    {open ? <XMarkIcon className="h-6 w-6" /> : <ChevronDownIcon className="h-6 w-6" />}
                   </Disclosure.Button>
                 </div>
               </section>

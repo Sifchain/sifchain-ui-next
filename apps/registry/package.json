@@ -11,7 +11,7 @@
     "test": "vitest --run"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.10",
+    "@heroicons/react": "2.0.10",
     "@sifchain/ui": "workspace:*",
     "@tanstack/react-query": "^4.2.3",
     "clsx": "^1.2.1",
