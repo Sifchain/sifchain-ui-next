@@ -1,9 +1,10 @@
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
+import { CheckIcon } from "@heroicons/react/24//outline";
 import clsx from "clsx";
 import { indexBy, prop } from "rambda";
 import { FC, Fragment, ReactNode, useMemo } from "react";
 import tw from "tailwind-styled-components";
+
 import { ChevronDownIcon } from "../icons";
 
 const StyledListboxButton = tw.button`

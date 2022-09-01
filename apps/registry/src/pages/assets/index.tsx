@@ -2,7 +2,7 @@ import { AsyncImage, SearchInput, useCopyToClipboard } from "@sifchain/ui";
 import clsx from "clsx";
 import React, { FC, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CheckIcon, DuplicateIcon } from "@heroicons/react/outline";
+import { CheckIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 
 import type { AssetConfig } from "~/types";
 import { CardsGrid, GridCard } from "~/components/core";
@@ -100,7 +100,7 @@ const AssetsSection: FC<{ title: string; search: string } & AssetsQueryOptions> 
                       </>
                     ) : (
                       <>
-                        {asset.address} <DuplicateIcon className="h-4 w-4" />
+                        {asset.address} <DocumentDuplicateIcon className="h-4 w-4" />
                       </>
                     )}
                   </button>

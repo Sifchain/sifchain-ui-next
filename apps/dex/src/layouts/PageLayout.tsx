@@ -1,4 +1,4 @@
-import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { SurfaceB } from "@sifchain/ui";
 import Head from "next/head";
 import { useRouter } from "next/router";

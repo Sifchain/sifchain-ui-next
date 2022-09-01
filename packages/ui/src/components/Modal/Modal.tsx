@@ -1,8 +1,8 @@
-import { Fragment, PropsWithChildren, ReactNode } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ArrowLeftIcon, XIcon } from "@heroicons/react/outline";
-import type { FC } from "react";
+import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import type { FC } from "react";
+import { Fragment, PropsWithChildren, ReactNode } from "react";
 
 export type ModalProps = PropsWithChildren<{
   isOpen: boolean;
@@ -60,7 +60,7 @@ export const Modal: FC<ModalProps> = (props) => {
                       onClick={props.onClose.bind(null, false)}
                     >
                       <span className="sr-only">Close</span>
-                      <XIcon className="h-4 w-4" aria-hidden="true" />
+                      <XMarkIcon className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 )}

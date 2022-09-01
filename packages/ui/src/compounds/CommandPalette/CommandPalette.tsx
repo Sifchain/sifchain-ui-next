@@ -1,5 +1,5 @@
 import { Combobox, Dialog, Transition } from "@headlessui/react";
-import { FolderIcon, SearchIcon } from "@heroicons/react/outline";
+import { FolderIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { prop } from "rambda";
 import { uniqBy } from "rambda";
@@ -105,7 +105,7 @@ export function useRecentEntries<TAdapter extends Storage>(
   return [state, handleAddEntry] as const;
 }
 
-const TwSearchIcon = tw(SearchIcon)`
+const TwSearchIcon = tw(MagnifyingGlassIcon)`
   pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-300
 `;
 
