@@ -62,7 +62,7 @@ export function TradeActions({
    * Wallet address scenarios
    * This is linekd with WalletConnector / Keplr behaviour
    */
-  if (walletAddressQuery.isPaused) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isLoading) {
     return (
       <Layout>
         <FlashMessageConnectSifChainWallet className="col-span-4" />
@@ -70,7 +70,7 @@ export function TradeActions({
     );
   }
 
-  if (walletAddressQuery.isError) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isError) {
     console.log({
       walletAddressQueryError: walletAddressQuery.error,
     });
@@ -81,7 +81,7 @@ export function TradeActions({
     );
   }
 
-  if (walletAddressQuery.isLoading) {
+  if (walletAddressQuery.isFetching && walletAddressQuery.isLoading) {
     return (
       <Layout>
         <FlashMessageConnectSifChainWalletLoading className="col-span-4" />
@@ -112,7 +112,7 @@ export function TradeActions({
     );
   }
 
-  if (isWhitelistedAccountQuery.isSuccess && govParams.whitelistingEnabled === true) {
+  if (isWhitelistedAccountQuery.isSuccess) {
     if (isWhitelistedAccountQuery.data.isWhitelisted === false) {
       return (
         <Layout>
