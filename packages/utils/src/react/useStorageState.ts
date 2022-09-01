@@ -10,3 +10,6 @@ export const useStorageState = <S>(storage: Storage, key: string, initialState: 
 
   return [state, setState] as const;
 };
+
+export const useLocalStorageState = <S>(key: string, initialState: S | (() => S)) =>
+  useStorageState(window.localStorage, key, initialState);
