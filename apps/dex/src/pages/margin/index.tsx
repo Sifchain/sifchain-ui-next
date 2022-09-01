@@ -104,7 +104,7 @@ const Margin: NextPage = () => {
         isOpen={isModalOpen}
         onClose={useCallback(() => setIsModalOpen(false), [])}
       >
-        <p className="text-center">
+        <p className="text-center text-lg">
           v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
           for Margin, please reference our product documentation{" "}
           <Link href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9">
