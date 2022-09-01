@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 
-import { FlashMessageLoading, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
-import { useMemo } from "react";
-import { useRouter } from "next/router";
+import { FlashMessageLoading, Maybe, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
 
 const TABS = {
@@ -40,6 +40,8 @@ const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   },
 ];
 
+const DISCLAIMER_STORAGE_KEY = "@@marginDisclaimerModal";
+
 const Margin: NextPage = () => {
   const router = useRouter();
   const activeTab = useMemo(() => {
@@ -51,6 +53,17 @@ const Margin: NextPage = () => {
     return null;
   }, [router.isReady, router.query]);
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+  const [isModalOpen, setIsModalOpen] = useState(
+    typeof window === "undefined"
+      ? true
+      : Maybe.of(localStorage.getItem(DISCLAIMER_STORAGE_KEY)).mapOr(true, JSON.parse),
+  );
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      localStorage.setItem(DISCLAIMER_STORAGE_KEY, JSON.stringify(false));
+    }
+  }, [isModalOpen]);
 
   return (
     <>
@@ -79,6 +92,28 @@ const Margin: NextPage = () => {
           <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />
         )}
       </section>
+
+      <Modal
+        title={
+          <>
+            Welcome to Margin Trading v1.0
+            <br />
+            The Long Game!
+          </>
+        }
+        isOpen={isModalOpen}
+        onClose={useCallback(() => setIsModalOpen(false), [])}
+      >
+        <p className="text-center text-lg">
+          v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
+          for Margin, please reference our product documentation{" "}
+          <Link href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9">
+            <a target="_blank" className="underline">
+              here
+            </a>
+          </Link>
+        </p>
+      </Modal>
     </>
   );
 };
