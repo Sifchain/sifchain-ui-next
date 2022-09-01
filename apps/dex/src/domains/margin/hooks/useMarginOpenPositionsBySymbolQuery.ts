@@ -8,6 +8,8 @@ import useSifApiQuery from "~/hooks/useSifApiQuery";
 import { QS_DEFAULTS } from "~/compounds/Margin/_tables";
 import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 
+import { syncCacheWithServer } from "../utilts/syncCacheWithServer";
+
 export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol: string }) {
   const router = useRouter();
   const walletAddress = useSifSignerAddressQuery();
@@ -51,12 +53,7 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
         newData: MarginOpenPositionsResponse | undefined,
       ) {
         if (oldData && newData) {
-          const newDataIds = newData.results.map((x) => x.id);
-          const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id));
-          newData.results = oldDataDiff.concat(newData.results);
-          newData.pagination.total = String(newData.results.length);
-          newData.pagination.limit = String(Number(newData.pagination.limit) + oldDataDiff.length);
-          return newData;
+          return syncCacheWithServer<MarginOpenPositionsResponse>(oldData, newData);
         }
         return newData;
       },

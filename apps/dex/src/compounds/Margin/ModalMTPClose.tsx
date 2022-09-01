@@ -1,4 +1,4 @@
-import type { MarginOpenPositionsQueryData } from "~/domains/margin/hooks";
+import type { MarginOpenPositionsData } from "~/domains/margin/hooks";
 
 import clsx from "clsx";
 import { Decimal } from "@cosmjs/math";
@@ -24,7 +24,7 @@ import { formatNumberAsPercent } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
 type ModalMTPCloseProps = {
-  data: MarginOpenPositionsQueryData;
+  data: MarginOpenPositionsData;
   isOpen: boolean;
   onClose: () => void;
   onMutationError?: (_error: Error) => void;

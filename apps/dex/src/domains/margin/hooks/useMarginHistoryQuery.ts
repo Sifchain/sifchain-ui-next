@@ -3,6 +3,8 @@ import type { UseQueryResult } from "@tanstack/react-query";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
+import { syncCacheWithServer } from "../utilts/syncCacheWithServer";
+
 export function useMarginHistoryQuery(params: {
   walletAddress: string;
   offset: string;
@@ -32,12 +34,7 @@ export function useMarginHistoryQuery(params: {
       retry: false,
       structuralSharing(oldData: MarginHistoryResponse | undefined, newData: MarginHistoryResponse | undefined) {
         if (oldData && newData) {
-          const newDataIds = newData.results.map((x) => x.id);
-          const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id));
-          newData.results = oldDataDiff.concat(newData.results);
-          newData.pagination.total = String(newData.results.length);
-          newData.pagination.limit = String(Number(newData.pagination.limit) + oldDataDiff.length);
-          return newData;
+          return syncCacheWithServer<MarginHistoryResponse>(oldData, newData);
         }
         return newData;
       },
