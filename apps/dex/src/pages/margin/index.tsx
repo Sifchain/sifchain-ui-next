@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
+import { useStorageState } from "~/utils/useStorageState";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
@@ -53,17 +54,7 @@ const Margin: NextPage = () => {
     return null;
   }, [router.isReady, router.query]);
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
-  const [isModalOpen, setIsModalOpen] = useState(
-    typeof window === "undefined"
-      ? true
-      : Maybe.of(localStorage.getItem(DISCLAIMER_STORAGE_KEY)).mapOr(true, JSON.parse),
-  );
-
-  useEffect(() => {
-    if (!isModalOpen) {
-      localStorage.setItem(DISCLAIMER_STORAGE_KEY, JSON.stringify(false));
-    }
-  }, [isModalOpen]);
+  const [isModalOpen, setIsModalOpen] = useStorageState(window.localStorage, DISCLAIMER_STORAGE_KEY, true);
 
   return (
     <>
