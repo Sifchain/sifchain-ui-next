@@ -9,6 +9,7 @@ import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import useUpdatedAt from "~/utils/useUpdatedAt";
 
 type Balance = {
   amount?: Decimal;
@@ -47,8 +48,12 @@ export function useAllBalancesQuery() {
   const { data: stargateClient } = useSifStargateClient();
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
+  const signerQueryKey = {
+    signerTimestamp: useUpdatedAt(signer),
+  };
+
   const baseQuery = useQuery(
-    ["all-balances"],
+    ["all-balances", signerQueryKey],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
