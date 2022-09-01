@@ -4,10 +4,17 @@ import { useBalanceQuery } from "~/domains/bank/hooks/balances";
 import useAddLiquidity from "~/domains/clp/formHooks/useAddLiquidity";
 import useAddLiquidityMutation from "~/domains/clp/hooks/useAddLiquidityMutation";
 import { useDexEnvironment } from "~/domains/core/envs";
+import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import TokenAmountFieldset from "../TokenAmountFieldset";
 import type { ManageLiquidityModalProps } from "./types";
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const { data } = useSifnodeQuery("margin.getParams", [{}]);
+  const isPoolUsedForMargin = useMemo(
+    () => data?.params?.pools.includes(props.denom),
+    [data?.params?.pools, props.denom],
+  );
+
   const { data: env } = useDexEnvironment();
   const {
     nativeAmountState: [nativeAmount, setNativeAmount],
@@ -113,6 +120,14 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
           </dd>
         </div>
       </dl>
+      {isPoolUsedForMargin && (
+        <div className="bg-gray-750 mb-4 flex items-center gap-4 rounded-lg p-4">
+          <p className="text-lg">ℹ️</p>
+          <p className="text-xs text-gray-200">
+            Deposits are used to underwrite margin trading. Utilized capital may be locked.
+          </p>
+        </div>
+      )}
       <Button className="w-full" disabled={addLiquidityMutation.isLoading || validationError !== undefined}>
         {buttonMessage}
       </Button>
