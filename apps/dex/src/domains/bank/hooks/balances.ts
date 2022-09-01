@@ -22,8 +22,10 @@ export const useBalanceQuery = (chainId: string, denom: string, options: { enabl
   const { indexedByDenom } = useTokenRegistryQuery();
   const token = indexedByDenom[denom];
 
+  const clientQueryKey = { clientTimestamp: useUpdatedAt(client) };
+
   return useQuery(
-    ["cosm-balance", chainId, denom],
+    ["cosm-balance", chainId, denom, clientQueryKey],
     async () => {
       const result = await client?.getBalance(accounts?.[0]?.address ?? "", denom);
 
