@@ -52,7 +52,7 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
   };
 
   const derivedQuery = useQuery(
-    [fromDenom, toDenom, fromAmount, slippage, swapFeeRateResult],
+    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage, swapFeeRateResult],
     compute.bind(null, undefined),
     {
       enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams && swapFeeRateResult),
