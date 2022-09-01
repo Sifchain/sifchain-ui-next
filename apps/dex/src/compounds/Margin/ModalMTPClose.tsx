@@ -32,54 +32,28 @@ type ModalMTPCloseProps = {
   onTransitionEnd?: () => void;
 };
 export function ModalMTPClose(props: ModalMTPCloseProps) {
+  const currentCustodyAmount = props.data.current_custody_amount ?? "0";
+
   const confirmClosePosition = useMarginMTPCloseMutation({
-    _optimisticCustodyAmount: props.data.custody_amount,
+    _optimisticCustodyAmount: currentCustodyAmount,
   });
+
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
-
-  const collateralDecimals = collateralTokenQuery.data?.decimals ?? 0;
-  const totalInterestPaid = Number(props.data.current_interest_paid_custody ?? "0");
-  const currentCustodyAmount = props.data.current_custody_amount ?? "0";
 
   const { data: closingPositionSwap } = useSwapSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     currentCustodyAmount,
+    0.01,
   );
-
-  const closingPositionRaw = closingPositionSwap?.rawReceiving ?? "0";
-  const closingPositionMinReceivingRaw = closingPositionSwap?.minimumReceiving ?? "0";
-
-  const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionRaw, collateralDecimals);
-
-  const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
-
-  const closingPositionMinReceivingAsDecimal = Decimal.fromAtomics(closingPositionMinReceivingRaw, collateralDecimals);
-
-  let closingPositionFees;
-  let finalPositionWithLiabilitiesAsNumber;
-  try {
-    closingPositionFees = closingPositionAsDecimal.minus(closingPositionMinReceivingAsDecimal).toFloatApproximation();
-    finalPositionWithLiabilitiesAsNumber = closingPositionMinReceivingAsDecimal
-      .minus(liabilitiesAsDecimal)
-      .toFloatApproximation();
-  } catch (error) {
-    console.group("Closing Position Fee BigNumber Error");
-    console.log({ error });
-    console.groupEnd();
-    closingPositionFees = 0;
-    finalPositionWithLiabilitiesAsNumber = 0;
-  }
-
-  const currentPriceAsNumber = Number(positionTokenQuery.data?.priceUsd ?? "0");
 
   const onClickConfirmClose = useCallback(
     async (event: SyntheticEvent<HTMLButtonElement>) => {
       event.preventDefault();
       try {
         await confirmClosePosition.mutateAsync({
-          id: Long.fromNumber(Number(props.data.id)),
+          id: Long.fromString(props.data.id),
         });
         if (props.onMutationSuccess) {
           props.onMutationSuccess();
@@ -108,12 +82,47 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     positionTokenQuery.data &&
     closingPositionSwap
   ) {
-    const openingPosition = Number(props.data.custody_amount ?? "0");
-    const openingPositionValue = openingPosition * positionTokenQuery.data.priceUsd;
-    const currentPosition = Number(currentCustodyAmount);
-    const currentValue = currentPosition * currentPriceAsNumber;
-    const tradePnlValue = finalPositionWithLiabilitiesAsNumber - Number(props.data.collateral_amount);
-    const tradePnlValueSign = Math.sign(tradePnlValue);
+    const collateralDecimals = collateralTokenQuery.data.decimals ?? 0;
+
+    const closingPositionRaw = closingPositionSwap.rawReceiving ?? "0";
+    const closingPositionMinReceivingRaw = closingPositionSwap.minimumReceiving ?? "0";
+
+    const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionRaw, collateralDecimals);
+
+    const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
+
+    const closingPositionMinReceivingAsDecimal = Decimal.fromAtomics(
+      closingPositionMinReceivingRaw,
+      collateralDecimals,
+    );
+
+    let closingPositionFees;
+    let finalPositionWithLiabilitiesAsNumber;
+    try {
+      closingPositionFees = closingPositionAsDecimal.minus(closingPositionMinReceivingAsDecimal).toFloatApproximation();
+      finalPositionWithLiabilitiesAsNumber = closingPositionMinReceivingAsDecimal
+        .minus(liabilitiesAsDecimal)
+        .toFloatApproximation();
+    } catch (error) {
+      console.group("Closing Position Fee BigNumber Error");
+      console.log({ error });
+      console.groupEnd();
+      closingPositionFees = 0;
+      finalPositionWithLiabilitiesAsNumber = 0;
+    }
+
+    const openingPositionAsNumber = Number(props.data.custody_amount ?? "0");
+    const openingValueAsNumber = openingPositionAsNumber * positionTokenQuery.data.priceUsd;
+
+    const totalInterestPaidAsNumber = Number(props.data.current_interest_paid_custody ?? "0");
+
+    const currentPositionAsNumber = Number(currentCustodyAmount);
+    const currentPriceAsNumber = Number(positionTokenQuery.data.priceUsd ?? "0");
+    const currentValueAsNumber = currentPositionAsNumber * currentPriceAsNumber;
+
+    const tradePnlAsNumber = finalPositionWithLiabilitiesAsNumber - Number(props.data.collateral_amount);
+    const tradePnlSign = Math.sign(tradePnlAsNumber);
+
     content = (
       <>
         <ul className="flex flex-col gap-3">
@@ -141,12 +150,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
               <div className="flex flex-row items-center">
-                {isNil(openingPosition) ? (
+                {isNil(openingPositionAsNumber) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">{formatNumberAsDecimal(openingPosition, 4)}</span>
+                    <span className="ml-1">{formatNumberAsDecimal(openingPositionAsNumber, 4)}</span>
                   </>
                 )}
               </div>
@@ -155,10 +164,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              {isNil(openingPositionValue) ? (
+              {isNil(openingValueAsNumber) ? (
                 <HtmlUnicode name="EmDash" />
               ) : (
-                <span>{formatNumberAsCurrency(openingPositionValue, 4)}</span>
+                <span>{formatNumberAsCurrency(openingValueAsNumber, 4)}</span>
               )}
             </div>
           </li>
@@ -166,12 +175,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
               <div className="flex flex-row items-center">
-                {isNil(totalInterestPaid) ? (
+                {isNil(totalInterestPaidAsNumber) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">{formatNumberAsDecimal(totalInterestPaid, 4)}</span>
+                    <span className="ml-1">{formatNumberAsDecimal(totalInterestPaidAsNumber, 4)}</span>
                   </>
                 )}
               </div>
@@ -181,12 +190,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current position</span>
               <div className="flex flex-row items-center">
-                {isNil(currentPosition) ? (
+                {isNil(currentPositionAsNumber) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <b className="ml-1">{formatNumberAsDecimal(currentPosition, 4)}</b>
+                    <b className="ml-1">{formatNumberAsDecimal(currentPositionAsNumber, 4)}</b>
                   </>
                 )}
               </div>
@@ -205,10 +214,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <li className="px-4">
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              {isNil(currentValue) ? (
+              {isNil(currentValueAsNumber) ? (
                 <HtmlUnicode name="EmDash" />
               ) : (
-                <span>{formatNumberAsCurrency(currentValue, 4)}</span>
+                <span>{formatNumberAsCurrency(currentValueAsNumber, 4)}</span>
               )}
             </div>
           </li>
@@ -311,18 +320,18 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             <div className="flex flex-row items-center">
               <span className="mr-auto min-w-fit text-gray-300">Trade PnL</span>
               <div className="flex flex-row items-center">
-                {isNil(tradePnlValue) ? (
+                {isNil(tradePnlAsNumber) ? (
                   <HtmlUnicode name="EmDash" />
                 ) : (
                   <>
                     <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
                     <span
                       className={clsx("ml-1", {
-                        "text-green-400": tradePnlValueSign === 1 && tradePnlValue > 0,
-                        "text-red-400": tradePnlValueSign === -1 && tradePnlValue < 0,
+                        "text-green-400": tradePnlSign === 1 && tradePnlAsNumber > 0,
+                        "text-red-400": tradePnlSign === -1 && tradePnlAsNumber < 0,
                       })}
                     >
-                      {formatNumberAsDecimal(tradePnlValue, 4)}
+                      {formatNumberAsDecimal(tradePnlAsNumber, 4)}
                     </span>
                   </>
                 )}

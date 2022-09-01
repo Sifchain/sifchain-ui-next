@@ -1,29 +1,29 @@
 import type {
-  useOpenPositionsQuery,
-  useMarginOpenPositionsBySymbolQuery,
   OpenPositionsQueryData,
+  useMarginOpenPositionsBySymbolQuery,
+  useOpenPositionsQuery,
 } from "~/domains/margin/hooks";
 
 import {
-  FlashMessageLoading,
+  Button,
+  ChevronDownIcon,
   FlashMessage5xxError,
   FlashMessageConnectSifChainWallet,
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
-  Button,
-  ChevronDownIcon,
+  FlashMessageLoading,
   formatNumberAsDecimal,
   Tooltip,
 } from "@sifchain/ui";
-import { isNil } from "rambda";
-import { useRouter } from "next/router";
-import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { isNil } from "rambda";
+import { useCallback, useState } from "react";
 
-import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { ModalMTPClose } from "./ModalMTPClose";
 
 /**
@@ -37,10 +37,10 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
+import { InfoIconForwardRef, NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
-import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating, InfoIconForwardRef } from "./_components";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -108,6 +108,20 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     isOpen: false,
     value: null,
   });
+
+  const onClose = useCallback(() => {
+    if (positionToClose.isOpen) {
+      setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+    }
+  }, [positionToClose.isOpen]);
+  const onMutationSuccess = useCallback(() => {
+    setPositionToClose({ isOpen: false, value: null });
+  }, []);
+  const onTransitionEnd = useCallback(() => {
+    if (positionToClose.value !== null) {
+      setPositionToClose((prev) => ({ ...prev, value: null }));
+    }
+  }, [positionToClose.value]);
 
   if (walletAddress.isPaused) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
@@ -408,19 +422,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
-            onClose={() => {
-              if (positionToClose.isOpen) {
-                setPositionToClose((prev) => ({ ...prev, isOpen: false }));
-              }
-            }}
-            onMutationSuccess={() => {
-              setPositionToClose({ isOpen: false, value: null });
-            }}
-            onTransitionEnd={() => {
-              if (positionToClose.value !== null) {
-                setPositionToClose((prev) => ({ ...prev, value: null }));
-              }
-            }}
+            onClose={onClose}
+            onMutationSuccess={onMutationSuccess}
+            onTransitionEnd={onTransitionEnd}
           />
         )}
       </section>
