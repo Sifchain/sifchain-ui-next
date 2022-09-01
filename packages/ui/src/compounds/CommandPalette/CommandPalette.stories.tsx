@@ -1,5 +1,5 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
-import { DocumentAddIcon, FolderAddIcon, HashtagIcon, TagIcon } from "@heroicons/react/outline";
+import { DocumentPlusIcon, FolderPlusIcon, HashtagIcon, TagIcon } from "@heroicons/react/24/outline";
 
 import { CommandPalette } from "./";
 import type { CommandPaletteEntry, QuickActionEntry } from "./CommandPalette";
@@ -15,8 +15,8 @@ const entries: CommandPaletteEntry[] = [
 ];
 
 const quickActions: QuickActionEntry[] = [
-  { label: "Add new file...", icon: DocumentAddIcon, url: "#" },
-  { label: "Add new folder...", icon: FolderAddIcon, url: "#" },
+  { label: "Add new file...", icon: DocumentPlusIcon, url: "#" },
+  { label: "Add new folder...", icon: FolderPlusIcon, url: "#" },
   { label: "Add hashtag...", icon: HashtagIcon, url: "#" },
   { label: "Add label...", icon: TagIcon, url: "#" },
 ];

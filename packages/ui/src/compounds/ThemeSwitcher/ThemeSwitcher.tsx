@@ -1,5 +1,4 @@
-import MoonIcon from "@heroicons/react/outline/MoonIcon";
-import SunIcon from "@heroicons/react/outline/SunIcon";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type { FC } from "react";
 import tw from "tailwind-styled-components";
