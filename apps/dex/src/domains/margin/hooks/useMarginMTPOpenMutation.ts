@@ -67,6 +67,10 @@ export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMargin
         throw new Error(errors.ACCOUNT_NOT_IN_SIFCHAIN);
       }
 
+      if (res.rawLog.includes("borrowed amount is too low")) {
+        throw new Error(errors.MTP_LOW_BORROWED_AMOUNT);
+      }
+
       throw new Error(errors.DEFAULT_ERROR_OPEN_POSITION);
     }
 

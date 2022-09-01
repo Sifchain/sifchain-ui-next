@@ -11,3 +11,5 @@ export const POOL_MAX_OPEN_POSITIONS_REACHED =
 export const POOL_TRADE_TEMPORARILY_DISABLED = "Margin trading is temporarily disabled for this pool.";
 
 export const MTP_NOT_FOUND = "Unable to close the trade position. Trade ID not found.";
+export const MTP_LOW_BORROWED_AMOUNT =
+  "Sorry, the borrowed amount is too small. Try opening a position with higher leverage.";
