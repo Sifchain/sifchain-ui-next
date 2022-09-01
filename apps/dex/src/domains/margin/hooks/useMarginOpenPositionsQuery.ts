@@ -1,16 +1,16 @@
 import type { Pagination, OpenPositionsQueryData } from "./types";
-import type { UseQueryResult } from "react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 import { useRouter } from "next/router";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
 import { QS_DEFAULTS } from "~/compounds/Margin/_tables";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 
 export function useOpenPositionsQuery() {
   const router = useRouter();
-  const walletAddress = useSifSignerAddress();
+  const walletAddress = useSifSignerAddressQuery();
   const params = {
     walletAddress: walletAddress.data ?? "",
     limit: (router.query["limit"] as string) || QS_DEFAULTS.limit,

@@ -1,7 +1,7 @@
 import type { createClient } from "@sifchain/sif-api";
 import type { ValidPaths } from "@sifchain/ui";
 import { ArgumentTypes, omit } from "rambda";
-import { useQuery, UseQueryOptions } from "react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import useSifApiClient from "./useSifApiClient";
 

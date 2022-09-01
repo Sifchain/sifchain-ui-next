@@ -2,9 +2,9 @@ import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
 import type { HistoryQueryData, MTPCloseResponse, OpenPositionsQueryData, Pagination } from "./types";
@@ -15,7 +15,7 @@ type UseMarginMTPCloseMutationProps = {
   _optimisticCustodyAmount: string;
 };
 export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMarginMTPCloseMutationProps) {
-  const { data: signerAddress } = useSifSignerAddress();
+  const { data: signerAddress } = useSifSignerAddressQuery();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
 

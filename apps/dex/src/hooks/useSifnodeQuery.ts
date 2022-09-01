@@ -1,7 +1,7 @@
 import type { createQueryClient } from "@sifchain/stargate";
 import type { ValidPaths } from "@sifchain/ui";
 import { ArgumentTypes, omit } from "rambda";
-import { useQuery, UseQueryOptions } from "react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import useQueryClient from "./useQueryClient";
 
@@ -39,7 +39,6 @@ export default function useSifnodeQuery<
 
   return useQuery(
     [query, client, ...args],
-
     // @ts-ignore
     async (): Awaited<ReturnType<PublicSifnodeClient[T][P]>> => {
       if (!client) {

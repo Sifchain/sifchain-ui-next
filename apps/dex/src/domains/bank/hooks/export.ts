@@ -3,7 +3,7 @@ import { EthChainConfig, isEvmBridgedCoin } from "@sifchain/common";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { toast } from "@sifchain/ui";
 import { addMinutes, getUnixTime } from "date-fns";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 

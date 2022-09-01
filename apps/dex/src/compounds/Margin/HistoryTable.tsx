@@ -5,7 +5,7 @@ import clsx from "clsx";
 import Link from "next/link";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import {
   FlashMessageLoading,
@@ -59,7 +59,7 @@ export type HistoryTableProps = {
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddress();
+  const walletAddress = useSifSignerAddressQuery();
 
   const headers = HISTORY_HEADER_ITEMS;
 
@@ -74,7 +74,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     walletAddress: walletAddress.data ?? "",
   });
 
-  if (walletAddress.isIdle) {
+  if (walletAddress.isPaused) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 

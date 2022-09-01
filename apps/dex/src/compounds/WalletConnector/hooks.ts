@@ -4,7 +4,7 @@ import { useSigner, useSigningStargateClient } from "@sifchain/cosmos-connect";
 import { formatNumberAsCurrency } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useBalance } from "wagmi";
 import { usePoolStatsQuery } from "~/domains/clp";
 import { useDexEnvironment } from "~/domains/core/envs";

@@ -1,7 +1,7 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
 import { invariant } from "@sifchain/ui";
 import type { Signer } from "ethers";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSigner } from "wagmi";
 
 import { useDexEnvKind } from "~/domains/core/envs";

@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { invariant } from "@sifchain/ui";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";

@@ -1,13 +1,13 @@
 import { invariant } from "@sifchain/ui";
 import { differenceInMilliseconds, parseISO } from "date-fns";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSifStargateClient } from "./useSifStargateClient";
 
 export const useBlockTimeQuery = () => {
   const { data: sifchainClients } = useSifStargateClient();
 
   return useQuery(
-    "current-block-time",
+    ["current-block-time"],
     async () => {
       invariant(sifchainClients !== undefined, "sifchainClients is undefined");
 

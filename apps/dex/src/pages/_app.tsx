@@ -2,8 +2,8 @@ import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
 import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import useReloadOnAccountChangeEffect from "~/hooks/useReloadOnAccountChangeEffect";
 
 import MainLayout from "~/layouts/MainLayout";

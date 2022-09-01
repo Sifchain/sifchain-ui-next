@@ -6,7 +6,7 @@ import { toast } from "@sifchain/ui";
 import { addMinutes, getUnixTime } from "date-fns";
 import { ContractTransaction, ethers } from "ethers";
 import { isNil } from "rambda";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSigner } from "wagmi";
 import { useDexEnvironment } from "~/domains/core/envs";
 import useEvmSdk from "~/hooks/useEvmSdk";

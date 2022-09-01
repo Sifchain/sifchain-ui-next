@@ -23,6 +23,7 @@
     "@sifchain/stargate": "workspace:*",
     "@sifchain/ui": "workspace:*",
     "@sifchain/utils": "workspace:*",
+    "@tanstack/react-query": "^4.2.3",
     "@walletconnect/client": "2.0.0-beta.55",
     "@walletconnect/cosmos-provider": "2.0.0-beta.55",
     "@walletconnect/ethereum-provider": "2.0.0-beta.55",
@@ -42,12 +43,12 @@
     "react-hook-form": "^7.34.0",
     "react-inlinesvg": "^3.0.0",
     "react-markdown": "^8.0.3",
-    "react-query": "^3.39.2",
     "wagmi": "^0.6.2",
     "zustand": "4.0.0",
     "zustand-immer-store": "^0.9.4"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^4.2.3",
     "@types/node": "17.0.29",
     "@types/ramda": "^0.28.15",
     "@types/react": "18.0.12",

@@ -2,7 +2,7 @@ import type { PropsWithChildren, SyntheticEvent } from "react";
 
 import { Button } from "@sifchain/ui";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 
 import { useMarginIsWhitelistedAccountQuery } from "~/domains/margin/hooks/useMarginIsWhitelistedAccountQuery";
 import type { useMarginParamsQuery } from "~/domains/margin/hooks";
@@ -27,7 +27,7 @@ export function TradeActions({
   isDisabledOpenPosition,
   onClickOpenPosition,
 }: TradeActionsProps) {
-  const walletAddressQuery = useSifSignerAddress();
+  const walletAddressQuery = useSifSignerAddressQuery();
   const isWhitelistedAccountQuery = useMarginIsWhitelistedAccountQuery({
     walletAddress: walletAddressQuery.data ?? "",
   });
@@ -62,7 +62,7 @@ export function TradeActions({
    * Wallet address scenarios
    * This is linekd with WalletConnector / Keplr behaviour
    */
-  if (walletAddressQuery.isIdle) {
+  if (walletAddressQuery.isPaused) {
     return (
       <Layout>
         <FlashMessageConnectSifChainWallet className="col-span-4" />
@@ -71,6 +71,9 @@ export function TradeActions({
   }
 
   if (walletAddressQuery.isError) {
+    console.log({
+      walletAddressQueryError: walletAddressQuery.error,
+    });
     return (
       <Layout>
         <FlashMessageConnectSifChainWalletError className="col-span-4" />

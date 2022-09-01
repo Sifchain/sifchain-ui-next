@@ -1,5 +1,5 @@
 import { createClient } from "@sifchain/sif-api";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useDexEnvironment } from "~/domains/core/envs";
 
