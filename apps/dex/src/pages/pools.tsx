@@ -1,13 +1,11 @@
-import { Button, ChevronDownIcon, Maybe, PoolsIcon, RacetrackSpinnerIcon, SearchInput, SortIcon } from "@sifchain/ui";
-import { isNilOrWhitespace } from "@sifchain/utils";
+import { Button, ChevronDownIcon, PoolsIcon, RacetrackSpinnerIcon, SearchInput, SortIcon } from "@sifchain/ui";
+import { ascend, descend, isNilOrWhitespace, Maybe } from "@sifchain/utils";
 import clsx from "clsx";
 import { formatDistanceToNow } from "date-fns";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ascend, descend } from "@sifchain/utils";
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import tw from "tailwind-styled-components";
-
 import AssetIcon from "~/compounds/AssetIcon";
 import ManageLiquidityModal from "~/compounds/ManageLiquidityModal/ManageLiquidityModal";
 import { useCurrentRewardPeriodQuery } from "~/domains/clp/hooks/rewardPeriod";

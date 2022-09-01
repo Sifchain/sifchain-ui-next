@@ -1,4 +1,5 @@
-import { ButtonGroup, ButtonGroupOption, Maybe, Modal } from "@sifchain/ui";
+import { ButtonGroup, ButtonGroupOption, Modal } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { useCallback, useMemo } from "react";
 import { useLiquidityProviderQuery, usePoolStatsQuery } from "~/domains/clp";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";

@@ -1,9 +1,8 @@
 import type { IAsset, NetworkKind } from "@sifchain/common";
-import { Maybe, StringIndexed } from "@sifchain/ui";
+import type { StringIndexed } from "@sifchain/ui";
+import { Maybe, memoizeWith } from "@sifchain/utils";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
-import { memoizeWith } from "@sifchain/utils";
 import { useMemo } from "react";
-
 import { useAssetsQuery } from "~/domains/assets";
 import { useDexEnvironment } from "~/domains/core/envs";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
