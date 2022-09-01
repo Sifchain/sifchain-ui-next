@@ -59,7 +59,7 @@ export type HistoryTableProps = {
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddressQuery();
+  const walletAddressQuery = useSifSignerAddressQuery();
 
   const headers = HISTORY_HEADER_ITEMS;
 
@@ -71,18 +71,18 @@ const HistoryTable = (props: HistoryTableProps) => {
   };
   const historyQuery = useMarginHistoryQuery({
     ...queryParams,
-    walletAddress: walletAddress.data ?? "",
+    walletAddress: walletAddressQuery.data ?? "",
   });
 
-  if (walletAddress.isPaused) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isLoading) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 
-  if (walletAddress.isError) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isError) {
     return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
 
-  if (walletAddress.isLoading) {
+  if (walletAddressQuery.isFetching && walletAddressQuery.isLoading) {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
@@ -90,7 +90,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     return <FlashMessageLoading size="full-page" />;
   }
 
-  if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+  if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
     const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = historyQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));

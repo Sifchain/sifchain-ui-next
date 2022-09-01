@@ -95,7 +95,7 @@ export type OpenPositionsTableProps = {
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddressQuery();
+  const walletAddressQuery = useSifSignerAddressQuery();
   const { openPositionsQuery } = props;
 
   const { hideColumns, classNamePaginationContainer } = props;
@@ -123,15 +123,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     }
   }, [positionToClose.value]);
 
-  if (walletAddress.isPaused) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isLoading) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 
-  if (walletAddress.isError) {
+  if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isError) {
     return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
 
-  if (walletAddress.isLoading) {
+  if (walletAddressQuery.isFetching && walletAddressQuery.isLoading) {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
@@ -139,7 +139,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <FlashMessageLoading size="full-page" />;
   }
 
-  if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess) {
+  if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
     const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
     const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
