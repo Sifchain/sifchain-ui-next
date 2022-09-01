@@ -107,7 +107,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           onChange={props.onChangePoolSelector}
         />
       </li>
-      <li className="grid gap-2 px-4 md:grid-cols-3 md:grid-rows-2 lg:col-span-5 xl:grid-cols-5 xl:grid-rows-1">
+      <li className="xl:grid-cols-0 grid gap-4 px-4 md:grid-cols-3 md:grid-rows-2 md:gap-2 lg:col-span-5 xl:auto-cols-max xl:grid-flow-col xl:grid-rows-1 xl:gap-8">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
