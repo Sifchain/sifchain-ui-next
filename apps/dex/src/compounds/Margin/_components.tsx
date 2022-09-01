@@ -43,7 +43,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
   const initial = offset + limit;
 
   return (
-    <p className="mx-4 py-3 text-xs">
+    <p className="mx-4 py-2 text-xs">
       <span>Showing</span>
       <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
@@ -95,8 +95,8 @@ export function PoolOverview(props: PoolOverviewProps) {
   const asset24hChange = props.pool.stats.asset_24h_change || 0;
 
   return (
-    <ul className="grid grid-cols-7 gap-5">
-      <li className="col-span-2 py-4 px-4">
+    <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
+      <li className="mb-4 px-4 lg:col-span-2 lg:mb-0">
         <BaseTokenSelector
           textPlaceholder="Search pools"
           modalTitle="Select Pool"
@@ -107,7 +107,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           onChange={props.onChangePoolSelector}
         />
       </li>
-      <li className="py-4 pl-4">
+      <li className="xl:grid-cols-0 grid gap-4 px-4 md:grid-cols-3 md:grid-rows-2 md:gap-2 lg:col-span-5 xl:auto-cols-max xl:grid-flow-col xl:grid-rows-1 xl:gap-8">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
@@ -115,8 +115,6 @@ export function PoolOverview(props: PoolOverviewProps) {
             <Average24hPercent value={poolTVL24hChange} />
           </span>
         </div>
-      </li>
-      <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool Volume</span>
           <span className="text-sm font-semibold">
@@ -124,8 +122,6 @@ export function PoolOverview(props: PoolOverviewProps) {
             <Average24hPercent value={volume24hChange} />
           </span>
         </div>
-      </li>
-      <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">ROWAN Price</span>
           <span className="text-sm font-semibold">
@@ -133,8 +129,6 @@ export function PoolOverview(props: PoolOverviewProps) {
             <Average24hPercent value={rowan24hChange} />
           </span>
         </div>
-      </li>
-      <li className="py-4">
         <div className="flex flex-col">
           <span className="text-gray-300">{removeFirstCharsUC(props.pool.asset.label as string)} Price</span>
           <span className="text-sm font-semibold">
@@ -144,8 +138,6 @@ export function PoolOverview(props: PoolOverviewProps) {
             <Average24hPercent value={asset24hChange} />
           </span>
         </div>
-      </li>
-      <li className="py-4">
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>

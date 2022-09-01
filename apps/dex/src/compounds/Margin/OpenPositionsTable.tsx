@@ -392,7 +392,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           </table>
         </div>
         <div
-          className={clsx("mt-auto flex flex-row items-center justify-end bg-gray-800", classNamePaginationContainer)}
+          className={clsx(
+            "mt-auto flex flex-col items-center justify-end bg-gray-800 p-2 md:flex-row",
+            classNamePaginationContainer,
+          )}
         >
           {openPositionsQuery.isRefetching && <PillUpdating />}
           <PaginationShowItems

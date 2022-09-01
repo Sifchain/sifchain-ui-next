@@ -540,8 +540,8 @@ const Trade = (props: TradeProps) => {
         )}
       </section>
 
-      <section className="mt-4 grid grid-cols-7 gap-x-5">
-        <article className="border-gold-800 col-span-2 flex flex-col rounded border bg-gray-800 text-xs">
+      <section className="mt-4 grid grid-cols-1 lg:grid-cols-7 lg:gap-x-5 ">
+        <article className="border-gold-800 flex flex-col rounded border bg-gray-800 text-xs lg:col-span-2">
           <ul className="border-gold-800 flex flex-col gap-0 border-b p-4">
             <li className="flex flex-col">
               <div className="mb-1 flex flex-row text-xs">
@@ -774,7 +774,7 @@ const Trade = (props: TradeProps) => {
             </div>
           )}
         </article>
-        <article className="border-gold-800 col-span-5 rounded border">
+        <article className="border-gold-800 mt-4 rounded border lg:col-span-5 lg:mt-0">
           <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Interest Paid"]} />
         </article>
       </section>
