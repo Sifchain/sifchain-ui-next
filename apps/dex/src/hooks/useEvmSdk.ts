@@ -5,13 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useSigner } from "wagmi";
 
 import { useDexEnvKind } from "~/domains/core/envs";
+import useUpdatedAt from "~/utils/useUpdatedAt";
 
 const useEvmSdk = () => {
   const environment = useDexEnvKind();
   const { data: signer } = useSigner();
 
+  const signerQueryKey = {
+    signerTimestamp: useUpdatedAt(signer),
+  };
+
   return useQuery(
-    ["evm-sdk", environment],
+    ["evm-sdk", environment, signerQueryKey],
     () => {
       invariant(signer !== undefined, "signer is required");
 

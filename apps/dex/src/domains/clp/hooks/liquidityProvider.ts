@@ -7,6 +7,7 @@ import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
+import useUpdatedAt from "~/utils/useUpdatedAt";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
@@ -23,8 +24,12 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
+  const signerQueryKey = {
+    signerTimestamp: useUpdatedAt(signer),
+  };
+
   return useQuery(
-    [LIQUIDITY_PROVIDER_QUERY_KEY],
+    [LIQUIDITY_PROVIDER_QUERY_KEY, signerQueryKey],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -82,8 +87,12 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
+  const signerQueryKey = {
+    signerTimestamp: useUpdatedAt(signer),
+  };
+
   return useQuery(
-    [LIQUIDITY_PROVIDERS_QUERY_KEY],
+    [LIQUIDITY_PROVIDERS_QUERY_KEY, signerQueryKey],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({
