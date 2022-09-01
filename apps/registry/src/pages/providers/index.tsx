@@ -1,7 +1,7 @@
 import { AsyncImage, SurfaceA } from "@sifchain/ui";
 import clsx from "clsx";
 import type { FC } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { CardsGrid, GridCard } from "~/components/core";
 import type { ProviderConfig } from "~/types";

@@ -8,32 +8,38 @@ export type Pagination = {
 
 export type OpenPositionsQueryData = {
   address: string;
+  date_opened: string;
   pool: string;
-  current_custody_amount: string;
-  current_price: number;
   custody_amount: string;
   custody_asset: string;
+  leverage: string;
+  unrealized_pnl: string;
+  interest_rate: string;
+  health: string;
+  current_price: string;
   collateral_amount: string;
   collateral_asset: string;
-  date_opened: string;
   time_open: TimeOpen;
-  health: string;
   id: string;
   liabilities: string;
   interest_paid_custody: string;
   interest_unpaid_collateral: string;
   interest_paid_collateral: string;
-  custody_entry_price: number;
-  current_interest_paid_collateral: string;
-  current_interest_paid_custody: string;
-  current_interest_unpaid_collateral: string;
-  interest_rate: string;
-  leverage: string;
+  custody_entry_price: string;
   mtp_open_execution_price: string;
   next_payment: any;
   position: string;
   repay_amount: string;
-  unrealized_pnl: string;
+  unrealized_pnl_formula: string;
+  currentCustodyAmount?: string;
+  currentPrice: string;
+  openCustodyAmount: string;
+  openPrice: string;
+  current_interest_paid_custody?: number;
+  current_health?: string;
+  current_custody_amount?: string;
+  current_interest_paid_collateral?: string;
+  current_interest_unpaid_collateral?: string;
 };
 
 export type TimeOpen = {
@@ -55,21 +61,20 @@ export interface HistoryQueryData {
   open_health: string;
   open_leverage: string;
   position: string;
-  realized_pnl: any;
+  realized_pnl: string;
+  realized_pnl_formula: string;
+  repayAmount: string;
+  openCollateralAmount: string;
+  openLiabilities: string;
   type: string;
-  open_interest_paid_collateral: string;
-  open_interest_paid_custody: string;
   open_liabilities: string;
   close_interest_paid_collateral: string;
   close_interest_paid_custody: string;
   close_liabilities: string;
-  next_payment: any;
-  paid_interest: any;
-  unsettled_interest: any;
-  mtp_close_custody_amount: number;
-  mtp_close_execution_price: any;
-  mtp_open_custody_amount: number;
-  mtp_open_execution_price: any;
+  mtp_close_custody_amount: string;
+  mtp_close_execution_price: string;
+  mtp_open_custody_amount: string;
+  mtp_open_execution_price: string;
 }
 
 export interface EventCoinReceived {

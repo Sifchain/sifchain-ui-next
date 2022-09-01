@@ -3,9 +3,9 @@ import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
 import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 import * as errors from "./mutationErrorMessage";
@@ -13,8 +13,11 @@ import type { MTPOpenResponse, OpenPositionsQueryData, Pagination } from "./type
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
-export function useMarginMTPOpenMutation() {
-  const { data: signerAddress } = useSifSignerAddress();
+type UseMarginMTPOpenMutationProps = {
+  _optimisticCustodyAmount: string;
+};
+export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMarginMTPOpenMutationProps) {
+  const { data: signerAddress } = useSifSignerAddressQuery();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
 
@@ -100,7 +103,7 @@ export function useMarginMTPOpenMutation() {
             collateral_asset, // Open Positions Column: Pool (USDC|ROWAN)
             _collateral_amount,
             custody_asset, // Open Positions Column: Asset (ROWAN|USDC)
-            custody_amount, // Open Positions Column: Position (Token amount)
+            _custody_amount, // Open Positions Column: Position (Token amount)
             leverage, // Open Positions Column: Leverage (2x)
             _liabilities,
             _interest_paid_collateral,
@@ -117,7 +120,7 @@ export function useMarginMTPOpenMutation() {
             address: address.value,
             collateral_asset: collateral_asset.value,
             custody_asset: custody_asset.value,
-            custody_amount: custody_amount.value,
+            custody_amount: _optimisticCustodyAmount,
             leverage: leverage.value,
             interest_paid_custody: interest_paid_custody.value,
             health: health.value,
@@ -154,6 +157,17 @@ export function useMarginMTPOpenMutation() {
               return draft;
             },
           );
+
+          /**
+           * When opening a new position, the only screen available is Trade
+           * and we use the By Symbol query
+           */
+          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
+
+          /**
+           * Re-fetch balance after opening a position
+           */
+          queryClient.refetchQueries(["all-balances"]);
         }
       }
     },

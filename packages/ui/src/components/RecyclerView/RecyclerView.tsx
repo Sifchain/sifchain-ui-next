@@ -19,6 +19,7 @@ export type RecyclerViewProps<
 export const RecyclerView = <T extends StringIndexable, U extends keyof ReactHTML = "div">(
   props: RecyclerViewProps<T, U>,
 ) => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { data, visibleRows, rowHeight, keyExtractor, as, renderItem: RowItem, debounce, ...containerProps } = props;
 
   const [startIndex, setStartIndex] = useState(0);

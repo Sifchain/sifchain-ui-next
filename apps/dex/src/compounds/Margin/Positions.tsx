@@ -5,7 +5,7 @@ import Head from "next/head";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { useOpenPositionsQuery } from "~/domains/margin/hooks";
 
-const PortfolioTab: NextPage = () => {
+const PositionTab: NextPage = () => {
   const openPositionsQuery = useOpenPositionsQuery();
   return (
     <>
@@ -19,4 +19,4 @@ const PortfolioTab: NextPage = () => {
   );
 };
 
-export default PortfolioTab;
+export default PositionTab;

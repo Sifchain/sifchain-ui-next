@@ -1,10 +1,9 @@
 import { ComposeProviders } from "@sifchain/ui";
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import useReloadOnAccountChangeEffect from "~/hooks/useReloadOnAccountChangeEffect";
 
 import MainLayout from "~/layouts/MainLayout";
@@ -17,26 +16,16 @@ const WalletsWatcher = () => {
   return null;
 };
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { refetchOnWindowFocus: false },
-  },
-});
-
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
-  const router = useRouter();
-  const [isEnabledReactQueryDevtools, setIsEnabledReactQueryDevtools] = useState(false);
-  useEffect(() => {
-    const keyName = "_querydevtools";
-    const qsFlag = router.query[keyName] ?? false;
-    const localstorageFlag = localStorage.getItem(keyName) ?? false;
-    if (localstorageFlag && isEnabledReactQueryDevtools === false) {
-      setIsEnabledReactQueryDevtools(true);
-    } else if (qsFlag && isEnabledReactQueryDevtools === false) {
-      localStorage.setItem(keyName, "true");
-      setIsEnabledReactQueryDevtools(true);
-    }
-  }, [isEnabledReactQueryDevtools, router.query]);
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: { refetchOnWindowFocus: false },
+        },
+      }),
+  );
+
   return (
     <ComposeProviders providers={[typeof window !== "undefined" ? CosmConnectProvider : Fragment, WagmiProvider]}>
       <WalletsWatcher />
@@ -45,7 +34,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
           <MainLayout>
             <Component {...pageProps} />
           </MainLayout>
-          {isEnabledReactQueryDevtools ? <ReactQueryDevtools position="bottom-right" /> : null}
+          <ReactQueryDevtools position="bottom-right" />
         </QueryClientProvider>
       </CookiesProvider>
     </ComposeProviders>

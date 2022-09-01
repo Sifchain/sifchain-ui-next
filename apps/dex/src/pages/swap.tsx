@@ -11,7 +11,7 @@ import tw from "tailwind-styled-components";
 import { SwapConfirmationModal } from "~/compounds/Swap";
 import TokenAmountFieldset from "~/compounds/TokenAmountFieldset";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useEnhancedTokenQuery, useSwapMutation, useSwapSimulation } from "~/domains/clp";
+import { useEnhancedTokenQuery, useSwapMutation, useSwapSimulationQuery } from "~/domains/clp/hooks";
 import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { getFirstQueryValue } from "~/utils/query";
@@ -54,7 +54,7 @@ const SwapPage: NextPage = () => {
   );
 
   const fromDenom = decodeURIComponent(getFirstQueryValue(router.query["fromDenom"]) ?? "rowan");
-  const toDenom = decodeURIComponent(getFirstQueryValue(router.query["toDenom"]) ?? "cusdt");
+  const toDenom = decodeURIComponent(getFirstQueryValue(router.query["toDenom"]) ?? "cusdc");
 
   const setDenomsPair = useCallback(
     (leftDenom: string | undefined, rightDenom: string | undefined) =>
@@ -78,7 +78,7 @@ const SwapPage: NextPage = () => {
   ];
   const selectedSlippageIndex = slippageOptions.findIndex((x) => x.value === slippage);
 
-  const [fromAmount, setFromAmount] = useState("");
+  const [fromAmount, setFromAmount] = useState("0");
 
   const commonOptions = {
     refetchInterval: 6000,
@@ -90,12 +90,12 @@ const SwapPage: NextPage = () => {
 
   const [_, fromAmountDecimal] = runCatching(() => Decimal.fromUserInput(fromAmount, fromToken?.decimals ?? 0));
 
-  const { data: swapSimulationResult } = useSwapSimulation(fromDenom, toDenom, fromAmount, slippage);
+  const { data: swapSimulationResult } = useSwapSimulationQuery(fromDenom, toDenom, fromAmount, slippage);
 
   const parsedSwapResult = useMemo(
     () => ({
       ...swapSimulationResult,
-      rawReceiving: Decimal.fromAtomics(swapSimulationResult?.rawReceiving ?? "0", toToken?.decimals ?? 0),
+      rawReceiving: Decimal.fromAtomics(swapSimulationResult?.rawReceiving ?? "0", toToken?.decimals || 0),
       receivingPreSlippage: Decimal.fromAtomics(
         BigNumber.max(
           0,

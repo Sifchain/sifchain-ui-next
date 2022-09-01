@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 type TCache = {
   openPositions: undefined | ReturnType<typeof createOpenPositionsRow>[];

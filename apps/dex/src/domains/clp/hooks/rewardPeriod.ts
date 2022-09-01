@@ -1,6 +1,6 @@
 import { invariant } from "@sifchain/ui";
 import { addMilliseconds } from "date-fns";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
@@ -11,7 +11,7 @@ export const useCurrentRewardPeriodQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
 
   return useQuery(
-    "currentRewardPeriod",
+    ["currentRewardPeriod"],
     async () => {
       invariant(stargateClient !== undefined, "stargateClient is undefined");
       invariant(rewardParamsRes !== undefined, "rewardParamsRes is undefined");

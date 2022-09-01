@@ -1,10 +1,10 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSifStargateClient } from "./useSifStargateClient";
 
 const useCurrentBlockHeight = () => {
   const { data: sifStargateClient } = useSifStargateClient();
 
-  return useQuery("current-block-height", () => sifStargateClient!.getHeight(), {
+  return useQuery(["current-block-height"], () => sifStargateClient!.getHeight(), {
     enabled: sifStargateClient !== undefined,
   });
 };

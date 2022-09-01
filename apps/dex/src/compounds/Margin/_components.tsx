@@ -2,10 +2,24 @@ import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 import clsx from "clsx";
-import { formatNumberAsCurrency, TokenEntry, TokenSelector as BaseTokenSelector, Tooltip } from "@sifchain/ui";
+import {
+  formatNumberAsCurrency,
+  InfoIcon,
+  TokenEntry,
+  TokenSelector as BaseTokenSelector,
+  Tooltip,
+} from "@sifchain/ui";
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";
+import { forwardRef } from "react";
+
+export const InfoIconForwardRef = forwardRef<HTMLSpanElement | null>((props, ref) => (
+  <span ref={ref}>
+    <InfoIcon width="16px" height="16px" {...props} />
+  </span>
+));
+InfoIconForwardRef.displayName = "InfoIconForwardRef";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -29,7 +43,7 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
   const initial = offset + limit;
 
   return (
-    <p className="mx-4 py-3 text-sm">
+    <p className="mx-4 py-3 text-xs">
       <span>Showing</span>
       <span className="mx-1">{initial > total ? total : initial}</span>
       <span>of</span>
@@ -45,7 +59,7 @@ type PaginationButtonsProps = {
 };
 export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
   return (
-    <ul className="mx-4 flex flex-row text-sm">
+    <ul className="mx-4 flex flex-row text-xs">
       {Array.from({ length: pages }, (_, index) => {
         const page = ++index;
         return (
@@ -82,7 +96,7 @@ export function PoolOverview(props: PoolOverviewProps) {
 
   return (
     <ul className="grid grid-cols-7 gap-5">
-      <li className="col-span-2 py-4 pl-4">
+      <li className="col-span-2 py-4 px-4">
         <BaseTokenSelector
           textPlaceholder="Search pools"
           modalTitle="Select Pool"
@@ -93,7 +107,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           onChange={props.onChangePoolSelector}
         />
       </li>
-      <li className="py-4">
+      <li className="py-4 pl-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
@@ -136,9 +150,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>
             <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
-              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                i
-              </span>
+              <InfoIconForwardRef />
             </Tooltip>
           </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>

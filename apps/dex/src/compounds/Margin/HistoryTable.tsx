@@ -1,10 +1,11 @@
+import type { HistoryQueryData } from "~/domains/margin/hooks";
+
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
-import { Decimal } from "@cosmjs/math";
 
 import AssetIcon from "~/compounds/AssetIcon";
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import {
   FlashMessageLoading,
@@ -13,7 +14,6 @@ import {
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
   ChevronDownIcon,
-  formatNumberAsCurrency,
   formatNumberAsDecimal,
 } from "@sifchain/ui";
 import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
@@ -32,7 +32,7 @@ const isTruthy = (target: any) => !isNil(target);
  * ********************************************************************************************
  */
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
-import { formatDateDistance, formatDateISO } from "./_intl";
+import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
 
@@ -59,7 +59,7 @@ export type HistoryTableProps = {
 const HistoryTable = (props: HistoryTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddress();
+  const walletAddress = useSifSignerAddressQuery();
 
   const headers = HISTORY_HEADER_ITEMS;
 
@@ -74,7 +74,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     walletAddress: walletAddress.data ?? "",
   });
 
-  if (walletAddress.isIdle) {
+  if (walletAddress.isPaused) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 
@@ -86,7 +86,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
-  if (historyQuery.isLoading) {
+  if (historyQuery.isLoading || tokenRegistryQuery.isLoading) {
     return <FlashMessageLoading size="full-page" />;
   }
 
@@ -104,7 +104,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                 {headers.map((header) => {
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 text-center font-normal">
+                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
                         {header.title}
                       </th>
                     );
@@ -129,7 +129,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         scroll={false}
                       >
                         <a
-                          className={clsx("flex flex-row items-center justify-center", {
+                          className={clsx("flex flex-row items-center", {
                             "font-semibold text-white": itemActive,
                           })}
                         >
@@ -148,9 +148,11 @@ const HistoryTable = (props: HistoryTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 text-center">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((item) => {
+              {results.map((x) => {
+                const item = x as HistoryQueryData & { _optimistic: boolean };
+                const realizedPL = Number(item.realized_pnl ?? "0");
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
                 let custodyAsset;
@@ -175,13 +177,14 @@ const HistoryTable = (props: HistoryTableProps) => {
                   );
                 }
 
-                const custodyAmount = Decimal.fromAtomics(
-                  item.open_custody_amount,
-                  custodyAsset.decimals,
-                ).toFloatApproximation();
-
                 return (
-                  <tr key={item.id} data-testid={item.id}>
+                  <tr
+                    key={item.id}
+                    data-testid={item.id}
+                    className={clsx({
+                      "italic text-gray-300": item._optimistic,
+                    })}
+                  >
                     <td className="px-4 py-3">
                       {isTruthy(item.closed_date_time) ? (
                         formatDateISO(new Date(item.closed_date_time))
@@ -190,8 +193,10 @@ const HistoryTable = (props: HistoryTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.open_date_time) ? (
-                        formatDateDistance(new Date(item.open_date_time))
+                      {isTruthy(item.closed_date_time) && isTruthy(item.open_date_time) ? (
+                        createDurationLabel(
+                          formatIntervalToDuration(new Date(item.open_date_time), new Date(item.closed_date_time)),
+                        )
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -215,37 +220,36 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.open_custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 4)
+                        formatNumberAsDecimal(Number(item.open_custody_amount), 4)
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.close_interest_paid_custody) ? (
-                        <div className="flex flex-row items-center justify-center">
-                          <span className="mr-1">
-                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 4) ?? (
+                        <div className="flex flex-row items-center justify-start">
+                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 6) ?? (
                               <HtmlUnicode name="EmDash" />
                             )}
                           </span>
-                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
                         </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.realized_pnl) ? (
-                        <span className="text-green-400">
-                          <span
-                            className={clsx({
-                              "text-green-400": realizedPLSign === 1,
-                              "text-red-400": realizedPLSign === -1,
-                            })}
-                          >
-                            {formatNumberAsCurrency(Number(item.realized_pnl), 2)}
-                          </span>
-                        </span>
+                      {isTruthy(item.realized_pnl) && Number.isNaN(realizedPL) === false ? (
+                        <div
+                          className={clsx("flex flex-row items-center justify-start", {
+                            "text-green-400": realizedPLSign === 1 && realizedPL > 0,
+                            "text-red-400": realizedPLSign === -1 && realizedPL < 0,
+                          })}
+                        >
+                          <AssetIcon symbol={item.open_collateral_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">{formatNumberAsDecimal(realizedPL, 6)}</span>
+                        </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -275,7 +279,7 @@ const HistoryTable = (props: HistoryTableProps) => {
               return (
                 <Link href={{ query: { ...router.query, offset } }} scroll={false}>
                   <a
-                    className={clsx("rounded px-2 py-1", {
+                    className={clsx("inline-grid h-[20px] w-[20px] place-items-center rounded", {
                       "bg-gray-400": pagination.offset === offset,
                     })}
                   >

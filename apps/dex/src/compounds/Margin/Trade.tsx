@@ -1,30 +1,31 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
+import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-
 import {
+  FlashMessage5xxError,
+  FlashMessageLoading,
   formatNumberAsCurrency,
   Maybe,
   RacetrackSpinnerIcon,
   SwapIcon,
   TokenEntry,
-  FlashMessage5xxError,
-  FlashMessageLoading,
-  FlashMessage,
 } from "@sifchain/ui";
-import { Decimal } from "@cosmjs/math";
-import { pathOr } from "ramda";
-import { useMemo, useState } from "react";
-import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
-import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useEnhancedPoolsQuery, useEnhancedTokenQuery, useRowanPriceQuery, useSwapSimulation } from "~/domains/clp";
-import { useMarginParamsQuery, useMarginOpenPositionsBySymbolQuery } from "~/domains/margin/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
+import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
+import {
+  useEnhancedPoolsQuery,
+  useEnhancedTokenQuery,
+  useRowanPriceQuery,
+  useSwapSimulationQuery,
+} from "~/domains/clp/hooks";
+import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
 
 /**
  * ********************************************************************************************
@@ -35,24 +36,24 @@ import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
  *
  * ********************************************************************************************
  */
+import { useCallback } from "react";
 import { ROWAN } from "~/domains/assets";
+import { ModalMTPOpen } from "./ModalMTPOpen";
 import { TradeActions } from "./TradeActions";
 import { PoolOverview } from "./_components";
-import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
+import { formatNumberAsDecimal } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
-  LEVERAGE_MIN_VALUE,
-  POSITION_MAX_VALUE,
-  POSITION_MIN_VALUE,
   HtmlUnicode,
   inputValidatorCollateral,
   inputValidatorLeverage,
   inputValidatorPosition,
+  LEVERAGE_MIN_VALUE,
+  POSITION_MAX_VALUE,
+  POSITION_MIN_VALUE,
   removeFirstCharsUC,
 } from "./_trade";
-import { ModalMTPOpen } from "./ModalMTPOpen";
-import { useCallback } from "react";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
@@ -67,14 +68,13 @@ const withLeverage = (rawReceiving: string, decimals: number, leverage: string) 
  *   - Query list of Pools
  *   - Query list of Tokens
  *   - Query Rowan price
-     @TODO Add query to load user wallter details
  *   - Query User Wallet details
  *
  * These values are required to bootstrap the Trade page
  *
  * ********************************************************************************************
  */
-const TradeCompound: NextPage = () => {
+const TradeTab: NextPage = () => {
   const enhancedPoolsQuery = useEnhancedPoolsQuery();
   const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPriceQuery = useRowanPriceQuery();
@@ -82,11 +82,9 @@ const TradeCompound: NextPage = () => {
 
   if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
     console.group("Trade Page Query Error");
-    console.log({ enhancedPoolsQuery });
-    console.log({ enhancedRowanQuery, rowanPriceQuery });
-    console.log({ govParamsQuery });
+    console.log({ enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery });
     console.groupEnd();
-    return <FlashMessage5xxError size="full-page" />;
+    return <FlashMessage5xxError size="full-page" className="border-gold-800 mt-4 rounded border" />;
   }
 
   if (
@@ -105,14 +103,14 @@ const TradeCompound: NextPage = () => {
     const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
       allowedPools.includes(pool.asset.denom as string),
     );
-    enhancedRowanQuery.data.priceUsd = rowanPriceQuery.data;
+
     return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
   }
 
-  return <FlashMessageLoading size="full-page" />;
+  return <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />;
 };
 
-export default TradeCompound;
+export default TradeTab;
 
 /**
  * ********************************************************************************************
@@ -147,7 +145,7 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const qsPool = pathOr(undefined, ["pool"], router.query);
+  const qsPool = router.query["pool"];
 
   const pools = useMemo(() => {
     if (enhancedPools) {
@@ -176,7 +174,11 @@ const Trade = (props: TradeProps) => {
 
   const poolActive = useMemo(() => {
     if (qsPool) {
-      const pool = pools.find((pool) => pool.asset.denom === qsPool);
+      const poolQueryString = String(qsPool).toLowerCase();
+      const pool = pools.find(
+        (pool) =>
+          pool.asset.denom?.toLowerCase() === poolQueryString || pool.asset.symbol.toLowerCase() === poolQueryString,
+      );
       if (pool) {
         return pool;
       }
@@ -314,26 +316,17 @@ const Trade = (props: TradeProps) => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
 
-  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulation(
+  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulationQuery(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
   );
 
-  const openPositionFee = useMemo(() => {
-    try {
-      return Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-        Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
-      );
-    } catch (error) {
-      console.group("Open Position Fee Swap LP Fee");
-      console.log({ error });
-      console.groupEnd();
-      return 0;
-    }
-  }, [swapSimulation, selectedPosition]);
+  const openPositionFee = Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
+    Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
+  );
 
-  const { recompute: calculateReverseSwap } = useSwapSimulation(
+  const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
     selectedPosition.denom ?? selectedPosition.symbol,
     selectedCollateral.denom ?? selectedCollateral.symbol,
     inputPosition.value,
@@ -651,12 +644,12 @@ const Trade = (props: TradeProps) => {
                 </span>
               )}
             </li>
-            <li className="mt-2 grid grid-cols-6 gap-2">
+            <li className="mt-4 grid grid-cols-6 gap-2">
               <p className="col-span-3 self-end rounded bg-gray-500 p-2 text-center text-sm font-semibold text-gray-200">
                 Long
               </p>
               <div className="col-span-3 flex flex-col">
-                <span className="mb-1 text-xs text-gray-300">
+                <span className="mb-1 text-right text-xs text-gray-300">
                   <span className="mr-1">Leverage</span>
                   <span className="text-gray-400">
                     <span>Up to </span>
@@ -700,8 +693,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
                         <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -709,8 +702,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
                         <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -730,8 +723,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Position size</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -739,8 +732,8 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
-                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -748,13 +741,13 @@ const Trade = (props: TradeProps) => {
                     <div className="flex flex-row items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
                       <div className="flex flex-row items-center">
-                        <span className="mr-1">
+                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                        <span className="ml-1">
                           {formatNumberAsDecimal(
                             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
                             4,
                           )}
                         </span>
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                       </div>
                     </div>
                   </li>
@@ -768,10 +761,6 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </ul>
               </div>
-              <FlashMessage className="m-4">
-                <b>Warning:</b> The field <b>Fees</b> have been disabled in all calculations until we implement the Flat
-                Fee rate.
-              </FlashMessage>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
@@ -797,9 +786,8 @@ const Trade = (props: TradeProps) => {
           leverage: leverage,
           poolInterestRate: poolInterestRate,
           positionPriceUsd: selectedPosition.priceUsd,
-          positionTokenAmount: formatNumberAsDecimal(
+          positionTokenAmount: String(
             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
-            4,
           ),
           toDenom: selectedPosition.symbol.toLowerCase(),
         }}

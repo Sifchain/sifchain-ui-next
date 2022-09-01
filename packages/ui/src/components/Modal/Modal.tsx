@@ -53,7 +53,7 @@ export const Modal: FC<ModalProps> = (props) => {
                 )}
               >
                 {!props.hideCloseButton && (
-                  <div className="absolute top-0 right-0 z-10 hidden pt-4 pr-4 sm:block">
+                  <div className="absolute top-0 right-0 z-10 hidden pt-6 pr-6 sm:block">
                     <button
                       type="button"
                       className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none dark:bg-gray-800"
@@ -64,23 +64,28 @@ export const Modal: FC<ModalProps> = (props) => {
                     </button>
                   </div>
                 )}
-                <header className="grid gap-2 py-4">
+                <header className="grid gap-2 pt-6 pb-6">
                   <div className="flex gap-2">
                     {typeof props.onGoBack === "function" && (
-                      <button className="-my-4 -mr-4 p-4 text-gray-50" onClick={props.onGoBack}>
+                      <button className="pl-6 text-gray-50" onClick={props.onGoBack}>
                         <ArrowLeftIcon className="h-6 w-6" />
                       </button>
                     )}
                     <Dialog.Title
                       as="h3"
-                      className="relative px-4 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50"
+                      className={clsx(
+                        "relative px-6 text-center text-xl font-semibold leading-6 text-gray-900 dark:text-gray-50",
+                        {
+                          "pl-0": typeof props.onGoBack === "function",
+                        },
+                      )}
                     >
                       {props.title}
                     </Dialog.Title>
                   </div>
-                  {props.subTitle && <div className="border-gray-750 border-b p-4 pt-0 ">{props.subTitle}</div>}
+                  {props.subTitle && <div className="border-gray-750 border-b px-6 pt-2 pb-6">{props.subTitle}</div>}
                 </header>
-                <div className="p-4">{props.children}</div>
+                <div className="px-6 pb-6">{props.children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

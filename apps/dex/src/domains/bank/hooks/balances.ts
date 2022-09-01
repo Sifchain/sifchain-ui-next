@@ -4,8 +4,8 @@ import { invariant, type StringIndexed } from "@sifchain/ui";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "@sifchain/utils";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
-import { useLiquidityProvidersQuery } from "~/domains/clp";
+import { useQuery } from "@tanstack/react-query";
+import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
@@ -48,7 +48,7 @@ export function useAllBalancesQuery() {
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
   const baseQuery = useQuery(
-    "all-balances",
+    ["all-balances"],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
@@ -124,9 +124,9 @@ export function useAllBalancesQuery() {
 }
 
 export function useBalancesWithPool() {
-  const { indexedByDenom } = useTokenRegistryQuery();
+  const { findBySymbolOrDenom: findTokenBySymbolOrDenom } = useTokenRegistryQuery();
   const { data: liquidityProviders } = useLiquidityProvidersQuery();
-  const { data: balances } = useAllBalancesQuery();
+  const { data: balances, findBySymbolOrDenom: findBalanceBySymbolOrDenom } = useAllBalancesQuery();
   const { data: env } = useDexEnvironment();
 
   const totalRowan =
@@ -151,8 +151,9 @@ export function useBalancesWithPool() {
   return useMemo(
     () =>
       Array.from(denomSet).map((x) => {
-        const token = indexedByDenom[x];
-        const balance = balances?.find((y) => y.denom === x);
+        const token = findTokenBySymbolOrDenom(x);
+        const balance = findBalanceBySymbolOrDenom(x);
+
         const pool = liquidityProviders?.liquidityProviderData.find((y) => y.liquidityProvider?.asset?.symbol === x);
 
         return {
@@ -165,10 +166,10 @@ export function useBalancesWithPool() {
         };
       }),
     [
-      balances,
       denomSet,
       env?.nativeAsset.symbol,
-      indexedByDenom,
+      findBalanceBySymbolOrDenom,
+      findTokenBySymbolOrDenom,
       liquidityProviders?.liquidityProviderData,
       totalRowan,
     ],

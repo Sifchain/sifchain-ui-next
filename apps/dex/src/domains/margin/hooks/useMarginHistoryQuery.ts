@@ -1,4 +1,4 @@
-import type { UseQueryResult } from "react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 import type { Pagination, HistoryQueryData } from "./types";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
@@ -22,13 +22,13 @@ export function useMarginHistoryQuery(params: {
        * increasing the refresh time in "useMarginHistory"
        * to allow Data Services to do their job
        *
-       * If in the next fetch window (after 15 seconds), Data Services response
+       * If in the next fetch window (after 10 seconds), Data Services response
        * DOESN'T remove the old item, the item will APPEAR again in the UI
        * we are not doing a diff in the Data Service response x local cache
        *
        * Data Services response is our source of truth
        */
-      refetchInterval: 15 * 1000,
+      refetchInterval: 10 * 1000,
       retry: false,
     },
   ) as UseQueryResult<{

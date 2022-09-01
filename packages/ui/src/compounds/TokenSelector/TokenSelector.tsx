@@ -19,7 +19,7 @@ import { TokenItem, TokenItemProps } from "./TokenItem";
 import type { TokenEntry } from "./types";
 
 const ListContainer = tw.ul`
-  grid gap-2 max-h-64 overflow-y-scroll -mx-3 no-scrollbar
+  grid gap-2 max-h-64 overflow-y-scroll no-scrollbar
 `;
 
 const AssetIcon: FC<{
@@ -170,7 +170,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 <PencilIcon className="text-lg" />
               </Button>
             </div>
-            <div className="flex items-center justify-between py-1 px-4 transition-colors">
+            <div className="flex items-center justify-between transition-colors">
               {SORT_KEYS.map((options) =>
                 props.hideColumns?.includes(options.sortKey) ? null : (
                   <button
@@ -186,7 +186,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
 
             <Combobox.Options as={ListContainer} static>
               {filtered.length === 0 ? (
-                <p className="p-4 text-center">No matching results.</p>
+                <p className="text-center">No matching results.</p>
               ) : (
                 filtered.map((token) => {
                   const ItemComponent = props.renderTokenItem ?? TokenItem;

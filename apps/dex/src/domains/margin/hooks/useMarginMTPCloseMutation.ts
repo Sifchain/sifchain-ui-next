@@ -2,17 +2,20 @@ import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
-import { isError, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
 import type { HistoryQueryData, MTPCloseResponse, OpenPositionsQueryData, Pagination } from "./types";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
-export function useMarginMTPCloseMutation() {
-  const { data: signerAddress } = useSifSignerAddress();
+type UseMarginMTPCloseMutationProps = {
+  _optimisticCustodyAmount: string;
+};
+export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMarginMTPCloseMutationProps) {
+  const { data: signerAddress } = useSifSignerAddressQuery();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
 
@@ -86,7 +89,7 @@ export function useMarginMTPCloseMutation() {
             collateral_asset,
             _collateral_amount,
             custody_asset,
-            custody_amount,
+            _custody_amount,
             _repay_amount,
             _leverage,
             _liabilities,
@@ -124,12 +127,13 @@ export function useMarginMTPCloseMutation() {
             close_interest_paid_custody: interest_paid_custody.value,
             closed_date_time: undefined,
             id: id.value,
-            open_custody_amount: custody_amount.value,
+            open_custody_amount: _optimisticCustodyAmount,
             open_custody_asset: custody_asset.value,
             open_date_time: undefined,
             pool: collateral_asset.value,
             position: position.value,
             realized_pnl: undefined,
+            _optimistic: true,
           };
 
           queryClient.setQueriesData(
@@ -151,6 +155,15 @@ export function useMarginMTPCloseMutation() {
               return draft;
             },
           );
+
+          /**
+           * There's two places we can close a position:
+           *   - Trade (open positions by pool symbol)
+           *   - Positions (all open positions)
+           * We use different queries in each place
+           */
+          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
+          queryClient.cancelQueries(["margin.getMarginOpenPosition"]);
         }
       }
     },

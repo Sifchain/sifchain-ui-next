@@ -3,7 +3,7 @@ import type { GetTokenStatsResponsePools } from "@sifchain/sif-api";
 import { indexBy } from "rambda";
 import { ascend, descend, sortWith } from "@sifchain/utils";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { usePoolsQuery } from "./usePools";
@@ -19,7 +19,7 @@ export function useEnhancedPoolsQuery() {
   const isLoading = poolsQuery.isLoading || statsQuery.isLoading || registryQuery.isLoading;
 
   const derivedQuery = useQuery(
-    "enhanced-pools",
+    ["enhanced-pools"],
     () => {
       if (!poolsRes || !statsQuery.data || !registryQuery.data) {
         return [];

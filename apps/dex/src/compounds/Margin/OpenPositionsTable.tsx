@@ -1,29 +1,29 @@
 import type {
-  useOpenPositionsQuery,
-  useMarginOpenPositionsBySymbolQuery,
   OpenPositionsQueryData,
+  useMarginOpenPositionsBySymbolQuery,
+  useOpenPositionsQuery,
 } from "~/domains/margin/hooks";
 
 import {
-  FlashMessageLoading,
+  Button,
+  ChevronDownIcon,
   FlashMessage5xxError,
   FlashMessageConnectSifChainWallet,
   FlashMessageConnectSifChainWalletError,
   FlashMessageConnectSifChainWalletLoading,
-  Button,
-  ChevronDownIcon,
+  FlashMessageLoading,
   formatNumberAsDecimal,
   Tooltip,
 } from "@sifchain/ui";
-import { isNil } from "rambda";
-import { useRouter } from "next/router";
-import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { isNil } from "rambda";
+import { useCallback, useState } from "react";
 
-import { useSifSignerAddress } from "~/hooks/useSifSigner";
-import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import AssetIcon from "~/compounds/AssetIcon";
+import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { ModalMTPClose } from "./ModalMTPClose";
 
 /**
@@ -37,10 +37,10 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
+import { InfoIconForwardRef, NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
-import { formatDateISO, formatIntervalToDuration } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -85,20 +85,6 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
 ];
-const createTimeOpenLabel = (timeOpen: Duration) => {
-  const { years, months, days, hours, minutes, seconds } = timeOpen;
-  const yearsLabel = years ? `${years}y` : null;
-  const monthsLabel = months ? `${months}m` : null;
-  const daysLabel = days ? `${days}d` : null;
-  const hoursLabel = hours ? `${hours}h` : null;
-  const minutesLabel = minutes ? `${minutes}min` : null;
-  const secondsLabel = seconds ? `${seconds}s` : null;
-  const isSeconds = [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel].every((item) => item === null);
-  const maybeSecondsLabel = isSeconds ? secondsLabel : null;
-  return [yearsLabel, monthsLabel, daysLabel, hoursLabel, minutesLabel, maybeSecondsLabel]
-    .filter((label) => Boolean(label))
-    .join(", ");
-};
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
@@ -109,7 +95,7 @@ export type OpenPositionsTableProps = {
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
-  const walletAddress = useSifSignerAddress();
+  const walletAddress = useSifSignerAddressQuery();
   const { openPositionsQuery } = props;
 
   const { hideColumns, classNamePaginationContainer } = props;
@@ -123,7 +109,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     value: null,
   });
 
-  if (walletAddress.isIdle) {
+  const onClose = useCallback(() => {
+    if (positionToClose.isOpen) {
+      setPositionToClose((prev) => ({ ...prev, isOpen: false }));
+    }
+  }, [positionToClose.isOpen]);
+  const onMutationSuccess = useCallback(() => {
+    setPositionToClose({ isOpen: false, value: null });
+  }, []);
+  const onTransitionEnd = useCallback(() => {
+    if (positionToClose.value !== null) {
+      setPositionToClose((prev) => ({ ...prev, value: null }));
+    }
+  }, [positionToClose.value]);
+
+  if (walletAddress.isPaused) {
     return <FlashMessageConnectSifChainWallet size="full-page" />;
   }
 
@@ -135,7 +135,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
-  if (openPositionsQuery.isLoading) {
+  if (openPositionsQuery.isLoading || tokenRegistryQuery.isLoading) {
     return <FlashMessageLoading size="full-page" />;
   }
 
@@ -161,18 +161,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
                   if (header.order_by === "") {
                     return (
-                      <th
-                        key={header.title}
-                        className="flex flex-row items-center justify-center px-4 py-3 font-normal"
-                      >
+                      <th key={header.title} className="flex flex-row items-center px-4 py-3 font-normal">
                         <span className="cursor-not-allowed">{header.title}</span>
                         {header.title === HEADERS_TITLES.NPV ? (
                           <>
                             <div className="mr-1" />
                             <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
-                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                                i
-                              </span>
+                              <InfoIconForwardRef />
                             </Tooltip>
                           </>
                         ) : null}
@@ -187,7 +182,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     currentSortBy: pagination.sort_by,
                   });
                   const linkTagA = (
-                    <a className="flex flex-row items-center justify-center">
+                    <a className="flex flex-row items-center">
                       {header.title}
                       {itemActive && (
                         <ChevronDownIcon
@@ -215,7 +210,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   return (
                     <th key={header.title} className="px-4 py-3 font-normal">
                       <div
-                        className={clsx("flex flex-row items-center justify-center", {
+                        className={clsx("flex flex-row items-center", {
                           "font-semibold text-white": itemActive,
                         })}
                       >
@@ -227,9 +222,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                               title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
                               content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
                             >
-                              <span className="inline-flex h-[16px] w-[16px] items-center justify-center rounded-full border border-current font-serif text-[10px]">
-                                i
-                              </span>
+                              <InfoIconForwardRef />
                             </Tooltip>
                           </>
                         ) : null}
@@ -239,7 +232,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 })}
               </tr>
             </thead>
-            <tbody className="bg-gray-850 text-center">
+            <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
                 const item = x as OpenPositionsQueryData & { _optimistic: boolean };
@@ -275,7 +268,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
-                  <tr key={item.id} data-testid={item.id}>
+                  <tr
+                    key={item.id}
+                    data-testid={item.id}
+                    className={clsx({
+                      "italic text-gray-300": item._optimistic,
+                    })}
+                  >
                     <td className="px-4 py-3">
                       {isTruthy(item.date_opened) ? (
                         formatDateISO(new Date(item.date_opened))
@@ -317,23 +316,21 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={clsx({
-                          "text-green-400": unrealizedPLSign === 1,
-                          "text-red-400": unrealizedPLSign === -1,
-                        })}
-                      >
-                        {isTruthy(item.unrealized_pnl) ? (
-                          <div className="flex flex-row items-center justify-center">
-                            <span className="mr-1">
-                              {formatNumberAsDecimal(unrealizedPnl, 4) ?? <HtmlUnicode name="EmDash" />}
-                            </span>
-                            <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
-                          </div>
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </span>
+                      {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
+                        <div
+                          className={clsx("flex flex-row items-center", {
+                            "text-green-400": unrealizedPLSign === 1 && unrealizedPnl > 0,
+                            "text-red-400": unrealizedPLSign === -1 && unrealizedPnl < 0,
+                          })}
+                        >
+                          <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(unrealizedPnl, 6) ?? <HtmlUnicode name="EmDash" />}
+                          </span>
+                        </div>
+                      ) : (
+                        <HtmlUnicode name="EmDash" />
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.interest_rate) ? (
@@ -344,12 +341,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     </td>
                     {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
                       <td className="px-4 py-3">
-                        {isTruthy(item.current_interest_paid_custody) ? (
-                          <div className="flex flex-row items-center justify-center">
-                            <span className="mr-1">
-                              {formatNumberAsDecimal(currentInterestPaidCustody, 4) ?? <HtmlUnicode name="EmDash" />}
-                            </span>
+                        {isTruthy(currentInterestPaidCustody) ? (
+                          <div className="flex flex-row items-center">
                             <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
+                            <span className="ml-1">
+                              {formatNumberAsDecimal(currentInterestPaidCustody, 6) ?? <HtmlUnicode name="EmDash" />}
+                            </span>
                           </div>
                         ) : (
                           <HtmlUnicode name="EmDash" />
@@ -357,15 +354,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       </td>
                     )}
                     <td className="px-4 py-3">
-                      {isTruthy(item.health) ? (
-                        formatNumberAsDecimal(Number(item.health))
+                      {isTruthy(item.current_health) ? (
+                        formatNumberAsDecimal(Number(item.current_health))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.date_opened) ? (
-                        createTimeOpenLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
+                        createDurationLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
@@ -410,7 +407,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
               return (
                 <Link href={{ query: { ...router.query, offset } }} scroll={false}>
                   <a
-                    className={clsx("rounded px-2 py-1", {
+                    className={clsx("inline-grid h-[20px] w-[20px] place-items-center rounded", {
                       "bg-gray-400": pagination.offset === offset,
                     })}
                   >
@@ -425,19 +422,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
-            onClose={() => {
-              if (positionToClose.isOpen) {
-                setPositionToClose((prev) => ({ ...prev, isOpen: false }));
-              }
-            }}
-            onMutationSuccess={() => {
-              setPositionToClose({ isOpen: false, value: null });
-            }}
-            onTransitionEnd={() => {
-              if (positionToClose.value !== null) {
-                setPositionToClose((prev) => ({ ...prev, value: null }));
-              }
-            }}
+            onClose={onClose}
+            onMutationSuccess={onMutationSuccess}
+            onTransitionEnd={onTransitionEnd}
           />
         )}
       </section>

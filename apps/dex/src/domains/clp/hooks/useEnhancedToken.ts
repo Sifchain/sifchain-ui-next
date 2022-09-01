@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -18,7 +18,8 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
   const allBalancesQuery = useAllBalancesQuery();
   const poolStatsQuery = usePoolStatsQuery();
 
-  const registryEntry = registryQuery.indexedByDenom[denom];
+  const registryEntry = registryQuery.findBySymbolOrDenom(denom);
+
   const balanceEntry = useMemo(
     () => allBalancesQuery.data?.find((entry) => entry.denom === denom || entry.denom === registryEntry?.denom),
     [allBalancesQuery.data, registryEntry?.denom, denom],
@@ -28,14 +29,14 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
     "clp.getPool",
     [
       {
-        symbol: denom,
+        symbol: registryEntry?.denom ?? denom,
       },
     ],
     options,
   );
 
   const derivedQuery = useQuery(
-    ["enhanced-token", denom],
+    ["enhanced-token", denom, balanceEntry],
     () => {
       if (!registryEntry) {
         console.log(`Token registry entry not found for ${denom}`);
@@ -54,11 +55,8 @@ export function useEnhancedTokenQuery(denom: string, options?: { refetchInterval
       };
     },
     {
-      enabled:
-        Boolean(denom) &&
-        registryQuery.isSuccess &&
-        allBalancesQuery.isSuccess &&
-        (denom === "rowan" || poolQuery.isSuccess),
+      enabled: Boolean(denom) && registryQuery.isSuccess && (denom === "rowan" || poolQuery.isSuccess),
+      keepPreviousData: true,
     },
   );
 
