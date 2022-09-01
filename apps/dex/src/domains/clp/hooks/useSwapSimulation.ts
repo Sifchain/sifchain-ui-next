@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
-import { Maybe } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";

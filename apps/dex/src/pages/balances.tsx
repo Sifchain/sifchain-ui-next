@@ -1,13 +1,12 @@
 import { Decimal } from "@cosmjs/math";
-import { ArrowDownIcon, Button, Maybe, Modal, PoolsIcon, SwapIcon } from "@sifchain/ui";
+import { ArrowDownIcon, Button, Modal, PoolsIcon, SwapIcon } from "@sifchain/ui";
 import SvgDotsVerticalIcon from "@sifchain/ui/src/components/icons/svgr/DotsVerticalIcon";
+import { ascend, descend, Maybe } from "@sifchain/utils";
 import clsx from "clsx";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ascend, descend } from "@sifchain/utils";
 import { useCallback, useMemo, useState } from "react";
-
 import AssetIcon from "~/compounds/AssetIcon";
 import ExportModal from "~/compounds/ExportModal";
 import ImportModal from "~/compounds/ImportModal";

@@ -1,11 +1,10 @@
+import { FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import type { NextPage } from "next";
-
-import { FlashMessageLoading, Maybe, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
 import { useStorageState } from "~/utils/useStorageState";
 

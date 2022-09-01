@@ -1,4 +1,4 @@
-import { Maybe } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { indexBy } from "rambda";
 import { useMemo } from "react";
 

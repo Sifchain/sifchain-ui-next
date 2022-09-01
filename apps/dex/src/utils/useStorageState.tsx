@@ -1,4 +1,4 @@
-import { Maybe } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { useEffect, useState } from "react";
 
 export const useStorageState = <S,>(storage: Storage, key: string, initialState: S | (() => S)) => {

@@ -4,7 +4,6 @@ import {
   FlashMessage5xxError,
   FlashMessageLoading,
   formatNumberAsCurrency,
-  Maybe,
   RacetrackSpinnerIcon,
   SwapIcon,
   TokenEntry,
@@ -36,6 +35,7 @@ import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/dom
  *
  * ********************************************************************************************
  */
+import { Maybe } from "@sifchain/utils";
 import { useCallback } from "react";
 import { ROWAN } from "~/domains/assets";
 import { ModalMTPOpen } from "./ModalMTPOpen";

@@ -1,4 +1,4 @@
-import { Maybe } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { useMemo } from "react";
 import { usePoolStatsQuery } from "./usePoolStats";
 

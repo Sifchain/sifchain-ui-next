@@ -1,9 +1,9 @@
 import {
-  Maybe,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
   TokenSelectorProps as BaseTokenSelectorProps,
 } from "@sifchain/ui";
+import { Maybe } from "@sifchain/utils";
 import { pipe } from "rambda";
 import { useCallback, useMemo } from "react";
 
