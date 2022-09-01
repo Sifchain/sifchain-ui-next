@@ -9,7 +9,7 @@ import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 import * as errors from "./mutationErrorMessage";
-import type { MTPOpenResponse, OpenPositionsQueryData, Pagination } from "./types";
+import type { MTPOpenResponse, MarginOpenPositionsQueryData, Pagination } from "./types";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
@@ -145,7 +145,8 @@ export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMargin
               },
             },
             (state) => {
-              const draft = state as { pagination: Pagination; results: Partial<OpenPositionsQueryData>[] } | undefined;
+              type PartialResponse = { pagination: Pagination; results: Partial<MarginOpenPositionsQueryData>[] };
+              const draft = state as PartialResponse | undefined;
               if (draft) {
                 draft.pagination = {
                   ...draft.pagination,

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
-import type { HistoryQueryData, MTPCloseResponse, OpenPositionsQueryData, Pagination } from "./types";
+import type { MarginHistoryQueryData, MTPCloseResponse, MarginOpenPositionsQueryData, Pagination } from "./types";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
@@ -108,7 +108,8 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
               },
             },
             (state) => {
-              const draft = state as { pagination: Pagination; results: Partial<OpenPositionsQueryData>[] } | undefined;
+              type PartialResponse = { pagination: Pagination; results: Partial<MarginOpenPositionsQueryData>[] };
+              const draft = state as PartialResponse | undefined;
               if (draft) {
                 draft.pagination = {
                   ...draft.pagination,
@@ -143,7 +144,8 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
               },
             },
             (state) => {
-              const draft = state as { pagination: Pagination; results: Partial<HistoryQueryData>[] } | undefined;
+              type PartialResponse = { pagination: Pagination; results: Partial<MarginHistoryQueryData>[] };
+              const draft = state as PartialResponse | undefined;
               if (draft) {
                 draft.pagination = {
                   ...draft.pagination,

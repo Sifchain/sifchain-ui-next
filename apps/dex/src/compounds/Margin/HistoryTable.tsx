@@ -1,4 +1,4 @@
-import type { HistoryQueryData } from "~/domains/margin/hooks";
+import type { MarginHistoryQueryData } from "~/domains/margin/hooks";
 
 import { useRouter } from "next/router";
 import clsx from "clsx";
@@ -151,7 +151,7 @@ const HistoryTable = (props: HistoryTableProps) => {
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
               {results.map((x) => {
-                const item = x as HistoryQueryData & { _optimistic: boolean };
+                const item = x as MarginHistoryQueryData & { _optimistic: boolean };
                 const realizedPL = Number(item.realized_pnl ?? "0");
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 

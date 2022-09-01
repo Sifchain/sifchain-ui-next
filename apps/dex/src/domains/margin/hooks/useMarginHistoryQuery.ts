@@ -1,5 +1,5 @@
+import type { MarginHistoryResponse } from "./types";
 import type { UseQueryResult } from "@tanstack/react-query";
-import type { Pagination, HistoryQueryData } from "./types";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
@@ -30,9 +30,17 @@ export function useMarginHistoryQuery(params: {
        */
       refetchInterval: 10 * 1000,
       retry: false,
+      structuralSharing(oldData: MarginHistoryResponse | undefined, newData: MarginHistoryResponse | undefined) {
+        if (oldData && newData) {
+          const newDataIds = newData.results.map((x) => x.id);
+          const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id));
+          newData.results = oldDataDiff.concat(newData.results);
+          newData.pagination.total = String(newData.results.length);
+          newData.pagination.limit = String(Number(newData.pagination.limit) + oldDataDiff.length);
+          return newData;
+        }
+        return newData;
+      },
     },
-  ) as UseQueryResult<{
-    pagination: Pagination;
-    results: HistoryQueryData[];
-  }>;
+  ) as UseQueryResult<MarginHistoryResponse>;
 }
