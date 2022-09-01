@@ -1,4 +1,5 @@
 import { FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
+import { useLocalStorageState } from "@sifchain/utils/react";
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -6,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
 import { useFeatureFlag } from "~/lib/featureFlags";
-import { useStorageState } from "@sifchain/utils/react";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
@@ -40,7 +40,7 @@ const TABS_CONTENT: TabsWithSuspenseProps["items"] = [
   },
 ];
 
-const DISCLAIMER_STORAGE_KEY = "@@marginDisclaimerModal";
+const INFO_MODAL_STORAGE_KEY = "@sifchain/margin-info-modal";
 
 const Margin: NextPage = () => {
   const router = useRouter();
@@ -53,7 +53,7 @@ const Margin: NextPage = () => {
     return null;
   }, [router.isReady, router.query]);
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
-  const [isModalOpen, setIsModalOpen] = useStorageState(window.localStorage, DISCLAIMER_STORAGE_KEY, true);
+  const [isModalOpen, setIsModalOpen] = useLocalStorageState(INFO_MODAL_STORAGE_KEY, true);
 
   return (
     <>
