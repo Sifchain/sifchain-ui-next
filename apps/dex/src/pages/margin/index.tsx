@@ -108,7 +108,9 @@ const Margin: NextPage = () => {
           v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
           for Margin, please reference our product documentation{" "}
           <Link href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9">
-            <a target="_blank">here</a>
+            <a target="_blank" className="underline">
+              here
+            </a>
           </Link>
         </p>
       </Modal>
