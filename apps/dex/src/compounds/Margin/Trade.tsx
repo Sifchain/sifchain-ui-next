@@ -1,6 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
 import {
+  ArrowDownIcon,
   FlashMessage5xxError,
   FlashMessageLoading,
   formatNumberAsCurrency,
@@ -711,7 +712,12 @@ const Trade = (props: TradeProps) => {
                     </div>
                   </li>
                 </ul>
-                <ul className="mt-8 flex flex-col gap-3">
+                <div className="relative my-[-1em] flex items-center justify-center">
+                  <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
+                    <ArrowDownIcon className="text-lg" />
+                  </div>
+                </div>
+                <ul className="flex flex-col gap-3">
                   <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                     <span className="ml-1">{removeFirstCharsUC(selectedPosition.symbol)}</span>
