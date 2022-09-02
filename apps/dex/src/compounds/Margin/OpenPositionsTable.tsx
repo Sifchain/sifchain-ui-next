@@ -19,7 +19,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isNil } from "rambda";
-import { useCallback, useState } from "react";
+import { MouseEventHandler, useCallback, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
@@ -113,6 +113,19 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     value: null,
   });
 
+  const onClickTable = useCallback<MouseEventHandler<HTMLTableElement>>((event) => {
+    event.preventDefault();
+    const $target = event.target;
+    if ($target instanceof HTMLButtonElement && $target.dataset["id"] && openPositionsQuery.data) {
+      const item = openPositionsQuery.data.results.find(
+        (x) => x.id === $target.dataset["id"],
+      ) as MarginOpenPositionsData;
+      setPositionToClose({
+        isOpen: true,
+        value: item,
+      });
+    }
+  }, []);
   const onClose = useCallback(() => {
     if (positionToClose.isOpen) {
       setPositionToClose((prev) => ({ ...prev, isOpen: false }));
@@ -151,7 +164,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return (
       <section className="bg-gray-850 flex h-full flex-col">
         <div className="flex-1 overflow-x-auto">
-          <table className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs">
+          <table
+            className="w-full table-auto overflow-scroll whitespace-nowrap text-left text-xs"
+            onClick={onClickTable}
+          >
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
@@ -387,12 +403,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           as="button"
                           size="xs"
                           className="rounded font-normal"
-                          onClick={() =>
-                            setPositionToClose({
-                              isOpen: true,
-                              value: item,
-                            })
-                          }
+                          data-id={item.id}
                         >
                           Close
                         </Button>
