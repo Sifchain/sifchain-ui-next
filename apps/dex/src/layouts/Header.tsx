@@ -68,7 +68,7 @@ const Header = () => {
   }, [isMarginStandaloneOn, setLinkLogo]);
 
   return (
-    <header className="grid bg-black md:p-4">
+    <header className="z-10 grid bg-black md:p-4">
       {Boolean(windowSize.width) && (
         <Disclosure
           as="div"
@@ -92,7 +92,7 @@ const Header = () => {
               </section>
               <AppearTransition show={open}>
                 <Disclosure.Panel
-                  className="absolute top-14 left-0 right-0 z-10 bg-black md:relative md:top-0 md:flex md:w-full"
+                  className="absolute top-14 left-0 right-0 bg-black md:relative md:top-0 md:flex md:w-full"
                   static={windowSize.width >= 768}
                 >
                   <div className="4xl:gap-8 grid gap-4 p-4 md:flex md:w-full md:p-0 xl:gap-6">

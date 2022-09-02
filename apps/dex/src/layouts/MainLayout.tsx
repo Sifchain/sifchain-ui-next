@@ -26,7 +26,7 @@ const MainLayout: FC<Props> = (props) => {
     <>
       <Shell>
         <Header />
-        <main className="z-10 flex flex-1 flex-col">{props.children}</main>
+        <main className="flex flex-1 flex-col">{props.children}</main>
       </Shell>
       <ToastContainer
         hideProgressBar
