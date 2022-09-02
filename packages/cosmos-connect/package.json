@@ -16,20 +16,20 @@
   "keywords": [],
   "license": "Apache-2.0",
   "dependencies": {
-    "@cosmjs/proto-signing": "^0.28.11",
-    "@cosmjs/stargate": "^0.28.11",
-    "@keplr-wallet/common": "^0.10.17",
-    "@keplr-wallet/stores": "^0.10.17",
-    "@keplr-wallet/wc-client": "^0.10.17",
-    "@keplr-wallet/wc-qrcode-modal": "^0.10.17",
+    "@cosmjs/proto-signing": "^0.28.13",
+    "@cosmjs/stargate": "^0.28.13",
+    "@keplr-wallet/common": "^0.10.20",
+    "@keplr-wallet/stores": "^0.10.20",
+    "@keplr-wallet/wc-client": "^0.10.20",
+    "@keplr-wallet/wc-qrcode-modal": "^0.10.20",
     "@walletconnect/client": "^1.8.0",
     "eventemitter3": "^4.0.7",
     "react": "^18.2.0"
   },
   "devDependencies": {
-    "@keplr-wallet/types": "^0.10.17",
+    "@keplr-wallet/types": "^0.10.20",
     "@tsconfig/node16-strictest-esm": "^1.0.3",
-    "@types/react": "^18.0.17",
+    "@types/react": "^18.0.18",
     "@walletconnect/types": "^1.8.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "zx": "^7.0.8"
