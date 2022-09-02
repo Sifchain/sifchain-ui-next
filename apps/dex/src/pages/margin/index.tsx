@@ -44,6 +44,8 @@ const INFO_MODAL_STORAGE_KEY = "@sifchain/margin-info-modal";
 
 const Margin: NextPage = () => {
   const router = useRouter();
+  const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
+  const [isModalOpen, setIsModalOpen] = useLocalStorageState(INFO_MODAL_STORAGE_KEY, true);
   const activeTab = useMemo(() => {
     if (router.isReady) {
       const tabOption = (router.query["tab"] as keyof typeof TABS) ?? TABS.trade.slug;
@@ -52,8 +54,7 @@ const Margin: NextPage = () => {
     }
     return null;
   }, [router.isReady, router.query]);
-  const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
-  const [isModalOpen, setIsModalOpen] = useLocalStorageState(INFO_MODAL_STORAGE_KEY, true);
+  const qsPool = router.query["pool"] ? { pool: router.query["pool"] } : {};
 
   return (
     <>
@@ -73,7 +74,7 @@ const Margin: NextPage = () => {
             activeTab={activeTab}
             items={TABS_CONTENT}
             renderItem={(title, slug) => (
-              <Link href={{ query: { ...router.query, tab: slug } }}>
+              <Link href={{ query: { tab: slug, ...qsPool } }}>
                 <a className="flex py-2">{title}</a>
               </Link>
             )}

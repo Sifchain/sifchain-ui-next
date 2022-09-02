@@ -86,7 +86,7 @@ export const Tooltip: FC<TooltipProps> = (props) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         as="div"
-        className="grid gap-1 whitespace-normal rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
+        className="z-10 grid gap-1 whitespace-normal rounded bg-gray-700 p-2 px-3 text-xs font-normal text-gray-200"
         {...floatingProps}
       >
         {props.title && <div className="flex font-semibold text-gray-100">{props.title}</div>}
