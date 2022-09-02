@@ -35,14 +35,8 @@ const isTruthy = (target: any) => !isNil(target);
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import {
-  NoResultsRow,
-  PaginationShowItems,
-  PaginationButtons,
-  PillUpdating,
-  InfoIconForwardRef,
-  TooltipInterestPaid,
-} from "./_components";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
+import { TooltipInterestPaid } from "./tooltips";
 
 /**
  * ********************************************************************************************

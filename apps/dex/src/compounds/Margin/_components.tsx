@@ -5,30 +5,14 @@ import clsx from "clsx";
 import {
   formatNumberAsCurrency,
   formatNumberAsDecimal,
-  InfoIcon,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
-  Tooltip,
 } from "@sifchain/ui";
+
+import { TooltipInterestRate, TooltipLiquidationThreshold, TooltipPoolHealth } from "./tooltips";
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";
-import { forwardRef } from "react";
-
-export const InfoIconForwardRef = forwardRef<HTMLSpanElement | null>((props, ref) => (
-  <span ref={ref}>
-    <InfoIcon width="16px" height="16px" {...props} />
-  </span>
-));
-InfoIconForwardRef.displayName = "InfoIconForwardRef";
-
-export const TooltipInterestPaid = () => {
-  return (
-    <Tooltip content="Interest payments are taken from the open position and paid automatically to the pool.">
-      <InfoIconForwardRef />
-    </Tooltip>
-  );
-};
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -85,12 +69,6 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
-const TOOLTIP_POOL_HEALTH_TITLE = `What does "Pool health" mean?`;
-const TOOLTIP_POOL_HEALTH_CONTENT =
-  "Pool health is defined by taking total assets divided by all assets + outstanding liabilities. This health equation considers assets and liabilities held for both sides of the pool. The value can range from 0 to 100%. With a value of 100% the pool has no outstanding liabilities.";
-const TOOLTIP_LIQUIDATION_THRESHOLD_TITLE = `What does "Liquidation Threshold" mean?`;
-const TOOLTIP_LIQUIDATION_THRESHOLD_CONTENT =
-  "In order to protect liquidity within each pool, a liquidation threshold is used to automatically close positions when liquidation ratios reach the liquidation threshold.";
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
@@ -155,27 +133,21 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>
-            <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
-              <InfoIconForwardRef />
-            </Tooltip>
+            <TooltipPoolHealth />
           </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Liquidation Threshold</span>
-            <Tooltip title={TOOLTIP_LIQUIDATION_THRESHOLD_TITLE} content={TOOLTIP_LIQUIDATION_THRESHOLD_CONTENT}>
-              <InfoIconForwardRef />
-            </Tooltip>
+            <TooltipLiquidationThreshold />
           </span>
           <span className="text-sm font-semibold">{formatNumberAsDecimal(props.safetyFactor)}</span>
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Interest rate</span>
-            <Tooltip content="Interest rates are re-calculated per block based on pool health.">
-              <InfoIconForwardRef />
-            </Tooltip>
+            <TooltipInterestRate />
           </span>
           <span className="text-sm font-semibold">{props.interestRate}</span>
         </div>
