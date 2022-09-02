@@ -53,6 +53,13 @@ const HISTORY_HEADER_ITEMS = [
   { title: "Interest Paid", order_by: "close_interest_paid_custody" },
   { title: "Realized P&L", order_by: "" },
 ];
+
+const RIGHT_ALIGNED_COLS = new Set([
+  HISTORY_HEADER_ITEMS[5]?.title ?? "", // Position
+  HISTORY_HEADER_ITEMS[6]?.title ?? "", // Interest Paid
+  HISTORY_HEADER_ITEMS[7]?.title ?? "", // Realized P&L
+]);
+
 export type HistoryTableProps = {
   classNamePaginationContainer?: string;
 };
@@ -102,9 +109,16 @@ const HistoryTable = (props: HistoryTableProps) => {
             <thead className="bg-gray-800">
               <tr className="text-gray-400">
                 {headers.map((header) => {
+                  const isRightAligned = RIGHT_ALIGNED_COLS.has(header.title);
+
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="cursor-not-allowed px-4 py-3 font-normal">
+                      <th
+                        key={header.title}
+                        className={clsx("cursor-not-allowed px-4 py-3 font-normal", {
+                          "text-right": isRightAligned,
+                        })}
+                      >
                         {header.title}
                       </th>
                     );
@@ -131,6 +145,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         <a
                           className={clsx("flex flex-row items-center", {
                             "font-semibold text-white": itemActive,
+                            "justify-end text-right": isRightAligned,
                           })}
                         >
                           {header.title}
@@ -218,7 +233,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.open_custody_amount) ? (
                         formatNumberAsDecimal(Number(item.open_custody_amount), 4)
                       ) : (
@@ -227,7 +242,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     </td>
                     <td className="px-4 py-3">
                       {isTruthy(item.close_interest_paid_custody) ? (
-                        <div className="flex flex-row items-center justify-start">
+                        <div className="flex flex-row items-center justify-end tabular-nums">
                           <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
                           <span className="ml-1">
                             {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 6) ?? (
@@ -242,7 +257,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                     <td className="px-4 py-3">
                       {isTruthy(item.realized_pnl) && Number.isNaN(realizedPL) === false ? (
                         <div
-                          className={clsx("flex flex-row items-center justify-start", {
+                          className={clsx("flex flex-row items-center justify-end tabular-nums", {
                             "text-green-400": realizedPLSign === 1 && realizedPL > 0,
                             "text-red-400": realizedPLSign === -1 && realizedPL < 0,
                           })}
