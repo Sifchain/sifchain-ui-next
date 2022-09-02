@@ -62,7 +62,7 @@ const HISTORY_HEADER_ITEMS = [
   { title: HEADERS_TITLES.SIDE, order_by: "position" },
   { title: HEADERS_TITLES.ASSET, order_by: "open_custody_asset" },
   { title: HEADERS_TITLES.POSITION, order_by: "open_custody_amount" },
-  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "close_interest_paid_custody" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "" },
   { title: HEADERS_TITLES.REALIZED_PNL, order_by: "" },
 ];
 
