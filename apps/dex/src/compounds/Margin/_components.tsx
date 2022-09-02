@@ -22,6 +22,14 @@ export const InfoIconForwardRef = forwardRef<HTMLSpanElement | null>((props, ref
 ));
 InfoIconForwardRef.displayName = "InfoIconForwardRef";
 
+export const TooltipInterestPaid = () => {
+  return (
+    <Tooltip content="Interest payments are taken from the open position and paid automatically to the pool.">
+      <InfoIconForwardRef />
+    </Tooltip>
+  );
+};
+
 type NoResultsTrProps = {
   colSpan: number;
 };

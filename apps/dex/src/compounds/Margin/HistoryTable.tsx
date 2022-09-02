@@ -15,6 +15,7 @@ import {
   FlashMessageConnectSifChainWalletLoading,
   ChevronDownIcon,
   formatNumberAsDecimal,
+  Tooltip,
 } from "@sifchain/ui";
 import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
@@ -34,7 +35,14 @@ const isTruthy = (target: any) => !isNil(target);
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
+import {
+  NoResultsRow,
+  PaginationShowItems,
+  PaginationButtons,
+  PillUpdating,
+  InfoIconForwardRef,
+  TooltipInterestPaid,
+} from "./_components";
 
 /**
  * ********************************************************************************************
@@ -43,15 +51,25 @@ import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } fr
  *
  * ********************************************************************************************
  */
+const HEADERS_TITLES = {
+  DATE_CLOSED: "Date Closed",
+  DURATION: "Duration",
+  POOL: "Pool",
+  SIDE: "Side",
+  ASSET: "Asset",
+  POSITION: "Position",
+  INTEREST_PAID: "Paid Interest",
+  REALIZED_PNL: "Realized P&L",
+} as const;
 const HISTORY_HEADER_ITEMS = [
-  { title: "Date Closed", order_by: "" },
-  { title: "Duration", order_by: "open_date_time" },
-  { title: "Pool", order_by: "" },
-  { title: "Side", order_by: "position" },
-  { title: "Asset", order_by: "open_custody_asset" },
-  { title: "Position", order_by: "open_custody_amount" },
-  { title: "Interest Paid", order_by: "close_interest_paid_custody" },
-  { title: "Realized P&L", order_by: "" },
+  { title: HEADERS_TITLES.DATE_CLOSED, order_by: "" },
+  { title: HEADERS_TITLES.DURATION, order_by: "open_date_time" },
+  { title: HEADERS_TITLES.POOL, order_by: "" },
+  { title: HEADERS_TITLES.SIDE, order_by: "position" },
+  { title: HEADERS_TITLES.ASSET, order_by: "open_custody_asset" },
+  { title: HEADERS_TITLES.POSITION, order_by: "open_custody_amount" },
+  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "close_interest_paid_custody" },
+  { title: HEADERS_TITLES.REALIZED_PNL, order_by: "" },
 ];
 export type HistoryTableProps = {
   classNamePaginationContainer?: string;
@@ -118,31 +136,39 @@ const HistoryTable = (props: HistoryTableProps) => {
                   });
                   return (
                     <th key={header.title} className="px-4 py-3 font-normal">
-                      <Link
-                        href={{
-                          query: {
-                            ...router.query,
-                            orderBy: nextOrderBy,
-                            sortBy: nextSortBy,
-                          },
-                        }}
-                        scroll={false}
-                      >
-                        <a
-                          className={clsx("flex flex-row items-center", {
-                            "font-semibold text-white": itemActive,
-                          })}
+                      <div className="flex flex-row items-center">
+                        <Link
+                          href={{
+                            query: {
+                              ...router.query,
+                              orderBy: nextOrderBy,
+                              sortBy: nextSortBy,
+                            },
+                          }}
+                          scroll={false}
                         >
-                          {header.title}
-                          {itemActive && (
-                            <ChevronDownIcon
-                              className={clsx("ml-1 transition-transform", {
-                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                              })}
-                            />
-                          )}
-                        </a>
-                      </Link>
+                          <a
+                            className={clsx("flex flex-row items-center", {
+                              "font-semibold text-white": itemActive,
+                            })}
+                          >
+                            {header.title}
+                            {itemActive && (
+                              <ChevronDownIcon
+                                className={clsx("ml-1 transition-transform", {
+                                  "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                                })}
+                              />
+                            )}
+                          </a>
+                        </Link>
+                        {header.title === HEADERS_TITLES.INTEREST_PAID ? (
+                          <>
+                            <div className="mr-1" />
+                            <TooltipInterestPaid />
+                          </>
+                        ) : null}
+                      </div>
                     </th>
                   );
                 })}

@@ -37,7 +37,14 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
-import { InfoIconForwardRef, NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import {
+  InfoIconForwardRef,
+  NoResultsRow,
+  PaginationButtons,
+  PaginationShowItems,
+  PillUpdating,
+  TooltipInterestPaid,
+} from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
@@ -66,7 +73,7 @@ const HEADERS_TITLES = {
   LEVERAGE: "Leverage",
   NPV: "NPV",
   INTEREST_RATE: "Interest Rate",
-  INTEREST_PAID: "Interest Paid",
+  INTEREST_PAID: "Paid Interest",
   LIQUIDATION_RATIO: "LR",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
@@ -224,6 +231,12 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                             >
                               <InfoIconForwardRef />
                             </Tooltip>
+                          </>
+                        ) : null}
+                        {header.title === HEADERS_TITLES.INTEREST_PAID ? (
+                          <>
+                            <div className="mr-1" />
+                            <TooltipInterestPaid />
                           </>
                         ) : null}
                       </div>
