@@ -1,15 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { useAccounts, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
-import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { memoizeWith } from "@sifchain/utils";
-import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { compose, identity, indexBy, prop, toLower } from "rambda";
+import { useMemo } from "react";
 import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
-import useUpdatedAt from "~/utils/useUpdatedAt";
 
 type Balance = {
   amount?: Decimal;
@@ -17,15 +16,13 @@ type Balance = {
 };
 
 export const useBalanceQuery = (chainId: string, denom: string, options: { enabled: boolean } = { enabled: true }) => {
-  const { client } = useStargateClient(chainId, options);
+  const { client, clientUpdatedAt } = useStargateClient(chainId, options);
   const { accounts } = useAccounts(chainId, options);
   const { indexedByDenom } = useTokenRegistryQuery();
   const token = indexedByDenom[denom];
 
-  const clientQueryKey = { clientTimestamp: useUpdatedAt(client) };
-
   return useQuery(
-    ["cosm-balance", chainId, denom, clientQueryKey],
+    ["cosm-balance", chainId, denom, { clientUpdatedAt }],
     async () => {
       const result = await client?.getBalance(accounts?.[0]?.address ?? "", denom);
 
@@ -44,18 +41,14 @@ export const useBalanceQuery = (chainId: string, denom: string, options: { enabl
 
 export function useAllBalancesQuery() {
   const { data: env } = useDexEnvironment();
-  const { signer } = useSigner(env?.sifChainId ?? "", {
+  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: stargateClient } = useSifStargateClient();
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
-  const signerQueryKey = {
-    signerTimestamp: useUpdatedAt(signer),
-  };
-
   const baseQuery = useQuery(
-    ["all-balances", signerQueryKey],
+    ["all-balances", { signerUpdatedAt }],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
