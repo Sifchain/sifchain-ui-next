@@ -113,19 +113,22 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     value: null,
   });
 
-  const onClickTable = useCallback<MouseEventHandler<HTMLTableElement>>((event) => {
-    event.preventDefault();
-    const $target = event.target;
-    if ($target instanceof HTMLButtonElement && $target.dataset["id"] && openPositionsQuery.data) {
-      const item = openPositionsQuery.data.results.find(
-        (x) => x.id === $target.dataset["id"],
-      ) as MarginOpenPositionsData;
-      setPositionToClose({
-        isOpen: true,
-        value: item,
-      });
-    }
-  }, []);
+  const onClickTable = useCallback<MouseEventHandler<HTMLTableElement>>(
+    (event) => {
+      event.preventDefault();
+      const $target = event.target;
+      if ($target instanceof HTMLButtonElement && $target.dataset["id"] && openPositionsQuery.data) {
+        const item = openPositionsQuery.data.results.find(
+          (x) => x.id === $target.dataset["id"],
+        ) as MarginOpenPositionsData;
+        setPositionToClose({
+          isOpen: true,
+          value: item,
+        });
+      }
+    },
+    [openPositionsQuery.data],
+  );
   const onModalClose = useCallback(() => {
     if (positionToClose.isOpen) {
       setPositionToClose((prev) => ({ ...prev, isOpen: false }));
