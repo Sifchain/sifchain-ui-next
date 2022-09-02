@@ -126,15 +126,15 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
       });
     }
   }, []);
-  const onClose = useCallback(() => {
+  const onModalClose = useCallback(() => {
     if (positionToClose.isOpen) {
       setPositionToClose((prev) => ({ ...prev, isOpen: false }));
     }
   }, [positionToClose.isOpen]);
-  const onMutationSuccess = useCallback(() => {
+  const onModalMutationSuccess = useCallback(() => {
     setPositionToClose({ isOpen: false, value: null });
   }, []);
-  const onTransitionEnd = useCallback(() => {
+  const onModalTransitionEnd = useCallback(() => {
     if (positionToClose.value !== null) {
       setPositionToClose((prev) => ({ ...prev, value: null }));
     }
@@ -449,9 +449,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           <ModalMTPClose
             data={positionToClose.value}
             isOpen={positionToClose.isOpen}
-            onClose={onClose}
-            onMutationSuccess={onMutationSuccess}
-            onTransitionEnd={onTransitionEnd}
+            onClose={onModalClose}
+            onMutationSuccess={onModalMutationSuccess}
+            onTransitionEnd={onModalTransitionEnd}
           />
         )}
       </section>
