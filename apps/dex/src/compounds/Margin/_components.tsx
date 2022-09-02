@@ -89,6 +89,7 @@ type PoolOverviewProps = {
   rowanPriceUsd: number;
   onChangePoolSelector: (_token: TokenEntry) => void;
   safetyFactor: number;
+  interestRate: string;
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
@@ -160,6 +161,15 @@ export function PoolOverview(props: PoolOverviewProps) {
             </Tooltip>
           </span>
           <span className="text-sm font-semibold">{formatNumberAsDecimal(props.safetyFactor)}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="flex flex-row items-center text-gray-300">
+            <span className="mr-1">Interest rate</span>
+            <Tooltip content="Interest rates are re-calculated per block based on pool health.">
+              <InfoIconForwardRef />
+            </Tooltip>
+          </span>
+          <span className="text-sm font-semibold">{props.interestRate}</span>
         </div>
       </li>
     </ul>

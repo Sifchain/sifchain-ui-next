@@ -534,6 +534,7 @@ const Trade = (props: TradeProps) => {
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
             safetyFactor={safetyFactor}
+            interestRate={`${formatNumberAsDecimal(Number(poolActive.stats.interestRate), 8)}%`}
           />
         ) : (
           <div className="flex items-center justify-center rounded p-4 text-4xl">
@@ -777,7 +778,10 @@ const Trade = (props: TradeProps) => {
           )}
         </article>
         <article className="border-gold-800 mt-4 rounded border lg:col-span-5 lg:mt-0">
-          <OpenPositionsTable openPositionsQuery={openPositionsBySymbolQuery} hideColumns={["Pool", "Interest Paid"]} />
+          <OpenPositionsTable
+            openPositionsQuery={openPositionsBySymbolQuery}
+            hideColumns={["Pool", "Interest Paid", "Interest Rate"]}
+          />
         </article>
       </section>
 
