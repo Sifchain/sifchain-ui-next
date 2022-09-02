@@ -37,10 +37,11 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
-import { InfoIconForwardRef, NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
+import { TooltipInterestPaid, TooltipLiquidationRatio, TooltipNpv } from "./tooltips";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -51,12 +52,6 @@ const isTruthy = (target: any) => !isNil(target);
  *
  * ********************************************************************************************
  */
-const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
-const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
-  "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
-const TOOLTIP_NPV_TITLE = `What does "NPV" means?`;
-const TOOLTIP_NPV_CONTENT =
-  "Net present value (NPV) represents the value of the position given spot prices for each asset involved in the trade. NPV does not represent the final amount you would receive in proceeds if you close the position";
 const HEADERS_TITLES = {
   DATE_OPENED: "Date Opened",
   POOL: "Pool",
@@ -66,7 +61,7 @@ const HEADERS_TITLES = {
   LEVERAGE: "Leverage",
   NPV: "NPV",
   INTEREST_RATE: "Interest Rate",
-  INTEREST_PAID: "Interest Paid",
+  PAID_INTEREST: "Paid Interest",
   LIQUIDATION_RATIO: "LR",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
@@ -80,7 +75,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.LEVERAGE, order_by: "leverage" },
   { title: HEADERS_TITLES.NPV, order_by: "" },
   { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
-  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "interest_paid_custody" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "interest_paid_custody" },
   { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
@@ -166,9 +161,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         {header.title === HEADERS_TITLES.NPV ? (
                           <>
                             <div className="mr-1" />
-                            <Tooltip title={TOOLTIP_NPV_TITLE} content={TOOLTIP_NPV_CONTENT}>
-                              <InfoIconForwardRef />
-                            </Tooltip>
+                            <TooltipNpv />
                           </>
                         ) : null}
                       </th>
@@ -218,12 +211,13 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         {header.title === HEADERS_TITLES.LIQUIDATION_RATIO ? (
                           <>
                             <div className="mr-1" />
-                            <Tooltip
-                              title={TOOLTIP_LIQUIDATION_RATIO_TITLE}
-                              content={TOOLTIP_LIQUIDATION_RATIO_CONTENT}
-                            >
-                              <InfoIconForwardRef />
-                            </Tooltip>
+                            <TooltipLiquidationRatio />
+                          </>
+                        ) : null}
+                        {header.title === HEADERS_TITLES.PAID_INTEREST ? (
+                          <>
+                            <div className="mr-1" />
+                            <TooltipInterestPaid />
                           </>
                         ) : null}
                       </div>
@@ -332,14 +326,16 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
-                      {isTruthy(item.interest_rate) ? (
-                        `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
+                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_RATE) ? null : (
+                      <td className="px-4 py-3">
+                        {isTruthy(item.interest_rate) ? (
+                          `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
+                        ) : (
+                          <HtmlUnicode name="EmDash" />
+                        )}
+                      </td>
+                    )}
+                    {hideColumns?.includes(HEADERS_TITLES.PAID_INTEREST) ? null : (
                       <td className="px-4 py-3">
                         {isTruthy(currentInterestPaidCustody) ? (
                           <div className="flex flex-row items-center">

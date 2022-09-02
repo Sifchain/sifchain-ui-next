@@ -4,22 +4,15 @@ import type { useEnhancedPoolsQuery } from "~/domains/clp";
 import clsx from "clsx";
 import {
   formatNumberAsCurrency,
-  InfoIcon,
+  formatNumberAsDecimal,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
-  Tooltip,
 } from "@sifchain/ui";
+
+import { TooltipInterestRate, TooltipLiquidationThreshold, TooltipPoolHealth } from "./tooltips";
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";
-import { forwardRef } from "react";
-
-export const InfoIconForwardRef = forwardRef<HTMLSpanElement | null>((props, ref) => (
-  <span ref={ref}>
-    <InfoIcon width="16px" height="16px" {...props} />
-  </span>
-));
-InfoIconForwardRef.displayName = "InfoIconForwardRef";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -76,14 +69,13 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
-const TOOLTIP_POOL_HEALTH_TITLE = `What does "Pool health" means?`;
-const TOOLTIP_POOL_HEALTH_CONTENT =
-  "Pool health is defined by taking total assets divided by all assets + outstanding liabilities. This health equation considers assets and liabilities held for both sides of the pool. The value can range from 0 to 100%. With a value of 100% the pool has no outstanding liabilities.";
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
   rowanPriceUsd: number;
   onChangePoolSelector: (_token: TokenEntry) => void;
+  safetyFactor: number;
+  interestRate: string;
 };
 export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL = props.pool.stats.poolTVL || 0;
@@ -96,7 +88,7 @@ export function PoolOverview(props: PoolOverviewProps) {
 
   return (
     <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
-      <li className="mb-4 px-4 lg:col-span-2 lg:mb-0">
+      <li className="2xl:place-self-normal mb-4 px-4 lg:col-span-2 lg:mb-0 lg:w-full lg:place-self-center">
         <BaseTokenSelector
           textPlaceholder="Search pools"
           modalTitle="Select Pool"
@@ -107,7 +99,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           onChange={props.onChangePoolSelector}
         />
       </li>
-      <li className="xl:grid-cols-0 grid gap-4 px-4 md:grid-cols-3 md:grid-rows-2 md:gap-2 lg:col-span-5 xl:auto-cols-max xl:grid-flow-col xl:grid-rows-1 xl:gap-8">
+      <li className="grid gap-4 px-4 md:grid-cols-3 lg:col-span-5 xl:grid-cols-4">
         <div className="flex flex-col">
           <span className="text-gray-300">Pool TVL</span>
           <span className="text-sm font-semibold">
@@ -116,7 +108,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           </span>
         </div>
         <div className="flex flex-col">
-          <span className="text-gray-300">Pool Volume</span>
+          <span className="text-gray-300">24h Trading Volume</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
             <Average24hPercent value={volume24hChange} />
@@ -141,11 +133,23 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
             <span className="mr-1">Pool Health</span>
-            <Tooltip title={TOOLTIP_POOL_HEALTH_TITLE} content={TOOLTIP_POOL_HEALTH_CONTENT}>
-              <InfoIconForwardRef />
-            </Tooltip>
+            <TooltipPoolHealth />
           </span>
           <span className="text-sm font-semibold">{formatNumberAsPercent(health)}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="flex flex-row items-center text-gray-300">
+            <span className="mr-1">Liquidation Threshold</span>
+            <TooltipLiquidationThreshold />
+          </span>
+          <span className="text-sm font-semibold">{formatNumberAsDecimal(props.safetyFactor)}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="flex flex-row items-center text-gray-300">
+            <span className="mr-1">Interest rate</span>
+            <TooltipInterestRate />
+          </span>
+          <span className="text-sm font-semibold">{props.interestRate}</span>
         </div>
       </li>
     </ul>
