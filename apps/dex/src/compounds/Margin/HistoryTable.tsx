@@ -52,7 +52,7 @@ const HEADERS_TITLES = {
   SIDE: "Side",
   ASSET: "Asset",
   POSITION: "Position",
-  INTEREST_PAID: "Paid Interest",
+  PAID_INTEREST: "Paid Interest",
   REALIZED_PNL: "Realized P&L",
 } as const;
 const HISTORY_HEADER_ITEMS = [
@@ -62,7 +62,7 @@ const HISTORY_HEADER_ITEMS = [
   { title: HEADERS_TITLES.SIDE, order_by: "position" },
   { title: HEADERS_TITLES.ASSET, order_by: "open_custody_asset" },
   { title: HEADERS_TITLES.POSITION, order_by: "open_custody_amount" },
-  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "close_interest_paid_custody" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "close_interest_paid_custody" },
   { title: HEADERS_TITLES.REALIZED_PNL, order_by: "" },
 ];
 export type HistoryTableProps = {
@@ -156,7 +156,7 @@ const HistoryTable = (props: HistoryTableProps) => {
                             )}
                           </a>
                         </Link>
-                        {header.title === HEADERS_TITLES.INTEREST_PAID ? (
+                        {header.title === HEADERS_TITLES.PAID_INTEREST ? (
                           <>
                             <div className="mr-1" />
                             <TooltipInterestPaid />

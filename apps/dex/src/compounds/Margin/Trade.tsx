@@ -780,7 +780,7 @@ const Trade = (props: TradeProps) => {
         <article className="border-gold-800 mt-4 rounded border lg:col-span-5 lg:mt-0">
           <OpenPositionsTable
             openPositionsQuery={openPositionsBySymbolQuery}
-            hideColumns={["Pool", "Interest Paid", "Interest Rate"]}
+            hideColumns={["Pool", "Paid Interest", "Interest Rate"]}
           />
         </article>
       </section>

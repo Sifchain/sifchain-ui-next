@@ -61,7 +61,7 @@ const HEADERS_TITLES = {
   LEVERAGE: "Leverage",
   NPV: "NPV",
   INTEREST_RATE: "Interest Rate",
-  INTEREST_PAID: "Paid Interest",
+  PAID_INTEREST: "Paid Interest",
   LIQUIDATION_RATIO: "LR",
   DURATION: "Duration",
   CLOSE_POSITION: "Close Position",
@@ -75,7 +75,7 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
   { title: HEADERS_TITLES.LEVERAGE, order_by: "leverage" },
   { title: HEADERS_TITLES.NPV, order_by: "" },
   { title: HEADERS_TITLES.INTEREST_RATE, order_by: "interest_rate" },
-  { title: HEADERS_TITLES.INTEREST_PAID, order_by: "interest_paid_custody" },
+  { title: HEADERS_TITLES.PAID_INTEREST, order_by: "interest_paid_custody" },
   { title: HEADERS_TITLES.LIQUIDATION_RATIO, order_by: "health" },
   { title: HEADERS_TITLES.DURATION, order_by: "" },
   { title: HEADERS_TITLES.CLOSE_POSITION, order_by: "" },
@@ -214,7 +214,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                             <TooltipLiquidationRatio />
                           </>
                         ) : null}
-                        {header.title === HEADERS_TITLES.INTEREST_PAID ? (
+                        {header.title === HEADERS_TITLES.PAID_INTEREST ? (
                           <>
                             <div className="mr-1" />
                             <TooltipInterestPaid />
@@ -335,7 +335,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         )}
                       </td>
                     )}
-                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
+                    {hideColumns?.includes(HEADERS_TITLES.PAID_INTEREST) ? null : (
                       <td className="px-4 py-3">
                         {isTruthy(currentInterestPaidCustody) ? (
                           <div className="flex flex-row items-center">
