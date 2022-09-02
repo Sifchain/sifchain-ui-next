@@ -87,6 +87,15 @@ const OPEN_POSITIONS_HEADER_ITEMS = [
 ];
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
+
+const RIGHT_ALIGNED_COLS = new Set<string>([
+  HEADERS_TITLES.POSITION,
+  HEADERS_TITLES.LEVERAGE,
+  HEADERS_TITLES.NPV,
+  HEADERS_TITLES.INTEREST_PAID,
+  HEADERS_TITLES.LIQUIDATION_RATIO,
+]);
+
 export type OpenPositionsTableProps = {
   openPositionsQuery: ReturnType<typeof useOpenPositionsQuery> | ReturnType<typeof useMarginOpenPositionsBySymbolQuery>;
   classNamePaginationContainer?: string;
@@ -159,9 +168,16 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     return <th key={header.title} />;
                   }
 
+                  const isRightAligned = RIGHT_ALIGNED_COLS.has(header.title);
+
                   if (header.order_by === "") {
                     return (
-                      <th key={header.title} className="flex flex-row items-center px-4 py-3 font-normal">
+                      <th
+                        key={header.title}
+                        className={clsx("flex flex-row items-center px-4 py-3 font-normal", {
+                          "justify-end text-right": isRightAligned,
+                        })}
+                      >
                         <span className="cursor-not-allowed">{header.title}</span>
                         {header.title === HEADERS_TITLES.NPV ? (
                           <>
@@ -212,6 +228,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       <div
                         className={clsx("flex flex-row items-center", {
                           "font-semibold text-white": itemActive,
+                          "justify-end text-right": isRightAligned,
                         })}
                       >
                         {linkNextEl}
@@ -291,10 +308,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         )}
                       </td>
                     )}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.custody_amount) ? (
                         formatNumberAsDecimal(custodyAmount, 4)
                       ) : (
@@ -308,14 +325,14 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.leverage) ? (
                         `${formatNumberAsDecimal(Number(item.leverage))}x`
                       ) : (
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
                         <div
                           className={clsx("flex flex-row items-center", {
@@ -332,7 +349,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         <HtmlUnicode name="EmDash" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.interest_rate) ? (
                         `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
                       ) : (
@@ -340,7 +357,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     {hideColumns?.includes(HEADERS_TITLES.INTEREST_PAID) ? null : (
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 text-right tabular-nums">
                         {isTruthy(currentInterestPaidCustody) ? (
                           <div className="flex flex-row items-center">
                             <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
@@ -353,7 +370,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         )}
                       </td>
                     )}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-right tabular-nums">
                       {isTruthy(item.current_health) ? (
                         formatNumberAsDecimal(Number(item.current_health))
                       ) : (
