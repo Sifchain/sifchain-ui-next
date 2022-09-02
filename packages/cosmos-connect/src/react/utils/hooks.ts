@@ -1,33 +1,42 @@
 import { DependencyList, useCallback, useState } from "react";
 import type { BaseStorage } from "../storage";
 
-export const useAsyncFunc = <T extends Function>(asyncFunc: T, deps?: DependencyList) => {
-  type TReturn = T extends (...args: any[]) => Promise<infer R> ? R : unknown;
-  const [data, setData] = useState<TReturn | undefined>();
-  const [error, setError] = useState<any>();
+export const useAsyncFunc = <TParams extends Array<unknown>, TResult>(
+  asyncFunc: (...args: TParams) => TResult | Promise<TResult>,
+  deps?: DependencyList,
+) => {
+  const [data, setData] = useState<TResult | undefined>();
+  const [dataUpdatedAt, setDataUpdatedAt] = useState<Date>();
+  const [error, setError] = useState<unknown>();
+  const [errorUpdatedAt, setErrorUpdatedAt] = useState<Date>();
   const [status, setStatus] = useState<"idle" | "pending" | "resolved" | "rejected">("idle");
 
-  const fetch = useCallback<T>(
-    // @ts-ignore
-    async (...args: any[]) => {
+  const fetch = useCallback(
+    async (...args: TParams) => {
       setStatus("pending");
       try {
         const result = await asyncFunc(...args);
+
         setData(result);
+        setDataUpdatedAt(new Date());
         setStatus("resolved");
         return result;
       } catch (error) {
         setError(error);
+        setErrorUpdatedAt(new Date());
         setStatus("rejected");
         throw error;
       }
     },
-    deps,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    deps ?? [],
   );
 
   return {
+    dataUpdatedAt,
     data,
     error,
+    errorUpdatedAt,
     fetch,
     status,
   };
@@ -37,7 +46,7 @@ export const useStorageState = <T>(key: string, initialValue: T, storage?: BaseS
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = storage?.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
       return initialValue;
     }
