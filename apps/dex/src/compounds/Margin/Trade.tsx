@@ -1,5 +1,16 @@
-import { Decimal } from "@cosmjs/math";
+import type { ChangeEvent, SyntheticEvent } from "react";
 import type { IAsset } from "@sifchain/common";
+import type { NextPage } from "next";
+
+import { Decimal } from "@cosmjs/math";
+import { useMemo, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/router";
+import BigNumber from "bignumber.js";
+import clsx from "clsx";
+import debounce from "just-debounce-it";
+import Head from "next/head";
+
+import { Maybe } from "@sifchain/utils";
 import {
   ArrowDownIcon,
   FlashMessage5xxError,
@@ -9,23 +20,21 @@ import {
   SwapIcon,
   TokenEntry,
 } from "@sifchain/ui";
-import BigNumber from "bignumber.js";
-import clsx from "clsx";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
-import AssetIcon from "~/compounds/AssetIcon";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
+import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
+import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
   useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
-import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
+
+import { ModalMTPOpen } from "./ModalMTPOpen";
+import { TradeActions } from "./TradeActions";
 
 /**
  * ********************************************************************************************
@@ -36,11 +45,6 @@ import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/dom
  *
  * ********************************************************************************************
  */
-import { Maybe } from "@sifchain/utils";
-import { useCallback } from "react";
-import { ROWAN } from "~/domains/assets";
-import { ModalMTPOpen } from "./ModalMTPOpen";
-import { TradeActions } from "./TradeActions";
 import { PoolOverview } from "./_components";
 import { formatNumberAsDecimal } from "./_intl";
 import {
@@ -353,21 +357,26 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeCollateral = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const $input = event.currentTarget;
-      const payload = inputValidatorCollateral($input, "change");
-
-      const positionInputAmount = calculatePosition(payload.value);
-
+  const refInputPosition = useRef<HTMLInputElement>(null);
+  const refInputCollateral = useRef<HTMLInputElement>(null);
+  const onKeyUpCollateral = debounce((event: SyntheticEvent<HTMLInputElement>) => {
+    const $target = event.target;
+    if ($target instanceof HTMLInputElement) {
+      const payload = inputValidatorCollateral($target, "change");
       setInputCollateral(payload);
+
+      const positionBigNumber = calculatePosition(payload.value);
+      const positionValue = String(positionBigNumber);
       setInputPosition({
-        value: String(positionInputAmount),
+        value: positionValue,
         error: "",
       });
-    },
-    [calculatePosition],
-  );
+
+      if (refInputPosition.current) {
+        refInputPosition.current.value = positionValue;
+      }
+    }
+  }, 600);
 
   /**
    * ********************************************************************************************
@@ -376,22 +385,24 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangePosition = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const $input = event.currentTarget;
-      const payload = inputValidatorPosition($input, "change");
-
-      const collateralInputAmount = calculateCollateral(payload.value);
-
+  const onKeyUpPosition = debounce((event: SyntheticEvent<HTMLInputElement>) => {
+    const $target = event.target;
+    if ($target instanceof HTMLInputElement) {
+      const payload = inputValidatorPosition($target, "change");
       setInputPosition(payload);
+
+      const collateralBigNumber = calculateCollateral(payload.value);
+      const collateralValue = String(collateralBigNumber);
       setInputCollateral({
-        value: String(collateralInputAmount),
+        value: collateralValue,
         error: "",
       });
-    },
-    [calculateCollateral],
-  );
 
+      if (refInputCollateral.current) {
+        refInputCollateral.current.value = collateralValue;
+      }
+    }
+  }, 600);
   /**
    * ********************************************************************************************
    *
@@ -572,13 +583,14 @@ const Trade = (props: TradeProps) => {
                   )}
                 </div>
                 <input
+                  ref={refInputCollateral}
                   type="number"
                   placeholder="0"
                   step="0.01"
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
-                  value={inputCollateral.value}
-                  onChange={onChangeCollateral}
+                  defaultValue={inputCollateral.value}
+                  onKeyUp={onKeyUpCollateral}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
                   })}
@@ -628,13 +640,14 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </div>
                 <input
+                  ref={refInputPosition}
                   type="number"
                   placeholder="0"
                   step="0.01"
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
-                  value={inputPosition.value}
-                  onChange={onChangePosition}
+                  defaultValue={inputPosition.value}
+                  onKeyUp={onKeyUpPosition}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
                   })}
