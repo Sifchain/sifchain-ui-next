@@ -230,6 +230,7 @@ const Trade = (props: TradeProps) => {
   };
 
   const maxLeverageDecimal = Decimal.fromAtomics(props.govParams.leverageMax, ROWAN.decimals);
+  const safetyFactor = Decimal.fromAtomics(props.govParams.safetyFactor, ROWAN.decimals).toFloatApproximation();
 
   /**
    * ********************************************************************************************
@@ -526,12 +527,13 @@ const Trade = (props: TradeProps) => {
         <title>Sichain Dex - Margin - Trade</title>
       </Head>
       <section className="border-gold-800 mt-4 rounded border bg-gray-800 text-xs">
-        {poolActive ? (
+        {poolActive && enhancedRowan.priceUsd ? (
           <PoolOverview
             pool={poolActive}
             assets={poolsAssets}
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
+            safetyFactor={safetyFactor}
           />
         ) : (
           <div className="flex items-center justify-center rounded p-4 text-4xl">
