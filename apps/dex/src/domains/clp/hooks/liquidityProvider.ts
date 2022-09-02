@@ -7,7 +7,6 @@ import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
-import useUpdatedAt from "~/utils/useUpdatedAt";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
@@ -15,7 +14,7 @@ export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";
 
 export const useLiquidityProviderQuery = (denom: string) => {
   const { data: env } = useDexEnvironment();
-  const { signer } = useSigner(env?.sifChainId ?? "", {
+  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } = useTokenRegistryQuery();
@@ -24,12 +23,8 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  const signerQueryKey = {
-    signerTimestamp: useUpdatedAt(signer),
-  };
-
   return useQuery(
-    [LIQUIDITY_PROVIDER_QUERY_KEY, signerQueryKey],
+    [LIQUIDITY_PROVIDER_QUERY_KEY, { signerUpdatedAt }],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -78,7 +73,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
 
 export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
-  const { signer } = useSigner(env?.sifChainId ?? "", {
+  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } = useTokenRegistryQuery();
@@ -87,12 +82,8 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  const signerQueryKey = {
-    signerTimestamp: useUpdatedAt(signer),
-  };
-
   return useQuery(
-    [LIQUIDITY_PROVIDERS_QUERY_KEY, signerQueryKey],
+    [LIQUIDITY_PROVIDERS_QUERY_KEY, { signerUpdatedAt }],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({

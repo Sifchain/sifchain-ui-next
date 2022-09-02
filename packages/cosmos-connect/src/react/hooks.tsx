@@ -28,6 +28,7 @@ export const useSigner = (chainId: string, options: HookOptions = { enabled: tru
 
   const {
     data: signer,
+    dataUpdatedAt: signerUpdatedAt,
     fetch,
     status,
   } = useAsyncFunc(async () => activeConnector?.getSigner(chainId), [activeConnector, chainId]);
@@ -48,7 +49,7 @@ export const useSigner = (chainId: string, options: HookOptions = { enabled: tru
     }
   }, [activeConnector, fetch, options.enabled]);
 
-  return { signer, status };
+  return { signer, signerUpdatedAt, status };
 };
 
 export const useStargateClient = (chainId: string, options: HookOptions = { enabled: true }) => {
@@ -56,6 +57,7 @@ export const useStargateClient = (chainId: string, options: HookOptions = { enab
 
   const {
     data: client,
+    dataUpdatedAt: clientUpdatedAt,
     fetch,
     status,
   } = useAsyncFunc(async () => activeConnector?.getStargateClient(chainId), [activeConnector, chainId]);
@@ -66,7 +68,7 @@ export const useStargateClient = (chainId: string, options: HookOptions = { enab
     }
   }, [activeConnector, fetch, options.enabled]);
 
-  return { client, status };
+  return { client, clientUpdatedAt, status };
 };
 
 export const useSigningStargateClient = (chainId: string, options: HookOptions = { enabled: true }) => {
@@ -74,6 +76,7 @@ export const useSigningStargateClient = (chainId: string, options: HookOptions =
 
   const {
     data: client,
+    dataUpdatedAt: clientUpdatedAt,
     fetch,
     status,
   } = useAsyncFunc(async () => activeConnector?.getSigningStargateClient(chainId), [activeConnector, chainId]);
@@ -84,7 +87,7 @@ export const useSigningStargateClient = (chainId: string, options: HookOptions =
     }
   }, [activeConnector, fetch, options.enabled]);
 
-  return { client, status };
+  return { client, clientUpdatedAt, status };
 };
 
 export const useAccounts = (chainId: string, options: HookOptions = { enabled: true }) => {
