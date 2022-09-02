@@ -77,7 +77,7 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
-const TOOLTIP_POOL_HEALTH_TITLE = `What does "Pool health" means?`;
+const TOOLTIP_POOL_HEALTH_TITLE = `What does "Pool health" mean?`;
 const TOOLTIP_POOL_HEALTH_CONTENT =
   "Pool health is defined by taking total assets divided by all assets + outstanding liabilities. This health equation considers assets and liabilities held for both sides of the pool. The value can range from 0 to 100%. With a value of 100% the pool has no outstanding liabilities.";
 const TOOLTIP_LIQUIDATION_THRESHOLD_TITLE = `What does "Liquidation Threshold" mean?`;

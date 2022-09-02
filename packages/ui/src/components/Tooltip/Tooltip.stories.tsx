@@ -45,6 +45,6 @@ export const LongText = Template.bind({});
 LongText.args = {
   content:
     "Liquidation ratio is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.",
-  title: `What does "Liquidation ratio" means?`,
+  title: `What does "Liquidation ratio" mean?`,
   children: <span className="rounded-sm bg-indigo-100 px-4 py-2 text-indigo-600 underline">Liquidation ratio</span>,
 };

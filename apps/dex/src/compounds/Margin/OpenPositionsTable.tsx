@@ -54,7 +54,7 @@ const isTruthy = (target: any) => !isNil(target);
 const TOOLTIP_LIQUIDATION_RATIO_TITLE = `What does "LR" means?`;
 const TOOLTIP_LIQUIDATION_RATIO_CONTENT =
   "Liquidation ratio (LR) is defined by the current value of the position divided by outstanding liabilities. As the liquidation ratio decreases, the position becomes more at risk for liquidation. A safety factor is set for all pools which defines the liquidation ratio level at which positions are automatically closed before the liabilities become greater than the value held.";
-const TOOLTIP_NPV_TITLE = `What does "NPV" means?`;
+const TOOLTIP_NPV_TITLE = `What does "NPV" mean?`;
 const TOOLTIP_NPV_CONTENT =
   "Net present value (NPV) represents the value of the position given spot prices for each asset involved in the trade. NPV does not represent the final amount you would receive in proceeds if you close the position";
 const HEADERS_TITLES = {
