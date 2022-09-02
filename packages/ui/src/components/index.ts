@@ -3,6 +3,7 @@ export * from "./atoms";
 export * from "./Button";
 export * from "./ButtonGroup";
 export * from "./ComposeProviders";
+export * from "./ExternalLink";
 export * from "./Fieldset";
 export * from "./FlashMessages";
 export * from "./icons";

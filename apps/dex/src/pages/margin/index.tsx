@@ -1,4 +1,4 @@
-import { FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
+import { ExternalLink, FlashMessageLoading, Modal, TabsWithSuspense, TabsWithSuspenseProps } from "@sifchain/ui";
 import { useLocalStorageState } from "@sifchain/utils/react";
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -46,6 +46,7 @@ const Margin: NextPage = () => {
   const router = useRouter();
   const isMarginStandaloneOn = useFeatureFlag("margin-standalone");
   const [isModalOpen, setIsModalOpen] = useLocalStorageState(INFO_MODAL_STORAGE_KEY, true);
+  const onModalClose = useCallback(() => setIsModalOpen(false), [setIsModalOpen]);
   const activeTab = useMemo(() => {
     if (router.isReady) {
       const tabOption = (router.query["tab"] as keyof typeof TABS) ?? TABS.trade.slug;
@@ -93,16 +94,19 @@ const Margin: NextPage = () => {
           </>
         }
         isOpen={isModalOpen}
-        onClose={useCallback(() => setIsModalOpen(false), [])}
+        onClose={onModalClose}
       >
         <p className="text-center text-lg">
-          v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
-          for Margin, please reference our product documentation{" "}
-          <Link href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9">
-            <a target="_blank" className="underline">
-              here
-            </a>
-          </Link>
+          <span>
+            v1.0 allows for longing ROWAN:TKN and TKN:ROWAN. To see all of v1.0 features along with the upcoming roadmap
+            for Margin, please reference our product documentation&nbsp;
+          </span>
+          <ExternalLink
+            href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9"
+            className="underline"
+          >
+            here
+          </ExternalLink>
         </p>
       </Modal>
     </>
