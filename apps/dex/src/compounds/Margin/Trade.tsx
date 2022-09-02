@@ -466,6 +466,9 @@ const Trade = (props: TradeProps) => {
     event.preventDefault();
     setModalConfirmOpenPosition({ isOpen: true });
   }, []);
+  const onModalClose = useCallback(() => {
+    setModalConfirmOpenPosition({ isOpen: false });
+  }, []);
 
   /**
    * ********************************************************************************************
@@ -804,12 +807,8 @@ const Trade = (props: TradeProps) => {
           toDenom: selectedPosition.symbol.toLowerCase(),
         }}
         isOpen={modalConfirmOpenPosition.isOpen}
-        onClose={() => {
-          setModalConfirmOpenPosition({ isOpen: false });
-        }}
-        onMutationSuccess={() => {
-          setModalConfirmOpenPosition({ isOpen: false });
-        }}
+        onClose={onModalClose}
+        onMutationSuccess={onModalClose}
       />
     </>
   );
