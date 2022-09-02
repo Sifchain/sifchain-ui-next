@@ -116,7 +116,7 @@ export function PoolOverview(props: PoolOverviewProps) {
           </span>
         </div>
         <div className="flex flex-col">
-          <span className="text-gray-300">Pool Volume</span>
+          <span className="text-gray-300">24h Trading Volume</span>
           <span className="text-sm font-semibold">
             <span className="mr-1">{formatNumberAsCurrency(volume)}</span>
             <Average24hPercent value={volume24hChange} />
