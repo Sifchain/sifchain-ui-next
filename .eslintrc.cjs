@@ -32,5 +32,6 @@ module.exports = {
     "packages/proto-types/sifnode/",
     "packages/proto-types/src/",
     "packages/sif-api/src/generated/",
+    "apps/e2e",
   ],
 };
