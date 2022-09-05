@@ -48,6 +48,17 @@
     },
     {
       "decimals": 18,
+      "displaySymbol": "FRAX",
+      "hasDarkIcon": true,
+      "homeNetwork": "ethereum",
+      "imageUrl": "https://assets.coingecko.com/coins/images/13422/small/frax_logo.png?1608476506",
+      "label": "Frax",
+      "name": "Frax",
+      "network": "sifchain",
+      "symbol": "CFRAX"
+    },
+    {
+      "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
       "name": "Stake",
       "network": "sifchain",
