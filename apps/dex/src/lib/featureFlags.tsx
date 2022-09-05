@@ -14,7 +14,7 @@ export type FeatureFlags = keyof FlagsState["features"];
 
 export function getFeatureFlags() {
   const rawFeatures = process.env["NEXT_PUBLIC_FEATURES"] ?? "";
-  return new Set<FeatureFlags>(rawFeatures.split(/,(\s+)?/) as FeatureFlags[]);
+  return new Set<FeatureFlags>(rawFeatures.split(/,/) as FeatureFlags[]);
 }
 
 export function hasFeatureFlag(key: FeatureFlags) {
@@ -41,22 +41,25 @@ export const FeatureFlag: FC<FeatureFlagProps> = ({ children, key, fallback = nu
   return <>{isFeatureOn ? children : fallback}</>;
 };
 
-export function withRedirectOnMount<T>(
-  InnerComponent: FC<T>,
+export function withRedirectOnMount(
+  InnerComponent: FC,
   options: {
     redirectTo: string;
     redirectIf: (ctx: { flags: Set<FeatureFlags> }) => boolean;
     fallback?: ReactNode;
   },
 ) {
-  function RedirectOnMount(innerProps: T) {
+  function RedirectOnMount(innerProps: any) {
     const router = useRouter();
 
     const flags = useFeatureFlags();
 
-    useRedirectOnMount(options.redirectTo, options.redirectIf({ flags }));
+    if (options.redirectIf({ flags })) {
+      router.push(options.redirectTo);
+      return options.fallback ?? <>...</>;
+    }
 
-    return router.isReady ? <InnerComponent {...innerProps} /> : options.fallback ?? <>...</>;
+    return <InnerComponent {...innerProps} />;
   }
 
   RedirectOnMount.displayName = `withRedirectOnMount(${InnerComponent.displayName})`;

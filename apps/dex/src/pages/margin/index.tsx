@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
-import { useFeatureFlag } from "~/lib/featureFlags";
+import { useFeatureFlag, withRedirectOnMount } from "~/lib/featureFlags";
 
 const TABS = {
   trade: { title: "Trade", slug: "trade" },
@@ -118,6 +118,22 @@ const Margin: NextPage = () => {
  * Using `dynamic` as default tells Next.js to only render this component in the client side
  * Enabling you to use `useMemo` and others without the Hydration error from Next.js (where the solution requires using useEffect)
  */
-export default dynamic(() => Promise.resolve(Margin), {
-  ssr: false,
-});
+export default dynamic(
+  () =>
+    Promise.resolve(
+      withRedirectOnMount(Margin, {
+        redirectTo: "/",
+        redirectIf(ctx) {
+          return ctx.flags.has("margin") === false || ctx.flags.has("margin-standalone") === false;
+        },
+        fallback: (
+          <div className="mx-auto w-full max-w-6xl bg-black">
+            <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />
+          </div>
+        ),
+      }) as any,
+    ),
+  {
+    ssr: false,
+  },
+);
