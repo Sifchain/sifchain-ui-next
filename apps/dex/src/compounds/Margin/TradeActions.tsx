@@ -71,9 +71,9 @@ export function TradeActions({
   }
 
   if (walletAddressQuery.fetchStatus === "idle" && walletAddressQuery.isError) {
-    console.log({
-      walletAddressQueryError: walletAddressQuery.error,
-    });
+    console.group("Trade Actions Query Error");
+    console.log({ walletAddressQuery });
+    console.groupEnd();
     return (
       <Layout>
         <FlashMessageConnectSifChainWalletError className="col-span-4" />
@@ -130,9 +130,16 @@ export function TradeActions({
     }
   }
 
+  console.group("Trade Actions Missing State Error");
+  console.log({
+    govParams,
+    walletAddressQuery,
+    isWhitelistedAccountQuery,
+  });
+  console.groupEnd();
   return (
     <Layout>
-      <span className="col-span-4">MISSING_SCENARIO_ACTIONS_OPEN_TRADE</span>
+      <span className="col-span-4">MISSING_STATE_ACTIONS_OPEN_TRADE</span>
     </Layout>
   );
 }
