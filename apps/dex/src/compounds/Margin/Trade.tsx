@@ -818,6 +818,7 @@ const Trade = (props: TradeProps) => {
           fromDenom: selectedCollateral.symbol.toLowerCase(),
           leverage: leverage,
           poolInterestRate: poolInterestRate,
+          poolSymbol: poolActive?.asset.denom ?? "",
           positionPriceUsd: selectedPosition.priceUsd,
           positionTokenAmount: String(
             Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,

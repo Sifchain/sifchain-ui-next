@@ -14,9 +14,10 @@ import type { MTPOpenResponse, MarginOpenPositionsData, Pagination } from "./typ
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
 type UseMarginMTPOpenMutationProps = {
+  poolSymbol: string;
   _optimisticCustodyAmount: string;
 };
-export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMarginMTPOpenMutationProps) {
+export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
   const { data: signerAddress } = useSifSignerAddressQuery();
   const { data: signingStargateClient } = useSifSigningStargateClient();
   const queryClient = useQueryClient();
@@ -116,15 +117,13 @@ export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMargin
             health, // Open Positions Column: Liquidation ratio (From 0 to 1)
           ] = marginMtpOpen.attributes;
 
-          const queriesNameToAddData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
-
           const newOpenPosition = {
             id: id.value,
             position: position.value,
             address: address.value,
             collateral_asset: collateral_asset.value,
             custody_asset: custody_asset.value,
-            custody_amount: _optimisticCustodyAmount,
+            custody_amount: props._optimisticCustodyAmount,
             leverage: leverage.value,
             interest_paid_custody: interest_paid_custody.value,
             health: health.value,
@@ -142,10 +141,14 @@ export function useMarginMTPOpenMutation({ _optimisticCustodyAmount }: UseMargin
            *
            * Data Services response is our source of truth
            */
+          const queriesNameToAddData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
           queryClient.setQueriesData(
             {
               predicate(query) {
-                return queriesNameToAddData.includes(query.queryKey[0] as string);
+                const [queryKey, _walletAddress, poolSymbol] = query.queryKey;
+                const isPositionsBySymbol = queriesNameToAddData[0] === queryKey && poolSymbol === props.poolSymbol;
+                const isPositionsAll = queriesNameToAddData[1] === queryKey;
+                return isPositionsBySymbol || isPositionsAll;
               },
             },
             (state) => {

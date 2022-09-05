@@ -13,6 +13,7 @@ type ModalMTPOpenProps = {
     fromDenom: string;
     leverage: string;
     poolInterestRate: string;
+    poolSymbol: string;
     positionPriceUsd: number;
     positionTokenAmount: string;
     toDenom: string;
@@ -25,6 +26,7 @@ type ModalMTPOpenProps = {
 };
 export function ModalMTPOpen(props: ModalMTPOpenProps) {
   const confirmOpenPositionMutation = useMarginMTPOpenMutation({
+    poolSymbol: props.data.poolSymbol,
     _optimisticCustodyAmount: props.data.positionTokenAmount,
   });
 
