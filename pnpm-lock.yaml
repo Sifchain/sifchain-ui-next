@@ -70,7 +70,6 @@ importers:
       ethers: ^5.6.9
       happy-dom: 6.0.4
       immer: ^9.0.15
-      just-debounce-it: 3.1.1
       ky: ^0.30.0
       long: ^5.2.0
       next: 12.2.5
@@ -119,7 +118,6 @@ importers:
       date-fns: 2.29.1
       ethers: 5.6.9_22kvxa7zeyivx4jp72v2w3pkvy
       immer: 9.0.15
-      just-debounce-it: 3.1.1
       ky: 0.30.0
       long: 5.2.0
       next: 12.2.5_ef5jwxihqo6n7gxfmzogljlgcm
@@ -15241,10 +15239,6 @@ packages:
     resolution: {integrity: sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==}
     engines: {node: '>=8'}
     dev: true
-
-  /just-debounce-it/3.1.1:
-    resolution: {integrity: sha512-oPsuRyWp99LJaQ4KXC3A42tQNqkRTcPy0A8BCkRZ5cPCgsx81upB2KUrmHZvDUNhnCDKe7MshfTuWFQB9iXwDg==}
-    dev: false
 
   /keccak/3.0.2:
     resolution: {integrity: sha512-PyKKjkH53wDMLGrvmRGSNWgmSxZOUqbnXwKL9tmgbFYA1iAYqW21kfR7mZXV0MlESiefxQQE9X9fTa3X+2MPDQ==}

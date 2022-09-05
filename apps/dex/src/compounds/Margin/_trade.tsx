@@ -60,11 +60,11 @@ export function inputValidatorCollateral($input: HTMLInputElement, event: "blur"
     payload.error = COLLATERAL_ERRORS.INVALID_RANGE;
   }
 
-  if (event === "blur" && $input.value === "") {
+  if ($input.value === "") {
     payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
   }
 
-  if (event === "blur" && Number($input.value) === 0) {
+  if (Number($input.value) === 0) {
     payload.error = COLLATERAL_ERRORS.INVALID_NUMBER;
   }
 
@@ -107,11 +107,11 @@ export function inputValidatorPosition($input: HTMLInputElement, event: "blur" |
     payload.error = POSITION_ERRORS.INVALID_RANGE;
   }
 
-  if (event === "blur" && $input.value === "") {
+  if ($input.value === "") {
     payload.error = POSITION_ERRORS.INVALID_NUMBER;
   }
 
-  if (event === "blur" && Number($input.value) === 0) {
+  if (Number($input.value) === 0) {
     payload.error = POSITION_ERRORS.INVALID_NUMBER;
   }
 
@@ -150,7 +150,7 @@ export function inputValidatorLeverage($input: HTMLInputElement, event: "blur" |
     payload.error = LEVERAGE_ERRORS.INVALID_RANGE(LEVERAGE_MIN_VALUE, leverageMax);
   }
 
-  if (event === "blur" && $input.value === "") {
+  if ($input.value === "") {
     payload.error = LEVERAGE_ERRORS.INVALID_NUMBER(LEVERAGE_MIN_VALUE, leverageMax);
   }
 

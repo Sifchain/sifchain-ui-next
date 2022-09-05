@@ -3,11 +3,10 @@ import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
 
 import { Decimal } from "@cosmjs/math";
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
-import debounce from "just-debounce-it";
 import Head from "next/head";
 
 import { Maybe } from "@sifchain/utils";
@@ -357,26 +356,27 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const refInputPosition = useRef<HTMLInputElement>(null);
-  const refInputCollateral = useRef<HTMLInputElement>(null);
-  const onKeyUpCollateral = debounce((event: SyntheticEvent<HTMLInputElement>) => {
-    const $target = event.target;
-    if ($target instanceof HTMLInputElement) {
-      const payload = inputValidatorCollateral($target, "change");
-      setInputCollateral(payload);
-
-      const positionBigNumber = calculatePosition(payload.value);
-      const positionValue = String(positionBigNumber);
-      setInputPosition({
-        value: positionValue,
-        error: "",
-      });
-
-      if (refInputPosition.current) {
-        refInputPosition.current.value = positionValue;
+  const onInputCollateral = useCallback(
+    (event: SyntheticEvent<HTMLInputElement>) => {
+      if (inputPosition.error || inputLeverage.error) {
+        return;
       }
-    }
-  }, 600);
+
+      const $target = event.target;
+      if ($target instanceof HTMLInputElement) {
+        const payload = inputValidatorCollateral($target, "change");
+        setInputCollateral(payload);
+
+        const positionBigNumber = calculatePosition(payload.value);
+        const positionValue = String(positionBigNumber);
+        setInputPosition({
+          value: positionValue,
+          error: "",
+        });
+      }
+    },
+    [calculatePosition],
+  );
 
   /**
    * ********************************************************************************************
@@ -385,24 +385,27 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onKeyUpPosition = debounce((event: SyntheticEvent<HTMLInputElement>) => {
-    const $target = event.target;
-    if ($target instanceof HTMLInputElement) {
-      const payload = inputValidatorPosition($target, "change");
-      setInputPosition(payload);
-
-      const collateralBigNumber = calculateCollateral(payload.value);
-      const collateralValue = String(collateralBigNumber);
-      setInputCollateral({
-        value: collateralValue,
-        error: "",
-      });
-
-      if (refInputCollateral.current) {
-        refInputCollateral.current.value = collateralValue;
+  const onInputPosition = useCallback(
+    (event: SyntheticEvent<HTMLInputElement>) => {
+      if (inputCollateral.error || inputLeverage.error) {
+        return;
       }
-    }
-  }, 600);
+
+      const $target = event.target;
+      if ($target instanceof HTMLInputElement) {
+        const payload = inputValidatorPosition($target, "change");
+        setInputPosition(payload);
+
+        const collateralBigNumber = calculateCollateral(payload.value);
+        const collateralValue = String(collateralBigNumber);
+        setInputCollateral({
+          value: collateralValue,
+          error: "",
+        });
+      }
+    },
+    [calculateCollateral],
+  );
   /**
    * ********************************************************************************************
    *
@@ -410,9 +413,13 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const onChangeLeverage = useCallback(
+  const onInputLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const $input = event.currentTarget;
+      if (inputCollateral.error || inputPosition.error) {
+        return;
+      }
+
+      const $input = event.target;
       const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
 
       if (!payload.error) {
@@ -451,12 +458,6 @@ const Trade = (props: TradeProps) => {
         value: maxLeverageDecimal.toString(),
         error: "",
       });
-      if (refInputCollateral.current) {
-        refInputCollateral.current.value = "";
-      }
-      if (refInputPosition.current) {
-        refInputPosition.current.value = "";
-      }
     },
     [maxLeverageDecimal],
   );
@@ -520,12 +521,6 @@ const Trade = (props: TradeProps) => {
         value: maxLeverageDecimal.toString(),
         error: "",
       });
-      if (refInputCollateral.current) {
-        refInputCollateral.current.value = "";
-      }
-      if (refInputPosition.current) {
-        refInputPosition.current.value = "";
-      }
     },
     [maxLeverageDecimal, router],
   );
@@ -542,12 +537,6 @@ const Trade = (props: TradeProps) => {
         value: inputCollateral.value,
       }));
       setSwitchCollateralAndPosition((prev) => !prev);
-      if (refInputCollateral.current) {
-        refInputCollateral.current.value = inputPosition.value;
-      }
-      if (refInputPosition.current) {
-        refInputPosition.current.value = inputCollateral.value;
-      }
     },
     [inputCollateral.value, inputPosition.value],
   );
@@ -601,14 +590,13 @@ const Trade = (props: TradeProps) => {
                   )}
                 </div>
                 <input
-                  ref={refInputCollateral}
                   type="number"
                   placeholder="0"
                   step="0.01"
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
-                  defaultValue={inputCollateral.value}
-                  onKeyUp={onKeyUpCollateral}
+                  value={inputCollateral.value}
+                  onInput={onInputCollateral}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
                   })}
@@ -658,14 +646,13 @@ const Trade = (props: TradeProps) => {
                   ) : null}
                 </div>
                 <input
-                  ref={refInputPosition}
                   type="number"
                   placeholder="0"
                   step="0.01"
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
-                  defaultValue={inputPosition.value}
-                  onKeyUp={onKeyUpPosition}
+                  value={inputPosition.value}
+                  onInput={onInputPosition}
                   className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
                   })}
@@ -696,13 +683,13 @@ const Trade = (props: TradeProps) => {
                 </span>
                 <input
                   type="number"
-                  placeholder="Leverage amount"
+                  placeholder="0"
                   step="0.01"
                   min={LEVERAGE_MIN_VALUE}
                   max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
-                  onChange={onChangeLeverage}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm", {
+                  onInput={onInputLeverage}
+                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm placeholder-white", {
                     "ring ring-red-600 focus:ring focus:ring-red-600": inputLeverage.error,
                   })}
                 />
