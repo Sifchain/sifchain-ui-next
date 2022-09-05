@@ -812,23 +812,25 @@ const Trade = (props: TradeProps) => {
         </article>
       </section>
 
-      <ModalMTPOpen
-        data={{
-          collateralAmount: collateralAmount,
-          fromDenom: selectedCollateral.symbol.toLowerCase(),
-          leverage: leverage,
-          poolInterestRate: poolInterestRate,
-          poolSymbol: poolActive?.asset.denom ?? "",
-          positionPriceUsd: selectedPosition.priceUsd,
-          positionTokenAmount: String(
-            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
-          ),
-          toDenom: selectedPosition.symbol.toLowerCase(),
-        }}
-        isOpen={modalConfirmOpenPosition.isOpen}
-        onClose={onModalClose}
-        onMutationSuccess={onModalClose}
-      />
+      {selectedCollateral.denom && selectedPosition.denom && poolActive && poolActive.asset.denom ? (
+        <ModalMTPOpen
+          data={{
+            collateralAmount: collateralAmount,
+            fromDenom: selectedCollateral.denom,
+            leverage: leverage,
+            poolInterestRate: poolInterestRate,
+            poolSymbol: poolActive.asset.denom,
+            positionPriceUsd: selectedPosition.priceUsd,
+            positionTokenAmount: String(
+              Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+            ),
+            toDenom: selectedPosition.denom,
+          }}
+          isOpen={modalConfirmOpenPosition.isOpen}
+          onClose={onModalClose}
+          onMutationSuccess={onModalClose}
+        />
+      ) : null}
     </>
   );
 };
