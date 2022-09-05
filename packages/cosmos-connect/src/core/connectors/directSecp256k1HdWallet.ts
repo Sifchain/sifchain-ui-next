@@ -8,7 +8,7 @@ export type MnemonicConnectorOptions = {
   mnemonic: string;
   chainInfos: ChainInfo[];
   // useful for e2e testing
-  simulateDisconnect: boolean;
+  simulateDisconnect?: boolean;
 };
 
 export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOptions> {
