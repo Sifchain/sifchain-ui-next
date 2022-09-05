@@ -1,9 +1,12 @@
 import { CHAINCONFIG_BY_NETWORK_ENV, IBCChainConfig } from "@sifchain/common";
 import {
+  BaseCosmConnector,
   CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
   KeplrWalletConnectConnector,
+  MnemonicConnector,
 } from "@sifchain/cosmos-connect";
+import { isDefined } from "@sifchain/utils";
 import { PropsWithChildren, useMemo } from "react";
 
 import { useDexEnvKind } from "~/domains/core/envs";
@@ -17,6 +20,7 @@ function useKeplrConnectors() {
       .map(([, chain]) => (chain as IBCChainConfig).keplrChainInfo);
 
     return [
+      process.env.NODE_ENV === "production" ? undefined : new MnemonicConnector({ chainInfos }),
       new InjectedKeplrConnector({
         chainInfos,
       }),
@@ -34,7 +38,7 @@ function useKeplrConnectors() {
           icons: ["https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300"],
         },
       }),
-    ];
+    ].filter(isDefined);
   }, [networkEnv]);
 }
 
