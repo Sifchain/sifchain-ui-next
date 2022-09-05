@@ -185,7 +185,7 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
         const { message } = error as Error;
         toast.error(message);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
-        toast.success(`Successfully openned margin position`);
+        toast.success(`Successfully opened margin position`);
       }
     },
   });
