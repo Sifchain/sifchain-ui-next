@@ -451,6 +451,12 @@ const Trade = (props: TradeProps) => {
         value: maxLeverageDecimal.toString(),
         error: "",
       });
+      if (refInputCollateral.current) {
+        refInputCollateral.current.value = "";
+      }
+      if (refInputPosition.current) {
+        refInputPosition.current.value = "";
+      }
     },
     [maxLeverageDecimal],
   );
@@ -514,6 +520,12 @@ const Trade = (props: TradeProps) => {
         value: maxLeverageDecimal.toString(),
         error: "",
       });
+      if (refInputCollateral.current) {
+        refInputCollateral.current.value = "";
+      }
+      if (refInputPosition.current) {
+        refInputPosition.current.value = "";
+      }
     },
     [maxLeverageDecimal, router],
   );
