@@ -542,6 +542,12 @@ const Trade = (props: TradeProps) => {
         value: inputCollateral.value,
       }));
       setSwitchCollateralAndPosition((prev) => !prev);
+      if (refInputCollateral.current) {
+        refInputCollateral.current.value = inputPosition.value;
+      }
+      if (refInputPosition.current) {
+        refInputPosition.current.value = inputCollateral.value;
+      }
     },
     [inputCollateral.value, inputPosition.value],
   );
