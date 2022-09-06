@@ -1,13 +1,14 @@
 import type { Pagination } from "../hooks";
 
-import { mergeDeepRight } from "rambda";
-
 export type SyncCacheWithServerInput = {
   pagination: Pagination;
   results: { id: string; _optimistic: boolean }[];
 };
-export function syncCacheWithServer<T extends SyncCacheWithServerInput>(oldData: T, newData: T) {
-  const draft = mergeDeepRight<T>({}, newData);
+export function syncCacheWithServer<T extends SyncCacheWithServerInput>(
+  oldData: { results: T["results"] },
+  newData: T,
+) {
+  const draft = { results: [...newData.results], pagination: { ...newData.pagination } };
   const newDataIds = newData.results.map((x) => x.id);
   const oldDataDiff = oldData.results.filter((x) => !newDataIds.includes(x.id) && x._optimistic);
 
