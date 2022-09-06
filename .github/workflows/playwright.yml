@@ -10,9 +10,6 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/e2e
     steps:
       - uses: actions/checkout@v2
 
@@ -27,7 +24,8 @@ jobs:
       - run: pnpm install
 
       - run: pnpm dlx playwright install --with-deps
-      - run: pnpm dlx playwright test
+      - run: pnpm build --filter=@sifchain/dex
+      - run: pnpm e2e
         env:
           COSMOS_MNEMONIC: ${{ secrets.SuperSecret.COSMOS_TEST_MNEMONIC }}
 
