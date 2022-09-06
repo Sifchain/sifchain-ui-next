@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.22.2",
+    "@playwright/test": "^1.25.1",
     "@tsconfig/node18-strictest-esm": "^1.0.1",
     "@types/node": "^18.7.15"
   }

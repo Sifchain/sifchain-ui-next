@@ -196,11 +196,11 @@ importers:
 
   apps/e2e:
     specifiers:
-      '@playwright/test': ^1.22.2
+      '@playwright/test': ^1.25.1
       '@tsconfig/node18-strictest-esm': ^1.0.1
       '@types/node': ^18.7.15
     devDependencies:
-      '@playwright/test': 1.24.2
+      '@playwright/test': 1.25.1
       '@tsconfig/node18-strictest-esm': 1.0.1
       '@types/node': 18.7.15
 
@@ -4562,13 +4562,13 @@ packages:
     resolution: {integrity: sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==}
     dev: false
 
-  /@playwright/test/1.24.2:
-    resolution: {integrity: sha512-Q4X224pRHw4Dtkk5PoNJplZCokLNvVbXD9wDQEMrHcEuvWpJWEQDeJ9gEwkZ3iCWSFSWBshIX177B231XW4wOQ==}
+  /@playwright/test/1.25.1:
+    resolution: {integrity: sha512-IJ4X0yOakXtwkhbnNzKkaIgXe6df7u3H3FnuhI9Jqh+CdO0e/lYQlDLYiyI9cnXK8E7UAppAWP+VqAv6VX7HQg==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 18.7.15
-      playwright-core: 1.24.2
+      playwright-core: 1.25.1
     dev: true
 
   /@pmmmwh/react-refresh-webpack-plugin/0.5.7_metx475lqcp4j5c75za4zf7xbi:
@@ -17925,8 +17925,8 @@ packages:
       find-up: 5.0.0
     dev: true
 
-  /playwright-core/1.24.2:
-    resolution: {integrity: sha512-zfAoDoPY/0sDLsgSgLZwWmSCevIg1ym7CppBwllguVBNiHeixZkc1AdMuYUPZC6AdEYc4CxWEyLMBTw2YcmRrA==}
+  /playwright-core/1.25.1:
+    resolution: {integrity: sha512-lSvPCmA2n7LawD2Hw7gSCLScZ+vYRkhU8xH0AapMyzwN+ojoDqhkH/KIEUxwNu2PjPoE/fcE0wLAksdOhJ2O5g==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
