@@ -9,7 +9,7 @@ import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 
 import * as errors from "./mutationErrorMessage";
-import type { MTPOpenResponse, MarginOpenPositionsData, Pagination } from "./types";
+import type { MTPOpenResponse } from "./types";
 
 export type OpenMTPVariables = Omit<MarginTX.MsgOpen, "signer">;
 
@@ -129,53 +129,20 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
             health: health.value,
             _optimistic: true,
           };
-          /**
-           * We are using React Query Optimistic Updates in "useMarginMTPOpenMutation"
-           * To avoid removing the optimistic item too soon from the UI, we need to
-           * increasing the refresh time "useMarginOpenPositionsBySymbolQuery"
-           * to allow Data Services to do their job
-           *
-           * If in the next fetch window (after 20 seconds), Data Services response
-           * DOESN'T include the new item, the optimistic item will be REMOVED from the UI
-           * we are not doing a diff in the Data Service response x local cache
-           *
-           * Data Services response is our source of truth
-           */
-          const queriesNameToAddData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
-          queryClient.setQueriesData(
-            {
-              predicate(query) {
-                const [queryKey, _walletAddress, poolSymbol] = query.queryKey;
-                const isPositionsBySymbol = queriesNameToAddData[0] === queryKey && poolSymbol === props.poolSymbol;
-                const isPositionsAll = queriesNameToAddData[1] === queryKey;
-                return isPositionsBySymbol || isPositionsAll;
-              },
-            },
-            (state) => {
-              type PartialResponse = { pagination: Pagination; results: Partial<MarginOpenPositionsData>[] };
-              const draft = state as PartialResponse | undefined;
-              if (draft) {
-                draft.pagination = {
-                  ...draft.pagination,
-                  limit: `${Number(draft.pagination.limit) + 1}`,
-                  total: `${Number(draft.pagination.total) + 1}`,
-                };
-                draft.results = [newOpenPosition, ...draft.results];
+
+          queryClient.setQueryData<typeof newOpenPosition[] | undefined>(
+            ["margin.getOptimisticPositions"],
+            (oldData) => {
+              if (oldData) {
+                return oldData.concat(newOpenPosition);
               }
-              return draft;
+              return [newOpenPosition];
             },
           );
 
-          /**
-           * When opening a new position, the only screen available is Trade
-           * and we use the By Symbol query
-           */
-          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
-
-          /**
-           * Re-fetch balance after opening a position
-           */
-          queryClient.refetchQueries(["all-balances"]);
+          queryClient.invalidateQueries(["margin.getMarginOpenPositionBySymbol"]);
+          queryClient.invalidateQueries(["margin.getMarginOpenPosition"]);
+          queryClient.invalidateQueries(["all-balances"]);
         }
       }
     },

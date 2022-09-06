@@ -375,7 +375,7 @@ const Trade = (props: TradeProps) => {
         });
       }
     },
-    [calculatePosition],
+    [calculatePosition, inputLeverage.error, inputPosition.error],
   );
 
   /**
@@ -404,7 +404,7 @@ const Trade = (props: TradeProps) => {
         });
       }
     },
-    [calculateCollateral],
+    [calculateCollateral, inputCollateral.error, inputLeverage.error],
   );
   /**
    * ********************************************************************************************
@@ -433,7 +433,7 @@ const Trade = (props: TradeProps) => {
 
       setInputLeverage(payload);
     },
-    [calculatePosition, inputCollateral.value, maxLeverageDecimal],
+    [calculatePosition, inputCollateral.value, maxLeverageDecimal, inputCollateral.error, inputPosition.error],
   );
 
   /**

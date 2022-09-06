@@ -1,5 +1,7 @@
-import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
+import type { MTPCloseResponse } from "./types";
+
+import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import { DEFAULT_FEE } from "@sifchain/stargate";
 import { invariant, toast } from "@sifchain/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,7 +9,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import * as errors from "./mutationErrorMessage";
-import type { MarginHistoryData, MTPCloseResponse, MarginOpenPositionsData, Pagination } from "./types";
 
 export type CloseMTPVariables = Omit<MarginTX.MsgClose, "signer">;
 
@@ -99,31 +100,6 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
             _health,
           ] = marginMtpClose.attributes;
 
-          const queriesNameToRemoveData = ["margin.getMarginOpenPositionBySymbol", "margin.getMarginOpenPosition"];
-
-          queryClient.setQueriesData(
-            {
-              predicate(query) {
-                return queriesNameToRemoveData.includes(query.queryKey[0] as string);
-              },
-            },
-            (state) => {
-              type PartialResponse = { pagination: Pagination; results: Partial<MarginOpenPositionsData>[] };
-              const draft = state as PartialResponse | undefined;
-              if (draft) {
-                draft.pagination = {
-                  ...draft.pagination,
-                  limit: `${Number(draft.pagination.limit) - 1}`,
-                  total: `${Number(draft.pagination.total) - 1}`,
-                };
-                draft.results = [...draft.results.filter((x) => x.id !== id.value)];
-              }
-              return draft;
-            },
-          );
-
-          const queriesNameToAddData = ["margin.getMarginHistory"];
-
           const newHistoryPosition = {
             close_interest_paid_custody: interest_paid_custody.value,
             closed_date_time: undefined,
@@ -137,35 +113,18 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
             _optimistic: true,
           };
 
-          queryClient.setQueriesData(
-            {
-              predicate(query) {
-                return queriesNameToAddData.includes(query.queryKey[0] as string);
-              },
-            },
-            (state) => {
-              type PartialResponse = { pagination: Pagination; results: Partial<MarginHistoryData>[] };
-              const draft = state as PartialResponse | undefined;
-              if (draft) {
-                draft.pagination = {
-                  ...draft.pagination,
-                  limit: `${Number(draft.pagination.limit) + 1}`,
-                  total: `${Number(draft.pagination.total) + 1}`,
-                };
-                draft.results = [newHistoryPosition, ...draft.results];
+          queryClient.setQueryData<typeof newHistoryPosition[] | undefined>(
+            ["margin.getOptimisticHistory"],
+            (oldData) => {
+              if (oldData) {
+                return oldData.concat(newHistoryPosition);
               }
-              return draft;
+              return [newHistoryPosition];
             },
           );
 
-          /**
-           * There's two places we can close a position:
-           *   - Trade (open positions by pool symbol)
-           *   - Positions (all open positions)
-           * We use different queries in each place
-           */
-          queryClient.cancelQueries(["margin.getMarginOpenPositionBySymbol"]);
-          queryClient.cancelQueries(["margin.getMarginOpenPosition"]);
+          queryClient.invalidateQueries(["margin.getMarginOpenPositionBySymbol"]);
+          queryClient.invalidateQueries(["margin.getMarginOpenPosition"]);
         }
       }
     },

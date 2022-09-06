@@ -1,5 +1,5 @@
 import type { MarginHistoryResponse } from "./types";
-import type { UseQueryResult } from "@tanstack/react-query";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
 
@@ -12,29 +12,41 @@ export function useMarginHistoryQuery(params: {
   orderBy: string;
   sortBy: string;
 }) {
+  const queryClient = useQueryClient();
+  const optimisticHistory = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
+    []) as MarginHistoryResponse["results"];
+
   return useSifApiQuery(
     "margin.getMarginHistory",
     [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
+      initialData: {
+        pagination: {
+          limit: params.limit,
+          offset: params.offset,
+          order_by: params.orderBy,
+          sort_by: params.sortBy,
+          total: String(optimisticHistory.length),
+        },
+        results: optimisticHistory,
+      },
       keepPreviousData: true,
-      /**
-       * We are using React Query Optimistic Updates in "useMarginMTPCloseMutation"
-       * To avoid removing the optimistic item too soon from the UI, we need to
-       * increasing the refresh time in "useMarginHistory"
-       * to allow Data Services to do their job
-       *
-       * If in the next fetch window (after 10 seconds), Data Services response
-       * DOESN'T remove the old item, the item will APPEAR again in the UI
-       * we are not doing a diff in the Data Service response x local cache
-       *
-       * Data Services response is our source of truth
-       */
       refetchInterval: 10 * 1000,
       retry: false,
+      /**
+       * We are using React Query Optimistic Updates in "OpenPositions" and "History" tables
+       * It can take a few seconds for Data Services to return a up to date response with new trades
+       * Because of that, we need to create a diff of old data (current cache) and new data (latest Data Services response)
+       */
       structuralSharing(oldData: MarginHistoryResponse | undefined, newData: MarginHistoryResponse | undefined) {
         if (oldData && newData) {
-          return syncCacheWithServer<MarginHistoryResponse>(oldData, newData);
+          const diffData = syncCacheWithServer(oldData, newData) as MarginHistoryResponse;
+          queryClient.setQueryData(
+            ["margin.getOptimisticHistory"],
+            diffData.results.filter((x) => x._optimistic),
+          );
+          return diffData;
         }
         return newData;
       },
