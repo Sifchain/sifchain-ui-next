@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const PORT = Number(process.env["PORT"] ?? 3000);
+const BASE_URL = `http://localhost:${PORT}`;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -33,7 +36,7 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -96,8 +99,8 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "pnpm -C ../dex dev",
-    port: 3001,
+    command: `pnpm -C ../dex dev -p ${PORT}`,
+    url: BASE_URL,
   },
 };
 

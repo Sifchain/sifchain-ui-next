@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("can connect to mnemonic wallet", async ({ page }) => {
-  await page.goto("http://localhost:3001/");
+  await page.goto("/");
 
   const connectWallet = page.locator("text=Connect wallets");
   await connectWallet.click();
