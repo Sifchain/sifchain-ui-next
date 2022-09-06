@@ -11,7 +11,7 @@ import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { syncCacheWithServer } from "../utilts/syncCacheWithServer";
 import { syncOptimisticHistoryWithPositions } from "../utilts/syncOptimisticHistoryWithPositions";
 
-export function useOpenPositionsQuery() {
+export function useMarginOpenPositionsQuery() {
   const router = useRouter();
   const walletAddress = useSifSignerAddressQuery();
   const params = {
@@ -56,7 +56,7 @@ export function useOpenPositionsQuery() {
           const diffOptimisticPositions = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
             []) as MarginOpenPositionsResponse["results"];
 
-          const diffOptimisticHistory = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
+          const diffOptimisticHistory = (queryClient.getQueryData(["margin.getOptimisticHistory"]) ??
             []) as MarginHistoryResponse["results"];
 
           const diffPositions = syncCacheWithServer(

@@ -1,7 +1,7 @@
 import type {
   MarginOpenPositionsData,
   useMarginOpenPositionsBySymbolQuery,
-  useOpenPositionsQuery,
+  useMarginOpenPositionsQuery,
 } from "~/domains/margin/hooks";
 
 import {
@@ -92,7 +92,9 @@ const RIGHT_ALIGNED_COLS = new Set<string>([
 
 type HideColsUnion = typeof HEADERS_TITLES[keyof typeof HEADERS_TITLES];
 export type OpenPositionsTableProps = {
-  openPositionsQuery: ReturnType<typeof useOpenPositionsQuery> | ReturnType<typeof useMarginOpenPositionsBySymbolQuery>;
+  openPositionsQuery:
+    | ReturnType<typeof useMarginOpenPositionsQuery>
+    | ReturnType<typeof useMarginOpenPositionsBySymbolQuery>;
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };

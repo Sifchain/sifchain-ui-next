@@ -3,10 +3,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
-import { useOpenPositionsQuery } from "~/domains/margin/hooks";
+import { useMarginOpenPositionsQuery } from "~/domains/margin/hooks";
 
 const PositionTab: NextPage = () => {
-  const openPositionsQuery = useOpenPositionsQuery();
+  const openPositionsQuery = useMarginOpenPositionsQuery();
   return (
     <>
       <Head>
