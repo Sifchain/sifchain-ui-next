@@ -369,12 +369,15 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorCollateral($target, "change");
         setInputCollateral(payload);
 
-        const positionSwap = calculatePosition(payload.value);
-        setOpenPositionFee(positionSwap.fee);
-        setInputPosition({
-          value: positionSwap.value,
-          error: "",
-        });
+        if (!payload.error) {
+          const positionSwap = calculatePosition(payload.value);
+
+          setOpenPositionFee(positionSwap.fee);
+          setInputPosition({
+            value: positionSwap.value,
+            error: "",
+          });
+        }
       }
     },
     [calculatePosition, inputLeverage.error, inputPosition.error],
@@ -398,12 +401,15 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorPosition($target, "change");
         setInputPosition(payload);
 
-        const collateralSwap = calculateCollateral(payload.value);
-        setOpenPositionFee(collateralSwap.fee);
-        setInputCollateral({
-          value: collateralSwap.value,
-          error: "",
-        });
+        if (!payload.error) {
+          const collateralSwap = calculateCollateral(payload.value);
+
+          setOpenPositionFee(collateralSwap.fee);
+          setInputCollateral({
+            value: collateralSwap.value,
+            error: "",
+          });
+        }
       }
     },
     [calculateCollateral, inputCollateral.error, inputLeverage.error],
@@ -421,19 +427,21 @@ const Trade = (props: TradeProps) => {
         return;
       }
 
-      const $input = event.target;
-      const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
+      const $target = event.target;
+      if ($target instanceof HTMLInputElement) {
+        const payload = inputValidatorLeverage($target, "change", maxLeverageDecimal.toString());
+        setInputLeverage(payload);
 
-      if (!payload.error) {
-        const positionSwap = calculatePosition(inputCollateral.value, payload.value);
-        setOpenPositionFee(positionSwap.fee);
-        setInputPosition({
-          value: positionSwap.value,
-          error: "",
-        });
+        if (!payload.error) {
+          const positionSwap = calculatePosition(inputCollateral.value, payload.value);
+
+          setOpenPositionFee(positionSwap.fee);
+          setInputPosition({
+            value: positionSwap.value,
+            error: "",
+          });
+        }
       }
-
-      setInputLeverage(payload);
     },
     [calculatePosition, inputCollateral.value, maxLeverageDecimal, inputCollateral.error, inputPosition.error],
   );
