@@ -28,7 +28,7 @@ export function useDexEnvKind(): NetworkEnv {
 
   return useMemo(() => {
     if (isMarginStandAloneOn) {
-      return "tempnet";
+      return "testnet";
     }
     return resolvedEnv ?? sif_dex_env ?? "mainnet";
   }, [resolvedEnv, sif_dex_env, isMarginStandAloneOn]);
