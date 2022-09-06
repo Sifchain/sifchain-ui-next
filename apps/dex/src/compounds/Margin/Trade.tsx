@@ -314,18 +314,15 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
+  const [openPositionFee, setOpenPositionFee] = useState("0");
   const computedBorrowAmount = useMemo(() => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
 
-  const { recompute: calculateSwap, data: swapSimulation } = useSwapSimulationQuery(
+  const { recompute: calculateSwap } = useSwapSimulationQuery(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
-  );
-
-  const openPositionFee = Maybe.of(swapSimulation?.liquidityProviderFee).mapOr(0, (x) =>
-    Decimal.fromAtomics(x, selectedPosition.decimals).toFloatApproximation(),
   );
 
   const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
@@ -338,7 +335,8 @@ const Trade = (props: TradeProps) => {
     (inputAmount: string, leverage = inputLeverage.value) => {
       const swap = calculateSwap(String(Number(inputAmount) * Number(leverage)));
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
-      return value;
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals).toString();
+      return { value, fee };
     },
     [calculateSwap, inputLeverage.value, selectedPosition.decimals],
   );
@@ -347,7 +345,8 @@ const Trade = (props: TradeProps) => {
     (inputAmount: string, leverage = inputLeverage.value) => {
       const swap = calculateReverseSwap(String(Number(inputAmount) * Number(leverage)));
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
-      return value;
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
+      return { value, fee };
     },
     [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
   );
@@ -370,10 +369,10 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorCollateral($target, "change");
         setInputCollateral(payload);
 
-        const positionBigNumber = calculatePosition(payload.value);
-        const positionValue = String(positionBigNumber);
+        const positionSwap = calculatePosition(payload.value);
+        setOpenPositionFee(positionSwap.fee);
         setInputPosition({
-          value: positionValue,
+          value: positionSwap.value,
           error: "",
         });
       }
@@ -399,10 +398,10 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorPosition($target, "change");
         setInputPosition(payload);
 
-        const collateralBigNumber = calculateCollateral(payload.value);
-        const collateralValue = String(collateralBigNumber);
+        const collateralSwap = calculateCollateral(payload.value);
+        setOpenPositionFee(collateralSwap.fee);
         setInputCollateral({
-          value: collateralValue,
+          value: collateralSwap.value,
           error: "",
         });
       }
@@ -766,7 +765,7 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Fees</span>
                       <div className="flex flex-row items-center gap-1">
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span>{formatNumberAsDecimal(openPositionFee, 4)}</span>
+                        <span>{formatNumberAsDecimal(Number(openPositionFee), 4)}</span>
                       </div>
                     </div>
                   </li>
@@ -777,7 +776,7 @@ const Trade = (props: TradeProps) => {
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                         <span className="ml-1">
                           {formatNumberAsDecimal(
-                            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+                            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - Number(openPositionFee) : 0,
                             4,
                           )}
                         </span>
@@ -825,7 +824,7 @@ const Trade = (props: TradeProps) => {
             poolSymbol: poolActive.asset.denom,
             positionPriceUsd: selectedPosition.priceUsd,
             positionTokenAmount: String(
-              Number(inputPosition.value) > 0 ? Number(inputPosition.value) - openPositionFee : 0,
+              Number(inputPosition.value) > 0 ? Number(inputPosition.value) - Number(openPositionFee) : 0,
             ),
             toDenom: selectedPosition.denom,
           }}
