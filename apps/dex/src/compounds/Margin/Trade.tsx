@@ -5,7 +5,6 @@ import type { NextPage } from "next";
 import { Decimal } from "@cosmjs/math";
 import { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import Head from "next/head";
 
@@ -62,8 +61,6 @@ import {
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
 };
-const withLeverage = (rawReceiving: string, decimals: number, leverage: string) =>
-  BigNumber(Decimal.fromAtomics(rawReceiving, decimals).toString()).multipliedBy(leverage);
 
 /**
  * ********************************************************************************************
@@ -338,14 +335,20 @@ const Trade = (props: TradeProps) => {
   );
 
   const calculatePosition = useCallback(
-    (inputAmount: string, leverage = inputLeverage.value) =>
-      withLeverage(calculateSwap(inputAmount)?.rawReceiving || "0", selectedPosition.decimals, leverage),
+    (inputAmount: string, leverage = inputLeverage.value) => {
+      const swap = calculateSwap(String(Number(inputAmount) * Number(leverage)));
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
+      return value;
+    },
     [calculateSwap, inputLeverage.value, selectedPosition.decimals],
   );
 
   const calculateCollateral = useCallback(
-    (inputAmount: string, leverage = inputLeverage.value) =>
-      withLeverage(calculateReverseSwap(inputAmount)?.rawReceiving || "0", selectedCollateral.decimals, leverage),
+    (inputAmount: string, leverage = inputLeverage.value) => {
+      const swap = calculateReverseSwap(String(Number(inputAmount) * Number(leverage)));
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
+      return value;
+    },
     [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
   );
 
