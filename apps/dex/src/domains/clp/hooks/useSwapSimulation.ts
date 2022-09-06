@@ -13,7 +13,7 @@ const COMMON_OPTIONS = {
   enabled: true,
 };
 
-export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromAmount: string, slippage = 0.01) {
+export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromAmount: string, slippage = 0) {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, COMMON_OPTIONS);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
   const { data: stargateClient } = useSifStargateClient();
