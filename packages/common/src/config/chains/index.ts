@@ -73,9 +73,7 @@ function getChainConfigWithFallbackOrThrow(
       throw new Error(`No config found for network "${networkKind}" on env "${env}"`);
     }
 
-    console.group("packages/common chains config");
     console.warn(`[network] ${env} config fallback to ${envMatch} for ${networkKind}`);
-    console.groupEnd();
     return networkLookup[envMatch] as ChainConfig;
   }
 
