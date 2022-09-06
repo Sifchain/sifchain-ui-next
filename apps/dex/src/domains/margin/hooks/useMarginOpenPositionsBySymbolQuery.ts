@@ -64,7 +64,7 @@ export function useMarginOpenPositionsBySymbolQuery({ poolSymbol }: { poolSymbol
           const diffOptimisticPositions = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
             []) as MarginOpenPositionsResponse["results"];
 
-          const diffOptimisticHistory = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
+          const diffOptimisticHistory = (queryClient.getQueryData(["margin.getOptimisticHistory"]) ??
             []) as MarginHistoryResponse["results"];
 
           const diffPositions = syncCacheWithServer(

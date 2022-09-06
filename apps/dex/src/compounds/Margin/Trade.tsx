@@ -189,7 +189,7 @@ const Trade = (props: TradeProps) => {
   }, [pools, qsPool]);
 
   const openPositionsBySymbolQuery = useMarginOpenPositionsBySymbolQuery({
-    poolSymbol: poolActive?.asset.denom ?? "",
+    poolSymbol: poolActive?.asset.symbol.toLowerCase() ?? "",
   });
 
   /**
