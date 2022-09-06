@@ -425,10 +425,10 @@ const Trade = (props: TradeProps) => {
       const payload = inputValidatorLeverage($input, "change", maxLeverageDecimal.toString());
 
       if (!payload.error) {
-        const positionInputAmount = calculatePosition(inputCollateral.value, payload.value);
-
+        const positionSwap = calculatePosition(inputCollateral.value, payload.value);
+        setOpenPositionFee(positionSwap.fee);
         setInputPosition({
-          value: positionInputAmount.toString(),
+          value: positionSwap.value,
           error: "",
         });
       }
