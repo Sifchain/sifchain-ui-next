@@ -199,10 +199,12 @@ importers:
       '@playwright/test': ^1.25.1
       '@tsconfig/node18-strictest-esm': ^1.0.1
       '@types/node': ^18.7.15
+      dotenv: ^16.0.2
     devDependencies:
       '@playwright/test': 1.25.1
       '@tsconfig/node18-strictest-esm': 1.0.1
       '@types/node': 18.7.15
+      dotenv: 16.0.2
 
   apps/registry:
     specifiers:
@@ -10810,6 +10812,11 @@ packages:
 
   /dotenv-expand/5.1.0:
     resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}
+    dev: true
+
+  /dotenv/16.0.2:
+    resolution: {integrity: sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==}
+    engines: {node: '>=12'}
     dev: true
 
   /dotenv/8.6.0:
