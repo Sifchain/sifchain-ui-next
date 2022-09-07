@@ -12,12 +12,17 @@ const COMMON_OPTIONS = {
   enabled: true,
 };
 
-export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromAmount: string, slippage = 0) {
+export function useSwapSimulationQuery(
+  fromDenom: string,
+  toDenom: string,
+  fromAmount: string,
+  slippage = 0,
+  swapFeeRate = "0",
+) {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, COMMON_OPTIONS);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
   const { data: stargateClient } = useSifStargateClient();
   const { data: pmtpParams } = useSifnodeQuery("clp.getPmtpParams", [{}], COMMON_OPTIONS);
-  const FEE_IS_APPLIED_AFTER_SWAP = "0";
 
   const compute = useCallback(
     (amount = fromAmount) => {
@@ -45,20 +50,20 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
           toCoin,
           pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0",
           slippage,
-          FEE_IS_APPLIED_AFTER_SWAP,
+          swapFeeRate,
         );
       });
 
       return result;
     },
-    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, toToken],
+    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, toToken, swapFeeRate],
   );
 
   const derivedQuery = useQuery(
-    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage],
+    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage, swapFeeRate],
     compute.bind(null, undefined),
     {
-      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams),
+      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams && swapFeeRate),
     },
   );
 
