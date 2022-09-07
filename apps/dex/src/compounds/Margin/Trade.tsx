@@ -764,7 +764,9 @@ const Trade = (props: TradeProps) => {
                       <span className="mr-auto min-w-fit text-gray-300">Position size</span>
                       <div className="flex flex-row items-center">
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">{formatNumberAsDecimal(Number(inputPosition.value), 4)}</span>
+                        <span className="ml-1">
+                          {formatNumberAsDecimal(Number(inputPosition.value) + Number(openPositionFee), 4)}
+                        </span>
                       </div>
                     </div>
                   </li>
@@ -783,10 +785,7 @@ const Trade = (props: TradeProps) => {
                       <div className="flex flex-row items-center">
                         <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                         <span className="ml-1">
-                          {formatNumberAsDecimal(
-                            Number(inputPosition.value) > 0 ? Number(inputPosition.value) - Number(openPositionFee) : 0,
-                            4,
-                          )}
+                          {formatNumberAsDecimal(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0, 4)}
                         </span>
                       </div>
                     </div>
@@ -831,9 +830,7 @@ const Trade = (props: TradeProps) => {
             poolInterestRate: poolInterestRate,
             poolSymbol: poolActive.asset.denom,
             positionPriceUsd: selectedPosition.priceUsd,
-            positionTokenAmount: String(
-              Number(inputPosition.value) > 0 ? Number(inputPosition.value) - Number(openPositionFee) : 0,
-            ),
+            positionTokenAmount: String(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0),
             toDenom: selectedPosition.denom,
           }}
           isOpen={modalConfirmOpenPosition.isOpen}
