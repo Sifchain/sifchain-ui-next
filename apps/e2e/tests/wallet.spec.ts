@@ -1,22 +1,12 @@
 import { expect, test } from "@playwright/test";
+import HomePage from "../models/home";
 
-test("can connect to mnemonic wallet", async ({ page }) => {
-  await page.goto("/");
+test("can connect to mnemonic wallet", async ({ browser }) => {
+  const page = await browser.newPage();
+  const homePage = new HomePage(page);
 
-  const connectWallet = page.locator("text=Connect wallets");
-  await connectWallet.click();
-
-  const sifchainWallet = page.locator("li:has-text('Sifchain')");
-  await sifchainWallet.waitFor();
-  await sifchainWallet.click();
-
-  page.on("dialog", (dialog) => void dialog.accept(process.env["COSMOS_MNEMONIC"]));
-
-  const mnemonicWallet = page.locator("li:has-text('Mnemonic')");
-  await mnemonicWallet.waitFor();
-  await mnemonicWallet.click();
-
-  await connectWallet.waitFor({ state: "detached" });
+  await homePage.navigate();
+  await homePage.connectMnemonicWallet();
 
   const activeConnection = await page.evaluate(() => localStorage.getItem("@@cosmConnectActiveConnection"));
 
