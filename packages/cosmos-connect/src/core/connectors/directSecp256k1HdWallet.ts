@@ -5,10 +5,8 @@ import type { ChainInfo } from "@keplr-wallet/types";
 import { BaseCosmConnector } from "./base";
 
 export type MnemonicConnectorOptions = {
-  mnemonic: string;
   chainInfos: ChainInfo[];
-  // useful for e2e testing
-  simulateDisconnect: boolean;
+  mnemonic?: string;
 };
 
 export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOptions> {
@@ -17,26 +15,38 @@ export class MnemonicConnector extends BaseCosmConnector<MnemonicConnectorOption
 
   #chainStore = new ChainStore(this.options.chainInfos);
 
-  #connectedSim = false;
+  #mnemonic = this.options.mnemonic;
 
   get connected() {
-    return this.options.simulateDisconnect ? this.#connectedSim : true;
+    return this.#mnemonic !== undefined;
   }
 
-  connect() {
-    this.#connectedSim = true;
+  async connect() {
+    const mnemonic = this.options.mnemonic ?? window.prompt("Enter wallet mnemonic");
+
+    if (mnemonic === null) {
+      throw new Error("Invalid mnemonic");
+    }
+
+    // testing to see if mnemonic is valid
+    await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
+
+    this.#mnemonic = mnemonic;
     this.emit("connect");
     return Promise.resolve();
   }
 
   disconnect() {
-    this.#connectedSim = false;
     this.emit("disconnect");
     return Promise.resolve();
   }
 
   async getSigner(chainId: string) {
-    return DirectSecp256k1HdWallet.fromMnemonic(this.options.mnemonic, {
+    if (this.#mnemonic === undefined) {
+      throw new Error("Invalid mnemonic");
+    }
+
+    return DirectSecp256k1HdWallet.fromMnemonic(this.#mnemonic, {
       prefix: this.#chainStore.getChain(chainId).bech32Config.bech32PrefixAccAddr,
     });
   }

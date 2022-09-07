@@ -27,7 +27,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
           <MainLayout>
             <Component {...pageProps} />
           </MainLayout>
-          {/* <ReactQueryDevtools position="bottom-right" /> */}
+          <ReactQueryDevtools position="bottom-right" />
         </QueryClientProvider>
       </CookiesProvider>
     </ComposeProviders>

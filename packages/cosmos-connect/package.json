@@ -22,6 +22,7 @@
     "@keplr-wallet/stores": "^0.10.20",
     "@keplr-wallet/wc-client": "^0.10.20",
     "@keplr-wallet/wc-qrcode-modal": "^0.10.20",
+    "@sifchain/utils": "workspace:*",
     "@walletconnect/client": "^1.8.0",
     "eventemitter3": "^4.0.7",
     "react": "^18.2.0"

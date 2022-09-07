@@ -7,7 +7,7 @@ export type HookOptions = {
 };
 
 export const useConnect = () => {
-  const { connectors, activeConnector, connect, disconnect } = useContext(CosmConnectContext);
+  const { connectors, activeConnector, updatedAt, connect, disconnect } = useContext(CosmConnectContext);
 
   const connectAsyncFunc = useAsyncFunc(connect);
   const disconnectAsyncFunc = useAsyncFunc(disconnect);
@@ -15,6 +15,7 @@ export const useConnect = () => {
   return {
     connectors,
     activeConnector,
+    updatedAt,
     isConnected: activeConnector !== undefined,
     connect: connectAsyncFunc.fetch,
     connectingStatus: connectAsyncFunc.status,
@@ -102,4 +103,9 @@ export const useAccounts = (chainId: string, options: HookOptions = { enabled: t
   }, [fetch, options.enabled]);
 
   return { accounts, status };
+};
+
+export const useConnectionUpdatedAt = () => {
+  const { updatedAt } = useContext(CosmConnectContext);
+  return updatedAt;
 };

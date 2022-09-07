@@ -1,13 +1,15 @@
 import { Decimal } from "@cosmjs/math";
-import { useAccounts, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
+import { useAccounts, useConnectionUpdatedAt, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
 import { memoizeWith } from "@sifchain/utils";
+import { useChangedEffect } from "@sifchain/utils/react";
 import { useQuery } from "@tanstack/react-query";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { useMemo } from "react";
 import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 
 type Balance = {
@@ -16,13 +18,14 @@ type Balance = {
 };
 
 export const useBalanceQuery = (chainId: string, denom: string, options: { enabled: boolean } = { enabled: true }) => {
-  const { client, clientUpdatedAt } = useStargateClient(chainId, options);
+  const { client } = useStargateClient(chainId, options);
+  const connectionUpdatedAt = useConnectionUpdatedAt();
   const { accounts } = useAccounts(chainId, options);
   const { indexedByDenom } = useTokenRegistryQuery();
   const token = indexedByDenom[denom];
 
-  return useQuery(
-    ["cosm-balance", chainId, denom, { clientUpdatedAt }],
+  return useQueryWithNonQueryKeyDeps(
+    ["cosm-balance", chainId, denom],
     async () => {
       const result = await client?.getBalance(accounts?.[0]?.address ?? "", denom);
 
@@ -36,19 +39,21 @@ export const useBalanceQuery = (chainId: string, denom: string, options: { enabl
     {
       enabled: options.enabled && client !== undefined && (accounts?.length ?? 0) > 0 && token !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };
 
 export function useAllBalancesQuery() {
   const { data: env } = useDexEnvironment();
-  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
+  const connectionUpdatedAt = useConnectionUpdatedAt();
+  const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env?.sifChainId !== undefined,
   });
   const { data: stargateClient } = useSifStargateClient();
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
-  const baseQuery = useQuery(
-    ["all-balances", { signerUpdatedAt }],
+  const baseQuery = useQueryWithNonQueryKeyDeps(
+    ["all-balances"],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
@@ -67,6 +72,7 @@ export function useAllBalancesQuery() {
       staleTime: 60000, // 1 minute
       enabled: signer !== undefined && stargateClient !== undefined && isTokenRegistryQuerySuccess,
     },
+    [connectionUpdatedAt],
   );
 
   const indices = useMemo(() => {

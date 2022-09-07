@@ -3,6 +3,7 @@ import { useConnect as useCosmConnect } from "@sifchain/cosmos-connect";
 import {
   ChainEntry,
   CoinbaseIcon,
+  CosmosIcon,
   CosmostationIcon,
   IbcChainEntry,
   KeplrIcon,
@@ -20,6 +21,7 @@ import { useDexEnvironment } from "~/domains/core/envs";
 import { useEnabledChainsStore } from "./store";
 
 const WALLET_ICONS = {
+  directSecp256k1HdWallet: <CosmosIcon />,
   keplr: <KeplrIcon />,
   keplrWalletConnect: <WalletconnectCircleIcon />,
   metaMask: <MetamaskIcon />,
@@ -31,6 +33,7 @@ const WALLET_ICONS = {
 type WalletKind = keyof typeof WALLET_ICONS;
 
 const WALLET_LABELS: Record<WalletKind, string> = {
+  directSecp256k1HdWallet: "Mnemonic (INSECURE FOR TESTING PURPOSE ONLY)",
   keplr: "Keplr",
   keplrWalletConnect: "WalletConnect (Keplr)",
   metaMask: "MetaMask",
