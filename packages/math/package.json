@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/math",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "build/commonjs/index.js",
   "exports": {

@@ -1,7 +1,7 @@
 {
   "name": "@sifchain/evm",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sifchain's evm client sdk for Peggy contracts",
   "main": "build/commonjs/index.js",
   "exports": {
     "import": "./build/module/index.js",

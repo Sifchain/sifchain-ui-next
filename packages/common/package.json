@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsup src/index.ts",
     "compile": "pnpm tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest --run"
   },
   "keywords": [],
   "author": "",
