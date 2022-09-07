@@ -1,3 +1,4 @@
+import { useChangedEffect } from "@sifchain/utils/react";
 import React, { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import type { BaseCosmConnector } from "../core";
 import { noopStorage, StorageOptions } from "./storage";
@@ -6,6 +7,7 @@ import { useStorageState } from "./utils/hooks";
 export type CosmConnectContextValue = {
   connectors: BaseCosmConnector[];
   activeConnector?: BaseCosmConnector;
+  updatedAt?: Date;
   connect: (connector: BaseCosmConnector) => Promise<void>;
   disconnect: (connector: BaseCosmConnector) => Promise<void>;
 };
@@ -34,6 +36,8 @@ export const CosmConnectProvider = (props: PropsWithChildren<CosmConnectProvider
 
   const [initSuccessful, setIsInitSuccessful] = useState(() => activeConnector?.connected ?? false);
 
+  const [updatedAt, setUpdatedAt] = useState<Date>();
+
   useEffect(() => {
     const connectorAndListenerPairs = props.connectors.map(
       (x) => [x, () => setActiveConnectorId((y) => (y === x.id ? undefined : y))] as const,
@@ -54,11 +58,26 @@ export const CosmConnectProvider = (props: PropsWithChildren<CosmConnectProvider
     }
   }, [activeConnector]);
 
+  useChangedEffect(() => {
+    const handler = () => setUpdatedAt(new Date());
+
+    handler();
+
+    activeConnector?.addListener("change", handler);
+    activeConnector?.addListener("connect", handler);
+
+    return () => {
+      activeConnector?.removeListener("change", handler);
+      activeConnector?.removeListener("connect", handler);
+    };
+  }, [activeConnector]);
+
   return (
     <CosmConnectContext.Provider
       value={{
         connectors: props.connectors,
         activeConnector: initSuccessful ? activeConnector : undefined,
+        updatedAt,
         connect: useCallback(
           async (connector: BaseCosmConnector) => {
             await connector.connect();
