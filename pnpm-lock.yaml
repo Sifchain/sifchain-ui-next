@@ -319,6 +319,7 @@ importers:
       '@keplr-wallet/types': ^0.10.20
       '@keplr-wallet/wc-client': ^0.10.20
       '@keplr-wallet/wc-qrcode-modal': ^0.10.20
+      '@sifchain/utils': workspace:*
       '@tsconfig/node16-strictest-esm': ^1.0.3
       '@types/react': ^18.0.18
       '@walletconnect/client': ^1.8.0
@@ -334,6 +335,7 @@ importers:
       '@keplr-wallet/stores': 0.10.20
       '@keplr-wallet/wc-client': 0.10.20
       '@keplr-wallet/wc-qrcode-modal': 0.10.20
+      '@sifchain/utils': link:../utils
       '@walletconnect/client': 1.8.0
       eventemitter3: 4.0.7
       react: 18.2.0
@@ -11449,10 +11451,10 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.33.0_4rv7y5c6xz3vfxwhbrcxxi73bq
+      '@typescript-eslint/parser': 5.33.0_he2ccbldppg44uulnyq4rwocfa
       debug: 3.2.7
       eslint-import-resolver-node: 0.3.6
-      eslint-import-resolver-typescript: 2.7.1_2iahngt3u2tkbdlu6s4gkur3pu
+      eslint-import-resolver-typescript: 2.7.1_afl3vkhn63baibzal45igheroq
       find-up: 2.1.0
     transitivePeerDependencies:
       - supports-color

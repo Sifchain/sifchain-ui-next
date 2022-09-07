@@ -1,11 +1,11 @@
 import { Decimal } from "@cosmjs/math";
-import { useSigner } from "@sifchain/cosmos-connect";
-import { useQuery } from "@tanstack/react-query";
+import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
@@ -14,17 +14,18 @@ export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";
 
 export const useLiquidityProviderQuery = (denom: string) => {
   const { data: env } = useDexEnvironment();
-  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
+  const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
+  const connectionUpdatedAt = useConnectionUpdatedAt();
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } = useTokenRegistryQuery();
   const { data: sifQueryClient } = useQueryClient();
   const { data: rewardParamsRes } = useSifnodeQuery("clp.getRewardParams", [{}]);
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQuery(
-    [LIQUIDITY_PROVIDER_QUERY_KEY, { signerUpdatedAt }],
+  return useQueryWithNonQueryKeyDeps(
+    [LIQUIDITY_PROVIDER_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -68,22 +69,24 @@ export const useLiquidityProviderQuery = (denom: string) => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };
 
 export const useLiquidityProvidersQuery = () => {
   const { data: env } = useDexEnvironment();
-  const { signer, signerUpdatedAt } = useSigner(env?.sifChainId ?? "", {
+  const { signer } = useSigner(env?.sifChainId ?? "", {
     enabled: env !== undefined,
   });
+  const connectionUpdatedAt = useConnectionUpdatedAt();
   const { isSuccess: isTokenRegistrySuccess, indexedByDenom } = useTokenRegistryQuery();
   const { data: sifQueryClient } = useQueryClient();
   const { data: rewardParamsRes } = useSifnodeQuery("clp.getRewardParams", [{}]);
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQuery(
-    [LIQUIDITY_PROVIDERS_QUERY_KEY, { signerUpdatedAt }],
+  return useQueryWithNonQueryKeyDeps(
+    [LIQUIDITY_PROVIDERS_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({
@@ -132,5 +135,6 @@ export const useLiquidityProvidersQuery = () => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };
