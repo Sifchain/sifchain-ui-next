@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
+import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 
@@ -12,17 +13,12 @@ const COMMON_OPTIONS = {
   enabled: true,
 };
 
-export function useSwapSimulationQuery(
-  fromDenom: string,
-  toDenom: string,
-  fromAmount: string,
-  slippage = 0,
-  swapFeeRate = "0",
-) {
+export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromAmount: string, slippage = 0) {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, COMMON_OPTIONS);
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
   const { data: stargateClient } = useSifStargateClient();
   const { data: pmtpParams } = useSifnodeQuery("clp.getPmtpParams", [{}], COMMON_OPTIONS);
+  const { data: swapFeeRateResult } = useSifnodeQuery("clp.getSwapFeeRate", [{}], COMMON_OPTIONS);
 
   const compute = useCallback(
     (amount = fromAmount) => {
@@ -50,20 +46,20 @@ export function useSwapSimulationQuery(
           toCoin,
           pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0",
           slippage,
-          swapFeeRate,
+          Maybe.of(swapFeeRateResult).mapOr("0", (x) => Decimal.fromAtomics(x.swapFeeRate, 18).toString()),
         );
       });
 
       return result;
     },
-    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, toToken, swapFeeRate],
+    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, swapFeeRateResult, toToken],
   );
 
   const derivedQuery = useQuery(
-    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage, swapFeeRate],
+    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage, swapFeeRateResult],
     compute.bind(null, undefined),
     {
-      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams && swapFeeRate),
+      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams && swapFeeRateResult),
     },
   );
 
