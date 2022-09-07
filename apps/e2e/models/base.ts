@@ -10,13 +10,11 @@ export default abstract class BasePage {
     await connectWallet.click();
 
     const sifchainWallet = this.page.locator("li:has-text('Sifchain')");
-    await sifchainWallet.waitFor();
     await sifchainWallet.click();
 
     this.page.on("dialog", (dialog) => void dialog.accept(mnemonic ?? process.env["COSMOS_MNEMONIC"]));
 
     const mnemonicWallet = this.page.locator("li:has-text('Mnemonic')");
-    await mnemonicWallet.waitFor();
     await mnemonicWallet.click();
 
     await connectWallet.waitFor({ state: "detached" });
