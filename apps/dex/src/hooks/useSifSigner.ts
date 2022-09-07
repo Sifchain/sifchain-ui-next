@@ -1,5 +1,6 @@
-import { useSigner } from "@sifchain/cosmos-connect";
+import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
 import { invariant } from "@sifchain/ui";
+import { useChangedEffect } from "@sifchain/utils/react";
 import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment, useDexEnvKind } from "~/domains/core/envs";
 
@@ -9,15 +10,15 @@ export function useSifSigner() {
 }
 
 export function useSifSignerAddressQuery() {
-  const { signer, signerUpdatedAt } = useSifSigner();
+  const { signer } = useSifSigner();
+  const connectionUpdatedAt = useConnectionUpdatedAt();
   const dexEnv = useDexEnvKind();
 
-  return useQuery(
+  const baseQuery = useQuery(
     [
       "sifchain-signer-address",
       {
         dexEnv,
-        signerUpdatedAt,
       },
     ],
     async () => {
@@ -31,4 +32,10 @@ export function useSifSignerAddressQuery() {
       enabled: signer !== undefined,
     },
   );
+
+  useChangedEffect(() => {
+    baseQuery.remove();
+  }, [baseQuery.remove, connectionUpdatedAt]);
+
+  return baseQuery;
 }

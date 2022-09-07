@@ -1,5 +1,6 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
 import { invariant } from "@sifchain/ui";
+import { useChangedEffect } from "@sifchain/utils/react";
 import { useQuery } from "@tanstack/react-query";
 import type { Signer } from "ethers";
 import { useSigner } from "wagmi";
@@ -13,8 +14,8 @@ const useEvmSdk = () => {
     internal: { dataUpdatedAt: signerUpdatedAt },
   } = useSigner();
 
-  return useQuery(
-    ["evm-sdk", environment, { signerUpdatedAt }],
+  const baseQuery = useQuery(
+    ["evm-sdk", environment],
     () => {
       invariant(signer !== undefined, "signer is required");
 
@@ -29,6 +30,12 @@ const useEvmSdk = () => {
     },
     { enabled: signer !== undefined },
   );
+
+  useChangedEffect(() => {
+    baseQuery.remove();
+  }, [baseQuery.remove, signerUpdatedAt]);
+
+  return baseQuery;
 };
 
 export default useEvmSdk;
