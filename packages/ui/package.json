@@ -1,7 +1,7 @@
 {
   "name": "@sifchain/ui",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Sifchain UI component library and utilities",
   "main": "./src/index.tsx",
   "files": [

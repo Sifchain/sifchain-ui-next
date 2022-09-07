@@ -1,7 +1,7 @@
 {
   "name": "@sifchain/math",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Formulae and calculation utilities for Sifchain",
   "main": "build/commonjs/index.js",
   "exports": {
     "import": "./build/module/index.js",
