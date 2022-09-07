@@ -1,7 +1,7 @@
-import { useSigner } from "@sifchain/cosmos-connect";
+import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
 import { invariant } from "@sifchain/ui";
-import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment, useDexEnvKind } from "~/domains/core/envs";
+import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
 
 export function useSifSigner() {
   const { data: env } = useDexEnvironment();
@@ -9,15 +9,15 @@ export function useSifSigner() {
 }
 
 export function useSifSignerAddressQuery() {
-  const { signer, signerUpdatedAt } = useSifSigner();
+  const { signer } = useSifSigner();
+  const connectionUpdatedAt = useConnectionUpdatedAt();
   const dexEnv = useDexEnvKind();
 
-  return useQuery(
+  return useQueryWithNonQueryKeyDeps(
     [
       "sifchain-signer-address",
       {
         dexEnv,
-        signerUpdatedAt,
       },
     ],
     async () => {
@@ -30,5 +30,6 @@ export function useSifSignerAddressQuery() {
     {
       enabled: signer !== undefined,
     },
+    [connectionUpdatedAt],
   );
 }
