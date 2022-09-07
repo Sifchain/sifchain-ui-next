@@ -1,12 +1,11 @@
 import { Decimal } from "@cosmjs/math";
 import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
-import { useChangedEffect } from "@sifchain/utils/react";
-import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
@@ -25,7 +24,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  const baseQuery = useQuery(
+  return useQueryWithNonQueryKeyDeps(
     [LIQUIDITY_PROVIDER_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
@@ -70,13 +69,8 @@ export const useLiquidityProviderQuery = (denom: string) => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
-
-  useChangedEffect(() => {
-    baseQuery.remove();
-  }, [baseQuery.remove, connectionUpdatedAt]);
-
-  return baseQuery;
 };
 
 export const useLiquidityProvidersQuery = () => {
@@ -91,7 +85,7 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  const baseQuery = useQuery(
+  return useQueryWithNonQueryKeyDeps(
     [LIQUIDITY_PROVIDERS_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
@@ -141,11 +135,6 @@ export const useLiquidityProvidersQuery = () => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
-
-  useChangedEffect(() => {
-    baseQuery.remove();
-  }, [baseQuery.remove, connectionUpdatedAt]);
-
-  return baseQuery;
 };

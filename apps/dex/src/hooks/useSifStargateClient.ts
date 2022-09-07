@@ -3,6 +3,7 @@ import { SifSigningStargateClient } from "@sifchain/stargate";
 import { useChangedEffect } from "@sifchain/utils/react";
 import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
+import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
 
 export const useSifStargateClient = () => {
   const { data: env } = useDexEnvironment();
@@ -19,15 +20,10 @@ export const useSifSigningStargateClient = () => {
   });
   const connectionUpdatedAt = useConnectionUpdatedAt();
 
-  const baseQuery = useQuery(
+  return useQueryWithNonQueryKeyDeps(
     ["sif-signing-stargate-client"],
     () => SifSigningStargateClient.connectWithSigner(env?.sifRpcUrl ?? "", signer!),
     { enabled: signer !== undefined && env !== undefined },
+    [connectionUpdatedAt],
   );
-
-  useChangedEffect(() => {
-    baseQuery.remove();
-  }, [baseQuery.remove, connectionUpdatedAt]);
-
-  return baseQuery;
 };
