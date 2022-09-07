@@ -72,6 +72,10 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
         throw new Error(errors.MTP_LOW_BORROWED_AMOUNT);
       }
 
+      if (res.rawLog.includes("borrowed amount is higher")) {
+        throw new Error(errors.MTP_LOW_BORROWED_AMOUNT);
+      }
+
       throw new Error(errors.DEFAULT_ERROR_OPEN_POSITION);
     }
 
