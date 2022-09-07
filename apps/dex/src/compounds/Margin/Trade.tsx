@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Head from "next/head";
 
-import { Maybe } from "@sifchain/utils";
 import {
   ArrowDownIcon,
   FlashMessage5xxError,
@@ -57,6 +56,7 @@ import {
   POSITION_MIN_VALUE,
   removeFirstCharsUC,
 } from "./_trade";
+import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
@@ -80,10 +80,15 @@ const TradeTab: NextPage = () => {
   const enhancedRowanQuery = useEnhancedTokenQuery(ROWAN_DENOM);
   const rowanPriceQuery = useRowanPriceQuery();
   const govParamsQuery = useMarginParamsQuery();
+  const swapFeeRateQuery = useSifnodeQuery("clp.getSwapFeeRate", [{}]);
 
-  if ([enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery].some((query) => query.isError)) {
+  if (
+    [enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery, swapFeeRateQuery].some(
+      (query) => query.isError,
+    )
+  ) {
     console.group("Trade Page Query Error");
-    console.log({ enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery });
+    console.log({ enhancedPoolsQuery, enhancedRowanQuery, rowanPriceQuery, govParamsQuery, swapFeeRateQuery });
     console.groupEnd();
     return <FlashMessage5xxError size="full-page" className="border-gold-800 mt-4 rounded border" />;
   }
@@ -93,11 +98,13 @@ const TradeTab: NextPage = () => {
     enhancedRowanQuery.isSuccess &&
     rowanPriceQuery.isSuccess &&
     govParamsQuery.isSuccess &&
+    swapFeeRateQuery.isSuccess &&
     enhancedPoolsQuery.data &&
     enhancedRowanQuery.data &&
     rowanPriceQuery.data &&
     govParamsQuery.data &&
-    govParamsQuery.data.params
+    govParamsQuery.data.params &&
+    swapFeeRateQuery.data
   ) {
     const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
@@ -105,7 +112,14 @@ const TradeTab: NextPage = () => {
       allowedPools.includes(pool.asset.denom as string),
     );
 
-    return <Trade enhancedPools={filteredEnhancedPools} enhancedRowan={enhancedRowanQuery.data} govParams={params} />;
+    return (
+      <Trade
+        enhancedPools={filteredEnhancedPools}
+        enhancedRowan={enhancedRowanQuery.data}
+        govParams={params}
+        swapFeeRate={Decimal.fromAtomics(swapFeeRateQuery.data.swapFeeRate, 18).toString()}
+      />
+    );
   }
 
   return <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />;
@@ -128,6 +142,7 @@ type TradeProps = {
   enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
   enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
   govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
+  swapFeeRate: string;
 };
 
 const ROWAN_DENOM = "rowan";
@@ -136,7 +151,7 @@ const mutateDisplaySymbol = (displaySymbol: string) =>
 
 const Trade = (props: TradeProps) => {
   const router = useRouter();
-  const { enhancedPools, enhancedRowan } = props;
+  const { enhancedPools, enhancedRowan, swapFeeRate } = props;
 
   /**
    * ********************************************************************************************
@@ -314,7 +329,6 @@ const Trade = (props: TradeProps) => {
    *
    * ********************************************************************************************
    */
-  const [openPositionFee, setOpenPositionFee] = useState("0");
   const computedBorrowAmount = useMemo(() => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
@@ -335,18 +349,19 @@ const Trade = (props: TradeProps) => {
     (inputAmount: string, leverage = inputLeverage.value) => {
       const swap = calculateSwap(String(Number(inputAmount) * Number(leverage)));
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
-      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals).toString();
-      return { value, fee };
+      return value;
     },
     [calculateSwap, inputLeverage.value, selectedPosition.decimals],
   );
+  const openPositionFee = useMemo(() => {
+    return Number(swapFeeRate) * Number(inputPosition.value);
+  }, [inputPosition.value]);
 
   const calculateCollateral = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
       const swap = calculateReverseSwap(String(Number(inputAmount) * Number(leverage)));
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
-      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
-      return { value, fee };
+      return value;
     },
     [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
   );
@@ -371,10 +386,8 @@ const Trade = (props: TradeProps) => {
 
         if (!payload.error) {
           const positionSwap = calculatePosition(payload.value);
-
-          setOpenPositionFee(positionSwap.fee);
           setInputPosition({
-            value: positionSwap.value,
+            value: positionSwap,
             error: "",
           });
         }
@@ -403,10 +416,8 @@ const Trade = (props: TradeProps) => {
 
         if (!payload.error) {
           const collateralSwap = calculateCollateral(payload.value);
-
-          setOpenPositionFee(collateralSwap.fee);
           setInputCollateral({
-            value: collateralSwap.value,
+            value: collateralSwap,
             error: "",
           });
         }
@@ -434,10 +445,8 @@ const Trade = (props: TradeProps) => {
 
         if (!payload.error) {
           const positionSwap = calculatePosition(inputCollateral.value, payload.value);
-
-          setOpenPositionFee(positionSwap.fee);
           setInputPosition({
-            value: positionSwap.value,
+            value: positionSwap,
             error: "",
           });
         }

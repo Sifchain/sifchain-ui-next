@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
-import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 
@@ -18,7 +17,7 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
   const { data: stargateClient } = useSifStargateClient();
   const { data: pmtpParams } = useSifnodeQuery("clp.getPmtpParams", [{}], COMMON_OPTIONS);
-  const { data: swapFeeRateResult } = useSifnodeQuery("clp.getSwapFeeRate", [{}], COMMON_OPTIONS);
+  const FEE_IS_APPLIED_AFTER_SWAP = "0";
 
   const compute = useCallback(
     (amount = fromAmount) => {
@@ -46,20 +45,20 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
           toCoin,
           pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0",
           slippage,
-          Maybe.of(swapFeeRateResult).mapOr("0", (x) => Decimal.fromAtomics(x.swapFeeRate, 18).toString()),
+          FEE_IS_APPLIED_AFTER_SWAP,
         );
       });
 
       return result;
     },
-    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, swapFeeRateResult, toToken],
+    [fromAmount, fromToken, pmtpParams, slippage, stargateClient, toToken],
   );
 
   const derivedQuery = useQuery(
-    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage, swapFeeRateResult],
+    ["swap-simulation", fromDenom, toDenom, fromAmount, slippage],
     compute.bind(null, undefined),
     {
-      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams && swapFeeRateResult),
+      enabled: Boolean(fromToken && toToken && stargateClient && pmtpParams),
     },
   );
 
