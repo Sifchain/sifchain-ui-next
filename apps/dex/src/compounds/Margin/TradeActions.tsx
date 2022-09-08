@@ -60,7 +60,7 @@ export function TradeActions({
           disabled={isDisabledOpenPosition || isLoadingOpenPosition}
           onClick={onClickOpenPosition}
         >
-          {isLoadingOpenPosition ? "" : "Open trade"}
+          Open trade
         </Button>
       )}
     </>

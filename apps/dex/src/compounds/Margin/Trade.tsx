@@ -2,6 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
 import {
   ArrowDownIcon,
+  FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
   formatNumberAsCurrency,
@@ -815,10 +816,10 @@ const Trade = (props: TradeProps) => {
                 onClickOpenPosition={onClickConfirmOpenPosition}
               />
               {confirmOpenPositionMutation.isError && (
-                <p className="m-4 rounded bg-red-200 p-4 text-center text-red-800">
+                <FlashMessage className="bg-red-200">
                   <b className="mr-1">Failed to open position:</b>
                   <span>{(confirmOpenPositionMutation.error as Error).message}</span>
-                </p>
+                </FlashMessage>
               )}
             </>
           ) : (
