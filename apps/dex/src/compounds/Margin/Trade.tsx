@@ -1,16 +1,8 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
-import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-
 import { Decimal } from "@cosmjs/math";
-import { useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/router";
-import clsx from "clsx";
-import Head from "next/head";
-
-import { Maybe } from "@sifchain/utils";
+import type { IAsset } from "@sifchain/common";
 import {
   ArrowDownIcon,
+  FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
   formatNumberAsCurrency,
@@ -18,20 +10,27 @@ import {
   SwapIcon,
   TokenEntry,
 } from "@sifchain/ui";
+import clsx from "clsx";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useCallback, useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
   useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
-import AssetIcon from "~/compounds/AssetIcon";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
-
-import { ModalMTPOpen } from "./ModalMTPOpen";
+import {
+  useMarginMTPOpenMutation,
+  useMarginOpenPositionsBySymbolQuery,
+  useMarginParamsQuery,
+} from "~/domains/margin/hooks";
 import { TradeActions } from "./TradeActions";
 
 /**
@@ -490,13 +489,6 @@ const Trade = (props: TradeProps) => {
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
-  const onClickOpenPosition = useCallback((event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setModalConfirmOpenPosition({ isOpen: true });
-  }, []);
-  const onModalClose = useCallback(() => {
-    setModalConfirmOpenPosition({ isOpen: false });
-  }, []);
 
   /**
    * ********************************************************************************************
@@ -553,12 +545,32 @@ const Trade = (props: TradeProps) => {
 
   const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
 
+  const confirmOpenPositionMutation = useMarginMTPOpenMutation({
+    poolSymbol: poolActive?.asset.denom ?? "",
+    _optimisticCustodyAmount: String(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0),
+  });
+
+  const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      await confirmOpenPositionMutation.mutateAsync({
+        collateralAsset: selectedCollateral.denom ?? "",
+        borrowAsset: selectedPosition.denom ?? "",
+        position: 1, // LONG
+        collateralAmount: collateralAmount,
+        leverage: leverage,
+      });
+    } catch (err) {
+      //
+    }
+  };
+
   return (
     <>
       <Head>
         <title>Sichain Dex - Margin - Trade</title>
       </Head>
-      <section className="border-gold-800 mt-4 rounded border bg-gray-800 text-xs">
+      <section className="mt-4 rounded bg-gray-900 text-xs">
         {poolActive && enhancedRowan.priceUsd ? (
           <PoolOverview
             pool={poolActive}
@@ -576,8 +588,8 @@ const Trade = (props: TradeProps) => {
       </section>
 
       <section className="mt-4 grid grid-cols-1 lg:grid-cols-7 lg:gap-x-5 ">
-        <article className="border-gold-800 flex flex-col rounded border bg-gray-800 text-xs lg:col-span-2">
-          <ul className="border-gold-800 flex flex-col gap-0 border-b p-4">
+        <article className="flex flex-col rounded bg-gray-900 text-xs lg:col-span-2">
+          <ul className="flex flex-col p-4">
             <li className="flex flex-col">
               <div className="mb-1 flex flex-row text-xs">
                 <span className="mr-auto">Collateral</span>
@@ -717,95 +729,98 @@ const Trade = (props: TradeProps) => {
           selectedPosition.symbol &&
           selectedPosition.priceUsd ? (
             <>
-              <div className="p-4">
-                <p className="text-center text-base">Review trade</p>
-                <ul className="mt-4 flex flex-col gap-3">
-                  <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+              <section className="p-4" aria-label="review trade">
+                <header className="text-center text-base">Review trade</header>
+                <section className="mt-4 grid gap-3" aria-label="review collateral">
+                  <header className="flex items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                     <span className="ml-1">{removeFirstCharsUC(selectedCollateral.symbol)}</span>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
+                  </header>
+                  <div className="flex items-center justify-between">
+                    <span>Position size</span>
+                    <span>
+                      {formatNumberAsDecimal(Number(inputCollateral.value) * Number(inputLeverage.value), 4)}{" "}
+                      {removeFirstCharsUC(selectedCollateral.symbol)}
+                    </span>
+                  </div>
+                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
+                    <li className="flex items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
+                      <span>
+                        {formatNumberAsDecimal(Number(inputCollateral.value), 4)}{" "}
+                        {removeFirstCharsUC(selectedCollateral.symbol)}
+                      </span>
+                    </li>
+                    <li className="flex items-center">
                       <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
+                      <span>
+                        {formatNumberAsDecimal(computedBorrowAmount, 4)} {removeFirstCharsUC(selectedCollateral.symbol)}
+                      </span>
+                    </li>
+                  </ul>
+                </section>
                 <div className="relative my-[-1em] flex items-center justify-center">
                   <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
                     <ArrowDownIcon className="text-lg" />
                   </div>
                 </div>
-                <ul className="flex flex-col gap-3">
-                  <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+                <section className="grid gap-3" aria-label="review position">
+                  <header className="flex flex-row items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                     <span className="ml-1">{removeFirstCharsUC(selectedPosition.symbol)}</span>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-                      <span>{formatNumberAsCurrency(selectedPosition.priceUsd, 4)}</span>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Position size</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">
-                          {formatNumberAsDecimal(Number(inputPosition.value) + Number(openPositionFee), 4)}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-                      <div className="flex flex-row items-center gap-1">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span>{formatNumberAsDecimal(Number(openPositionFee), 4)}</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">
-                          {formatNumberAsDecimal(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0, 4)}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  {poolActive ? (
-                    <li className="px-4">
-                      <div className="flex flex-row items-center">
-                        <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>{poolInterestRate}</span>
-                      </div>
+                  </header>
+                  <div className="flex items-center justify-between">
+                    <span>Opening position</span>
+                    <span>
+                      {formatNumberAsDecimal(Number(inputPosition.value) - Number(openPositionFee), 4)}{" "}
+                      {removeFirstCharsUC(selectedPosition.symbol)}
+                    </span>
+                  </div>
+                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
+                    <li className="flex items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">Current swap rate</span>
+                      <span>
+                        1 {removeFirstCharsUC(selectedCollateral.symbol)} ={" "}
+                        {formatNumberAsDecimal(
+                          (selectedPosition.symbol.toLowerCase() === "rowan"
+                            ? Decimal.fromAtomics(poolActive?.swapPriceNative ?? "0", selectedPosition.decimals)
+                            : Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedCollateral.decimals)
+                          ).toFloatApproximation(),
+                          4,
+                        )}{" "}
+                        {removeFirstCharsUC(selectedPosition.symbol)}
+                      </span>
                     </li>
-                  ) : null}
-                </ul>
-              </div>
+                    <li className="flex items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">Swap result</span>
+                      <span>
+                        {formatNumberAsDecimal(Number(inputPosition.value), 4)}{" "}
+                        {removeFirstCharsUC(selectedPosition.symbol)}
+                      </span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-auto min-w-fit text-gray-300">Fees</span>
+                      <span>
+                        {formatNumberAsDecimal(Number(openPositionFee), 4)}{" "}
+                        {removeFirstCharsUC(selectedPosition.symbol)}
+                      </span>
+                    </li>
+                  </ul>
+                </section>
+              </section>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
                 isDisabledOpenPosition={isDisabledOpenPosition}
-                onClickOpenPosition={onClickOpenPosition}
+                isLoadingOpenPosition={confirmOpenPositionMutation.isLoading}
+                onClickOpenPosition={onClickConfirmOpenPosition}
               />
+              {confirmOpenPositionMutation.isError && (
+                <FlashMessage className="bg-red-200">
+                  <b className="mr-1">Failed to open position:</b>
+                  <span>{(confirmOpenPositionMutation.error as Error).message}</span>
+                </FlashMessage>
+              )}
             </>
           ) : (
             <div className="bg-gray-850 m-4 flex items-center justify-center rounded p-2 text-4xl">
@@ -820,24 +835,6 @@ const Trade = (props: TradeProps) => {
           />
         </article>
       </section>
-
-      {selectedCollateral.denom && selectedPosition.denom && poolActive && poolActive.asset.denom ? (
-        <ModalMTPOpen
-          data={{
-            collateralAmount: collateralAmount,
-            fromDenom: selectedCollateral.denom,
-            leverage: leverage,
-            poolInterestRate: poolInterestRate,
-            poolSymbol: poolActive.asset.denom,
-            positionPriceUsd: selectedPosition.priceUsd,
-            positionTokenAmount: String(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0),
-            toDenom: selectedPosition.denom,
-          }}
-          isOpen={modalConfirmOpenPosition.isOpen}
-          onClose={onModalClose}
-          onMutationSuccess={onModalClose}
-        />
-      ) : null}
     </>
   );
 };

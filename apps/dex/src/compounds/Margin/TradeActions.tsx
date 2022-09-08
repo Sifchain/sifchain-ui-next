@@ -15,17 +15,20 @@ import {
   FlashMessageAccountNotWhitelisted,
 } from "@sifchain/ui";
 
-type TradeActionsProps = {
+type TradeActionsProps = PropsWithChildren<{
   govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
   onClickReset: (event: SyntheticEvent<HTMLButtonElement>) => void;
   isDisabledOpenPosition: boolean;
   onClickOpenPosition: (event: SyntheticEvent<HTMLButtonElement>) => void;
-};
+  isLoadingOpenPosition: boolean;
+}>;
+
 export function TradeActions({
   govParams,
   onClickReset,
   isDisabledOpenPosition,
   onClickOpenPosition,
+  isLoadingOpenPosition,
 }: TradeActionsProps) {
   const walletAddressQuery = useSifSignerAddressQuery();
   const isWhitelistedAccountQuery = useMarginIsWhitelistedAccountQuery({
@@ -45,16 +48,21 @@ export function TradeActions({
       >
         Reset
       </Button>
-      <Button
-        variant="primary"
-        as="button"
-        size="md"
-        className="col-span-3"
-        disabled={isDisabledOpenPosition}
-        onClick={onClickOpenPosition}
-      >
-        Open trade
-      </Button>
+
+      {isLoadingOpenPosition ? (
+        <p className="col-span-3 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Opening trade...</p>
+      ) : (
+        <Button
+          variant="primary"
+          as="button"
+          size="md"
+          className="col-span-3"
+          disabled={isDisabledOpenPosition || isLoadingOpenPosition}
+          onClick={onClickOpenPosition}
+        >
+          Open trade
+        </Button>
+      )}
     </>
   );
 
