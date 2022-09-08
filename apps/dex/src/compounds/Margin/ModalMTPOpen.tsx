@@ -57,7 +57,7 @@ export function ModalMTPOpen(props: ModalMTPOpenProps) {
     confirmOpenPositionMutation.reset();
   }, [confirmOpenPositionMutation, props]);
 
-  let content = (
+  const content = (
     <>
       {props.data.positionTokenAmount &&
       props.data.toDenom &&

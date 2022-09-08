@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Head from "next/head";
 
-import { Maybe } from "@sifchain/utils";
 import {
   ArrowDownIcon,
   FlashMessage5xxError,
@@ -558,7 +557,7 @@ const Trade = (props: TradeProps) => {
       <Head>
         <title>Sichain Dex - Margin - Trade</title>
       </Head>
-      <section className="border-gold-800 mt-4 rounded border bg-gray-800 text-xs">
+      <section className="mt-4 rounded bg-gray-900 text-xs">
         {poolActive && enhancedRowan.priceUsd ? (
           <PoolOverview
             pool={poolActive}
@@ -576,8 +575,8 @@ const Trade = (props: TradeProps) => {
       </section>
 
       <section className="mt-4 grid grid-cols-1 lg:grid-cols-7 lg:gap-x-5 ">
-        <article className="border-gold-800 flex flex-col rounded border bg-gray-800 text-xs lg:col-span-2">
-          <ul className="border-gold-800 flex flex-col gap-0 border-b p-4">
+        <article className="flex flex-col rounded bg-gray-900 text-xs lg:col-span-2">
+          <ul className="flex flex-col p-4">
             <li className="flex flex-col">
               <div className="mb-1 flex flex-row text-xs">
                 <span className="mr-auto">Collateral</span>
@@ -717,89 +716,96 @@ const Trade = (props: TradeProps) => {
           selectedPosition.symbol &&
           selectedPosition.priceUsd ? (
             <>
-              <div className="p-4">
-                <p className="text-center text-base">Review trade</p>
-                <ul className="mt-4 flex flex-col gap-3">
-                  <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+              <section className="p-4" aria-label="review trade">
+                <header className="text-center text-base">Review trade</header>
+                <section className="mt-4 grid gap-3" aria-label="review collateral">
+                  <header className="flex items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
                     <span className="ml-1">{removeFirstCharsUC(selectedCollateral.symbol)}</span>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
+                  </header>
+                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
+                    <li>
+                      <div className="flex items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
+                        <div className="flex items-center">
+                          <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                          <span className="ml-1">{formatNumberAsDecimal(Number(inputCollateral.value), 4)}</span>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
+                    </li>
+                    <li>
+                      <div className="flex items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
+                        <div className="flex items-center">
+                          <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
+                          <span className="ml-1">{formatNumberAsDecimal(computedBorrowAmount, 4)}</span>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                </ul>
+                    </li>
+                  </ul>
+                </section>
                 <div className="relative my-[-1em] flex items-center justify-center">
                   <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
                     <ArrowDownIcon className="text-lg" />
                   </div>
                 </div>
-                <ul className="flex flex-col gap-3">
-                  <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
+                <section className="grid gap-3" aria-label="review position">
+                  <header className="flex flex-row items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
                     <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
                     <span className="ml-1">{removeFirstCharsUC(selectedPosition.symbol)}</span>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-                      <span>{formatNumberAsCurrency(selectedPosition.priceUsd, 4)}</span>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Position size</span>
+                  </header>
+                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
+                    <li>
                       <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">
-                          {formatNumberAsDecimal(Number(inputPosition.value) + Number(openPositionFee), 4)}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-                      <div className="flex flex-row items-center gap-1">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span>{formatNumberAsDecimal(Number(openPositionFee), 4)}</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="px-4">
-                    <div className="flex flex-row items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-                      <div className="flex flex-row items-center">
-                        <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                        <span className="ml-1">
-                          {formatNumberAsDecimal(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0, 4)}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  {poolActive ? (
-                    <li className="px-4">
-                      <div className="flex flex-row items-center">
-                        <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
-                        <span>{poolInterestRate}</span>
+                        <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
+                        <span>{formatNumberAsCurrency(selectedPosition.priceUsd, 4)}</span>
                       </div>
                     </li>
-                  ) : null}
-                </ul>
-              </div>
+                    <li>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">Position size</span>
+                        <div className="flex flex-row items-center">
+                          <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(Number(inputPosition.value) + Number(openPositionFee), 4)}
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">Fees</span>
+                        <div className="flex flex-row items-center gap-1">
+                          <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                          <span>{formatNumberAsDecimal(Number(openPositionFee), 4)}</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="flex flex-row items-center">
+                        <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
+                        <div className="flex flex-row items-center">
+                          <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
+                          <span className="ml-1">
+                            {formatNumberAsDecimal(
+                              Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0,
+                              4,
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                    {poolActive && (
+                      <li>
+                        <div className="flex flex-row items-center">
+                          <span className="mr-auto min-w-fit text-gray-300">Current interest rate</span>
+                          <span>{poolInterestRate}</span>
+                        </div>
+                      </li>
+                    )}
+                  </ul>
+                </section>
+              </section>
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
