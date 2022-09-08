@@ -1,7 +1,7 @@
 {
-  "private": true,
   "name": "@sifchain/utils",
-  "version": "1.0.0",
+  "private": true,
+  "version": "0.1.0",
   "description": "",
   "main": "src/index.ts",
   "exports": {

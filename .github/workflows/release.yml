@@ -25,15 +25,15 @@ jobs:
       - run: pnpm turbo run build --filter="./packages/*"
 
       # Only create snapshot for now, re-enable once the dex is released
-      # - name: Create PR or Publish release
-      #   uses: changesets/action@v1
-      #   id: changesets
-      #   with:
-      #     commit: "chore: update versions"
-      #     title: "chore: update versions"
-      #     publish: pnpm changeset publish
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR or Publish release
+        uses: changesets/action@v1
+        id: changesets
+        with:
+          commit: "chore: update versions"
+          title: "chore: update versions"
+          publish: pnpm changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set snapshot version
         run: pnpm -r exec npm version 0.0.0-snapshot.$(git rev-parse --short HEAD) --git-tag-version=false
