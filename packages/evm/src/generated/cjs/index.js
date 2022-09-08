@@ -7,9 +7,7 @@ var __importDefault =
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMainnetSdk = exports.getContract = void 0;
 const ethers_1 = require("ethers");
-const bridgeBank_json_1 = __importDefault(
-  require("../../eth-sdk/abis/mainnet/peggy/bridgeBank.json"),
-);
+const bridgeBank_json_1 = __importDefault(require("../../eth-sdk/abis/mainnet/peggy/bridgeBank.json"));
 function getContract(address, abi, defaultSignerOrProvider) {
   return new ethers_1.Contract(address, abi, defaultSignerOrProvider);
 }
