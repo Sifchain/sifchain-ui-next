@@ -1,13 +1,5 @@
-import type { ChangeEvent, SyntheticEvent } from "react";
-import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-
 import { Decimal } from "@cosmjs/math";
-import { useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/router";
-import clsx from "clsx";
-import Head from "next/head";
-
+import type { IAsset } from "@sifchain/common";
 import {
   ArrowDownIcon,
   FlashMessage5xxError,
@@ -17,22 +9,27 @@ import {
   SwapIcon,
   TokenEntry,
 } from "@sifchain/ui";
+import clsx from "clsx";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useCallback, useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
+import AssetIcon from "~/compounds/AssetIcon";
+import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import {
-  useMarginMTPOpenMutation,
-  useMarginOpenPositionsBySymbolQuery,
-  useMarginParamsQuery,
-} from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
   useRowanPriceQuery,
   useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
-import AssetIcon from "~/compounds/AssetIcon";
-import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
+import {
+  useMarginMTPOpenMutation,
+  useMarginOpenPositionsBySymbolQuery,
+  useMarginParamsQuery,
+} from "~/domains/margin/hooks";
 import { TradeActions } from "./TradeActions";
 
 /**
