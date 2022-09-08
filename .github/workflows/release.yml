@@ -31,8 +31,6 @@ jobs:
         uses: changesets/action@v1
         id: changesets
         with:
-          commit: "chore: update versions"
-          title: "chore: update versions"
           publish: echo "damn you changesets"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
