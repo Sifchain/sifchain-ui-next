@@ -1,6 +1,6 @@
 import { ComposeProviders } from "@sifchain/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
 import { FC, Fragment, useState } from "react";
 import { CookiesProvider } from "react-cookie";
@@ -27,7 +27,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
           <MainLayout>
             <Component {...pageProps} />
           </MainLayout>
-          <ReactQueryDevtools position="bottom-right" />
+          {/* <ReactQueryDevtools  position="bottom-right" /> */}
         </QueryClientProvider>
       </CookiesProvider>
     </ComposeProviders>
