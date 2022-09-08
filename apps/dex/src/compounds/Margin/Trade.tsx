@@ -20,7 +20,11 @@ import {
 
 import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
-import { useMarginOpenPositionsBySymbolQuery, useMarginParamsQuery } from "~/domains/margin/hooks";
+import {
+  useMarginMTPOpenMutation,
+  useMarginOpenPositionsBySymbolQuery,
+  useMarginParamsQuery,
+} from "~/domains/margin/hooks";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
@@ -29,8 +33,6 @@ import {
 } from "~/domains/clp/hooks";
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
-
-import { ModalMTPOpen } from "./ModalMTPOpen";
 import { TradeActions } from "./TradeActions";
 
 /**
@@ -489,13 +491,6 @@ const Trade = (props: TradeProps) => {
   const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
     isOpen: false,
   });
-  const onClickOpenPosition = useCallback((event: SyntheticEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setModalConfirmOpenPosition({ isOpen: true });
-  }, []);
-  const onModalClose = useCallback(() => {
-    setModalConfirmOpenPosition({ isOpen: false });
-  }, []);
 
   /**
    * ********************************************************************************************
@@ -551,6 +546,26 @@ const Trade = (props: TradeProps) => {
   );
 
   const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
+
+  const confirmOpenPositionMutation = useMarginMTPOpenMutation({
+    poolSymbol: poolActive?.asset.denom ?? "",
+    _optimisticCustodyAmount: String(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0),
+  });
+
+  const onClickConfirmOpenPosition = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      await confirmOpenPositionMutation.mutateAsync({
+        collateralAsset: selectedCollateral.denom ?? "",
+        borrowAsset: selectedPosition.denom ?? "",
+        position: 1, // LONG
+        collateralAmount: collateralAmount,
+        leverage: leverage,
+      });
+    } catch (err) {
+      //
+    }
+  };
 
   return (
     <>
@@ -799,8 +814,15 @@ const Trade = (props: TradeProps) => {
                 govParams={props.govParams}
                 onClickReset={onClickReset}
                 isDisabledOpenPosition={isDisabledOpenPosition}
-                onClickOpenPosition={onClickOpenPosition}
+                isLoadingOpenPosition={confirmOpenPositionMutation.isLoading}
+                onClickOpenPosition={onClickConfirmOpenPosition}
               />
+              {confirmOpenPositionMutation.isError && (
+                <p className="m-4 rounded bg-red-200 p-4 text-center text-red-800">
+                  <b className="mr-1">Failed to open position:</b>
+                  <span>{(confirmOpenPositionMutation.error as Error).message}</span>
+                </p>
+              )}
             </>
           ) : (
             <div className="bg-gray-850 m-4 flex items-center justify-center rounded p-2 text-4xl">
@@ -815,24 +837,6 @@ const Trade = (props: TradeProps) => {
           />
         </article>
       </section>
-
-      {selectedCollateral.denom && selectedPosition.denom && poolActive && poolActive.asset.denom ? (
-        <ModalMTPOpen
-          data={{
-            collateralAmount: collateralAmount,
-            fromDenom: selectedCollateral.denom,
-            leverage: leverage,
-            poolInterestRate: poolInterestRate,
-            poolSymbol: poolActive.asset.denom,
-            positionPriceUsd: selectedPosition.priceUsd,
-            positionTokenAmount: String(Number(inputPosition.value) > 0 ? Number(inputPosition.value) : 0),
-            toDenom: selectedPosition.denom,
-          }}
-          isOpen={modalConfirmOpenPosition.isOpen}
-          onClose={onModalClose}
-          onMutationSuccess={onModalClose}
-        />
-      ) : null}
     </>
   );
 };
