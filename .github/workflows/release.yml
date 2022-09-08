@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   version:
@@ -22,7 +25,6 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - run: pnpm install
-      - run: pnpm turbo run build --filter="./packages/*"
 
       # Only create snapshot for now, re-enable once the dex is released
       - name: Create PR or Publish release
@@ -31,12 +33,6 @@ jobs:
         with:
           commit: "chore: update versions"
           title: "chore: update versions"
-          publish: pnpm changeset publish
+          publish: echo "damn you changesets"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set snapshot version
-        run: pnpm -r exec npm version 0.0.0-snapshot.$(git rev-parse --short HEAD) --git-tag-version=false
-
-      - name: Publish snapshot
-        run: pnpm -r publish --no-git-checks --tag snapshot --access public
