@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/stargate",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "@cosmjs/stargate client for sifnode",
   "main": "build/commonjs/index.js",
   "exports": {
