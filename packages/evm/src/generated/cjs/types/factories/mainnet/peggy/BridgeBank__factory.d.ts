@@ -1,9 +1,6 @@
 import { Signer } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import type {
-  BridgeBank,
-  BridgeBankInterface,
-} from "../../../mainnet/peggy/BridgeBank";
+import type { BridgeBank, BridgeBankInterface } from "../../../mainnet/peggy/BridgeBank";
 export declare class BridgeBank__factory {
   static readonly abi: (
     | {
@@ -41,8 +38,5 @@ export declare class BridgeBank__factory {
       }
   )[];
   static createInterface(): BridgeBankInterface;
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider,
-  ): BridgeBank;
+  static connect(address: string, signerOrProvider: Signer | Provider): BridgeBank;
 }

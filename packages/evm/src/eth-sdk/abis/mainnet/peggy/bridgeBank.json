@@ -2,30 +2,10 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_beneficiary",
-        "type": "address"
-      }
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "_symbol", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "_amount", "type": "uint256" },
+      { "indexed": false, "internalType": "address", "name": "_beneficiary", "type": "address" }
     ],
     "name": "LogBridgeTokenMint",
     "type": "event"
@@ -33,42 +13,12 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_from",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "_to",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_value",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_nonce",
-        "type": "uint256"
-      }
+      { "indexed": false, "internalType": "address", "name": "_from", "type": "address" },
+      { "indexed": false, "internalType": "bytes", "name": "_to", "type": "bytes" },
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "_symbol", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "_value", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "_nonce", "type": "uint256" }
     ],
     "name": "LogBurn",
     "type": "event"
@@ -76,42 +26,12 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_from",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "_to",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_value",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_nonce",
-        "type": "uint256"
-      }
+      { "indexed": false, "internalType": "address", "name": "_from", "type": "address" },
+      { "indexed": false, "internalType": "bytes", "name": "_to", "type": "bytes" },
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "_symbol", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "_value", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "_nonce", "type": "uint256" }
     ],
     "name": "LogLock",
     "type": "event"
@@ -119,18 +39,8 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      }
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "_symbol", "type": "string" }
     ],
     "name": "LogNewBridgeToken",
     "type": "event"
@@ -138,30 +48,10 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_value",
-        "type": "uint256"
-      }
+      { "indexed": false, "internalType": "address", "name": "_to", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "_symbol", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "_value", "type": "uint256" }
     ],
     "name": "LogUnlock",
     "type": "event"
@@ -169,57 +59,27 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "_value",
-        "type": "bool"
-      }
+      { "indexed": false, "internalType": "address", "name": "_token", "type": "address" },
+      { "indexed": false, "internalType": "bool", "name": "_value", "type": "bool" }
     ],
     "name": "LogWhiteListUpdate",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
     "name": "Paused",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
     "name": "Unpaused",
     "type": "event"
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_contractAddress",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_contractAddress", "type": "address" }],
     "name": "addExistingBridgeToken",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "payable": false,
@@ -255,13 +115,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "tokenAddresses",
-        "type": "address[]"
-      }
-    ],
+    "inputs": [{ "internalType": "address[]", "name": "tokenAddresses", "type": "address[]" }],
     "name": "bulkWhitelistUpdateLimits",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "payable": false,
@@ -392,16 +246,8 @@
   {
     "constant": false,
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_operatorAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_cosmosBridgeAddress",
-        "type": "address"
-      },
+      { "internalType": "address", "name": "_operatorAddress", "type": "address" },
+      { "internalType": "address", "name": "_cosmosBridgeAddress", "type": "address" },
       { "internalType": "address", "name": "_owner", "type": "address" },
       { "internalType": "address", "name": "_pauser", "type": "address" }
     ],
@@ -472,11 +318,7 @@
   {
     "constant": false,
     "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_intendedRecipient",
-        "type": "address"
-      },
+      { "internalType": "address payable", "name": "_intendedRecipient", "type": "address" },
       { "internalType": "string", "name": "_symbol", "type": "string" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" }
     ],
@@ -560,13 +402,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "blocklistAddress",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "internalType": "address", "name": "blocklistAddress", "type": "address" }],
     "name": "setBlocklist",
     "outputs": [],
     "payable": false,
@@ -598,11 +434,7 @@
   {
     "constant": false,
     "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_recipient",
-        "type": "address"
-      },
+      { "internalType": "address payable", "name": "_recipient", "type": "address" },
       { "internalType": "string", "name": "_symbol", "type": "string" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" }
     ],
