@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/common",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "core modules for sifchain",
   "files": [
@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsup src/index.ts",
     "compile": "pnpm tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest --run"
   },
   "keywords": [],
   "author": "",

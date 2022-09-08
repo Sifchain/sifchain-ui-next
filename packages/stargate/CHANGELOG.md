@@ -1,6 +1,6 @@
-# hello
+# @sifchain/stargate
 
-## 3.0.0
+## 1.0.0
 
 ### Major Changes
 
@@ -10,5 +10,3 @@
 
 - Updated dependencies [81bd7464]
   - @sifchain/proto-types@1.0.0
-  - @sifchain/stargate@1.0.0
-  - @sifchain/ui@1.0.0

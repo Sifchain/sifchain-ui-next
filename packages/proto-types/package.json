@@ -1,7 +1,7 @@
 {
   "name": "@sifchain/proto-types",
-  "version": "0.0.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Sifnode supporting protobuf types",
   "files": [
     "build",
     "cosmos",

@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/dex",
-  "version": "3.0.0-alpha",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "compile": "pnpm tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest --run",
     "test:watch": "vitest"
   },
   "dependencies": {
