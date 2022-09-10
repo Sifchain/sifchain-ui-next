@@ -33,17 +33,13 @@ export function useSifSignerAddressQuery() {
     },
   );
 
-  useEffect(
-    () => {
-      if (query.isFetching) {
-        return;
-      }
+  useEffect(() => {
+    if (query.isFetching || !signer) {
+      return;
+    }
 
-      query.refetch();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [connectionUpdatedAt],
-  );
+    query.refetch();
+  }, [connectionUpdatedAt, signer, query.isFetching, query]);
 
   return query;
 }
