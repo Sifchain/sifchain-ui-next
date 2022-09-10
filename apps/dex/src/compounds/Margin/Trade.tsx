@@ -768,7 +768,7 @@ const Trade = (props: TradeProps) => {
                     heading={[
                       "Opening position",
                       <>
-                        {formatNumberAsDecimal(Number(inputPosition.value) - Number(openPositionFee), 4)}{" "}
+                        {formatNumberAsDecimal(Number(inputPosition.value), 4)}{" "}
                         {removeFirstCharsUC(selectedPosition.symbol)}
                       </>,
                     ]}
@@ -790,7 +790,7 @@ const Trade = (props: TradeProps) => {
                       [
                         "Swap result",
                         <>
-                          {formatNumberAsDecimal(Number(inputPosition.value), 4)}{" "}
+                          {formatNumberAsDecimal(Number(inputPosition.value) + Number(openPositionFee), 4)}{" "}
                           {removeFirstCharsUC(selectedPosition.symbol)}
                         </>,
                       ],
