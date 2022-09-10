@@ -197,14 +197,14 @@ export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
     <>
       <div className="flex items-center justify-between pl-[18px] text-xs">
         <span>{heading[0]}</span>
-        <span>{heading[1]}</span>
+        <span className="tabular-nums">{heading[1]}</span>
       </div>
       {details && (
         <ul className="grid gap-3 border-l-2 border-gray-600 pl-4 text-xs">
           {details.map(([label, value], i) => (
             <li key={i} className="flex items-center justify-between text-gray-300">
               <span>{label}</span>
-              <span>{value}</span>
+              <span className="tabular-nums">{value}</span>
             </li>
           ))}
         </ul>
