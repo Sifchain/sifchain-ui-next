@@ -36,7 +36,7 @@ importers:
     specifiers:
       '@cosmjs/math': ^0.28.13
       '@cosmjs/stargate': ^0.28.13
-      '@headlessui/react': ^1.6.6
+      '@headlessui/react': ^1.7.0
       '@heroicons/react': 2.0.10
       '@sifchain/common': workspace:*
       '@sifchain/cosmos-connect': workspace:*
@@ -97,7 +97,7 @@ importers:
     dependencies:
       '@cosmjs/math': 0.28.13
       '@cosmjs/stargate': 0.28.13_22kvxa7zeyivx4jp72v2w3pkvy
-      '@headlessui/react': 1.6.6_ef5jwxihqo6n7gxfmzogljlgcm
+      '@headlessui/react': 1.7.0_ef5jwxihqo6n7gxfmzogljlgcm
       '@heroicons/react': 2.0.10_react@18.1.0
       '@sifchain/common': link:../../packages/common
       '@sifchain/cosmos-connect': link:../../packages/cosmos-connect
@@ -3512,8 +3512,16 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
-  /@headlessui/react/1.6.6_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-MFJtmj9Xh/hhBMhLccGbBoSk+sk61BlP6sJe4uQcVMtXZhCgGqd2GyIQzzmsdPdTEWGSF434CBi8mnhR6um46Q==}
+  /@headlessui/react/1.7.0:
+    resolution: {integrity: sha512-/nDsijOXRwXVLpUBEiYuWguIBSIN3ZbKyah+KPUiD8bdIKtX1U/k+qLYUEr7NCQnSF2e4w1dr8me42ECuG3cvw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
+      react-dom: ^16 || ^17 || ^18
+    dev: false
+
+  /@headlessui/react/1.7.0_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-/nDsijOXRwXVLpUBEiYuWguIBSIN3ZbKyah+KPUiD8bdIKtX1U/k+qLYUEr7NCQnSF2e4w1dr8me42ECuG3cvw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16 || ^17 || ^18
@@ -3521,14 +3529,6 @@ packages:
     dependencies:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-    dev: false
-
-  /@headlessui/react/1.7.0:
-    resolution: {integrity: sha512-/nDsijOXRwXVLpUBEiYuWguIBSIN3ZbKyah+KPUiD8bdIKtX1U/k+qLYUEr7NCQnSF2e4w1dr8me42ECuG3cvw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
     dev: false
 
   /@heroicons/react/2.0.10:
