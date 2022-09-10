@@ -169,11 +169,20 @@ function Average24hPercent({ value }: { value: number }) {
   return <span className={cls}>({formatNumberAsPercent(value)})</span>;
 }
 
-export const AssetHeading: FC<{ symbol: string }> = ({ symbol }) => {
+export const TokenDisplaySymbol = ({ symbol = "", className = "" }) => {
+  return <span className={clsx("uppercase", className)}>{removeFirstCharsUC(symbol)}</span>;
+};
+
+export const AssetHeading: FC<{ symbol: string; className?: string }> = ({ symbol, className }) => {
   return (
-    <header className="flex items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
+    <header
+      className={clsx(
+        "flex items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold",
+        className,
+      )}
+    >
       <AssetIcon symbol={symbol} network="sifchain" size="sm" />
-      <span className="ml-1">{removeFirstCharsUC(symbol)}</span>
+      <TokenDisplaySymbol symbol={symbol} className="ml-1" />
     </header>
   );
 };

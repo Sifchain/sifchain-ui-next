@@ -15,8 +15,7 @@ import Long from "long";
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulationQuery } from "~/domains/clp/hooks";
 
-import { removeFirstCharsUC } from "./_trade";
-import { AssetHeading, TradeDetails, TradeReviewSeparator } from "./_components";
+import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 
 type ModalMTPCloseProps = {
   data: MarginOpenPositionsData;
@@ -146,7 +145,8 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             heading={[
               "Current position",
               <>
-                {formatNumberAsDecimal(currentPositionAsNumber, 4)} {removeFirstCharsUC(props.data.custody_asset)}
+                {formatNumberAsDecimal(currentPositionAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.custody_asset} />
               </>,
             ]}
             details={[
@@ -157,34 +157,36 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
         </section>
         <TradeReviewSeparator />
         <section className="grid gap-3">
-          <AssetHeading symbol={props.data.collateral_asset} />
+          <AssetHeading symbol={props.data.collateral_asset} className="bg-gray-900" />
           <TradeDetails
             heading={[
               "Closing position",
               <>
                 {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
-                {removeFirstCharsUC(props.data.collateral_asset)}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
             ]}
             details={[
               [
                 "Current swap rate",
                 <>
-                  1 {removeFirstCharsUC(props.data.custody_asset)} = {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
-                  {removeFirstCharsUC(props.data.collateral_asset)}
+                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> ={" "}
+                  {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
               [
                 "Swap result",
                 <>
                   {formatNumberAsDecimal(closingPositionMinReceivingAsDecimal.toFloatApproximation(), 4)}{" "}
-                  {removeFirstCharsUC(props.data.collateral_asset)}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
               [
                 "Fees",
                 <>
-                  {formatNumberAsCurrency(closingPositionFees, 4)} {removeFirstCharsUC(props.data.collateral_asset)}
+                  {formatNumberAsCurrency(closingPositionFees, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
             ]}
@@ -194,7 +196,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               "Borrow amount",
               <>
                 {formatNumberAsDecimal(liabilitiesAsDecimal.toFloatApproximation(), 4)}{" "}
-                {removeFirstCharsUC(props.data.collateral_asset)}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
             ]}
           />
@@ -203,7 +205,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               "Resulting payment",
               <>
                 {formatNumberAsDecimal(closingPositionAsDecimal.toFloatApproximation(), 4)}{" "}
-                {removeFirstCharsUC(props.data.collateral_asset)}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
             ]}
             details={[
@@ -211,7 +213,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                 "Collateral",
                 <>
                   {formatNumberAsDecimal(Number(props.data.collateral_amount), 4)}{" "}
-                  {removeFirstCharsUC(props.data.collateral_asset)}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
               [
@@ -219,7 +221,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                 <>
                   {tradePnlSign === 1 ? "+" : "-"}
                   {formatNumberAsCurrency(Math.abs(tradePnlAsNumber), 4)}{" "}
-                  {removeFirstCharsUC(props.data.collateral_asset)}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
             ]}
