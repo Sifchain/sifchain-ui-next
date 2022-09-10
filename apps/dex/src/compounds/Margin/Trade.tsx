@@ -777,8 +777,8 @@ const Trade = (props: TradeProps) => {
                           1 {removeFirstCharsUC(selectedCollateral.symbol)} ={" "}
                           {formatNumberAsDecimal(
                             (selectedPosition.symbol.toLowerCase() === "rowan"
-                              ? Decimal.fromAtomics(poolActive?.swapPriceNative ?? "0", selectedPosition.decimals)
-                              : Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedCollateral.decimals)
+                              ? Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedPosition.decimals)
+                              : Decimal.fromAtomics(poolActive?.swapPriceNative ?? "0", selectedCollateral.decimals)
                             ).toFloatApproximation(),
                             4,
                           )}{" "}
