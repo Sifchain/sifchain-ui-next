@@ -101,7 +101,7 @@ const HistoryTable = (props: HistoryTableProps) => {
     return <FlashMessageConnectSifChainWalletError size="full-page" />;
   }
 
-  if (walletAddressQuery.isFetching && walletAddressQuery.isLoading) {
+  if (walletAddressQuery.isFetching && walletAddressQuery.isLoading && !walletAddressQuery.isFetched) {
     return <FlashMessageConnectSifChainWalletLoading size="full-page" />;
   }
 
