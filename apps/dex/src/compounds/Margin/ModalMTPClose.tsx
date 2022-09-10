@@ -1,10 +1,8 @@
 import type { MarginOpenPositionsData } from "~/domains/margin/hooks";
 
-import clsx from "clsx";
 import { Decimal } from "@cosmjs/math";
 import {
   FlashMessageLoading,
-  ArrowDownIcon,
   Button,
   formatNumberAsCurrency,
   formatNumberAsDecimal,
@@ -13,15 +11,11 @@ import {
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
-import { isNil } from "rambda";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulationQuery } from "~/domains/clp/hooks";
 
-import AssetIcon from "~/compounds/AssetIcon";
-
-import { formatNumberAsPercent } from "./_intl";
-import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
+import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 
 type ModalMTPCloseProps = {
   data: MarginOpenPositionsData;
@@ -47,6 +41,18 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     currentCustodyAmount,
     0.01,
   );
+
+  const { data: swapRateData } = useSwapSimulationQuery(
+    props.data.custody_asset,
+    props.data.collateral_asset,
+    "1",
+    0.01,
+  );
+
+  const swapRateAsNumber = Decimal.fromAtomics(
+    swapRateData?.minimumReceiving ?? "0",
+    collateralTokenQuery?.data?.decimals ?? 0,
+  ).toFloatApproximation();
 
   const onClickConfirmClose = useCallback(
     async (event: SyntheticEvent<HTMLButtonElement>) => {
@@ -125,220 +131,103 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
 
     content = (
       <>
-        <ul className="flex flex-col gap-3">
-          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-            {isNil(props.data.custody_asset) ? (
-              <HtmlUnicode name="EmDash" />
-            ) : (
+        <section className="grid gap-3">
+          <AssetHeading symbol={props.data.custody_asset} />
+          <TradeDetails
+            heading={["Opening Position", ""]}
+            details={[
+              ["Opening price", formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)],
+              ["Opening value", formatNumberAsCurrency(openingValueAsNumber, 4)],
+            ]}
+          />
+          <TradeDetails heading={["Total insterest paid", formatNumberAsCurrency(totalInterestPaidAsNumber, 4)]} />
+          <TradeDetails
+            heading={[
+              "Current position",
               <>
-                <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                <span className="ml-1">{removeFirstCharsUC(props.data.custody_asset.toUpperCase())}</span>
-              </>
-            )}
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Entry price</span>
-              {isNil(props.data.custody_entry_price) ? (
-                <HtmlUnicode name="EmDash" />
-              ) : (
-                <span>{formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)}</span>
-              )}
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Opening position</span>
-              <div className="flex flex-row items-center">
-                {isNil(openingPositionAsNumber) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">{formatNumberAsDecimal(openingPositionAsNumber, 4)}</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Opening value</span>
-              {isNil(openingValueAsNumber) ? (
-                <HtmlUnicode name="EmDash" />
-              ) : (
-                <span>{formatNumberAsCurrency(openingValueAsNumber, 4)}</span>
-              )}
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Total interest paid</span>
-              <div className="flex flex-row items-center">
-                {isNil(totalInterestPaidAsNumber) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">{formatNumberAsDecimal(totalInterestPaidAsNumber, 4)}</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current position</span>
-              <div className="flex flex-row items-center">
-                {isNil(currentPositionAsNumber) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.custody_asset} network="sifchain" size="sm" />
-                    <b className="ml-1">{formatNumberAsDecimal(currentPositionAsNumber, 4)}</b>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current price</span>
-              {isNil(currentPriceAsNumber) ? (
-                <HtmlUnicode name="EmDash" />
-              ) : (
-                <span>{formatNumberAsCurrency(currentPriceAsNumber, 4)}</span>
-              )}
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Current value</span>
-              {isNil(currentValueAsNumber) ? (
-                <HtmlUnicode name="EmDash" />
-              ) : (
-                <span>{formatNumberAsCurrency(currentValueAsNumber, 4)}</span>
-              )}
-            </div>
-          </li>
-        </ul>
-        <div className="relative my-[-1em] flex items-center justify-center">
-          <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
-            <ArrowDownIcon className="text-lg" />
-          </div>
-        </div>
-        <ul className="flex flex-col gap-3">
-          <li className="bg-gray-850 flex flex-row items-center rounded-lg py-2 px-4 text-base font-semibold">
-            {isNil(props.data.collateral_asset) ? (
-              <HtmlUnicode name="EmDash" />
-            ) : (
+                {formatNumberAsDecimal(currentPositionAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.custody_asset} />
+              </>,
+            ]}
+            details={[
+              ["Current price", formatNumberAsCurrency(currentPriceAsNumber, 4)],
+              ["Current value", formatNumberAsCurrency(currentValueAsNumber, 4)],
+            ]}
+          />
+        </section>
+        <TradeReviewSeparator />
+        <section className="grid gap-3">
+          <AssetHeading symbol={props.data.collateral_asset} className="bg-gray-900" />
+          <TradeDetails
+            heading={[
+              "Closing position",
               <>
-                <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                <span className="ml-1">{removeFirstCharsUC(props.data.collateral_asset.toUpperCase())}</span>
-              </>
-            )}
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Closing position</span>
-              <div className="flex flex-row items-center">
-                {isNil(closingPositionAsDecimal) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <span className="ml-1">
-                      {formatNumberAsDecimal(closingPositionAsDecimal.toFloatApproximation(), 4)}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
-              <div className="flex flex-row items-center text-red-400">
-                {isNil(props.data.liabilities) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <HtmlUnicode name="MinusSign" className="ml-1" />
-                    <span>{formatNumberAsDecimal(Number(props.data.liabilities), 4)}</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-              <div className={clsx("flex flex-row items-center ", { "text-red-400": closingPositionFees !== 0 })}>
-                {isNil(closingPositionFees) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    {closingPositionFees !== 0 ? (
-                      <HtmlUnicode name="MinusSign" className="ml-1" />
-                    ) : (
-                      <div className="ml-1" />
-                    )}
-                    <span>{formatNumberAsDecimal(closingPositionFees, 4)}</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Price Impact</span>
-              {isNil(closingPositionSwap.priceImpact) ? (
-                <HtmlUnicode name="EmDash" />
-              ) : (
-                <span>{formatNumberAsPercent(closingPositionSwap.priceImpact, 4)}</span>
-              )}
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Resulting amount</span>
-              <div className="flex flex-row items-center">
-                {isNil(finalPositionWithLiabilitiesAsNumber) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <b className="ml-1">{formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}</b>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className="px-4">
-            <div className="flex flex-row items-center">
-              <span className="mr-auto min-w-fit text-gray-300">Trade PnL</span>
-              <div className="flex flex-row items-center">
-                {isNil(tradePnlAsNumber) ? (
-                  <HtmlUnicode name="EmDash" />
-                ) : (
-                  <>
-                    <AssetIcon symbol={props.data.collateral_asset} network="sifchain" size="sm" />
-                    <span
-                      className={clsx("ml-1", {
-                        "text-green-400": tradePnlSign === 1 && tradePnlAsNumber > 0,
-                        "text-red-400": tradePnlSign === -1 && tradePnlAsNumber < 0,
-                      })}
-                    >
-                      {formatNumberAsDecimal(tradePnlAsNumber, 4)}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </li>
-        </ul>
+                {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+              </>,
+            ]}
+            details={[
+              [
+                "Current swap rate",
+                <>
+                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> ={" "}
+                  {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
+              ],
+              [
+                "Swap result",
+                <>
+                  {formatNumberAsDecimal(closingPositionMinReceivingAsDecimal.toFloatApproximation(), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
+              ],
+              [
+                "Fees",
+                <>
+                  {formatNumberAsCurrency(closingPositionFees, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
+              ],
+            ]}
+          />
+          <TradeDetails
+            heading={[
+              "Borrow amount",
+              <>
+                {formatNumberAsDecimal(liabilitiesAsDecimal.toFloatApproximation(), 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+              </>,
+            ]}
+          />
+          <TradeDetails
+            heading={[
+              "Resulting payment",
+              <>
+                {formatNumberAsDecimal(closingPositionAsDecimal.toFloatApproximation(), 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+              </>,
+            ]}
+            details={[
+              [
+                "Collateral",
+                <>
+                  {formatNumberAsDecimal(Number(props.data.collateral_amount), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
+              ],
+              [
+                "Estimated PnL",
+                <>
+                  {tradePnlSign === 1 ? "+" : "-"}
+                  {formatNumberAsCurrency(Math.abs(tradePnlAsNumber), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
+              ],
+            ]}
+          />
+        </section>
+
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (

@@ -48,7 +48,7 @@ export const Modal: FC<ModalProps> = (props) => {
             >
               <Dialog.Panel
                 className={clsx(
-                  "relative w-full transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all dark:bg-gray-800 dark:text-white sm:my-8 sm:w-full sm:max-w-lg",
+                  "dark:bg-gray-750 relative w-full transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all dark:text-white sm:my-8 sm:w-full sm:max-w-lg",
                   props.className,
                 )}
               >
@@ -56,7 +56,7 @@ export const Modal: FC<ModalProps> = (props) => {
                   <div className="absolute top-0 right-0 z-10 hidden pt-6 pr-6 sm:block">
                     <button
                       type="button"
-                      className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none dark:bg-gray-800"
+                      className="dark:bg-gray-750 rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
                       onClick={props.onClose.bind(null, false)}
                     >
                       <span className="sr-only">Close</span>

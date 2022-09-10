@@ -1,7 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
 import {
-  ArrowDownIcon,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
@@ -10,6 +9,7 @@ import {
   SwapIcon,
   TokenEntry,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -42,7 +42,7 @@ import { TradeActions } from "./TradeActions";
  *
  * ********************************************************************************************
  */
-import { PoolOverview } from "./_components";
+import { AssetHeading, PoolOverview, TradeDetails, TradeReviewSeparator } from "./_components";
 import { formatNumberAsDecimal } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -332,7 +332,8 @@ const Trade = (props: TradeProps) => {
 
   const calculatePosition = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const swap = calculateSwap(String(Number(inputAmount) * Number(leverage)));
+      const input = BigNumber(inputAmount).multipliedBy(BigNumber(leverage));
+      const swap = calculateSwap(input.toString());
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals).toString();
       return { value, fee };
@@ -342,7 +343,8 @@ const Trade = (props: TradeProps) => {
 
   const calculateCollateral = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const swap = calculateReverseSwap(String(Number(inputAmount) * Number(leverage)));
+      const input = BigNumber(inputAmount).dividedBy(BigNumber(leverage));
+      const swap = calculateReverseSwap(input.toString());
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
       return { value, fee };
@@ -732,80 +734,75 @@ const Trade = (props: TradeProps) => {
               <section className="p-4" aria-label="review trade">
                 <header className="text-center text-base">Review trade</header>
                 <section className="mt-4 grid gap-3" aria-label="review collateral">
-                  <header className="flex items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{removeFirstCharsUC(selectedCollateral.symbol)}</span>
-                  </header>
-                  <div className="flex items-center justify-between">
-                    <span>Position size</span>
-                    <span>
-                      {formatNumberAsDecimal(Number(inputCollateral.value) * Number(inputLeverage.value), 4)}{" "}
-                      {removeFirstCharsUC(selectedCollateral.symbol)}
-                    </span>
-                  </div>
-                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
-                    <li className="flex items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Collateral</span>
-                      <span>
-                        {formatNumberAsDecimal(Number(inputCollateral.value), 4)}{" "}
+                  <AssetHeading symbol={selectedCollateral.symbol} />
+                  <TradeDetails
+                    heading={[
+                      "Position size",
+                      <>
+                        {formatNumberAsDecimal(Number(inputCollateral.value) * Number(inputLeverage.value), 4)}{" "}
                         {removeFirstCharsUC(selectedCollateral.symbol)}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Borrow amount</span>
-                      <span>
-                        {formatNumberAsDecimal(computedBorrowAmount, 4)} {removeFirstCharsUC(selectedCollateral.symbol)}
-                      </span>
-                    </li>
-                  </ul>
+                      </>,
+                    ]}
+                    details={[
+                      [
+                        "Collateral",
+                        <>
+                          {formatNumberAsDecimal(Number(inputCollateral.value), 4)}{" "}
+                          {removeFirstCharsUC(selectedCollateral.symbol)}
+                        </>,
+                      ],
+                      [
+                        "Borrow amount",
+                        <>
+                          {formatNumberAsDecimal(computedBorrowAmount, 4)}{" "}
+                          {removeFirstCharsUC(selectedCollateral.symbol)}
+                        </>,
+                      ],
+                    ]}
+                  />
                 </section>
-                <div className="relative my-[-1em] flex items-center justify-center">
-                  <div className="rounded-full border-2 border-gray-800 bg-gray-900 p-3">
-                    <ArrowDownIcon className="text-lg" />
-                  </div>
-                </div>
+                <TradeReviewSeparator />
                 <section className="grid gap-3" aria-label="review position">
-                  <header className="flex flex-row items-center rounded-lg border border-gray-800 py-2 px-4 text-base font-semibold">
-                    <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                    <span className="ml-1">{removeFirstCharsUC(selectedPosition.symbol)}</span>
-                  </header>
-                  <div className="flex items-center justify-between">
-                    <span>Opening position</span>
-                    <span>
-                      {formatNumberAsDecimal(Number(inputPosition.value) - Number(openPositionFee), 4)}{" "}
-                      {removeFirstCharsUC(selectedPosition.symbol)}
-                    </span>
-                  </div>
-                  <ul className="grid gap-3 border-l-2 border-gray-800 px-4">
-                    <li className="flex items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Current swap rate</span>
-                      <span>
-                        1 {removeFirstCharsUC(selectedCollateral.symbol)} ={" "}
-                        {formatNumberAsDecimal(
-                          (selectedPosition.symbol.toLowerCase() === "rowan"
-                            ? Decimal.fromAtomics(poolActive?.swapPriceNative ?? "0", selectedPosition.decimals)
-                            : Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedCollateral.decimals)
-                          ).toFloatApproximation(),
-                          4,
-                        )}{" "}
+                  <AssetHeading symbol={selectedPosition.symbol} />
+                  <TradeDetails
+                    heading={[
+                      "Opening position",
+                      <>
+                        {formatNumberAsDecimal(Number(inputPosition.value) - Number(openPositionFee), 4)}{" "}
                         {removeFirstCharsUC(selectedPosition.symbol)}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Swap result</span>
-                      <span>
-                        {formatNumberAsDecimal(Number(inputPosition.value), 4)}{" "}
-                        {removeFirstCharsUC(selectedPosition.symbol)}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-auto min-w-fit text-gray-300">Fees</span>
-                      <span>
-                        {formatNumberAsDecimal(Number(openPositionFee), 4)}{" "}
-                        {removeFirstCharsUC(selectedPosition.symbol)}
-                      </span>
-                    </li>
-                  </ul>
+                      </>,
+                    ]}
+                    details={[
+                      [
+                        "Current swap rate",
+                        <>
+                          1 {removeFirstCharsUC(selectedCollateral.symbol)} ={" "}
+                          {formatNumberAsDecimal(
+                            (selectedPosition.symbol.toLowerCase() === "rowan"
+                              ? Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedPosition.decimals)
+                              : Decimal.fromAtomics(poolActive?.swapPriceNative ?? "0", selectedCollateral.decimals)
+                            ).toFloatApproximation(),
+                            4,
+                          )}{" "}
+                          {removeFirstCharsUC(selectedPosition.symbol)}
+                        </>,
+                      ],
+                      [
+                        "Swap result",
+                        <>
+                          {formatNumberAsDecimal(Number(inputPosition.value), 4)}{" "}
+                          {removeFirstCharsUC(selectedPosition.symbol)}
+                        </>,
+                      ],
+                      [
+                        "Fees",
+                        <>
+                          {formatNumberAsDecimal(Number(openPositionFee), 4)}{" "}
+                          {removeFirstCharsUC(selectedPosition.symbol)}
+                        </>,
+                      ],
+                    ]}
+                  />
                 </section>
               </section>
               <TradeActions

@@ -3,6 +3,7 @@ import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
 import clsx from "clsx";
 import {
+  ArrowDownIcon,
   formatNumberAsCurrency,
   formatNumberAsDecimal,
   TokenEntry,
@@ -13,6 +14,8 @@ import { TooltipInterestRate, TooltipLiquidationThreshold, TooltipPoolHealth } f
 
 import { formatNumberAsPercent } from "./_intl";
 import { removeFirstCharsUC } from "./_trade";
+import type { FC, ReactNode } from "react";
+import AssetIcon from "../AssetIcon";
 
 type NoResultsTrProps = {
   colSpan: number;
@@ -165,3 +168,55 @@ function Average24hPercent({ value }: { value: number }) {
   });
   return <span className={cls}>({formatNumberAsPercent(value)})</span>;
 }
+
+export const TokenDisplaySymbol = ({ symbol = "", className = "" }) => {
+  return <span className={clsx("uppercase", className)}>{removeFirstCharsUC(symbol)}</span>;
+};
+
+export const AssetHeading: FC<{ symbol: string; className?: string }> = ({ symbol, className }) => {
+  return (
+    <header
+      className={clsx(
+        "flex items-center rounded-lg border border-gray-600 py-2 px-4 text-base font-semibold",
+        className,
+      )}
+    >
+      <AssetIcon symbol={symbol} network="sifchain" size="sm" />
+      <TokenDisplaySymbol symbol={symbol} className="ml-1" />
+    </header>
+  );
+};
+
+type TradeDetailsProps = {
+  heading: [ReactNode, ReactNode];
+  details?: [ReactNode, ReactNode][];
+};
+
+export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
+  return (
+    <>
+      <div className="flex items-center justify-between pl-[18px] text-xs">
+        <span>{heading[0]}</span>
+        <span className="tabular-nums">{heading[1]}</span>
+      </div>
+      {details && (
+        <ul className="grid gap-3 border-l-2 border-gray-600 pl-4 text-xs">
+          {details.map(([label, value], i) => (
+            <li key={i} className="flex items-center justify-between text-gray-300">
+              <span>{label}</span>
+              <span className="tabular-nums">{value}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+};
+
+export const TradeReviewSeparator: FC = () => (
+  <div className="relative my-[-1em] flex items-center justify-center">
+    <div className="rounded-full border-2 border-gray-600 bg-gray-900 p-3">
+      <ArrowDownIcon className="text-lg" />
+    </div>
+  </div>
+);
