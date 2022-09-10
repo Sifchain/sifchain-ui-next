@@ -1,7 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
 import {
-  ArrowDownIcon,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
@@ -10,6 +9,7 @@ import {
   SwapIcon,
   TokenEntry,
 } from "@sifchain/ui";
+import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -332,7 +332,8 @@ const Trade = (props: TradeProps) => {
 
   const calculatePosition = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const swap = calculateSwap(String(Number(inputAmount) * Number(leverage)));
+      const input = BigNumber(inputAmount).multipliedBy(BigNumber(leverage));
+      const swap = calculateSwap(input.toString());
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals).toString();
       return { value, fee };
@@ -342,7 +343,8 @@ const Trade = (props: TradeProps) => {
 
   const calculateCollateral = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const swap = calculateReverseSwap(String(Number(inputAmount) / Number(leverage)));
+      const input = BigNumber(inputAmount).dividedBy(BigNumber(leverage));
+      const swap = calculateReverseSwap(input.toString());
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
       return { value, fee };
