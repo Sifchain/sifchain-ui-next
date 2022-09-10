@@ -342,7 +342,7 @@ const Trade = (props: TradeProps) => {
 
   const calculateCollateral = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const swap = calculateReverseSwap(String(Number(inputAmount) * Number(leverage)));
+      const swap = calculateReverseSwap(String(Number(inputAmount) / Number(leverage)));
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
       return { value, fee };
