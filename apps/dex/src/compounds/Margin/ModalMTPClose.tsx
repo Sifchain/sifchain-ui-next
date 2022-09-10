@@ -132,7 +132,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     content = (
       <>
         <section className="grid gap-3">
-          <AssetHeading symbol={props.data.custody_asset} />
+          <AssetHeading className="border-gray-600" symbol={props.data.custody_asset} />
           <TradeDetails
             heading={["Opening Position", ""]}
             details={[

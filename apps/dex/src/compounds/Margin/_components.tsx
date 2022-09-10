@@ -177,7 +177,7 @@ export const AssetHeading: FC<{ symbol: string; className?: string }> = ({ symbo
   return (
     <header
       className={clsx(
-        "flex items-center rounded-lg border border-gray-600 py-2 px-4 text-base font-semibold",
+        "flex items-center rounded-lg border border-gray-700 py-2 px-4 text-base font-semibold",
         className,
       )}
     >
@@ -200,7 +200,7 @@ export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
         <span className="tabular-nums">{heading[1]}</span>
       </div>
       {details && (
-        <ul className="grid gap-3 border-l-2 border-gray-600 pl-4 text-xs">
+        <ul className="border-gray-750 grid gap-3 border-l-2 pl-4 text-xs">
           {details.map(([label, value], i) => (
             <li key={i} className="flex items-center justify-between text-gray-300">
               <span>{label}</span>
@@ -215,7 +215,7 @@ export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
 
 export const TradeReviewSeparator = ({ className = "" }) => (
   <div className="relative my-[-1em] flex items-center justify-center">
-    <div className={clsx("rounded-full border-2 border-gray-600 bg-gray-900 p-3", className)}>
+    <div className={clsx("border-gray-750 rounded-full border-2 bg-gray-900 p-3", className)}>
       <ArrowDownIcon className="text-lg" />
     </div>
   </div>
