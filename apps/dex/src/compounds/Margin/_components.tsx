@@ -186,7 +186,7 @@ type TradeDetailsProps = {
 export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
   return (
     <>
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between pl-[18px] text-xs">
         <span>{heading[0]}</span>
         <span>{heading[1]}</span>
       </div>
