@@ -18,9 +18,9 @@
     "compile": "pnpm tsc --noEmit"
   },
   "dependencies": {
-    "@floating-ui/react-dom": "^0.7.2",
-    "@floating-ui/react-dom-interactions": "^0.6.6",
-    "@headlessui/react": "^1.6.6",
+    "@floating-ui/react-dom": "^1.0.0",
+    "@floating-ui/react-dom-interactions": "^0.9.3",
+    "@headlessui/react": "^1.7.0",
     "@heroicons/react": "2.0.10",
     "clsx": "^1.2.1",
     "lodash.debounce": "^4.0.8",
@@ -36,7 +36,7 @@
     "react-dom": "^18.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.10",
+    "@babel/core": "^7.19.0",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",
     "@storybook/addon-interactions": "^6.5.10",
@@ -63,6 +63,6 @@
     "tsconfig": "workspace:*",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "4.7.4",
-    "zx": "^6.2.5"
+    "zx": "^7.0.8"
   }
 }
