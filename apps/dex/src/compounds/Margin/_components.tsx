@@ -180,7 +180,7 @@ export const AssetHeading: FC<{ symbol: string }> = ({ symbol }) => {
 
 type TradeDetailsProps = {
   heading: [ReactNode, ReactNode];
-  details: [ReactNode, ReactNode][];
+  details?: [ReactNode, ReactNode][];
 };
 
 export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
@@ -190,14 +190,16 @@ export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
         <span>{heading[0]}</span>
         <span>{heading[1]}</span>
       </div>
-      <ul className="grid gap-3 border-l-2 border-gray-800 pl-4 text-xs">
-        {details.map(([label, value], i) => (
-          <li key={i} className="flex items-center justify-between">
-            <span className="text-gray-300">{label}</span>
-            <span>{value}</span>
-          </li>
-        ))}
-      </ul>
+      {details && (
+        <ul className="grid gap-3 border-l-2 border-gray-800 pl-4 text-xs">
+          {details.map(([label, value], i) => (
+            <li key={i} className="flex items-center justify-between">
+              <span className="text-gray-300">{label}</span>
+              <span>{value}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };
