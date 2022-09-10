@@ -39,7 +39,7 @@ export function useSifSignerAddressQuery() {
     }
 
     query.refetch();
-  }, [connectionUpdatedAt, signer, query.isFetching, query]);
+  }, [connectionUpdatedAt, signer, query]);
 
   return query;
 }
