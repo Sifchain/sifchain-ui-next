@@ -213,9 +213,9 @@ export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
   );
 };
 
-export const TradeReviewSeparator: FC = () => (
+export const TradeReviewSeparator = ({ className = "" }) => (
   <div className="relative my-[-1em] flex items-center justify-center">
-    <div className="rounded-full border-2 border-gray-600 bg-gray-900 p-3">
+    <div className={clsx("rounded-full border-2 border-gray-600 bg-gray-900 p-3", className)}>
       <ArrowDownIcon className="text-lg" />
     </div>
   </div>

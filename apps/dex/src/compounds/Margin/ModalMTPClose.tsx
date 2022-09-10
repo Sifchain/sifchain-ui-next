@@ -155,9 +155,9 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             ]}
           />
         </section>
-        <TradeReviewSeparator />
+        <TradeReviewSeparator className="border-gray-800" />
         <section className="grid gap-3">
-          <AssetHeading symbol={props.data.collateral_asset} className="bg-gray-900" />
+          <AssetHeading symbol={props.data.collateral_asset} className="border-none bg-gray-900" />
           <TradeDetails
             heading={[
               "Closing position",
