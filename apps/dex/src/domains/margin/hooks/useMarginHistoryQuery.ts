@@ -13,7 +13,7 @@ export function useMarginHistoryQuery(params: {
   sortBy: string;
 }) {
   const queryClient = useQueryClient();
-  const optimisticHistory = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
+  const optimisticHistory = (queryClient.getQueryData(["margin.getOptimisticHistory"]) ??
     []) as MarginHistoryResponse["results"];
 
   return useSifApiQuery(
