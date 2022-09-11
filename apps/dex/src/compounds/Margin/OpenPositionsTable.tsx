@@ -424,7 +424,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           )}
         >
           {openPositionsQuery.isRefetching ? <PillUpdating /> : null}
-          {openPositionsQuery.isSuccess ? <PaginationContainer pagination={pagination} /> : null}
+          <PaginationContainer pagination={pagination} />
         </div>
         {positionToClose.value && (
           <ModalMTPClose

@@ -304,7 +304,7 @@ const HistoryTable = (props: HistoryTableProps) => {
           )}
         >
           {historyQuery.isRefetching ? <PillUpdating /> : null}
-          {historyQuery.isSuccess ? <PaginationContainer pagination={pagination} /> : null}
+          <PaginationContainer pagination={pagination} />
         </div>
       </section>
     );
