@@ -119,7 +119,6 @@ export default class Pool {
 
     if (this.isMarginEnabled) {
       const debt = this.extractDebt(X, Y, toRowan);
-      console.log("debt", { debt, X, Y, toRowan });
       X = debt.X;
       Y = debt.Y;
     }
