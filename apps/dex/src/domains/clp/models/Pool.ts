@@ -49,7 +49,7 @@ export default class Pool {
     this.nativeAssetBalance = BigNumber(pool.nativeAssetBalance);
     this.externalAssetBalance = BigNumber(pool.externalAssetBalance);
 
-    this.nativeLiabilities = BigNumber(pool.nativeAssetBalance);
+    this.nativeLiabilities = BigNumber(pool.nativeLiabilities);
     this.externalLiabilities = BigNumber(pool.externalLiabilities);
 
     this.nativeCustody = BigNumber(pool.nativeCustody);
@@ -118,9 +118,10 @@ export default class Pool {
     let { X, Y, toRowan } = this.extractValues(params.inputDenom);
 
     if (this.isMarginEnabled) {
-      // const debt = this.extractDebt(X, Y, toRowan);
-      // X = debt.X;
-      // Y = debt.Y;
+      const debt = this.extractDebt(X, Y, toRowan);
+      console.log("debt", { debt, X, Y, toRowan });
+      X = debt.X;
+      Y = debt.Y;
     }
 
     return calculateSwapWithFee(
