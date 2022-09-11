@@ -1,6 +1,9 @@
 import type { IAsset } from "@sifchain/common";
 import type { useEnhancedPoolsQuery } from "~/domains/clp";
 
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import clsx from "clsx";
 import {
   ArrowDownIcon,
@@ -51,20 +54,94 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
 
 type PaginationButtonsProps = {
   pages: number;
-  render: (_page: number) => React.ReactNode;
+  page: number;
+  renderItem: (page: number) => React.ReactNode;
+  renderFirst: () => React.ReactNode;
+  renderLast: () => React.ReactNode;
 };
-export function PaginationButtons({ pages, render }: PaginationButtonsProps) {
+export function PaginationButtons({ pages, page, renderItem, renderFirst, renderLast }: PaginationButtonsProps) {
+  const buttonsLimit = 3;
+  const items = Array.from({ length: pages }, (_, index) => ++index);
+  const isAboveLimit = pages > buttonsLimit;
+
+  let head = page === 0 ? 0 : page - 1;
+  let tail = head + buttonsLimit;
+
+  const isFirst = head + 2 >= buttonsLimit;
+  const isLast = tail >= pages;
+
+  if (tail - 1 === pages) {
+    head = head - 1;
+  }
+
+  const results = isAboveLimit ? items.slice(head, tail) : items;
   return (
-    <ul className="mx-4 flex flex-row text-xs">
-      {Array.from({ length: pages }, (_, index) => {
-        const page = ++index;
+    <ul className="mx-4 flex flex-row place-items-center text-xs">
+      {isFirst ? <li className="mr-1 flex flex-1 flex-col">{renderFirst()}</li> : null}
+      {results.map((page) => {
         return (
-          <li key={index} className="flex flex-1 flex-col">
-            {render(page)}
+          <li key={page} className="mx-1 flex flex-1 flex-col">
+            {renderItem(page)}
           </li>
         );
       })}
+      {isAboveLimit && !isLast ? <li className="ml-1 flex flex-1 flex-col">{renderLast()}</li> : null}
     </ul>
+  );
+}
+type PaginationContainerProps = {
+  pagination: {
+    limit: string;
+    offset: string;
+    total: string;
+  };
+};
+export function PaginationContainer({ pagination }: PaginationContainerProps) {
+  const router = useRouter();
+  const paginationLimit = Number(pagination.limit);
+  const paginationOffset = Number(pagination.offset);
+  const paginationTotal = Number(pagination.total);
+  const pages = Math.ceil(paginationTotal / paginationLimit);
+  const page = paginationOffset / paginationLimit;
+  const classNamePaginationItem = "rounded py-1 px-2";
+
+  return (
+    <>
+      <PaginationShowItems limit={paginationLimit} offset={paginationOffset} total={paginationTotal} />
+      <PaginationButtons
+        pages={pages}
+        page={page}
+        renderFirst={() => (
+          <Link href={{ query: { ...router.query, offset: 0 } }} scroll={false}>
+            <a className="mr-1">First</a>
+          </Link>
+        )}
+        renderLast={() => (
+          <Link
+            href={{
+              query: { ...router.query, offset: paginationTotal - paginationLimit },
+            }}
+            scroll={false}
+          >
+            <a className="ml-1">Last</a>
+          </Link>
+        )}
+        renderItem={(page) => {
+          const offset = String(paginationLimit * page - paginationLimit);
+          return (
+            <Link href={{ query: { ...router.query, offset } }} scroll={false}>
+              <a
+                className={clsx(classNamePaginationItem, {
+                  "bg-gray-400": pagination.offset === offset,
+                })}
+              >
+                {page}
+              </a>
+            </Link>
+          );
+        }}
+      />
+    </>
   );
 }
 

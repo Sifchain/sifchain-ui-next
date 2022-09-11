@@ -13,7 +13,6 @@ import {
   FlashMessageConnectSifChainWalletLoading,
   FlashMessageLoading,
   formatNumberAsDecimal,
-  Tooltip,
 } from "@sifchain/ui";
 import clsx from "clsx";
 import Link from "next/link";
@@ -37,7 +36,7 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
-import { NoResultsRow, PaginationButtons, PaginationShowItems, PillUpdating } from "./_components";
+import { NoResultsRow, PaginationContainer, PillUpdating } from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
@@ -160,11 +159,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   if (openPositionsQuery.isLoading || tokenRegistryQuery.isLoading) {
     return <FlashMessageLoading size="full-page" />;
   }
-
   if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
     const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
-    const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
       <section className="bg-gray-850 flex h-full flex-col">
@@ -426,29 +423,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             classNamePaginationContainer,
           )}
         >
-          {openPositionsQuery.isRefetching && <PillUpdating />}
-          <PaginationShowItems
-            limit={Number(pagination.limit)}
-            offset={Number(pagination.offset)}
-            total={Number(pagination.total)}
-          />
-          <PaginationButtons
-            pages={pages}
-            render={(page) => {
-              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
-              return (
-                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
-                  <a
-                    className={clsx("inline-grid h-[20px] w-[20px] place-items-center rounded", {
-                      "bg-gray-400": pagination.offset === offset,
-                    })}
-                  >
-                    {page}
-                  </a>
-                </Link>
-              );
-            }}
-          />
+          {openPositionsQuery.isRefetching ? <PillUpdating /> : null}
+          <PaginationContainer pagination={pagination} />
         </div>
         {positionToClose.value && (
           <ModalMTPClose

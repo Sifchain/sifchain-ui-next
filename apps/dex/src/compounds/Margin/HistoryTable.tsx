@@ -15,7 +15,6 @@ import {
   FlashMessageConnectSifChainWalletLoading,
   ChevronDownIcon,
   formatNumberAsDecimal,
-  Tooltip,
 } from "@sifchain/ui";
 import { useMarginHistoryQuery } from "~/domains/margin/hooks/useMarginHistoryQuery";
 
@@ -35,7 +34,7 @@ const isTruthy = (target: any) => !isNil(target);
 import { findNextOrderAndSortBy, SORT_BY, QS_DEFAULTS } from "./_tables";
 import { formatDateISO, formatIntervalToDuration, createDurationLabel } from "./_intl";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating } from "./_components";
+import { NoResultsRow, PaginationShowItems, PaginationButtons, PillUpdating, PaginationContainer } from "./_components";
 import { TooltipInterestPaid } from "./tooltips";
 
 /**
@@ -112,7 +111,6 @@ const HistoryTable = (props: HistoryTableProps) => {
   if (historyQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
     const { findBySymbolOrDenom } = tokenRegistryQuery;
     const { results, pagination } = historyQuery.data;
-    const pages = Math.ceil(Number(pagination.total) / Number(pagination.limit));
 
     return (
       <section className="bg-gray-850 flex h-full flex-col">
@@ -305,29 +303,8 @@ const HistoryTable = (props: HistoryTableProps) => {
             props.classNamePaginationContainer,
           )}
         >
-          {historyQuery.isRefetching && <PillUpdating />}
-          <PaginationShowItems
-            limit={Number(pagination.limit)}
-            offset={Number(pagination.offset)}
-            total={Number(pagination.total)}
-          />
-          <PaginationButtons
-            pages={pages}
-            render={(page) => {
-              const offset = String(Number(pagination.limit) * page - Number(pagination.limit));
-              return (
-                <Link href={{ query: { ...router.query, offset } }} scroll={false}>
-                  <a
-                    className={clsx("inline-grid h-[20px] w-[20px] place-items-center rounded", {
-                      "bg-gray-400": pagination.offset === offset,
-                    })}
-                  >
-                    {page}
-                  </a>
-                </Link>
-              );
-            }}
-          />
+          {historyQuery.isRefetching ? <PillUpdating /> : null}
+          <PaginationContainer pagination={pagination} />
         </div>
       </section>
     );
