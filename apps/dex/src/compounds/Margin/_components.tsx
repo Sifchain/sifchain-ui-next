@@ -77,15 +77,15 @@ export function PaginationButtons({ pages, page, renderItem, renderFirst, render
   const results = isAboveLimit ? items.slice(head, tail) : items;
   return (
     <ul className="mx-4 flex flex-row place-items-center text-xs">
-      {isFirst ? <li className="flex flex-1 flex-col">{renderFirst()}</li> : null}
+      {isFirst ? <li className="mr-1 flex flex-1 flex-col">{renderFirst()}</li> : null}
       {results.map((page) => {
         return (
-          <li key={page} className="flex flex-1 flex-col">
+          <li key={page} className="mx-1 flex flex-1 flex-col">
             {renderItem(page)}
           </li>
         );
       })}
-      {isAboveLimit && !isLast ? <li className="flex flex-1 flex-col">{renderLast()}</li> : null}
+      {isAboveLimit && !isLast ? <li className="ml-1 flex flex-1 flex-col">{renderLast()}</li> : null}
     </ul>
   );
 }
@@ -103,7 +103,7 @@ export function PaginationContainer({ pagination }: PaginationContainerProps) {
   const paginationTotal = Number(pagination.total);
   const pages = Math.ceil(paginationTotal / paginationLimit);
   const page = paginationOffset / paginationLimit;
-  const classNamePaginationItem = "inline-grid h-[20px] w-[20px] place-items-center rounded";
+  const classNamePaginationItem = "rounded py-1 px-2";
 
   return (
     <>
@@ -113,17 +113,17 @@ export function PaginationContainer({ pagination }: PaginationContainerProps) {
         page={page}
         renderFirst={() => (
           <Link href={{ query: { ...router.query, offset: 0 } }} scroll={false}>
-            <a className={clsx(classNamePaginationItem)}>First</a>
+            <a className="mr-1">First</a>
           </Link>
         )}
         renderLast={() => (
           <Link
             href={{
-              query: { ...router.query, offset: pages * paginationLimit - paginationLimit },
+              query: { ...router.query, offset: paginationTotal - paginationLimit },
             }}
             scroll={false}
           >
-            <a className={clsx(classNamePaginationItem)}>Last</a>
+            <a className="ml-1">Last</a>
           </Link>
         )}
         renderItem={(page) => {
