@@ -7,6 +7,7 @@ import {
   formatNumberAsCurrency,
   RacetrackSpinnerIcon,
   SwapIcon,
+  PlusIcon,
   TokenEntry,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
@@ -805,6 +806,19 @@ const Trade = (props: TradeProps) => {
                   />
                 </section>
               </section>
+              {confirmOpenPositionMutation.isError && (
+                <FlashMessage className="relative mx-4 bg-red-200 text-red-800">
+                  <b className="mr-1">Failed to open position:</b>
+                  <span>{(confirmOpenPositionMutation.error as Error).message}</span>
+                  <button
+                    className="absolute right-0 top-0 ml-auto pt-3 pr-3 hover:text-red-400"
+                    type="button"
+                    onClick={confirmOpenPositionMutation.reset}
+                  >
+                    <PlusIcon style={{ transform: "rotate(45deg)" }} />
+                  </button>
+                </FlashMessage>
+              )}
               <TradeActions
                 govParams={props.govParams}
                 onClickReset={onClickReset}
@@ -812,12 +826,6 @@ const Trade = (props: TradeProps) => {
                 isLoadingOpenPosition={confirmOpenPositionMutation.isLoading}
                 onClickOpenPosition={onClickConfirmOpenPosition}
               />
-              {confirmOpenPositionMutation.isError && (
-                <FlashMessage className="bg-red-200">
-                  <b className="mr-1">Failed to open position:</b>
-                  <span>{(confirmOpenPositionMutation.error as Error).message}</span>
-                </FlashMessage>
-              )}
             </>
           ) : (
             <div className="bg-gray-850 m-4 flex items-center justify-center rounded p-2 text-4xl">
