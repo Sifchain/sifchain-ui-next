@@ -22,24 +22,12 @@ export function useMarginOpenPositionsQuery() {
     sortBy: (router.query["sortBy"] as string) || QS_DEFAULTS.sortBy,
   };
   const queryClient = useQueryClient();
-  const optimisticPositions = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
-    []) as MarginOpenPositionsResponse["results"];
 
   return useSifApiQuery(
     "margin.getMarginOpenPosition",
     [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
-      initialData: {
-        pagination: {
-          limit: params.limit,
-          offset: params.offset,
-          order_by: params.orderBy,
-          sort_by: params.sortBy,
-          total: String(optimisticPositions.length),
-        },
-        results: optimisticPositions,
-      },
       keepPreviousData: true,
       refetchInterval: 10 * 1000,
       retry: false,

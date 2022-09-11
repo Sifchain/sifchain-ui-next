@@ -13,24 +13,12 @@ export function useMarginHistoryQuery(params: {
   sortBy: string;
 }) {
   const queryClient = useQueryClient();
-  const optimisticHistory = (queryClient.getQueryData(["margin.getOptimisticHistory"]) ??
-    []) as MarginHistoryResponse["results"];
 
   return useSifApiQuery(
     "margin.getMarginHistory",
     [params.walletAddress, Number(params.offset), Number(params.limit), params.orderBy, params.sortBy],
     {
       enabled: Boolean(params.walletAddress),
-      initialData: {
-        pagination: {
-          limit: params.limit,
-          offset: params.offset,
-          order_by: params.orderBy,
-          sort_by: params.sortBy,
-          total: String(optimisticHistory.length),
-        },
-        results: optimisticHistory,
-      },
       keepPreviousData: true,
       refetchInterval: 10 * 1000,
       retry: false,
