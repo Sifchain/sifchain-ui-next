@@ -13,6 +13,14 @@ export type ClpPool = Pick<
   | "externalLiabilities"
 >;
 
+type PoolParams = {
+  swapFeeRate?: string;
+  currentRatioShiftingRate?: string;
+  externalAssetDecimals?: number;
+  isMarginEnabled?: boolean;
+  nativeAssetDecimals?: number;
+};
+
 export default class Pool {
   public readonly nativeAssetBalance: BigNumber;
   public readonly externalAssetBalance: BigNumber;
@@ -31,34 +39,35 @@ export default class Pool {
   public readonly nativeAssetDecimals: number;
   public readonly externalAssetDecimals: number;
 
-  constructor(
-    pool: ClpPool,
-    params: {
-      swapFeeRate: string;
-      currentRatioShiftingRate: string;
-      externalAssetDecimals: number;
-      isMarginEnabled: boolean;
-      nativeAssetDecimals?: number;
-    },
-  ) {
-    const { swapFeeRate, currentRatioShiftingRate, externalAssetDecimals, nativeAssetDecimals = 18 } = params;
-
-    this.nativeAssetDecimals = nativeAssetDecimals;
-    this.externalAssetDecimals = externalAssetDecimals;
-
+  constructor(pool: ClpPool, params?: PoolParams) {
     this.nativeAssetBalance = BigNumber(pool.nativeAssetBalance);
     this.externalAssetBalance = BigNumber(pool.externalAssetBalance);
 
-    this.nativeLiabilities = BigNumber(pool.nativeAssetBalance);
+    this.nativeLiabilities = BigNumber(pool.nativeLiabilities);
     this.externalLiabilities = BigNumber(pool.externalLiabilities);
 
     this.nativeCustody = BigNumber(pool.nativeCustody);
     this.externalCustody = BigNumber(pool.externalCustody);
 
+    const {
+      swapFeeRate = "0",
+      currentRatioShiftingRate = "0",
+      externalAssetDecimals = 18,
+      nativeAssetDecimals = 18,
+      isMarginEnabled = false,
+    } = params ?? {};
+
+    this.nativeAssetDecimals = nativeAssetDecimals;
+    this.externalAssetDecimals = externalAssetDecimals;
+
     this.swapFeeRate = BigNumber(swapFeeRate);
     this.currentRatioShiftingRate = BigNumber(currentRatioShiftingRate);
 
-    this.isMarginEnabled = params.isMarginEnabled;
+    this.isMarginEnabled = isMarginEnabled;
+  }
+
+  static of(pool: ClpPool, params?: PoolParams) {
+    return new this(pool, params);
   }
 
   extractValues(inputDenom: string) {
@@ -98,7 +107,7 @@ export default class Pool {
       Y = debt.Y;
     }
 
-    let x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
+    const x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
 
     return calculateSwapWithFee(
       {
@@ -113,15 +122,15 @@ export default class Pool {
   }
 
   calculateSwapToRowan(params: { inputAmount: string; inputDenom: string }) {
-    let x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
-
     let { X, Y, toRowan } = this.extractValues(params.inputDenom);
 
     if (this.isMarginEnabled) {
-      // const debt = this.extractDebt(X, Y, toRowan);
-      // X = debt.X;
-      // Y = debt.Y;
+      const debt = this.extractDebt(X, Y, toRowan);
+      X = debt.X;
+      Y = debt.Y;
     }
+
+    const x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
 
     return calculateSwapWithFee(
       {
