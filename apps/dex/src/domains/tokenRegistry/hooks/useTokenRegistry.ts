@@ -1,6 +1,6 @@
 import type { IAsset, NetworkKind } from "@sifchain/common";
 import type { StringIndexed } from "@sifchain/ui";
-import { Maybe, memoizeWith } from "@sifchain/utils";
+import { caseInsensitiveRecord, Maybe, memoizeWith } from "@sifchain/utils";
 import { compose, identity, indexBy, prop, toLower } from "rambda";
 import { useMemo } from "react";
 import { useAssetsQuery } from "~/domains/assets";
@@ -56,9 +56,9 @@ export default function useTokenRegistryQuery(networkKind: NetworkKind | Network
       };
     }
 
-    const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), entries);
-    const indexedByDisplaySymbol = indexBy(compose(toLower, prop("displaySymbol")), entries);
-    const indexedByDenom = indexBy(compose(toLower, prop("denom")), entries);
+    const indexedBySymbol = caseInsensitiveRecord(indexBy(prop("symbol"), entries));
+    const indexedByDisplaySymbol = caseInsensitiveRecord(indexBy(prop("displaySymbol"), entries));
+    const indexedByDenom = caseInsensitiveRecord(indexBy(prop("denom"), entries));
 
     return {
       indexedBySymbol,
