@@ -651,7 +651,8 @@ const Trade = (props: TradeProps) => {
               <div className="h-[2px] w-full bg-gray-800" />
               <button
                 type="button"
-                onClick={onClickSwitch}
+                disabled={isDisabledOpenPosition}
+                onClick={isDisabledOpenPosition ? undefined : onClickSwitch}
                 className={clsx(
                   "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
