@@ -648,7 +648,7 @@ const Trade = (props: TradeProps) => {
               )}
             </li>
             <li className="relative flex items-center justify-center py-5">
-              <div className="h-[2px] w-full bg-gray-900" />
+              <div className="h-[2px] w-full bg-gray-800" />
               <button
                 type="button"
                 onClick={onClickSwitch}

@@ -73,6 +73,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     },
     [confirmClosePosition, props],
   );
+
   const onTransitionEnd = useCallback(() => {
     if (props.onTransitionEnd) {
       props.onTransitionEnd();
@@ -90,19 +91,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     closingPositionSwap
   ) {
     const collateralDecimals = collateralTokenQuery.data.decimals ?? 0;
-
     const closingPositionRaw = closingPositionSwap.rawReceiving ?? "0";
     const closingPositionMinReceivingRaw = closingPositionSwap.minimumReceiving ?? "0";
-
     const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionRaw, collateralDecimals);
-
     const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
-
     const closingPositionMinReceivingAsDecimal = Decimal.fromAtomics(
       closingPositionMinReceivingRaw,
       collateralDecimals,
     );
-
     let closingPositionFees;
     let finalPositionWithLiabilitiesAsNumber;
     try {
@@ -117,23 +113,18 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       closingPositionFees = 0;
       finalPositionWithLiabilitiesAsNumber = 0;
     }
-
     const openingPositionAsNumber = Number(props.data.custody_amount ?? "0");
     const openingValueAsNumber = openingPositionAsNumber * positionTokenQuery.data.priceUsd;
-
     const totalInterestPaidAsNumber = Number(props.data.current_interest_paid_custody ?? "0");
-
     const currentPositionAsNumber = Number(currentCustodyAmount);
     const currentPriceAsNumber = Number(positionTokenQuery.data.priceUsd ?? "0");
     const currentValueAsNumber = currentPositionAsNumber * currentPriceAsNumber;
-
     const tradePnlAsNumber = finalPositionWithLiabilitiesAsNumber - Number(props.data.collateral_amount);
     const tradePnlSign = Math.sign(tradePnlAsNumber);
-
     content = (
       <>
         <section className="grid gap-3">
-          <AssetHeading className="border-gray-600" symbol={props.data.custody_asset} />
+          <AssetHeading symbol={props.data.custody_asset} />
           <TradeDetails
             heading={["Opening Position", ""]}
             details={[
@@ -156,9 +147,9 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             ]}
           />
         </section>
-        <TradeReviewSeparator className="border-gray-800" />
+        <TradeReviewSeparator />
         <section className="grid gap-3">
-          <AssetHeading symbol={props.data.collateral_asset} className="border-none bg-gray-900" />
+          <AssetHeading symbol={props.data.collateral_asset} />
           <TradeDetails
             heading={[
               "Closing position",
@@ -228,14 +219,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             ]}
           />
         </section>
-
         {confirmClosePosition.isError ? (
           <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
             <b className="mr-1">Failed to close position:</b>
             <span>{(confirmClosePosition.error as Error).message}</span>
           </p>
         ) : null}
-
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
@@ -246,7 +235,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       </>
     );
   }
-
   if (collateralTokenQuery.isError || positionTokenQuery.isError) {
     console.group("Modal MTP Close Error");
     console.log({ collateralTokenQuery, positionTokenQuery });
@@ -257,7 +245,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   return (
     <Modal
       title="Review closing trade"
-      className="text-sm"
+      className="text-sm dark:bg-gray-900"
       isOpen={props.isOpen}
       onTransitionEnd={onTransitionEnd}
       onClose={props.onClose}
