@@ -16,6 +16,7 @@ import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useSwapSimulationQuery } from "~/domains/clp/hooks";
 
 import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
+import { HtmlUnicode } from "./_trade";
 
 type ModalMTPCloseProps = {
   data: MarginOpenPositionsData;
@@ -170,7 +171,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               [
                 "Current swap rate",
                 <>
-                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> ={" "}
+                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
                   {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
@@ -219,7 +220,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               [
                 "Estimated PnL",
                 <>
-                  {tradePnlSign === 1 ? "+" : "-"}
+                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
                   {formatNumberAsCurrency(Math.abs(tradePnlAsNumber), 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
@@ -228,6 +229,13 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           />
         </section>
 
+        {confirmClosePosition.isError ? (
+          <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
+            <b className="mr-1">Failed to close position:</b>
+            <span>{(confirmClosePosition.error as Error).message}</span>
+          </p>
+        ) : null}
+
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
@@ -235,12 +243,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             Confirm close
           </Button>
         )}
-        {confirmClosePosition.isError ? (
-          <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
-            <b className="mr-1">Failed to close position:</b>
-            <span>{(confirmClosePosition.error as Error).message}</span>
-          </p>
-        ) : null}
       </>
     );
   }
