@@ -29,6 +29,8 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
     [marginParamsResult?.params?.pools],
   );
 
+  const swapFeeRate = Maybe.of(swapFeeRateResult?.swapFeeRate).mapOr("0", (x) => Decimal.fromAtomics(x, 18).toString());
+
   const compute = useCallback(
     (amount = fromAmount, currentLeverage = leverage) => {
       const pool = fromToken?.pool ?? toToken?.pool;
@@ -91,6 +93,7 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
 
   return {
     ...derivedQuery,
+    swapFeeRate,
     recompute(fromAmount: string, leverage: number) {
       const res = compute(fromAmount, leverage);
 

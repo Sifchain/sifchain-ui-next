@@ -26,7 +26,6 @@ import {
   useEnhancedTokenQuery,
   useMarginPositionSimulationQuery,
   useRowanPriceQuery,
-  useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
 import {
   useMarginMTPOpenMutation,
@@ -322,7 +321,7 @@ const Trade = (props: TradeProps) => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
 
-  const { recompute: calculateSwap } = useMarginPositionSimulationQuery(
+  const { recompute: calculateSwap, swapFeeRate } = useMarginPositionSimulationQuery(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
@@ -361,15 +360,18 @@ const Trade = (props: TradeProps) => {
       const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedCollateral.decimals);
 
       const valuePlusFee = value.plus(fee);
+      const currentPercentage = 100 - Number(swapFeeRate) * 100;
 
-      const { fee: positionFee } = calculatePosition(valuePlusFee.toString(), leverage);
+      const extrapolatedValue = BigNumber(valuePlusFee.toString()).multipliedBy(100).dividedBy(currentPercentage);
+
+      const { fee: positionFee } = calculatePosition(extrapolatedValue.toString(), leverage);
 
       return {
-        value: valuePlusFee.toString(),
+        value: extrapolatedValue.toString(),
         fee: positionFee.toString(),
       };
     },
-    [calculatePosition, calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
+    [calculatePosition, calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals, swapFeeRate],
   );
 
   /**
@@ -405,7 +407,7 @@ const Trade = (props: TradeProps) => {
         }
       }
     },
-    [calculatePosition, inputLeverage.error, inputPosition.error],
+    [calculatePosition, collateralBalance, inputLeverage.error, inputPosition.error],
   );
 
   /**
@@ -441,7 +443,7 @@ const Trade = (props: TradeProps) => {
         }
       }
     },
-    [calculateCollateral, inputCollateral.error, inputLeverage.error],
+    [calculateCollateral, collateralBalance, inputLeverage.error],
   );
   /**
    * ********************************************************************************************
