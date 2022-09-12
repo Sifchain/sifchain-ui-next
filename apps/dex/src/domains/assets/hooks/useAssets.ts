@@ -45,11 +45,7 @@ export function useAssetsQuery(networkKinds: NetworkKind | NetworkKind[] = "sifc
   return {
     data: {
       ...dexEnv,
-      assets: networkAssets.map((asset) => ({
-        ...asset,
-        symbol: asset.symbol.toLowerCase(),
-        displaySymbol: asset.displaySymbol.toLowerCase(),
-      })),
+      assets: networkAssets,
     },
     ...query,
     ...indices,
