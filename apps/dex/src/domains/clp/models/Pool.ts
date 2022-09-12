@@ -98,7 +98,7 @@ export default class Pool {
       Y = debt.Y;
     }
 
-    let x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
+    const x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
 
     return calculateSwapWithFee(
       {
@@ -113,8 +113,6 @@ export default class Pool {
   }
 
   calculateSwapToRowan(params: { inputAmount: string; inputDenom: string }) {
-    let x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
-
     let { X, Y, toRowan } = this.extractValues(params.inputDenom);
 
     if (this.isMarginEnabled) {
@@ -122,6 +120,8 @@ export default class Pool {
       X = debt.X;
       Y = debt.Y;
     }
+
+    const x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
 
     return calculateSwapWithFee(
       {
