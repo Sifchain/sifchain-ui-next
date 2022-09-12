@@ -383,10 +383,6 @@ const Trade = (props: TradeProps) => {
    */
   const onInputCollateral = useCallback(
     (event: SyntheticEvent<HTMLInputElement>) => {
-      if (inputPosition.error || inputLeverage.error) {
-        return;
-      }
-
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
         if ($target.value.length > Number($target.maxLength)) {
@@ -396,15 +392,12 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorCollateral($target, collateralBalance);
         setInputCollateral(payload);
 
-        if (!payload.error) {
-          const positionSwap = calculatePosition(payload.value);
-
-          setOpenPositionFee(positionSwap.fee);
-          setInputPosition({
-            value: positionSwap.value,
-            error: "",
-          });
-        }
+        const positionSwap = calculatePosition(payload.value);
+        setOpenPositionFee(positionSwap.fee);
+        setInputPosition({
+          value: positionSwap.value,
+          error: "",
+        });
       }
     },
     [calculatePosition, collateralBalance, inputLeverage.error, inputPosition.error],
@@ -419,10 +412,6 @@ const Trade = (props: TradeProps) => {
    */
   const onInputPosition = useCallback(
     (event: SyntheticEvent<HTMLInputElement>) => {
-      if (inputLeverage.error) {
-        return;
-      }
-
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
         if ($target.value.length > Number($target.maxLength)) {
@@ -432,15 +421,13 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorPosition($target);
         setInputPosition(payload);
 
-        if (!payload.error) {
-          const collateralSwap = calculateCollateral(payload.value);
-          const validateCollateral = inputValidatorCollateral(
-            { value: collateralSwap.value } as HTMLInputElement,
-            collateralBalance,
-          );
-          setOpenPositionFee(collateralSwap.fee);
-          setInputCollateral(validateCollateral);
-        }
+        const collateralSwap = calculateCollateral(payload.value);
+        const validateCollateral = inputValidatorCollateral(
+          { value: collateralSwap.value } as HTMLInputElement,
+          collateralBalance,
+        );
+        setOpenPositionFee(collateralSwap.fee);
+        setInputCollateral(validateCollateral);
       }
     },
     [calculateCollateral, collateralBalance, inputLeverage.error],
@@ -454,10 +441,6 @@ const Trade = (props: TradeProps) => {
    */
   const onInputLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      if (inputCollateral.error || inputPosition.error) {
-        return;
-      }
-
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
         if ($target.value.length > Number($target.maxLength)) {
@@ -467,15 +450,12 @@ const Trade = (props: TradeProps) => {
         const payload = inputValidatorLeverage($target, maxLeverageDecimal.toString());
         setInputLeverage(payload);
 
-        if (!payload.error) {
-          const positionSwap = calculatePosition(inputCollateral.value, payload.value);
-
-          setOpenPositionFee(positionSwap.fee);
-          setInputPosition({
-            value: positionSwap.value,
-            error: "",
-          });
-        }
+        const positionSwap = calculatePosition(inputCollateral.value, payload.value);
+        setOpenPositionFee(positionSwap.fee);
+        setInputPosition({
+          value: positionSwap.value,
+          error: "",
+        });
       }
     },
     [calculatePosition, inputCollateral.value, maxLeverageDecimal, inputCollateral.error, inputPosition.error],
@@ -562,14 +542,14 @@ const Trade = (props: TradeProps) => {
   const onClickSwitch = useCallback(
     (event: SyntheticEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      setInputCollateral((prev) => ({
-        ...prev,
-        value: inputPosition.value,
-      }));
-      setInputPosition((prev) => ({
-        ...prev,
-        value: inputCollateral.value,
-      }));
+      const validateCollateral = inputValidatorCollateral(
+        { value: inputPosition.value } as HTMLInputElement,
+        collateralBalance,
+      );
+      setInputCollateral(validateCollateral);
+
+      const validatePosition = inputValidatorPosition({ value: inputCollateral.value } as HTMLInputElement);
+      setInputPosition(validatePosition);
       setSwitchCollateralAndPosition((prev) => !prev);
     },
     [inputCollateral.value, inputPosition.value],
@@ -668,8 +648,7 @@ const Trade = (props: TradeProps) => {
               <div className="h-[2px] w-full bg-gray-800" />
               <button
                 type="button"
-                disabled={isDisabledOpenPosition}
-                onClick={isDisabledOpenPosition ? undefined : onClickSwitch}
+                onClick={onClickSwitch}
                 className={clsx(
                   "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
