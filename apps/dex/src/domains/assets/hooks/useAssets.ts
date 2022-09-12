@@ -1,6 +1,6 @@
 import type { NetworkKind } from "@sifchain/common";
-import { compose, prop, toLower } from "rambda";
-import { indexBy } from "rambda";
+import { caseInsensitiveRecord } from "@sifchain/utils";
+import { indexBy, prop } from "rambda";
 import { useMemo } from "react";
 
 import { useDexEnvironment } from "~/domains/core/envs";
@@ -32,9 +32,9 @@ export function useAssetsQuery(networkKinds: NetworkKind | NetworkKind[] = "sifc
       };
     }
 
-    const indexedBySymbol = indexBy(compose(toLower, prop("symbol")), networkAssets);
+    const indexedBySymbol = caseInsensitiveRecord(indexBy(prop("symbol"), networkAssets));
 
-    const indexedByDisplaySymbol = indexBy(compose(toLower, prop("displaySymbol")), networkAssets);
+    const indexedByDisplaySymbol = caseInsensitiveRecord(indexBy(prop("displaySymbol"), networkAssets));
 
     return {
       indexedBySymbol,

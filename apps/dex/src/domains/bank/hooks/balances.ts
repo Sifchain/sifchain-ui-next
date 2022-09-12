@@ -1,10 +1,9 @@
 import { Decimal } from "@cosmjs/math";
 import { useAccounts, useConnectionUpdatedAt, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
 import { invariant, type StringIndexed } from "@sifchain/ui";
-import { memoizeWith } from "@sifchain/utils";
-import { useChangedEffect } from "@sifchain/utils/react";
+import { caseInsensitiveRecord, memoizeWith } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
-import { compose, identity, indexBy, prop, toLower } from "rambda";
+import { identity, indexBy, prop } from "rambda";
 import { useMemo } from "react";
 import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
@@ -76,7 +75,7 @@ export function useAllBalancesQuery() {
   );
 
   const indices = useMemo(() => {
-    const indexedByDenom = indexBy(compose(toLower, prop("denom")), baseQuery.data ?? []);
+    const indexedByDenom = caseInsensitiveRecord(indexBy(prop("denom"), baseQuery.data ?? []));
 
     const indexedBySymbol =
       baseQuery.data === undefined || registry === undefined

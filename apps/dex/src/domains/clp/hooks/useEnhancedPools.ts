@@ -1,9 +1,9 @@
 import type { IAsset } from "@sifchain/common";
 import type { GetTokenStatsResponsePools } from "@sifchain/sif-api";
-import { indexBy } from "rambda";
-import { ascend, descend, sortWith } from "@sifchain/utils";
-import { useMemo } from "react";
+import { ascend, caseInsensitiveRecord, descend, sortWith } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
+import { indexBy } from "rambda";
+import { useMemo } from "react";
 
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { usePoolsQuery } from "./usePools";
@@ -66,9 +66,11 @@ export function useEnhancedPoolsQuery() {
       };
     }
 
-    const indexedBySymbol = indexBy((x) => x.asset.symbol, derivedQuery.data);
+    const indexedBySymbol = caseInsensitiveRecord(indexBy((x) => x.asset.symbol, derivedQuery.data));
 
-    const indexedByDisplaySymbol = indexBy(({ asset }) => asset.displaySymbol.toLowerCase(), derivedQuery.data);
+    const indexedByDisplaySymbol = caseInsensitiveRecord(
+      indexBy(({ asset }) => asset.displaySymbol, derivedQuery.data),
+    );
 
     return {
       indexedBySymbol,
