@@ -257,11 +257,13 @@ const Trade = (props: TradeProps) => {
 
   const { findBySymbolOrDenom: findBalanceBySymbolOrDenom } = useAllBalancesQuery();
 
-  const positionBalance = useMemo(
-    () =>
-      selectedPosition ? findBalanceBySymbolOrDenom(selectedPosition.denom ?? selectedPosition.symbol) : undefined,
-    [findBalanceBySymbolOrDenom, selectedPosition],
-  );
+  const positionBalance = useMemo(() => {
+    const balance = findBalanceBySymbolOrDenom(selectedPosition.denom ?? selectedPosition.symbol);
+    if (balance && balance.amount) {
+      return balance.amount.toFloatApproximation();
+    }
+    return 0;
+  }, [findBalanceBySymbolOrDenom, selectedPosition]);
 
   const positionDollarValue = useMemo(() => {
     if (!selectedPosition || !inputPosition.value || !poolActive) {
@@ -273,13 +275,13 @@ const Trade = (props: TradeProps) => {
     return (tokenPrice ?? 0) * Number(inputPosition.value);
   }, [selectedPosition, inputPosition.value, poolActive, enhancedRowan.priceUsd]);
 
-  const collateralBalance = useMemo(
-    () =>
-      selectedCollateral
-        ? findBalanceBySymbolOrDenom(selectedCollateral.denom ?? selectedCollateral.symbol)
-        : undefined,
-    [findBalanceBySymbolOrDenom, selectedCollateral],
-  );
+  const collateralBalance = useMemo(() => {
+    const balance = findBalanceBySymbolOrDenom(selectedCollateral.denom ?? selectedCollateral.symbol);
+    if (balance && balance.amount) {
+      return balance.amount.toFloatApproximation();
+    }
+    return 0;
+  }, [findBalanceBySymbolOrDenom, selectedCollateral]);
 
   const collateralDollarValue = useMemo(() => {
     if (!selectedCollateral || !inputCollateral.value || !poolActive) {
@@ -368,7 +370,11 @@ const Trade = (props: TradeProps) => {
 
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        const payload = inputValidatorCollateral($target, "change");
+        if ($target.value.length > Number($target.maxLength)) {
+          return;
+        }
+
+        const payload = inputValidatorCollateral($target, collateralBalance);
         setInputCollateral(payload);
 
         if (!payload.error) {
@@ -394,23 +400,27 @@ const Trade = (props: TradeProps) => {
    */
   const onInputPosition = useCallback(
     (event: SyntheticEvent<HTMLInputElement>) => {
-      if (inputCollateral.error || inputLeverage.error) {
+      if (inputLeverage.error) {
         return;
       }
 
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        const payload = inputValidatorPosition($target, "change");
+        if ($target.value.length > Number($target.maxLength)) {
+          return;
+        }
+
+        const payload = inputValidatorPosition($target);
         setInputPosition(payload);
 
         if (!payload.error) {
           const collateralSwap = calculateCollateral(payload.value);
-
+          const validateCollateral = inputValidatorCollateral(
+            { value: collateralSwap.value } as HTMLInputElement,
+            collateralBalance,
+          );
           setOpenPositionFee(collateralSwap.fee);
-          setInputCollateral({
-            value: collateralSwap.value,
-            error: "",
-          });
+          setInputCollateral(validateCollateral);
         }
       }
     },
@@ -431,7 +441,11 @@ const Trade = (props: TradeProps) => {
 
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        const payload = inputValidatorLeverage($target, "change", maxLeverageDecimal.toString());
+        if ($target.value.length > Number($target.maxLength)) {
+          return;
+        }
+
+        const payload = inputValidatorLeverage($target, maxLeverageDecimal.toString());
         setInputLeverage(payload);
 
         if (!payload.error) {
@@ -475,10 +489,10 @@ const Trade = (props: TradeProps) => {
   );
 
   /**
-   * We using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
+   * When using small numbers (eg. 0.0001), the "Decimal" throws an error when switching between tokens
    * Wrapping it in a try..catch to avoid breaking the UI
    */
-  const { collateralAmount, leverage } = useMemo(() => {
+  const mutationAmounts = useMemo(() => {
     let collateralAmount = "0";
     let leverage = "0";
     try {
@@ -488,10 +502,6 @@ const Trade = (props: TradeProps) => {
       return { collateralAmount, leverage };
     }
   }, [inputCollateral.value, inputLeverage.value, selectedCollateral.decimals]);
-
-  const [modalConfirmOpenPosition, setModalConfirmOpenPosition] = useState({
-    isOpen: false,
-  });
 
   /**
    * ********************************************************************************************
@@ -560,8 +570,8 @@ const Trade = (props: TradeProps) => {
         collateralAsset: selectedCollateral.denom ?? "",
         borrowAsset: selectedPosition.denom ?? "",
         position: 1, // LONG
-        collateralAmount: collateralAmount,
-        leverage: leverage,
+        collateralAmount: mutationAmounts.collateralAmount,
+        leverage: mutationAmounts.leverage,
       });
     } catch (err) {
       //
@@ -598,9 +608,7 @@ const Trade = (props: TradeProps) => {
                 <span className="mr-auto">Collateral</span>
                 <span className="text-gray-300">
                   Balance:
-                  <span className="ml-1">
-                    {formatNumberAsDecimal(collateralBalance?.amount?.toFloatApproximation() ?? 0)}
-                  </span>
+                  <span className="ml-1">{formatNumberAsDecimal(collateralBalance)}</span>
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -618,6 +626,7 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
+                  maxLength={10}
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
@@ -633,16 +642,17 @@ const Trade = (props: TradeProps) => {
                 </span>
               ) : (
                 <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="EqualsSign" />
+                  <HtmlUnicode name="AlmostEqualTo" />
                   <span className="ml-1">{formatNumberAsCurrency(collateralDollarValue, 4)}</span>
                 </span>
               )}
             </li>
             <li className="relative flex items-center justify-center py-5">
-              <div className="h-[2px] w-full bg-gray-900" />
+              <div className="h-[2px] w-full bg-gray-800" />
               <button
                 type="button"
-                onClick={onClickSwitch}
+                disabled={isDisabledOpenPosition}
+                onClick={isDisabledOpenPosition ? undefined : onClickSwitch}
                 className={clsx(
                   "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
@@ -656,9 +666,7 @@ const Trade = (props: TradeProps) => {
                 <span className="mr-auto">Position</span>
                 <span className="text-gray-300">
                   Balance:
-                  <span className="ml-1">
-                    {formatNumberAsDecimal(positionBalance?.amount?.toFloatApproximation() ?? 0)}
-                  </span>
+                  <span className="ml-1">{formatNumberAsDecimal(positionBalance)}</span>
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -674,6 +682,7 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
+                  maxLength={10}
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
@@ -689,7 +698,7 @@ const Trade = (props: TradeProps) => {
                 </span>
               ) : (
                 <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="EqualsSign" />
+                  <HtmlUnicode name="AlmostEqualTo" />
                   <span className="ml-1">{formatNumberAsCurrency(positionDollarValue, 4)}</span>
                 </span>
               )}
@@ -710,6 +719,7 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
+                  maxLength={2}
                   min={LEVERAGE_MIN_VALUE}
                   max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}
@@ -777,7 +787,7 @@ const Trade = (props: TradeProps) => {
                       [
                         "Current swap rate",
                         <>
-                          1 {removeFirstCharsUC(selectedCollateral.symbol)} ={" "}
+                          1 {removeFirstCharsUC(selectedCollateral.symbol)} <HtmlUnicode name="AlmostEqualTo" />{" "}
                           {formatNumberAsDecimal(
                             (selectedPosition.symbol.toLowerCase() === "rowan"
                               ? Decimal.fromAtomics(poolActive?.swapPriceExternal ?? "0", selectedPosition.decimals)
