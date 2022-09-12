@@ -138,7 +138,7 @@ export function useQueryWithNonQueryKeyDeps<
   const query = useQuery(parsedOptions);
 
   useChangedEffect(() => {
-    query.remove();
+    // query.remove();
   }, [query.remove, ...(deps ?? [])]);
 
   return query;

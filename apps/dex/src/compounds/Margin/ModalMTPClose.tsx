@@ -14,7 +14,7 @@ import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
-import { useEnhancedTokenQuery, useSwapSimulationQuery } from "~/domains/clp/hooks";
+import { useEnhancedTokenQuery, useMarginPositionSimulationQuery } from "~/domains/clp/hooks";
 
 import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 import { HtmlUnicode } from "./_trade";
@@ -27,6 +27,7 @@ type ModalMTPCloseProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
+
 export function ModalMTPClose(props: ModalMTPCloseProps) {
   const currentCustodyAmount = props.data.current_custody_amount ?? "0";
 
@@ -37,22 +38,22 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   const collateralTokenQuery = useEnhancedTokenQuery(props.data.collateral_asset);
   const positionTokenQuery = useEnhancedTokenQuery(props.data.custody_asset);
 
-  const { data: closingPositionSwap } = useSwapSimulationQuery(
+  const { data: closingPositionSwap } = useMarginPositionSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     currentCustodyAmount,
-    0.01,
+    1,
   );
 
-  const { data: swapRateData } = useSwapSimulationQuery(
+  const { data: swapRateData } = useMarginPositionSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     "1",
-    0.01,
+    1,
   );
 
   const swapRateAsNumber = Decimal.fromAtomics(
-    swapRateData?.minimumReceiving ?? "0",
+    swapRateData?.swap ?? "0",
     collateralTokenQuery?.data?.decimals ?? 0,
   ).toFloatApproximation();
 
@@ -92,48 +93,54 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     closingPositionSwap
   ) {
     const collateralDecimals = collateralTokenQuery.data.decimals ?? 0;
-    const closingPositionRaw = closingPositionSwap.rawReceiving ?? "0";
-    const closingPositionMinReceivingRaw = closingPositionSwap.minimumReceiving ?? "0";
-    const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionRaw, collateralDecimals);
+
+    const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionSwap.swap, collateralDecimals);
+    const closingPositionFeeAsDecimal = Decimal.fromAtomics(closingPositionSwap.fee ?? "0", collateralDecimals);
+
     const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
-    const closingPositionMinReceivingAsDecimal = Decimal.fromAtomics(
-      closingPositionMinReceivingRaw,
-      collateralDecimals,
-    );
-    let closingPositionFees;
-    let finalPositionWithLiabilitiesAsNumber;
-    try {
-      closingPositionFees = closingPositionAsDecimal.minus(closingPositionMinReceivingAsDecimal).toFloatApproximation();
-      finalPositionWithLiabilitiesAsNumber = closingPositionMinReceivingAsDecimal
-        .minus(liabilitiesAsDecimal)
-        .toFloatApproximation();
-    } catch (error) {
-      console.group("Closing Position Fee BigNumber Error");
-      console.log({ error });
-      console.groupEnd();
-      closingPositionFees = 0;
-      finalPositionWithLiabilitiesAsNumber = 0;
-    }
+
+    const finalPositionWithLiabilitiesAsNumber = closingPositionAsDecimal.toFloatApproximation();
+
+    const swapResultAsDecimal = closingPositionAsDecimal.plus(closingPositionFeeAsDecimal);
+
     const openingPositionAsNumber = Number(props.data.custody_amount ?? "0");
     const openingValueAsNumber = openingPositionAsNumber * positionTokenQuery.data.priceUsd;
     const totalInterestPaidAsNumber = Number(props.data.current_interest_paid_custody ?? "0");
     const currentPositionAsNumber = Number(currentCustodyAmount);
     const currentPriceAsNumber = Number(positionTokenQuery.data.priceUsd ?? "0");
     const currentValueAsNumber = currentPositionAsNumber * currentPriceAsNumber;
-    const tradePnlAsNumber = finalPositionWithLiabilitiesAsNumber - Number(props.data.collateral_amount);
+
+    const resultingPaymentAsDecimal = closingPositionAsDecimal.minus(liabilitiesAsDecimal);
+    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - Number(props.data.collateral_amount);
     const tradePnlSign = Math.sign(tradePnlAsNumber);
+
     content = (
       <>
         <section className="grid gap-3">
           <AssetHeading symbol={props.data.custody_asset} />
           <TradeDetails
-            heading={["Opening Position", ""]}
+            heading={[
+              "Opening Position",
+              <>
+                {formatNumberAsDecimal(openingPositionAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.custody_asset} />
+              </>,
+            ]}
             details={[
               ["Opening price", formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)],
               ["Opening value", formatNumberAsCurrency(openingValueAsNumber, 4)],
             ]}
           />
-          <TradeDetails heading={["Total insterest paid", formatNumberAsCurrency(totalInterestPaidAsNumber, 4)]} />
+          <TradeDetails
+            heading={[
+              "Total insterest paid",
+              <>
+                <HtmlUnicode name="MinusSign" />
+                {formatNumberAsDecimal(totalInterestPaidAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.custody_asset} />
+              </>,
+            ]}
+          />
           <TradeDetails
             heading={[
               "Current position",
@@ -171,14 +178,15 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               [
                 "Swap result",
                 <>
-                  {formatNumberAsDecimal(closingPositionMinReceivingAsDecimal.toFloatApproximation(), 4)}{" "}
+                  {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
               [
                 "Fees",
                 <>
-                  {formatNumberAsCurrency(closingPositionFees, 4)}{" "}
+                  <HtmlUnicode name="MinusSign" />
+                  {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
@@ -188,6 +196,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             heading={[
               "Borrow amount",
               <>
+                <HtmlUnicode name="MinusSign" />
                 {formatNumberAsDecimal(liabilitiesAsDecimal.toFloatApproximation(), 4)}{" "}
                 <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
@@ -197,7 +206,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             heading={[
               "Resulting payment",
               <>
-                {formatNumberAsDecimal(closingPositionAsDecimal.toFloatApproximation(), 4)}{" "}
+                {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
                 <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
             ]}
@@ -205,6 +214,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               [
                 "Collateral",
                 <>
+                  <HtmlUnicode name="MinusSign" />
                   {formatNumberAsDecimal(Number(props.data.collateral_amount), 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,

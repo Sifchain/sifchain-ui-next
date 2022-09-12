@@ -825,6 +825,7 @@ const Trade = (props: TradeProps) => {
                       [
                         "Fees",
                         <>
+                          <HtmlUnicode name="MinusSign" />
                           {formatNumberAsDecimal(Number(openPositionFee), 4)}{" "}
                           {removeFirstCharsUC(selectedPosition.symbol)}
                         </>,
