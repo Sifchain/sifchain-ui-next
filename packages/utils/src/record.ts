@@ -7,6 +7,11 @@ export const caseInsensitiveRecord = <T>(record: Record<string, T>) =>
         return target[p];
       }
 
+      const exactMatch = target[p];
+      if (exactMatch !== undefined) {
+        return exactMatch;
+      }
+
       return Object.entries(target).find(
         ([key]) => key.localeCompare(p, undefined, { sensitivity: "accent" }) === 0,
       )?.[1];
