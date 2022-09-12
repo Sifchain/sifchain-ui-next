@@ -52,7 +52,7 @@ export function useAllBalancesQuery() {
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
   const baseQuery = useQueryWithNonQueryKeyDeps(
-    ["all-balances"],
+    ["all-balances", signer],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
