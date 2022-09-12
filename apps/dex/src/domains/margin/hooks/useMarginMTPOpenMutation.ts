@@ -144,8 +144,6 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
             },
           );
 
-          queryClient.invalidateQueries(["margin.getMarginOpenPositionBySymbol"]);
-          queryClient.invalidateQueries(["margin.getMarginOpenPosition"]);
           queryClient.invalidateQueries(["all-balances"]);
         }
       }

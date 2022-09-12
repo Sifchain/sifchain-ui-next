@@ -122,9 +122,6 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
               return [newHistoryPosition];
             },
           );
-
-          queryClient.invalidateQueries(["margin.getMarginOpenPositionBySymbol"]);
-          queryClient.invalidateQueries(["margin.getMarginOpenPosition"]);
         }
       }
     },
