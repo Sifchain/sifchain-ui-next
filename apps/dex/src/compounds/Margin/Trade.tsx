@@ -400,7 +400,7 @@ const Trade = (props: TradeProps) => {
         });
       }
     },
-    [calculatePosition, collateralBalance, inputLeverage.error, inputPosition.error],
+    [calculatePosition, collateralBalance],
   );
 
   /**
@@ -430,7 +430,7 @@ const Trade = (props: TradeProps) => {
         setInputCollateral(validateCollateral);
       }
     },
-    [calculateCollateral, collateralBalance, inputLeverage.error],
+    [calculateCollateral, collateralBalance],
   );
   /**
    * ********************************************************************************************
@@ -458,7 +458,7 @@ const Trade = (props: TradeProps) => {
         });
       }
     },
-    [calculatePosition, inputCollateral.value, maxLeverageDecimal, inputCollateral.error, inputPosition.error],
+    [calculatePosition, inputCollateral.value, maxLeverageDecimal],
   );
 
   /**
@@ -552,7 +552,7 @@ const Trade = (props: TradeProps) => {
       setInputPosition(validatePosition);
       setSwitchCollateralAndPosition((prev) => !prev);
     },
-    [inputCollateral.value, inputPosition.value],
+    [collateralBalance, inputCollateral.value, inputPosition.value],
   );
 
   const confirmOpenPositionMutation = useMarginMTPOpenMutation({
