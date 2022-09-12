@@ -31,9 +31,9 @@ const AssetIcon: FC<Props> = memo((props) => {
   const asset = useMemo(
     () =>
       indexedByDenom[props.symbol] ||
-      indexedBySymbol[props.symbol.toLowerCase()] ||
-      indexedBySymbol[props.symbol.slice(1).toLowerCase()] ||
-      indexedByDisplaySymbol[props.symbol.toLowerCase()],
+      indexedBySymbol[props.symbol] ||
+      indexedBySymbol[props.symbol.slice(1)] ||
+      indexedByDisplaySymbol[props.symbol],
     [indexedByDisplaySymbol, indexedByDenom, indexedBySymbol, props.symbol],
   );
 
