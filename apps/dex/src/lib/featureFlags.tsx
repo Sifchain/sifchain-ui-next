@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
 import type { FC, PropsWithChildren, ReactNode } from "react";
 
-import { useRedirectOnMount } from "~/hooks/useRedirectOnMount";
-
 export type FlagsState = {
   features: {
     margin: boolean;

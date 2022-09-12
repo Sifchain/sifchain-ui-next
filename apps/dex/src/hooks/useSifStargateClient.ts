@@ -1,6 +1,5 @@
 import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
 import { SifSigningStargateClient } from "@sifchain/stargate";
-import { useChangedEffect } from "@sifchain/utils/react";
 import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";

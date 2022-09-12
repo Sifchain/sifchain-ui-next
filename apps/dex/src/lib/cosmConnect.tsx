@@ -1,6 +1,5 @@
 import { CHAINCONFIG_BY_NETWORK_ENV, IBCChainConfig } from "@sifchain/common";
 import {
-  BaseCosmConnector,
   CosmConnectProvider as BaseCosmConnectProvider,
   InjectedKeplrConnector,
   KeplrWalletConnectConnector,
