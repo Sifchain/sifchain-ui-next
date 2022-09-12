@@ -360,12 +360,16 @@ const Trade = (props: TradeProps) => {
       const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedCollateral.decimals);
       const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedCollateral.decimals);
 
+      const valuePlusFee = value.plus(fee);
+
+      const { fee: positionFee } = calculatePosition(valuePlusFee.toString(), leverage);
+
       return {
-        value: value.toString(),
-        fee: fee.toString(),
+        value: valuePlusFee.toString(),
+        fee: positionFee.toString(),
       };
     },
-    [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
+    [calculatePosition, calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
   );
 
   /**
