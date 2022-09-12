@@ -29,9 +29,9 @@ describe("Pool", () => {
 
     const rawSwapResult = result.swap.integerValue().toFixed(0);
 
-    const asParsedNumber = Decimal.fromAtomics(rawSwapResult, 18).toString();
+    const parsedResult = Decimal.fromAtomics(rawSwapResult, 18).toString();
 
-    expect(asParsedNumber).toBe("78854.10041290998874416");
+    expect(parsedResult).toBe("78854.10041290998874416");
   });
 
   test("Pool.calculateSwap (with debt)", () => {
@@ -59,9 +59,9 @@ describe("Pool", () => {
 
     const rawSwapResult = result.swap.integerValue().toFixed(0);
 
-    const asParsedNumber = Decimal.fromAtomics(rawSwapResult, 18).toString();
+    const parsedResult = Decimal.fromAtomics(rawSwapResult, subject.nativeAssetDecimals).toString();
 
-    expect(asParsedNumber).toBe("82595.050355982503421577");
+    expect(parsedResult).toBe("82595.050355982503421577");
   });
 
   test("Pool.calculateSwap (closing position)", () => {
@@ -90,8 +90,8 @@ describe("Pool", () => {
 
     const rawSwapResult = result.swap.integerValue().toFixed(0);
 
-    const asParsedNumber = Decimal.fromAtomics(rawSwapResult, 18).toString();
+    const parsedResult = Decimal.fromAtomics(rawSwapResult, 18).toString();
 
-    expect(asParsedNumber).toBe("9971.243500760376076756");
+    expect(parsedResult).toBe("9971.243500760376076756");
   });
 });

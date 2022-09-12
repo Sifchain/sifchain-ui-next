@@ -24,6 +24,7 @@ import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
 import {
   useEnhancedPoolsQuery,
   useEnhancedTokenQuery,
+  useMarginPositionSimulationQuery,
   useRowanPriceQuery,
   useSwapSimulationQuery,
 } from "~/domains/clp/hooks";
@@ -321,36 +322,48 @@ const Trade = (props: TradeProps) => {
     return calculateBorrowAmount(Number(inputCollateral.value), Number(inputLeverage.value));
   }, [inputCollateral.value, inputLeverage.value]);
 
-  const { recompute: calculateSwap } = useSwapSimulationQuery(
+  const { recompute: calculateSwap } = useMarginPositionSimulationQuery(
     selectedCollateral.denom ?? selectedCollateral.symbol,
     selectedPosition.denom ?? selectedPosition.symbol,
     inputCollateral.value,
+    Number(inputLeverage.value),
   );
 
-  const { recompute: calculateReverseSwap } = useSwapSimulationQuery(
+  const { recompute: calculateReverseSwap } = useMarginPositionSimulationQuery(
     selectedPosition.denom ?? selectedPosition.symbol,
     selectedCollateral.denom ?? selectedCollateral.symbol,
     inputPosition.value,
+    1 / Number(inputLeverage.value),
   );
 
   const calculatePosition = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const input = BigNumber(inputAmount).multipliedBy(BigNumber(leverage));
-      const swap = calculateSwap(input.toString());
-      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals).toString();
-      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals).toString();
-      return { value, fee };
+      const input = BigNumber(inputAmount);
+      const swap = calculateSwap(input.toString(), Number(leverage));
+
+      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedPosition.decimals);
+      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedPosition.decimals);
+
+      return {
+        value: value.toString(),
+        fee: fee.toString(),
+      };
     },
     [calculateSwap, inputLeverage.value, selectedPosition.decimals],
   );
 
   const calculateCollateral = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
-      const input = BigNumber(inputAmount).dividedBy(BigNumber(leverage));
-      const swap = calculateReverseSwap(input.toString());
-      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals).toString();
-      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals).toString();
-      return { value, fee };
+      const input = BigNumber(inputAmount);
+      const swap = calculateReverseSwap(input.toString(), 1 / Number(leverage));
+
+      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedCollateral.decimals);
+      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedCollateral.decimals);
+
+      return {
+        value: value.toString(),
+        fee: fee.toString(),
+      };
     },
     [calculateReverseSwap, inputLeverage.value, selectedCollateral.decimals],
   );
@@ -555,8 +568,6 @@ const Trade = (props: TradeProps) => {
     },
     [inputCollateral.value, inputPosition.value],
   );
-
-  const poolInterestRate = `${formatNumberAsDecimal(poolActive ? poolActive.stats.interestRate : 0, 8)}%`;
 
   const confirmOpenPositionMutation = useMarginMTPOpenMutation({
     poolSymbol: poolActive?.asset.denom ?? "",
