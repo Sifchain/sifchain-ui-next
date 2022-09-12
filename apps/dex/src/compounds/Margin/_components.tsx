@@ -272,12 +272,12 @@ type TradeDetailsProps = {
 export const TradeDetails: FC<TradeDetailsProps> = ({ heading, details }) => {
   return (
     <>
-      <div className="flex items-center justify-between pl-[18px] text-xs">
+      <div className="flex items-center justify-between px-[18px] text-xs">
         <span>{heading[0]}</span>
         <span className="tabular-nums">{heading[1]}</span>
       </div>
       {details && (
-        <ul className="border-gray-750 grid gap-3 border-l-2 pl-4 text-xs">
+        <ul className="border-gray-750 ml-4 grid gap-3 border-l-2 px-4 text-xs">
           {details.map(([label, value], i) => (
             <li key={i} className="flex items-center justify-between text-gray-300">
               <span>{label}</span>
