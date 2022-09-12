@@ -8,6 +8,7 @@ import {
   formatNumberAsDecimal,
   Modal,
   FlashMessage5xxError,
+  FlashMessage,
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
@@ -220,10 +221,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           />
         </section>
         {confirmClosePosition.isError ? (
-          <p className="mt-4 rounded bg-red-200 p-4 text-center text-red-800">
+          <FlashMessage className="relative mt-4 bg-red-200 text-red-800">
             <b className="mr-1">Failed to close position:</b>
             <span>{(confirmClosePosition.error as Error).message}</span>
-          </p>
+          </FlashMessage>
         ) : null}
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
