@@ -1,5 +1,5 @@
-import { Maybe } from "@sifchain/utils";
-import { indexBy } from "rambda";
+import { caseInsensitiveRecord, Maybe } from "@sifchain/utils";
+import { compose, indexBy } from "rambda";
 import { useMemo } from "react";
 
 import useSifApiQuery from "~/hooks/useSifApiQuery";
@@ -13,7 +13,10 @@ export function usePoolStatsQuery() {
   const indexedBySymbol = useMemo(() => {
     return Maybe.of(data?.pools).mapOr(
       {},
-      indexBy((x) => x.symbol?.toLowerCase()),
+      compose(
+        caseInsensitiveRecord,
+        indexBy((x) => x.symbol?.toLowerCase()),
+      ),
     );
   }, [data?.pools]);
 
