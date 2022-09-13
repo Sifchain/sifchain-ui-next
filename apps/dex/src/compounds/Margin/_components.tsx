@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import {
   ArrowDownIcon,
+  ChartIcon,
+  ExternalLink,
   formatNumberAsCurrency,
   formatNumberAsDecimal,
   TokenEntry,
@@ -179,6 +181,10 @@ export function PoolOverview(props: PoolOverviewProps) {
           hideColumns={["balance"]}
           onChange={props.onChangePoolSelector}
         />
+        <ExternalLink href="/margin" className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50">
+          <span className="mr-1">Open Charts</span>
+          <ChartIcon width={18} height={18} />
+        </ExternalLink>
       </li>
       <li className="grid gap-4 px-4 md:grid-cols-3 lg:col-span-5 xl:grid-cols-4">
         <div className="flex flex-col">

@@ -1,21 +1,24 @@
-import { Decimal } from "@cosmjs/math";
 import type { IAsset } from "@sifchain/common";
+import type { NextPage } from "next";
+import type { ChangeEvent, SyntheticEvent } from "react";
+
+import { Decimal } from "@cosmjs/math";
 import {
+  ExternalLink,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
   formatNumberAsCurrency,
+  PlusIcon,
   RacetrackSpinnerIcon,
   SwapIcon,
-  PlusIcon,
   TokenEntry,
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
-import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
