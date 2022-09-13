@@ -352,10 +352,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                             "text-red-400": unrealizedPLSign === -1 && unrealizedPnl < 0,
                           })}
                         >
-                          <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
-                          <span className="ml-1">
+                          <span className="mr-1">
                             {formatNumberAsDecimal(unrealizedPnl, 6) ?? <HtmlUnicode name="EmDash" />}
                           </span>
+                          <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
                         </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -374,10 +374,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       <td className="px-4 py-3">
                         {isTruthy(currentInterestPaidCustody) ? (
                           <div className="flex flex-row items-center justify-end tabular-nums">
-                            <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
-                            <span className="ml-1">
+                            <span className="mr-1">
                               {formatNumberAsDecimal(currentInterestPaidCustody, 6) ?? <HtmlUnicode name="EmDash" />}
                             </span>
+                            <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
                           </div>
                         ) : (
                           <HtmlUnicode name="EmDash" />
