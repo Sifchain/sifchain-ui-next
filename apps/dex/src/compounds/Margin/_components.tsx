@@ -151,6 +151,13 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
+const URL_SIFCHAIN_DEXSCREENER = "https://dexscreener.com/sifchain";
+const safeDexscreenerDenom = (denom: string) => {
+  // transform IBC denom, from "ibc/ZXC" to "ibc-ZXC"
+  // Mainnet ATOM url: https://dexscreener.com/sifchain/ibc-27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2
+  // WARNING: Featurenet / Tempnet / Testnet IBC hashes will not work on Dexscreener
+  return denom.replace(/\//gi, "-");
+};
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
@@ -181,10 +188,15 @@ export function PoolOverview(props: PoolOverviewProps) {
           hideColumns={["balance"]}
           onChange={props.onChangePoolSelector}
         />
-        <ExternalLink href="/margin" className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50">
-          <span className="mr-1">Open Charts</span>
-          <ChartIcon width={18} height={18} />
-        </ExternalLink>
+        {props.pool.asset.denom ? (
+          <ExternalLink
+            href={`${URL_SIFCHAIN_DEXSCREENER}/${safeDexscreenerDenom(props.pool.asset.denom)}`}
+            className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50"
+          >
+            <span className="mr-1">Open Charts</span>
+            <ChartIcon width={18} height={18} />
+          </ExternalLink>
+        ) : null}
       </li>
       <li className="grid gap-4 px-4 md:grid-cols-3 lg:col-span-5 xl:grid-cols-4">
         <div className="flex flex-col">
