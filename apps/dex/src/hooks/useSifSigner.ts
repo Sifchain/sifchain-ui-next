@@ -1,7 +1,6 @@
-import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
-import { invariant } from "@sifchain/ui";
-import { useDexEnvironment, useDexEnvKind } from "~/domains/core/envs";
-import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
+import { useAccounts, useSigner } from "@sifchain/cosmos-connect";
+import { useQuery } from "@tanstack/react-query";
+import { useDexEnvironment } from "~/domains/core/envs";
 
 export function useSifSigner() {
   const { data: env } = useDexEnvironment();
@@ -9,29 +8,8 @@ export function useSifSigner() {
 }
 
 export function useSifSignerAddressQuery() {
-  const { signer } = useSifSigner();
-  const connectionUpdatedAt = useConnectionUpdatedAt();
-  const dexEnv = useDexEnvKind();
+  const { data: env } = useDexEnvironment();
+  const { accounts } = useAccounts(env?.sifChainId ?? "", { enabled: env !== undefined });
 
-  const query = useQueryWithNonQueryKeyDeps(
-    [
-      "sifchain-signer-address",
-      {
-        dexEnv,
-      },
-    ],
-    async () => {
-      invariant(signer !== undefined, "Sif signer is not defined");
-
-      const accounts = await signer.getAccounts();
-
-      return accounts?.[0]?.address ?? "";
-    },
-    {
-      enabled: signer !== undefined,
-    },
-    [connectionUpdatedAt],
-  );
-
-  return query;
+  return useQuery(["sifchain-signer-address", accounts], () => accounts?.[0]?.address);
 }
