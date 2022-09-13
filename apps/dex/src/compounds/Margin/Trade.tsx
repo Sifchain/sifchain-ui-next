@@ -4,7 +4,6 @@ import type { ChangeEvent, SyntheticEvent } from "react";
 
 import { Decimal } from "@cosmjs/math";
 import {
-  ExternalLink,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
