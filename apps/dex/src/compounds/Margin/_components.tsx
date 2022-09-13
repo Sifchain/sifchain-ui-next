@@ -151,6 +151,10 @@ export function PillUpdating() {
   return <span className="rounded bg-yellow-600 px-4 py-1 text-xs text-yellow-200">Updating...</span>;
 }
 
+const URL_SIFCHAIN_DEXSCREENER = "https://dexscreener.com/sifchain";
+const safeDexscreenerDenom = (denom: string) => {
+  return denom.replace(/\//gi, "-");
+};
 type PoolOverviewProps = {
   pool: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>[0];
   assets: IAsset[];
@@ -181,7 +185,10 @@ export function PoolOverview(props: PoolOverviewProps) {
           hideColumns={["balance"]}
           onChange={props.onChangePoolSelector}
         />
-        <ExternalLink href="/margin" className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50">
+        <ExternalLink
+          href={`${URL_SIFCHAIN_DEXSCREENER}/${safeDexscreenerDenom(props.pool.asset.denom)}`}
+          className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50"
+        >
           <span className="mr-1">Open Charts</span>
           <ChartIcon width={18} height={18} />
         </ExternalLink>
