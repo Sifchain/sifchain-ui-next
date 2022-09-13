@@ -1,4 +1,4 @@
-import { formatNumberAsCurrency, formatNumberAsDecimal } from "@sifchain/ui";
+import { formatNumberAsDecimal } from "@sifchain/ui";
 
 const UNICODE_CHARS = {
   AlmostEqualTo: "&#x2248;", // https://www.compart.com/en/unicode/U+2248
@@ -38,8 +38,8 @@ export function HtmlUnicode({ name, className }: HtmlUnicodeProps) {
 export const COLLATERAL_MIN_VALUE = 0;
 export const COLLATERAL_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 const COLLATERAL_ERRORS = {
-  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
-  INVALID_RANGE: `Collateral amount must be between ${formatNumberAsCurrency(0)} and ${formatNumberAsCurrency(
+  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsDecimal(0)}`,
+  INVALID_RANGE: `Collateral amount must be between ${formatNumberAsDecimal(0)} and ${formatNumberAsDecimal(
     COLLATERAL_MAX_VALUE,
   )}`,
   INSUFFICIENT_BALANCE: (value: number, balance: number) =>
@@ -87,8 +87,8 @@ export function inputValidatorCollateral($input: HTMLInputElement, collateralBal
 export const POSITION_MIN_VALUE = 0;
 export const POSITION_MAX_VALUE = Number.MAX_SAFE_INTEGER;
 const POSITION_ERRORS = {
-  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsCurrency(0)}`,
-  INVALID_RANGE: `Position amount must be between ${formatNumberAsCurrency(0)} and ${formatNumberAsCurrency(
+  INVALID_NUMBER: `Enter a value greater than ${formatNumberAsDecimal(0)}`,
+  INVALID_RANGE: `Position amount must be between ${formatNumberAsDecimal(0)} and ${formatNumberAsDecimal(
     POSITION_MAX_VALUE,
   )}`,
 };
