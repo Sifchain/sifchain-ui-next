@@ -103,7 +103,7 @@ const Margin: NextPage = () => {
           </span>
           <ExternalLink
             href="https://sifchain.notion.site/Margin-Trading-v1-0-The-Long-Game-63fe6f60e8094a458047595e4ce18eb9"
-            className="underline"
+            className="underline hover:opacity-50"
           >
             here
           </ExternalLink>
