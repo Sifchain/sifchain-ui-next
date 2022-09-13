@@ -153,6 +153,9 @@ export function PillUpdating() {
 
 const URL_SIFCHAIN_DEXSCREENER = "https://dexscreener.com/sifchain";
 const safeDexscreenerDenom = (denom: string) => {
+  // transform IBC denom, from "ibc/ZXC" to "ibc-ZXC"
+  // Mainnet ATOM url: https://dexscreener.com/sifchain/ibc-27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2
+  // WARNING: Featurenet / Tempnet / Testnet IBC hashes will not work on Dexscreener
   return denom.replace(/\//gi, "-");
 };
 type PoolOverviewProps = {
