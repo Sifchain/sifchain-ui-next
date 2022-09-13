@@ -265,12 +265,12 @@ const HistoryTable = (props: HistoryTableProps) => {
                     <td className="px-4 py-3">
                       {isTruthy(item.close_interest_paid_custody) ? (
                         <div className="flex flex-row items-center justify-end tabular-nums">
-                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
-                          <span className="ml-1">
+                          <span className="mr-1">
                             {formatNumberAsDecimal(Number(item.close_interest_paid_custody), 6) ?? (
                               <HtmlUnicode name="EmDash" />
                             )}
                           </span>
+                          <AssetIcon symbol={item.open_custody_asset} network="sifchain" size="sm" />
                         </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
@@ -284,8 +284,8 @@ const HistoryTable = (props: HistoryTableProps) => {
                             "text-red-400": realizedPLSign === -1 && realizedPL < 0,
                           })}
                         >
+                          <span className="mr-1">{formatNumberAsDecimal(realizedPL, 6)}</span>
                           <AssetIcon symbol={item.open_collateral_asset} network="sifchain" size="sm" />
-                          <span className="ml-1">{formatNumberAsDecimal(realizedPL, 6)}</span>
                         </div>
                       ) : (
                         <HtmlUnicode name="EmDash" />
