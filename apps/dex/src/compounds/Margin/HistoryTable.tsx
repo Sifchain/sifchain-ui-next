@@ -52,7 +52,7 @@ const HEADERS_TITLES = {
   ASSET: "Asset",
   POSITION: "Position",
   PAID_INTEREST: "Paid Interest",
-  REALIZED_PNL: "Realized P&L",
+  REALIZED_PNL: "Realized PnL",
 } as const;
 const HISTORY_HEADER_ITEMS = [
   { title: HEADERS_TITLES.DATE_CLOSED, order_by: "" },
@@ -284,7 +284,10 @@ const HistoryTable = (props: HistoryTableProps) => {
                             "text-red-400": realizedPLSign === -1 && realizedPL < 0,
                           })}
                         >
-                          <span className="mr-1">{formatNumberAsDecimal(realizedPL, 6)}</span>
+                          <span className="mr-1">
+                            {realizedPLSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
+                            {formatNumberAsDecimal(realizedPL, 6)}
+                          </span>
                           <AssetIcon symbol={item.open_collateral_asset} network="sifchain" size="sm" />
                         </div>
                       ) : (

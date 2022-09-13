@@ -387,10 +387,6 @@ const Trade = (props: TradeProps) => {
     (event: SyntheticEvent<HTMLInputElement>) => {
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        if ($target.value.length > Number($target.maxLength)) {
-          return;
-        }
-
         const payload = inputValidatorCollateral($target, collateralBalance);
         setInputCollateral(payload);
 
@@ -416,10 +412,6 @@ const Trade = (props: TradeProps) => {
     (event: SyntheticEvent<HTMLInputElement>) => {
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        if ($target.value.length > Number($target.maxLength)) {
-          return;
-        }
-
         const payload = inputValidatorPosition($target);
         setInputPosition(payload);
 
@@ -445,10 +437,6 @@ const Trade = (props: TradeProps) => {
     (event: ChangeEvent<HTMLInputElement>) => {
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
-        if ($target.value.length > Number($target.maxLength)) {
-          return;
-        }
-
         const payload = inputValidatorLeverage($target, maxLeverageDecimal.toString());
         setInputLeverage(payload);
 
@@ -625,7 +613,6 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
-                  maxLength={10}
                   min={COLLATERAL_MIN_VALUE}
                   max={COLLATERAL_MAX_VALUE}
                   value={inputCollateral.value}
@@ -680,7 +667,6 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
-                  maxLength={10}
                   min={POSITION_MIN_VALUE}
                   max={POSITION_MAX_VALUE}
                   value={inputPosition.value}
@@ -717,7 +703,6 @@ const Trade = (props: TradeProps) => {
                   type="number"
                   placeholder="0"
                   step="0.01"
-                  maxLength={2}
                   min={LEVERAGE_MIN_VALUE}
                   max={maxLeverageDecimal.toString()}
                   value={inputLeverage.value}

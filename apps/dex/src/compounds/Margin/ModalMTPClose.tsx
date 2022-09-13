@@ -1,5 +1,6 @@
 import type { MarginOpenPositionsData } from "~/domains/margin/hooks";
 
+import clsx from "clsx";
 import { Decimal } from "@cosmjs/math";
 import {
   FlashMessageLoading,
@@ -113,6 +114,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const resultingPaymentAsDecimal = closingPositionAsDecimal.minus(liabilitiesAsDecimal);
     const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - Number(props.data.collateral_amount);
     const tradePnlSign = Math.sign(tradePnlAsNumber);
+    const tradePnlAbs = Math.abs(tradePnlAsNumber);
 
     content = (
       <>
@@ -133,7 +135,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           />
           <TradeDetails
             heading={[
-              "Total insterest paid",
+              "Total interest paid",
               <>
                 <HtmlUnicode name="MinusSign" />
                 {formatNumberAsDecimal(totalInterestPaidAsNumber, 4)}{" "}
@@ -221,11 +223,16 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Estimated PnL",
-                <>
-                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
-                  {formatNumberAsCurrency(Math.abs(tradePnlAsNumber), 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>,
+                <div
+                  key="estimated-pnl"
+                  className={clsx({
+                    "text-green-400": tradePnlSign === 1 && tradePnlAbs > 0,
+                    "text-red-400": tradePnlSign === -1 && tradePnlAbs < 0,
+                  })}
+                >
+                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
+                  {formatNumberAsCurrency(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </div>,
               ],
             ]}
           />
