@@ -44,6 +44,7 @@ export function useEnhancedPoolsQuery() {
               volume_24h_change: number;
               rowan_24h_change: number;
               asset_24h_change: number;
+              margin_apr: number;
             },
             asset: asset as IAsset,
           };
