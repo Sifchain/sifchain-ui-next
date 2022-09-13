@@ -188,13 +188,15 @@ export function PoolOverview(props: PoolOverviewProps) {
           hideColumns={["balance"]}
           onChange={props.onChangePoolSelector}
         />
-        <ExternalLink
-          href={`${URL_SIFCHAIN_DEXSCREENER}/${safeDexscreenerDenom(props.pool.asset.denom)}`}
-          className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50"
-        >
-          <span className="mr-1">Open Charts</span>
-          <ChartIcon width={18} height={18} />
-        </ExternalLink>
+        {props.pool.asset.denom ? (
+          <ExternalLink
+            href={`${URL_SIFCHAIN_DEXSCREENER}/${safeDexscreenerDenom(props.pool.asset.denom)}`}
+            className="mt-4 flex flex-row items-center justify-end underline hover:opacity-50"
+          >
+            <span className="mr-1">Open Charts</span>
+            <ChartIcon width={18} height={18} />
+          </ExternalLink>
+        ) : null}
       </li>
       <li className="grid gap-4 px-4 md:grid-cols-3 lg:col-span-5 xl:grid-cols-4">
         <div className="flex flex-col">
