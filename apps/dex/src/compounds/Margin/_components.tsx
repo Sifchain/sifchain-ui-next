@@ -16,7 +16,7 @@ import {
 import { TooltipInterestRate, TooltipLiquidationThreshold, TooltipPoolHealth } from "./tooltips";
 
 import { formatNumberAsPercent } from "./_intl";
-import { removeFirstCharsUC } from "./_trade";
+import { removeFirstCharsUC, HtmlUnicode } from "./_trade";
 import type { FC, ReactNode } from "react";
 import AssetIcon from "../AssetIcon";
 
@@ -165,6 +165,7 @@ export function PoolOverview(props: PoolOverviewProps) {
   const health = props.pool.stats.health || 0;
   const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
   const asset24hChange = props.pool.stats.asset_24h_change || 0;
+  const marginApr = props.pool.stats.margin_apr;
 
   return (
     <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
@@ -209,6 +210,14 @@ export function PoolOverview(props: PoolOverviewProps) {
             </span>
             <Average24hPercent value={asset24hChange} />
           </span>
+        </div>
+        <div className="flex flex-col">
+          <span className="flex flex-row items-center text-gray-300">Margin APR</span>
+          {marginApr ? (
+            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr)}</span>
+          ) : (
+            <HtmlUnicode name="EmDash" />
+          )}
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
