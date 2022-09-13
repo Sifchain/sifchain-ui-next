@@ -253,7 +253,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
-            <span className="mr-1">Interest rate</span>
+            <span className="mr-1">Interest Rate</span>
             <TooltipInterestRate />
           </span>
           <span className="text-sm font-semibold">{props.interestRate}</span>

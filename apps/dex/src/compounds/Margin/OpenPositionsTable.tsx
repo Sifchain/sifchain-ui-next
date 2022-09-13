@@ -353,7 +353,8 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           })}
                         >
                           <span className="mr-1">
-                            {formatNumberAsDecimal(unrealizedPnl, 6) ?? <HtmlUnicode name="EmDash" />}
+                            {unrealizedPLSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
+                            {formatNumberAsDecimal(unrealizedPnl, 6)}
                           </span>
                           <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
                         </div>
