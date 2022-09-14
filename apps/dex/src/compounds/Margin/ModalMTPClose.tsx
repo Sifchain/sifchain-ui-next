@@ -226,11 +226,11 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                 <div
                   key="estimated-pnl"
                   className={clsx({
-                    "text-green-400": tradePnlSign === 1 && tradePnlAbs > 0,
-                    "text-red-400": tradePnlSign === -1 && tradePnlAbs < 0,
+                    "text-green-400": tradePnlSign === 1,
+                    "text-red-400": tradePnlSign === -1,
                   })}
                 >
-                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
+                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
                   {formatNumberAsCurrency(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </div>,
               ],
