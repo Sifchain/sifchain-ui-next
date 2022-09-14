@@ -175,7 +175,6 @@ export function PoolOverview(props: PoolOverviewProps) {
   const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
   const asset24hChange = props.pool.stats.asset_24h_change || 0;
   const marginApr = props.pool.stats.margin_apr;
-
   return (
     <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
       <li className="2xl:place-self-normal mb-4 px-4 lg:col-span-2 lg:mb-0 lg:w-full lg:place-self-center">
@@ -232,7 +231,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">Margin APR</span>
           {marginApr ? (
-            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr)}</span>
+            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr, 6)}%</span>
           ) : (
             <HtmlUnicode name="EmDash" />
           )}
