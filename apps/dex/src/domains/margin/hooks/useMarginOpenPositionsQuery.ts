@@ -40,7 +40,7 @@ export function useMarginOpenPositionsQuery() {
         oldData: MarginOpenPositionsResponse | undefined,
         newData: MarginOpenPositionsResponse | undefined,
       ) {
-        if (oldData && newData) {
+        if (newData) {
           const diffOptimisticPositions = (queryClient.getQueryData(["margin.getOptimisticPositions"]) ??
             []) as MarginOpenPositionsResponse["results"];
 
