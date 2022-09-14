@@ -231,7 +231,7 @@ export function PoolOverview(props: PoolOverviewProps) {
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">Margin APR</span>
           {marginApr ? (
-            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr, 6)}%</span>
+            <span className="text-sm font-semibold">{formatNumberAsDecimal(Number(marginApr), 6)}%</span>
           ) : (
             <HtmlUnicode name="EmDash" />
           )}
