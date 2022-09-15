@@ -122,7 +122,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <AssetHeading symbol={props.data.custody_asset} />
           <TradeDetails
             heading={[
-              "Opening Position",
+              "Opening position",
               <>
                 {formatNumberAsDecimal(openingPositionAsNumber, 4)}{" "}
                 <TokenDisplaySymbol symbol={props.data.custody_asset} />
@@ -231,7 +231,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                   })}
                 >
                   {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
-                  {formatNumberAsCurrency(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                  {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </div>,
               ],
             ]}
@@ -247,7 +247,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
           <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
-            Confirm close
+            Close trade
           </Button>
         )}
       </>
