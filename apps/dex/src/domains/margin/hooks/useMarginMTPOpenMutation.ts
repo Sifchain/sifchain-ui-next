@@ -82,7 +82,7 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
       }
 
       if (res.rawLog.includes(errors.SIFNODE_ERRORS.BORROWED_AMOUNT_IS_HIGHER_THAN_POOL_DEPTH)) {
-        throw new Error(errors.POOL_BORROWED_HIGHER_THAN_POOL_DEPTH);
+        throw new Error(errors.MTP_BORROWED_HIGHER_THAN_POOL_DEPTH);
       }
 
       throw new Error(errors.DEFAULT_ERROR_OPEN_POSITION);
