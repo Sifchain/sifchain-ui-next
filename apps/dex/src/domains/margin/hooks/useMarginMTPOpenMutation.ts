@@ -44,20 +44,15 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
       console.log({ error: res });
       console.groupEnd();
 
+      // ========================================
+      // Wallet address/Account errors
+      // ========================================
       if (
         res.rawLog.includes("unauthorized") ||
         res.rawLog.includes("unauthorised") ||
-        res.rawLog.includes("address not on whitelist")
+        res.rawLog.includes(errors.SIFNODE_ERRORS.ADDRESS_NOT_ON_WHITELIST)
       ) {
         throw new Error(errors.ACCOUNT_NOT_APPROVED_FOR_TRADING);
-      }
-
-      if (res.rawLog.includes("margin not enabled for pool")) {
-        throw new Error(errors.POOL_TRADE_TEMPORARILY_DISABLED);
-      }
-
-      if (res.rawLog.includes("max open positions reached")) {
-        throw new Error(errors.POOL_MAX_OPEN_POSITIONS_REACHED);
       }
 
       if (res.rawLog.includes("user does not have enough balance of the required coin")) {
@@ -68,12 +63,26 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
         throw new Error(errors.ACCOUNT_NOT_IN_SIFCHAIN);
       }
 
-      if (res.rawLog.includes("borrowed amount is too low")) {
+      // ========================================
+      // Pools errors
+      // ========================================
+      if (res.rawLog.includes(errors.SIFNODE_ERRORS.MARGIN_NOT_ENABLED_FOR_POOL)) {
+        throw new Error(errors.POOL_TRADE_TEMPORARILY_DISABLED);
+      }
+
+      if (res.rawLog.includes(errors.SIFNODE_ERRORS.MAX_OPEN_POSITIONS_REACHED)) {
+        throw new Error(errors.POOL_MAX_OPEN_POSITIONS_REACHED);
+      }
+
+      // ========================================
+      // MTP Open errors
+      // ========================================
+      if (res.rawLog.includes(errors.SIFNODE_ERRORS.BORROWED_AMOUNT_IS_TOO_LOW)) {
         throw new Error(errors.MTP_LOW_BORROWED_AMOUNT);
       }
 
-      if (res.rawLog.includes("borrowed amount is higher")) {
-        throw new Error(errors.MTP_LOW_BORROWED_AMOUNT);
+      if (res.rawLog.includes(errors.SIFNODE_ERRORS.BORROWED_AMOUNT_IS_HIGHER_THAN_POOL_DEPTH)) {
+        throw new Error(errors.POOL_BORROWED_HIGHER_THAN_POOL_DEPTH);
       }
 
       throw new Error(errors.DEFAULT_ERROR_OPEN_POSITION);
