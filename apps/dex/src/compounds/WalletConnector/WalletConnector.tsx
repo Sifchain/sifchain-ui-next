@@ -80,6 +80,7 @@ const WalletConnector: FC = () => {
     disconnect: disconnectCosmos,
     isConnected: isCosmosConnected,
     activeConnector: cosmosActiveConnector,
+    updatedAt,
   } = useCosmConnect();
 
   const {
@@ -154,7 +155,7 @@ const WalletConnector: FC = () => {
           }));
         }
       })(),
-    [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors],
+    [chains, cosmosActiveConnector, enabledChainsState.networks, evmConnectors, updatedAt],
   );
 
   useEffect(() => {
