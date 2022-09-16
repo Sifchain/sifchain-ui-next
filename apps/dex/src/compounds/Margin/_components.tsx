@@ -241,7 +241,7 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">Pool Health</span>
             <TooltipPoolHealth />
           </span>
-          <span className="text-sm font-semibold">{props.pool.stats.health}%</span>
+          <span className="text-sm font-semibold">{health}%</span>
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
