@@ -10,6 +10,7 @@ export function useSifSigner() {
 export function useSifSignerAddressQuery() {
   const { data: env } = useDexEnvironment();
   const { accounts } = useAccounts(env?.sifChainId ?? "", { enabled: env !== undefined });
-
-  return useQuery(["sifchain-signer-address", accounts], () => accounts?.[0]?.address);
+  return useQuery(["sifchain-signer-address", accounts], () => accounts?.[0]?.address, {
+    enabled: Boolean(accounts?.[0]?.address),
+  });
 }
