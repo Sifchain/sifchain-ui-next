@@ -11,6 +11,7 @@ import {
   Modal,
   FlashMessage5xxError,
   FlashMessage,
+  RacetrackSpinnerIcon,
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
@@ -171,7 +172,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>
               ) : (
-                <HtmlUnicode name="EmDash" />
+                <RacetrackSpinnerIcon />
               ),
             ]}
             details={[
@@ -184,7 +185,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                     <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                   </>
                 ) : (
-                  <HtmlUnicode name="EmDash" />
+                  <RacetrackSpinnerIcon />
                 ),
               ],
               [
@@ -195,7 +196,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                     <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                   </>
                 ) : (
-                  <HtmlUnicode name="EmDash" />
+                  <RacetrackSpinnerIcon />
                 ),
               ],
               [
@@ -207,7 +208,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                     <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                   </>
                 ) : (
-                  <HtmlUnicode name="EmDash" />
+                  <RacetrackSpinnerIcon />
                 ),
               ],
             ]}
@@ -231,7 +232,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>
               ) : (
-                <HtmlUnicode name="EmDash" />
+                <RacetrackSpinnerIcon />
               ),
             ]}
             details={[
@@ -257,7 +258,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                     {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                   </div>
                 ) : (
-                  <HtmlUnicode name="EmDash" />
+                  <RacetrackSpinnerIcon />
                 ),
               ],
             ]}
