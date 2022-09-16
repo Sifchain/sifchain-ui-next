@@ -1,11 +1,11 @@
 import { Decimal } from "@cosmjs/math";
 import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
+import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
-import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
 
@@ -24,8 +24,8 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQueryWithNonQueryKeyDeps(
-    [LIQUIDITY_PROVIDER_QUERY_KEY],
+  return useQuery(
+    [LIQUIDITY_PROVIDER_QUERY_KEY, connectionUpdatedAt],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -69,7 +69,6 @@ export const useLiquidityProviderQuery = (denom: string) => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
-    [connectionUpdatedAt],
   );
 };
 
@@ -85,8 +84,8 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQueryWithNonQueryKeyDeps(
-    [LIQUIDITY_PROVIDERS_QUERY_KEY],
+  return useQuery(
+    [LIQUIDITY_PROVIDERS_QUERY_KEY, connectionUpdatedAt],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({
@@ -135,6 +134,5 @@ export const useLiquidityProvidersQuery = () => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
-    [connectionUpdatedAt],
   );
 };
