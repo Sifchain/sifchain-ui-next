@@ -1,6 +1,7 @@
 import type { MarginOpenPositionsData } from "~/domains/margin/hooks";
 
 import clsx from "clsx";
+import { isNil } from "rambda";
 import { Decimal } from "@cosmjs/math";
 import {
   FlashMessageLoading,
@@ -20,6 +21,8 @@ import { useEnhancedTokenQuery, useMarginPositionSimulationQuery } from "~/domai
 import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 import { HtmlUnicode } from "./_trade";
 
+const isTruthy = (target: any) => !isNil(target);
+
 type ModalMTPCloseProps = {
   data: MarginOpenPositionsData;
   isOpen: boolean;
@@ -28,7 +31,6 @@ type ModalMTPCloseProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
-
 export function ModalMTPClose(props: ModalMTPCloseProps) {
   const currentCustodyAmount = props.data.current_custody_amount ?? "0";
 
@@ -163,7 +165,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Closing position",
-              props.data.unrealized_pnl ? (
+              isTruthy(props.data.unrealized_pnl) ? (
                 <>
                   {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
@@ -175,7 +177,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             details={[
               [
                 "Current swap rate",
-                props.data.unrealized_pnl ? (
+                isTruthy(props.data.unrealized_pnl) ? (
                   <>
                     1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
                     {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
@@ -187,7 +189,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Swap result",
-                props.data.unrealized_pnl ? (
+                isTruthy(props.data.unrealized_pnl) ? (
                   <>
                     {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
                     <TokenDisplaySymbol symbol={props.data.collateral_asset} />
@@ -198,7 +200,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Fees",
-                props.data.unrealized_pnl ? (
+                isTruthy(props.data.unrealized_pnl) ? (
                   <>
                     <HtmlUnicode name="MinusSign" />
                     {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
@@ -223,7 +225,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Resulting payment",
-              props.data.unrealized_pnl ? (
+              isTruthy(props.data.unrealized_pnl) ? (
                 <>
                   {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
@@ -243,7 +245,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Estimated PnL",
-                props.data.unrealized_pnl ? (
+                isTruthy(props.data.unrealized_pnl) ? (
                   <div
                     key="estimated-pnl"
                     className={clsx({
@@ -261,6 +263,12 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             ]}
           />
         </section>
+        {isNil(props.data.unrealized_pnl) ? (
+          <FlashMessage className="mt-4 bg-yellow-100 text-center text-yellow-700">
+            Calculations are still in progress. You can close your trade as soon as your closing positions is defined.
+            Come back later.
+          </FlashMessage>
+        ) : null}
         {confirmClosePosition.isError ? (
           <FlashMessage className="relative mt-4 bg-red-200 text-red-800">
             <b className="mr-1">Failed to close position:</b>
@@ -270,7 +278,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
         {confirmClosePosition.isLoading ? (
           <p className="mt-4 rounded bg-indigo-200 py-3 px-4 text-center text-indigo-800">Closing position...</p>
         ) : (
-          <Button variant="primary" as="button" size="md" className="mt-4 w-full rounded" onClick={onClickConfirmClose}>
+          <Button
+            variant="primary"
+            as="button"
+            size="md"
+            className="disalbed:opacity-50 mt-4 w-full rounded"
+            onClick={isTruthy(props.data.unrealized_pnl) ? onClickConfirmClose : undefined}
+            disabled={isNil(props.data.unrealized_pnl)}
+          >
             Close trade
           </Button>
         )}
