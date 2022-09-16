@@ -163,34 +163,50 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Closing position",
-              <>
-                {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
-                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-              </>,
+              props.data.unrealized_pnl ? (
+                <>
+                  {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>
+              ) : (
+                <HtmlUnicode name="EmDash" />
+              ),
             ]}
             details={[
               [
                 "Current swap rate",
-                <>
-                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
-                  {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>,
+                props.data.unrealized_pnl ? (
+                  <>
+                    1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
+                    {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
+                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                  </>
+                ) : (
+                  <HtmlUnicode name="EmDash" />
+                ),
               ],
               [
                 "Swap result",
-                <>
-                  {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>,
+                props.data.unrealized_pnl ? (
+                  <>
+                    {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
+                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                  </>
+                ) : (
+                  <HtmlUnicode name="EmDash" />
+                ),
               ],
               [
                 "Fees",
-                <>
-                  <HtmlUnicode name="MinusSign" />
-                  {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>,
+                props.data.unrealized_pnl ? (
+                  <>
+                    <HtmlUnicode name="MinusSign" />
+                    {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
+                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                  </>
+                ) : (
+                  <HtmlUnicode name="EmDash" />
+                ),
               ],
             ]}
           />
@@ -207,10 +223,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Resulting payment",
-              <>
-                {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
-                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-              </>,
+              props.data.unrealized_pnl ? (
+                <>
+                  {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>
+              ) : (
+                <HtmlUnicode name="EmDash" />
+              ),
             ]}
             details={[
               [
@@ -223,16 +243,20 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Estimated PnL",
-                <div
-                  key="estimated-pnl"
-                  className={clsx({
-                    "text-green-400": tradePnlSign === 1,
-                    "text-red-400": tradePnlSign === -1,
-                  })}
-                >
-                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
-                  {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </div>,
+                props.data.unrealized_pnl ? (
+                  <div
+                    key="estimated-pnl"
+                    className={clsx({
+                      "text-green-400": tradePnlSign === 1,
+                      "text-red-400": tradePnlSign === -1,
+                    })}
+                  >
+                    {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
+                    {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                  </div>
+                ) : (
+                  <HtmlUnicode name="EmDash" />
+                ),
               ],
             ]}
           />
