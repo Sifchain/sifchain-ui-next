@@ -1,9 +1,9 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
 import { invariant } from "@sifchain/ui";
+import { useQuery } from "@tanstack/react-query";
 import type { Signer } from "ethers";
 import { useSigner } from "wagmi";
 import { useDexEnvKind } from "~/domains/core/envs";
-import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
 
 const useEvmSdk = () => {
   const environment = useDexEnvKind();
@@ -12,8 +12,8 @@ const useEvmSdk = () => {
     internal: { dataUpdatedAt: signerUpdatedAt },
   } = useSigner();
 
-  return useQueryWithNonQueryKeyDeps(
-    ["evm-sdk", environment],
+  return useQuery(
+    ["evm-sdk", environment, signerUpdatedAt],
     () => {
       invariant(signer !== undefined, "signer is required");
 
@@ -27,7 +27,6 @@ const useEvmSdk = () => {
       }
     },
     { enabled: signer !== undefined },
-    [signerUpdatedAt],
   );
 };
 
