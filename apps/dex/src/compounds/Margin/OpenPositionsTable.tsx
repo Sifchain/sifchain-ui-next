@@ -359,7 +359,9 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                           <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
                         </div>
                       ) : (
-                        <HtmlUnicode name="EmDash" />
+                        <div className="text-right">
+                          <HtmlUnicode name="EmDash" />
+                        </div>
                       )}
                     </td>
                     {hideColumns?.includes(HEADERS_TITLES.INTEREST_RATE) ? null : (
