@@ -266,7 +266,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
         {isNil(props.data.unrealized_pnl) ? (
           <FlashMessage className="mt-4 bg-yellow-100 text-center text-yellow-700">
             Calculations are still in progress. You can close your trade as soon as your closing positions is defined.
-            Come back later.
+            Close this pop-up and re-open.
           </FlashMessage>
         ) : null}
         {confirmClosePosition.isError ? (
