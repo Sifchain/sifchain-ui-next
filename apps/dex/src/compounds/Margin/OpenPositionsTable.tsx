@@ -299,7 +299,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                 // upnl = currentCustodyAmount * currentPrice - (openCollateralAmount + openLiabilities)
 
                 const currentPriceAsDecimal = Decimal.fromAtomics(
-                  item.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? ")",
+                  item.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
                   18,
                 );
 
