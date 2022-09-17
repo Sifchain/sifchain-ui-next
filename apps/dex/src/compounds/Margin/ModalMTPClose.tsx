@@ -166,50 +166,36 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Closing position",
-              isTruthy(props.data.unrealized_pnl) ? (
-                <>
-                  {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>
-              ) : (
-                <RacetrackSpinnerIcon />
-              ),
+
+              <>
+                {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+              </>,
             ]}
             details={[
               [
                 "Current swap rate",
-                isTruthy(props.data.unrealized_pnl) ? (
-                  <>
-                    1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
-                    {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
-                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                  </>
-                ) : (
-                  <RacetrackSpinnerIcon />
-                ),
+
+                <>
+                  1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
+                  {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
               ],
               [
                 "Swap result",
-                isTruthy(props.data.unrealized_pnl) ? (
-                  <>
-                    {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
-                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                  </>
-                ) : (
-                  <RacetrackSpinnerIcon />
-                ),
+                <>
+                  {formatNumberAsDecimal(swapResultAsDecimal.toFloatApproximation(), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
               ],
               [
                 "Fees",
-                isTruthy(props.data.unrealized_pnl) ? (
-                  <>
-                    <HtmlUnicode name="MinusSign" />
-                    {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
-                    <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                  </>
-                ) : (
-                  <RacetrackSpinnerIcon />
-                ),
+                <>
+                  <HtmlUnicode name="MinusSign" />
+                  {formatNumberAsDecimal(closingPositionFeeAsDecimal.toFloatApproximation(), 4)}{" "}
+                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </>,
               ],
             ]}
           />
@@ -226,14 +212,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Resulting payment",
-              isTruthy(props.data.unrealized_pnl) ? (
-                <>
-                  {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
-                  <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                </>
-              ) : (
-                <RacetrackSpinnerIcon />
-              ),
+              <>
+                {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
+                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+              </>,
             ]}
             details={[
               [
@@ -246,25 +228,21 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               ],
               [
                 "Estimated PnL",
-                isTruthy(props.data.unrealized_pnl) ? (
-                  <div
-                    key="estimated-pnl"
-                    className={clsx({
-                      "text-green-400": tradePnlSign === 1,
-                      "text-red-400": tradePnlSign === -1,
-                    })}
-                  >
-                    {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
-                    {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
-                  </div>
-                ) : (
-                  <RacetrackSpinnerIcon />
-                ),
+                <div
+                  key="estimated-pnl"
+                  className={clsx({
+                    "text-green-400": tradePnlSign === 1,
+                    "text-red-400": tradePnlSign === -1,
+                  })}
+                >
+                  {tradePnlSign === 1 ? <HtmlUnicode name="PlusSign" /> : <HtmlUnicode name="MinusSign" />}
+                  {formatNumberAsDecimal(tradePnlAbs, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                </div>,
               ],
             ]}
           />
         </section>
-        {isNil(props.data.unrealized_pnl) ? (
+        {isNil(tradePnlAbs) ? (
           <FlashMessage className="mt-4 bg-yellow-100 text-center text-yellow-700">
             Calculations are still in progress. You can close your trade as soon as your closing positions is defined.
             Close this pop-up and re-open.
@@ -284,8 +262,8 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             as="button"
             size="md"
             className="disalbed:opacity-50 mt-4 w-full rounded"
-            onClick={isTruthy(props.data.unrealized_pnl) ? onClickConfirmClose : undefined}
-            disabled={isNil(props.data.unrealized_pnl)}
+            onClick={isTruthy(tradePnlAbs) ? onClickConfirmClose : undefined}
+            disabled={isNil(tradePnlAbs)}
           >
             Close trade
           </Button>
