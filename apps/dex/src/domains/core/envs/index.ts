@@ -21,6 +21,11 @@ export function useDexEnvKind(): NetworkEnv {
       setCookie("sif_dex_env", envKind);
       setResolvedEnv(envKind as NetworkEnv);
     }
+    if (envKind) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("_env");
+      window.history.replaceState({}, document.title, url.toString());
+    }
   }, [setCookie, sif_dex_env]);
 
   return useMemo(() => {
@@ -31,9 +36,19 @@ export function useDexEnvKind(): NetworkEnv {
 export function useDexEnvironment() {
   const environment = useDexEnvKind();
 
-  return useQuery(["dex_env", environment], async () => getSdkConfig({ environment }), {
-    staleTime: 3600_000,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  return useQuery(
+    ["dex_env", environment],
+    async () => {
+      const config = await getSdkConfig({ environment });
+      return {
+        kind: environment,
+        ...config,
+      };
+    },
+    {
+      staleTime: 3600_000,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  );
 }
