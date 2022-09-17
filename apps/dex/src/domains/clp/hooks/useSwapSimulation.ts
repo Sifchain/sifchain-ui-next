@@ -83,8 +83,20 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
     ],
   );
 
+  const fromPoolBalance = fromToken?.pool?.externalAssetBalance ?? "0";
+  const toPoolBalance = toToken?.pool?.nativeAssetBalance ?? "0";
+
   const derivedQuery = useQuery(
-    ["margin-position-simulation", fromDenom, toDenom, fromAmount, leverage, swapFeeRateResult],
+    [
+      "margin-position-simulation",
+      fromDenom,
+      toDenom,
+      fromAmount,
+      leverage,
+      swapFeeRateResult,
+      fromPoolBalance,
+      toPoolBalance,
+    ],
     compute.bind(null, undefined, undefined),
     {
       enabled: Boolean(fromToken && toToken && pmtpParams && swapFeeRateResult),
