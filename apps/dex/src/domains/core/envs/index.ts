@@ -2,7 +2,6 @@ import { getSdkConfig, NetworkEnv, NETWORK_ENVS } from "@sifchain/common";
 import { useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { useFeatureFlag } from "~/lib/featureFlags";
 
 export type DexEnvironment = {
   kind: NetworkEnv;
@@ -15,8 +14,6 @@ export function useDexEnvKind(): NetworkEnv {
   const [{ sif_dex_env }, setCookie] = useCookies(["sif_dex_env"]);
   const [resolvedEnv, setResolvedEnv] = useState<NetworkEnv | null>(null);
 
-  const isMarginStandAloneOn = useFeatureFlag("margin-standalone");
-
   useEffect(() => {
     const queryString = new URLSearchParams(window.location.search);
     const envKind = queryString.get("_env");
@@ -27,11 +24,8 @@ export function useDexEnvKind(): NetworkEnv {
   }, [setCookie, sif_dex_env]);
 
   return useMemo(() => {
-    if (isMarginStandAloneOn) {
-      return "testnet";
-    }
     return resolvedEnv ?? sif_dex_env ?? "mainnet";
-  }, [resolvedEnv, sif_dex_env, isMarginStandAloneOn]);
+  }, [resolvedEnv, sif_dex_env]);
 }
 
 export function useDexEnvironment() {
