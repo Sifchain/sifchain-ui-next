@@ -41,6 +41,8 @@ import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 import { TooltipInterestPaid, TooltipLiquidationRatio, TooltipNpv } from "./tooltips";
+import { useEnhancedPoolQuery } from "~/domains/clp";
+import { Decimal } from "@cosmjs/math";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -105,6 +107,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
+
+  const poolSymbol = String(router.query["pool"]);
+
+  const { data: pool } = useEnhancedPoolQuery(poolSymbol);
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
@@ -290,10 +296,26 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                   );
                 }
 
+                // upnl = currentCustodyAmount * currentPrice - (openCollateralAmount + openLiabilities)
+
+                const currentPriceAsDecimal = Decimal.fromAtomics(
+                  item.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? ")",
+                  18,
+                );
+
+                const currentPriceAsNumber = currentPriceAsDecimal.toFloatApproximation();
+
+                const currentPositionAsNumber = Number(item.currentCustodyAmount ?? item.openCustodyAmount);
+
+                const openCollateralAmount = Number(item.collateral_amount);
+                const openLiabilities = Number(item.liabilities);
+
                 const custodyAmount = Number(item.custody_amount ?? "0");
                 const currentInterestPaidCustody = Number(item.current_interest_paid_custody ?? "0");
 
-                const unrealizedPnl = Number(item.unrealized_pnl ?? "0");
+                const unrealizedPnl =
+                  currentPositionAsNumber * currentPriceAsNumber - (openCollateralAmount + openLiabilities);
+
                 const unrealizedPLSign = Math.sign(unrealizedPnl);
 
                 return (
@@ -345,7 +367,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isTruthy(item.unrealized_pnl) && Number.isNaN(unrealizedPnl) === false ? (
+                      {isTruthy(unrealizedPnl) && Number.isNaN(unrealizedPnl) === false ? (
                         <div
                           className={clsx("flex flex-row items-center justify-end tabular-nums", {
                             "text-green-400": unrealizedPLSign === 1 && unrealizedPnl > 0,
