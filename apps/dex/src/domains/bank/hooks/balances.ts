@@ -9,6 +9,7 @@ import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 
 type Balance = {
   amount?: Decimal;
@@ -22,8 +23,8 @@ export const useBalanceQuery = (chainId: string, denom: string, options: { enabl
   const { indexedByDenom } = useTokenRegistryQuery();
   const token = indexedByDenom[denom];
 
-  return useQuery(
-    ["cosm-balance", chainId, denom, connectionUpdatedAt],
+  return useQueryWithNonQueryKeyDeps(
+    ["cosm-balance", chainId, denom],
     async () => {
       const result = await client?.getBalance(accounts?.[0]?.address ?? "", denom);
 
@@ -37,6 +38,7 @@ export const useBalanceQuery = (chainId: string, denom: string, options: { enabl
     {
       enabled: options.enabled && client !== undefined && (accounts?.length ?? 0) > 0 && token !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };
 
@@ -49,8 +51,8 @@ export function useAllBalancesQuery() {
   const { data: stargateClient } = useSifStargateClient();
   const { data: registry, indexedByDenom, isSuccess: isTokenRegistryQuerySuccess } = useTokenRegistryQuery();
 
-  const baseQuery = useQuery(
-    ["all-balances", signer, connectionUpdatedAt],
+  const baseQuery = useQueryWithNonQueryKeyDeps(
+    ["all-balances", signer],
     async (): Promise<Balance[]> => {
       const accounts = await signer?.getAccounts();
       const balances = await stargateClient?.getAllBalances(accounts?.[0]?.address ?? "");
@@ -69,6 +71,7 @@ export function useAllBalancesQuery() {
       staleTime: 60000, // 1 minute
       enabled: signer !== undefined && stargateClient !== undefined && isTokenRegistryQuerySuccess,
     },
+    [connectionUpdatedAt],
   );
 
   const indices = useMemo(() => {

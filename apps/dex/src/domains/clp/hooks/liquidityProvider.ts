@@ -8,6 +8,7 @@ import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
 export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";
@@ -24,8 +25,8 @@ export const useLiquidityProviderQuery = (denom: string) => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQuery(
-    [LIQUIDITY_PROVIDER_QUERY_KEY, connectionUpdatedAt],
+  return useQueryWithNonQueryKeyDeps(
+    [LIQUIDITY_PROVIDER_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProvider({
@@ -69,6 +70,7 @@ export const useLiquidityProviderQuery = (denom: string) => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };
 
@@ -84,8 +86,8 @@ export const useLiquidityProvidersQuery = () => {
   const { data: blockTime } = useBlockTimeQuery();
   const { data: blockHeight } = useCurrentBlockHeight();
 
-  return useQuery(
-    [LIQUIDITY_PROVIDERS_QUERY_KEY, connectionUpdatedAt],
+  return useQueryWithNonQueryKeyDeps(
+    [LIQUIDITY_PROVIDERS_QUERY_KEY],
     async () => {
       const account = await signer?.getAccounts();
       const lpRes = await sifQueryClient?.clp.getLiquidityProviderData({
@@ -134,5 +136,6 @@ export const useLiquidityProvidersQuery = () => {
         blockTime !== undefined &&
         blockHeight !== undefined,
     },
+    [connectionUpdatedAt],
   );
 };

@@ -2,6 +2,7 @@ import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
 import { SifSigningStargateClient } from "@sifchain/stargate";
 import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
+import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
 
 export const useSifStargateClient = () => {
   const { data: env } = useDexEnvironment();
@@ -18,9 +19,10 @@ export const useSifSigningStargateClient = () => {
   });
   const connectionUpdatedAt = useConnectionUpdatedAt();
 
-  return useQuery(
-    ["sif-signing-stargate-client", connectionUpdatedAt],
+  return useQueryWithNonQueryKeyDeps(
+    ["sif-signing-stargate-client"],
     () => SifSigningStargateClient.connectWithSigner(env?.sifRpcUrl ?? "", signer!),
     { enabled: signer !== undefined && env !== undefined },
+    [connectionUpdatedAt],
   );
 };
