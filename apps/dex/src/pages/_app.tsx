@@ -8,6 +8,7 @@ import { CookiesProvider } from "react-cookie";
 import MainLayout from "~/layouts/MainLayout";
 import { CosmConnectProvider } from "~/lib/cosmConnect";
 import { WagmiProvider } from "~/lib/wagmi";
+import EnvSwitcher from "~/compounds/EnvSwticher/EnvSwitcher";
 import "~/styles/globals.css";
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
@@ -28,6 +29,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
             <Component {...pageProps} />
           </MainLayout>
           {/* <ReactQueryDevtools position="bottom-right" /> */}
+          <EnvSwitcher />
         </QueryClientProvider>
       </CookiesProvider>
     </ComposeProviders>
