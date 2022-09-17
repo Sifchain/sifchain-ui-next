@@ -1,13 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { useConnectionUpdatedAt, useSigner } from "@sifchain/cosmos-connect";
+import { useQuery } from "@tanstack/react-query";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useCurrentBlockHeight from "~/hooks/useCurrentBlockHeight";
 import useQueryClient from "~/hooks/useQueryClient";
-import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { getLiquidityUnlockStatus } from "../utils/liquidityUnlock";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 
 export const LIQUIDITY_PROVIDER_QUERY_KEY = "liquidity-provider";
 export const LIQUIDITY_PROVIDERS_QUERY_KEY = "liquidity-providers";

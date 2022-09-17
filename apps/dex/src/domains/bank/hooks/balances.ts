@@ -8,8 +8,8 @@ import { useMemo } from "react";
 import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
+import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
 
 type Balance = {
   amount?: Decimal;
