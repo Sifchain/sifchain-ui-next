@@ -11,7 +11,6 @@ import {
   Modal,
   FlashMessage5xxError,
   FlashMessage,
-  RacetrackSpinnerIcon,
 } from "@sifchain/ui";
 import { SyntheticEvent, useCallback } from "react";
 import Long from "long";
