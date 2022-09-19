@@ -26,7 +26,7 @@ export function FlashMessageAccountNotWhitelisted({ className }: { className?: s
   const styles = "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
   return (
     <div className={clsx(styles, className)} role="alert">
-      <span>Sorry! Your account has not yet been approved for margin trading yet.</span>
+      <span>Sorry! Your account has not yet been approved for margin trading.</span>
     </div>
   );
 }
