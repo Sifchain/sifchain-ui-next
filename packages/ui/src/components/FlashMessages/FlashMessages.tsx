@@ -1,9 +1,7 @@
 import type { PropsWithChildren } from "react";
-
 import clsx from "clsx";
 
 import { RacetrackSpinnerIcon } from "../icons";
-import { ExternalLink } from "../ExternalLink";
 
 export function FlashMessage({
   size,
@@ -28,15 +26,7 @@ export function FlashMessageAccountNotWhitelisted({ className }: { className?: s
   const styles = "rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700";
   return (
     <div className={clsx(styles, className)} role="alert">
-      <span>Sorry! Your account has not yet been approved for margin trading.</span>
-      <span>&nbsp;You can&nbsp;</span>
-      <ExternalLink
-        href="https://forms.gle/98dcDheRQ1deDbb36"
-        className="font-semibold text-blue-600 underline hover:text-blue-400"
-      >
-        sign up here for Margin Trading v1.0: The Long Game
-      </ExternalLink>
-      <span>.</span>
+      <span>Sorry! Your account has not yet been approved for margin trading yet.</span>
     </div>
   );
 }
