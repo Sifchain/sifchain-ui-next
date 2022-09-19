@@ -1,18 +1,22 @@
 import type { NetworkEnv } from "@sifchain/common";
-import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import tw from "tailwind-styled-components";
 import { useDexEnvironment } from "~/domains/core/envs";
 
 const ENVS: NetworkEnv[] = ["mainnet", "testnet", "devnet", "localnet", "tempnet"];
 
 const ENV_CLASSNAMES: Record<NetworkEnv, string> = {
-  mainnet: "bg-green-500 text-white",
-  testnet: "bg-yellow-500 text-black",
-  devnet: "bg-red-500 text-white",
-  localnet: "bg-blue-500 text-white",
-  tempnet: "bg-purple-500 text-white",
+  mainnet: "ring-green-500/90 focus:ring-green-500/90 text-green-600",
+  testnet: "ring-yellow-500/90 focus:ring-yellow-500/90 text-yellow-600",
+  devnet: "ring-red-500/90 focus:ring-red-500/90 text-red-600",
+  localnet: "ring-blue-500/90 focus:ring-blue-500/90 text-blue-600",
+  tempnet: "ring-purple-500/90 focus:ring-purple-500/90 text-purple-600",
 };
+
+const Select = tw.select`
+  text-ring fixed bottom-1 right-1 z-50 appearance-none rounded border-none
+  bg-transparent p-4 pr-8 font-bold outline-none ring focus:ring cursor-pointer
+`;
 
 const EnvSwitcher = () => {
   const { data: env } = useDexEnvironment();
@@ -32,8 +36,8 @@ const EnvSwitcher = () => {
   }
 
   return (
-    <select
-      className={clsx("fixed bottom-0 right-0 z-50 rounded p-4 pr-8", ENV_CLASSNAMES[dexEnv])}
+    <Select
+      className={ENV_CLASSNAMES[dexEnv]}
       value={dexEnv}
       onChange={(e) => {
         if (e.target.value === dexEnv) return;
@@ -52,7 +56,7 @@ const EnvSwitcher = () => {
           {env}
         </option>
       ))}
-    </select>
+    </Select>
   );
 };
 
