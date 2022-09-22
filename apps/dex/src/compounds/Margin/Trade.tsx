@@ -1,6 +1,6 @@
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
-import type { ChangeEvent, SyntheticEvent } from "react";
+import { ChangeEvent, SyntheticEvent, useEffect } from "react";
 
 import { Decimal } from "@cosmjs/math";
 import {
@@ -450,6 +450,35 @@ const Trade = (props: TradeProps) => {
     },
     [calculatePosition, inputCollateral.value, maxLeverageDecimal],
   );
+
+  const { isCollateralValid, minimumCollateral } = useMemo(() => {
+    console.log({
+      computedBorrowAmount,
+      decimals: selectedCollateral.decimals,
+    });
+
+    const borrowedAmountWithDecimals = computedBorrowAmount * 10 ** selectedCollateral.decimals;
+
+    const interestMinAsNumber = Decimal.fromAtomics(props.govParams.interestRateMin, 18).toFloatApproximation();
+
+    const target = borrowedAmountWithDecimals * interestMinAsNumber;
+
+    const isValid = Math.floor(target) > 0;
+    // minimumCollateral = (1/((leverage-1)*interestMin))/10^decimals
+    const minimumCollateral =
+      1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / 10 ** selectedCollateral.decimals;
+
+    return { isCollateralValid: isValid, minimumCollateral };
+  }, [computedBorrowAmount, selectedCollateral.decimals, props.govParams.interestRateMin, inputLeverage.value]);
+
+  useEffect(() => {
+    if (!isCollateralValid) {
+      setInputCollateral({
+        value: inputCollateral.value,
+        error: `Minimum collateral is ${minimumCollateral}`,
+      });
+    }
+  }, [inputCollateral.value, isCollateralValid, minimumCollateral]);
 
   /**
    * ********************************************************************************************
