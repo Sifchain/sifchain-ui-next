@@ -1,6 +1,6 @@
 import type { IAsset } from "@sifchain/common";
 import type { NextPage } from "next";
-import type { ChangeEvent, SyntheticEvent } from "react";
+import { ChangeEvent, SyntheticEvent, useEffect } from "react";
 
 import { Decimal } from "@cosmjs/math";
 import {
@@ -450,6 +450,30 @@ const Trade = (props: TradeProps) => {
     },
     [calculatePosition, inputCollateral.value, maxLeverageDecimal],
   );
+
+  const minimumCollateral = useMemo(() => {
+    const interestMinAsNumber = Decimal.fromAtomics(
+      props.govParams.interestRateMin,
+      ROWAN.decimals,
+    ).toFloatApproximation();
+
+    const collateralDecimalsFactor = 10 ** selectedCollateral.decimals;
+
+    const minimumCollateral = 1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / collateralDecimalsFactor;
+
+    return minimumCollateral;
+  }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals]);
+
+  const isCollateralValid = !inputCollateral.value || Number(inputCollateral.value) >= minimumCollateral;
+
+  useEffect(() => {
+    if (!isCollateralValid) {
+      setInputCollateral({
+        value: inputCollateral.value,
+        error: `Minimum collateral is ${formatNumberAsDecimal(minimumCollateral, 12)}`,
+      });
+    }
+  }, [inputCollateral.value, isCollateralValid, minimumCollateral]);
 
   /**
    * ********************************************************************************************
