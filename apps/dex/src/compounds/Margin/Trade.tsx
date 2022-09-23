@@ -451,22 +451,20 @@ const Trade = (props: TradeProps) => {
     [calculatePosition, inputCollateral.value, maxLeverageDecimal],
   );
 
-  const { isCollateralValid, minimumCollateral } = useMemo(() => {
+  const minimumCollateral = useMemo(() => {
     const interestMinAsNumber = Decimal.fromAtomics(
       props.govParams.interestRateMin,
       ROWAN.decimals,
     ).toFloatApproximation();
 
-    const minimumCollateral =
-      1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / 10 ** selectedCollateral.decimals;
+    const collateralDecimalsFactor = 10 ** selectedCollateral.decimals;
 
-    const isCollateralValid = Number(inputCollateral.value) >= minimumCollateral;
+    const minimumCollateral = 1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / collateralDecimalsFactor;
 
-    return {
-      isCollateralValid,
-      minimumCollateral,
-    };
-  }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals, inputCollateral.value]);
+    return minimumCollateral;
+  }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals]);
+
+  const isCollateralValid = !inputCollateral.value || Number(inputCollateral.value) >= minimumCollateral;
 
   useEffect(() => {
     if (!isCollateralValid) {
