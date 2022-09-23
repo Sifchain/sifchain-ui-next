@@ -84,14 +84,28 @@ export const createDefaultRegistry = () => {
 };
 
 export class SifSigningStargateClient extends SigningStargateClient {
-  // TODO: very dirty way of working around how
-  // StargateClient & SigningStargateClient inheritance was implemented
+  /**
+   * Create a stargate client with read-only capabilities
+   * @param endpoint
+   * @param options
+   * @returns
+   */
   static override async connect(endpoint: string | HttpEndpoint, options: StargateClientOptions = {}) {
     const tmClient = await Tendermint34Client.connect(endpoint);
+
+    // TODO: very dirty way of working around how
+    // StargateClient & SigningStargateClient inheritance was implemented
     return new this(tmClient, {} as OfflineSigner, options) as StargateClient &
       Pick<SifSigningStargateClient, "simulateSwap" | "simulateSwapSync">;
   }
 
+  /**
+   * Create a stargate client capable of signing transactions
+   * @param endpoint
+   * @param signer
+   * @param options
+   * @returns
+   */
   static override async connectWithSigner(
     endpoint: string | HttpEndpoint,
     signer: OfflineSigner,
@@ -101,6 +115,12 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return new this(tmClient, signer, options);
   }
 
+  /**
+   * Create a stargate client with no online functionalities
+   * @param signer
+   * @param options
+   * @returns
+   */
   static override offline(signer: OfflineSigner, options: SigningStargateClientOptions = {}) {
     return Promise.resolve(new this(undefined, signer, options));
   }
@@ -131,6 +151,15 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return super.simulate(signerAddress, messages, memo);
   }
 
+  /**
+   * Sign and Sifchain supported transactions
+   * @param signerAddress
+   * @param messages
+   * @param fee
+   * @param memo
+   * @param explicitSignerData
+   * @returns
+   */
   override sign(
     signerAddress: string,
     messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
@@ -141,6 +170,14 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return super.sign(signerAddress, messages, fee, memo, explicitSignerData);
   }
 
+  /**
+   *
+   * @param signerAddress Sign and broadcast Sifchain supported transactions
+   * @param messages
+   * @param fee
+   * @param memo
+   * @returns
+   */
   override signAndBroadcast(
     signerAddress: string,
     messages: readonly (SifEncodeObject | CosmosEncodeObject)[],
@@ -162,6 +199,18 @@ export class SifSigningStargateClient extends SigningStargateClient {
     return this.#sifQueryClient;
   }
 
+  /**
+   * Export IBC tokens to IBC compatible chain
+   * @param senderAddress
+   * @param recipientAddress
+   * @param transferAmount
+   * @param sourcePort
+   * @param timeoutHeight
+   * @param timeoutTimestamp
+   * @param fee
+   * @param memo
+   * @returns
+   */
   async exportIbcTokens(
     senderAddress: string,
     recipientAddress: string,
@@ -187,6 +236,19 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
+  /**
+   * Import IBC compatible tokens from IBC compatible chain
+   * @param counterPartySigningStargateClient
+   * @param senderAddress
+   * @param recipientAddress
+   * @param transferAmount
+   * @param sourcePort
+   * @param timeoutHeight
+   * @param timeoutTimestamp
+   * @param fee
+   * @param memo
+   * @returns
+   */
   async importIbcTokens(
     counterPartySigningStargateClient: SigningStargateClient,
     senderAddress: string,
@@ -213,6 +275,17 @@ export class SifSigningStargateClient extends SigningStargateClient {
     );
   }
 
+  /**
+   * Send tokens to Evm chain via Peggy bridge bank
+   * @param senderAddress
+   * @param recipientAddress
+   * @param transferAmount
+   * @param ethChainId
+   * @param ethFee
+   * @param fee
+   * @param memo
+   * @returns
+   */
   async sendTokensToEth(
     senderAddress: string,
     recipientAddress: string,
@@ -278,7 +351,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
   /**
    * asynchronous method for simulating swap
-   * if lots of swap simulations are required, use {@link simulateSwapSync} instead
+   * if lots of swap simulations are required,
+   * use {@link simulateSwapSync} instead
    * @param fromCoin
    * @param toCoin
    * @param slippage value between 0 and 1
@@ -484,7 +558,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   /**
-   * convert BigNumber to cosmjs Decimal to keep with cosmjs standard
+   * Convert BigNumber to cosmjs Decimal to keep with cosmjs standard
+   * @param result
+   * @param toCoinDenom
+   * @returns
    */
   async #parseSwapResult(
     result: {
