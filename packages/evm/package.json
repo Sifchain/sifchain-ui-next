@@ -7,6 +7,10 @@
     "import": "./build/module/index.js",
     "require": "./build/commonjs/index.js"
   },
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "readmeFile": "./README.md"
+  },
   "scripts": {
     "codegen": "rimraf src/eth-sdk/abis && rimraf src/generated && pnpm eth-sdk -p src/eth-sdk && npm pkg set private=true --json --prefix src/generated && pnpm prettier --write src/generated",
     "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module && cp -r src/generated build/module/generated && cp -r src/generated build/commonjs/generated",

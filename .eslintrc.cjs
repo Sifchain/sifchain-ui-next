@@ -25,6 +25,7 @@ module.exports = {
     ".turbo/",
     "dist/",
     "build/",
+    "packages/docs/",
     "packages/evm/src/generated/",
     "packages/proto-types/cosmos/",
     "packages/proto-types/gogoproto/",
