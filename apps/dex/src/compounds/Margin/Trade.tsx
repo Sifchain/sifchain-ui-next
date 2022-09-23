@@ -452,24 +452,21 @@ const Trade = (props: TradeProps) => {
   );
 
   const { isCollateralValid, minimumCollateral } = useMemo(() => {
-    console.log({
-      computedBorrowAmount,
-      decimals: selectedCollateral.decimals,
-    });
+    const interestMinAsNumber = Decimal.fromAtomics(
+      props.govParams.interestRateMin,
+      ROWAN.decimals,
+    ).toFloatApproximation();
 
-    const borrowedAmountWithDecimals = computedBorrowAmount * 10 ** selectedCollateral.decimals;
-
-    const interestMinAsNumber = Decimal.fromAtomics(props.govParams.interestRateMin, 18).toFloatApproximation();
-
-    const target = borrowedAmountWithDecimals * interestMinAsNumber;
-
-    const isValid = Math.floor(target) > 0;
-    // minimumCollateral = (1/((leverage-1)*interestMin))/10^decimals
     const minimumCollateral =
       1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / 10 ** selectedCollateral.decimals;
 
-    return { isCollateralValid: isValid, minimumCollateral };
-  }, [computedBorrowAmount, selectedCollateral.decimals, props.govParams.interestRateMin, inputLeverage.value]);
+    const isCollateralValid = Number(inputCollateral.value) >= minimumCollateral;
+
+    return {
+      isCollateralValid,
+      minimumCollateral,
+    };
+  }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals, inputCollateral.value]);
 
   useEffect(() => {
     if (!isCollateralValid) {
