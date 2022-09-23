@@ -470,7 +470,7 @@ const Trade = (props: TradeProps) => {
     if (!isCollateralValid) {
       setInputCollateral({
         value: inputCollateral.value,
-        error: `Minimum collateral is ${minimumCollateral}`,
+        error: `Minimum collateral is ${formatNumberAsDecimal(minimumCollateral, 12)}`,
       });
     }
   }, [inputCollateral.value, isCollateralValid, minimumCollateral]);
