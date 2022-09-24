@@ -16,7 +16,7 @@ import * as url from "url";
 import * as isomorphicFetch from "isomorphic-fetch";
 import { Configuration } from "./configuration";
 
-const BASE_PATH = "https://data.sifchain.finance/beta".replace(/\/+$/, "");
+const BASE_PATH = "http://65.109.54.24:8080/beta".replace(/\/+$/, "");
 
 /**
  *
