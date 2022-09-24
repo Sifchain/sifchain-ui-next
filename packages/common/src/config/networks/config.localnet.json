@@ -5,7 +5,7 @@
   "sifRpcUrl": "http://localhost:3000/api/sifchain-local/rpc",
   "web3Provider": "metamask",
   "nativeAsset": "rowan",
-  "vanirUrl": "https://data.sifchain.finance/beta",
+  "vanirUrl": "http://dataservices.staging.sifchain.finance:8080/beta",
   "registryUrl": "https://registry.sifchain.network",
   "blockExplorerUrl": "https://blockexplorer.sifchain.finance",
   "bridgebankContractAddress": "0x30753E4A8aad7F8597332E813735Def5dD395028",
