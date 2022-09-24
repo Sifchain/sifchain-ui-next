@@ -4,7 +4,7 @@ info:
   version: 0.0.5
 servers:
   # Added by API Auto Mocking Plugin
-  - url: http://dataservices.staging.sifchain.finance:8080/beta
+  - url: https://data.sifchain.finance/beta
     description: AWS API Gateway
 
 tags:
