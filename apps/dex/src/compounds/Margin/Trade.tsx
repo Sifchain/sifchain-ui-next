@@ -398,7 +398,7 @@ const Trade = (props: TradeProps) => {
 
           setInputCollateral({
             value: payload.value,
-            error: "Collateral amount is too small",
+            error: "Collateral amount is still too small. Please enter a larger number.",
           });
         } else {
           setInputCollateral(payload);
