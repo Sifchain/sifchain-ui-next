@@ -388,9 +388,22 @@ const Trade = (props: TradeProps) => {
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
         const payload = inputValidatorCollateral($target, collateralBalance);
-        setInputCollateral(payload);
 
         const positionSwap = calculatePosition(payload.value);
+
+        if (positionSwap.value === "0" && !payload.error) {
+          // if the resulting position value is 0 and the collateral value passes the input validations,
+          // then the collateral value is too small,
+          // this is an edge case and shouldn't happen with real positions
+
+          setInputCollateral({
+            value: payload.value,
+            error: "Collateral amount is still too small. Please enter a larger number.",
+          });
+        } else {
+          setInputCollateral(payload);
+        }
+
         setOpenPositionFee(positionSwap.fee);
         setInputPosition({
           value: positionSwap.value,
