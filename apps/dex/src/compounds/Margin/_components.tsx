@@ -57,19 +57,27 @@ export function PaginationShowItems({ limit, offset, total }: PaginationShowItem
 type PaginationButtonsProps = {
   pages: number;
   page: number;
+  maxButtons?: number;
   renderItem: (page: number) => React.ReactNode;
   renderFirst: () => React.ReactNode;
   renderLast: () => React.ReactNode;
 };
-export function PaginationButtons({ pages, page, renderItem, renderFirst, renderLast }: PaginationButtonsProps) {
-  const buttonsLimit = 3;
+
+export function PaginationButtons({
+  pages,
+  page,
+  renderItem,
+  renderFirst,
+  renderLast,
+  maxButtons = 3,
+}: PaginationButtonsProps) {
   const items = Array.from({ length: pages }, (_, index) => ++index);
-  const isAboveLimit = pages > buttonsLimit;
+  const isAboveLimit = pages > maxButtons;
 
   let head = page === 0 ? 0 : page - 1;
-  let tail = head + buttonsLimit;
+  let tail = head + maxButtons;
 
-  const isFirst = head + 2 >= buttonsLimit;
+  const isFirst = head + 2 >= maxButtons;
   const isLast = tail >= pages;
 
   if (tail - 1 === pages) {
@@ -78,16 +86,20 @@ export function PaginationButtons({ pages, page, renderItem, renderFirst, render
 
   const results = isAboveLimit ? items.slice(head, tail) : items;
   return (
-    <ul className="mx-4 flex flex-row place-items-center text-xs">
-      {isFirst ? <li className="mr-1 flex flex-1 flex-col">{renderFirst()}</li> : null}
-      {results.map((page) => {
-        return (
-          <li key={page} className="mx-1 flex flex-1 flex-col">
-            {renderItem(page)}
-          </li>
-        );
-      })}
-      {isAboveLimit && !isLast ? <li className="ml-1 flex flex-1 flex-col">{renderLast()}</li> : null}
+    <ul className="mx-4 flex items-center gap-2 text-xs">
+      {isFirst ? <li className="flex flex-1 flex-col">{renderFirst()}</li> : null}
+      {results.map((pageNumber) => (
+        <li
+          key={pageNumber}
+          className={clsx("flex flex-1 flex-col", {
+            "rounded border border-gray-400 bg-white/10": page === pageNumber - 1 || (isLast && pageNumber === pages),
+          })}
+        >
+          {renderItem(pageNumber)}
+        </li>
+      ))}
+      {pages > maxButtons && !isLast && <li>...</li>}
+      {isAboveLimit && !isLast ? <li className="flex flex-1 flex-col">{renderLast()}</li> : null}
     </ul>
   );
 }
