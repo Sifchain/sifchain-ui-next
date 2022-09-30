@@ -187,7 +187,8 @@ const Trade = (props: TradeProps) => {
       }
     }
 
-    return pools.find((pool) => pool.asset.denom === "cusdc");
+    // defaults to CUSDC with fallback to first pool in the list
+    return pools.find((pool) => pool.asset.denom === "cusdc") ?? pools[0];
   }, [pools, qsPool]);
 
   const openPositionsBySymbolQuery = useMarginOpenPositionsBySymbolQuery({
