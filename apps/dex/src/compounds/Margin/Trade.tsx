@@ -4,6 +4,7 @@ import { ChangeEvent, SyntheticEvent, useEffect } from "react";
 
 import { Decimal } from "@cosmjs/math";
 import {
+  ArrowDownIcon,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
@@ -35,6 +36,8 @@ import {
   useMarginParamsQuery,
 } from "~/domains/margin/hooks";
 import { TradeActions } from "./TradeActions";
+
+const FLIP_ASSETS_DISABLED = true;
 
 /**
  * ********************************************************************************************
@@ -676,12 +679,16 @@ const Trade = (props: TradeProps) => {
               <button
                 type="button"
                 onClick={onClickSwitch}
+                disabled={FLIP_ASSETS_DISABLED}
                 className={clsx(
-                  "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
+                  "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
+                  {
+                    "hover:scale-125": !FLIP_ASSETS_DISABLED,
+                  },
                 )}
               >
-                <SwapIcon />
+                {FLIP_ASSETS_DISABLED ? <ArrowDownIcon /> : <SwapIcon />}
               </button>
             </li>
             <li className="flex flex-col">
