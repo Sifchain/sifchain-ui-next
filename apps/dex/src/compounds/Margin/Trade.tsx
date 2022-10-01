@@ -616,7 +616,7 @@ const Trade = (props: TradeProps) => {
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
             safetyFactor={safetyFactor}
-            interestRate={`${formatNumberAsDecimal(Number(poolActive.stats.interestRate), 8)}%`}
+            interestRate={`${formatNumberAsDecimal(Number(poolActive.stats.interestRate) * 100, 8)}%`}
           />
         ) : (
           <div className="flex items-center justify-center rounded p-4 text-4xl">
