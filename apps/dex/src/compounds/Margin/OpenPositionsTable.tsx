@@ -44,6 +44,7 @@ import { NoResultsRow, PaginationContainer, PillUpdating } from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
+import { useEnhancedPoolQuery } from "~/domains/clp";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -164,7 +165,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <FlashMessageLoading size="full-page" />;
   }
   if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
-    const { findBySymbolOrDenom } = tokenRegistryQuery;
+    const { findBySymbolOrDenom, data: registry } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
 
     return (
@@ -317,20 +318,21 @@ type OpenPositionRowProps = {
 };
 
 function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hideColumns }: OpenPositionRowProps) {
-  const poolDenom = position.custody_asset === "rowan" ? position.collateral_asset : position.custody_asset;
+  const poolDenom = (position.custody_asset === "rowan" ? collateralAsset?.denom : custodyAsset?.denom) ?? "";
+
   const { data: poolData } = usePoolQuery(poolDenom);
 
   const pool = poolData?.pool;
 
   if (!custodyAsset || !collateralAsset || !pool) {
-    console.group("Open Positions Missing Custody or Collateral Asset Error");
-    console.log({ item: position });
-    console.groupEnd();
+    // console.group("Open Positions Missing Custody, Collateral asset or pool");
+    // console.log({ item: position });
+    // console.groupEnd();
     return (
       <tr>
-        {Array.from({ length: headers.length }, () => {
+        {Array.from({ length: headers.length }, (_, i) => {
           return (
-            <td className="px-4 py-3">
+            <td className="px-4 py-3" key={`col-${i}`}>
               <HtmlUnicode name="EmDash" />
             </td>
           );
