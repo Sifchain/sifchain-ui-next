@@ -1,8 +1,5 @@
-import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-import { ChangeEvent, SyntheticEvent, useEffect } from "react";
-
 import { Decimal } from "@cosmjs/math";
+import type { IAsset } from "@sifchain/common";
 import {
   ArrowDownIcon,
   FlashMessage,
@@ -16,9 +13,10 @@ import {
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
@@ -36,8 +34,6 @@ import {
   useMarginParamsQuery,
 } from "~/domains/margin/hooks";
 import { TradeActions } from "./TradeActions";
-
-const FLIP_ASSETS_DISABLED = true;
 
 /**
  * ********************************************************************************************
@@ -62,6 +58,8 @@ import {
   POSITION_MIN_VALUE,
   removeFirstCharsUC,
 } from "./_trade";
+
+const FLIP_ASSETS_DISABLED = true;
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
