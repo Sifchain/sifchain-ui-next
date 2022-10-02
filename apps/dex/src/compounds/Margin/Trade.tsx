@@ -1,8 +1,5 @@
-import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-import { ChangeEvent, SyntheticEvent, useEffect } from "react";
-
 import { Decimal } from "@cosmjs/math";
+import type { IAsset } from "@sifchain/common";
 import {
   ArrowDownIcon,
   FlashMessage,
@@ -16,9 +13,10 @@ import {
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
