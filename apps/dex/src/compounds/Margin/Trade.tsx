@@ -35,8 +35,6 @@ import {
 } from "~/domains/margin/hooks";
 import { TradeActions } from "./TradeActions";
 
-const FLIP_ASSETS_DISABLED = true;
-
 /**
  * ********************************************************************************************
  *
@@ -60,6 +58,8 @@ import {
   POSITION_MIN_VALUE,
   removeFirstCharsUC,
 } from "./_trade";
+
+const FLIP_ASSETS_DISABLED = true;
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
