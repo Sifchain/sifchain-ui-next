@@ -3,6 +3,8 @@ import { calculateSwapWithFee } from "@sifchain/math";
 import type { PoolRes } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import BigNumber from "bignumber.js";
 
+import { ROWAN } from "~/domains/assets";
+
 export type ClpPool = Pick<
   NonNullable<PoolRes["pool"]>,
   | "nativeAssetBalance"
@@ -71,7 +73,7 @@ export default class Pool {
   }
 
   extractValues(inputDenom: string) {
-    if (inputDenom === "rowan") {
+    if (inputDenom === ROWAN.symbol) {
       return {
         Y: this.externalAssetBalance,
         X: this.nativeAssetBalance,

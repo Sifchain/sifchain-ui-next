@@ -318,7 +318,7 @@ type OpenPositionRowProps = {
 };
 
 function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hideColumns }: OpenPositionRowProps) {
-  const poolDenom = (position.custody_asset === "rowan" ? collateralAsset?.denom : custodyAsset?.denom) ?? "";
+  const poolDenom = (position.custody_asset === ROWAN.symbol ? collateralAsset?.denom : custodyAsset?.denom) ?? "";
 
   const { data: poolData } = usePoolQuery(poolDenom);
 
@@ -342,7 +342,7 @@ function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hid
   }
 
   const currentPriceAsDecimal = Decimal.fromAtomics(
-    position.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
+    position.collateral_asset === ROWAN.symbol ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
     ROWAN.decimals,
   );
 
