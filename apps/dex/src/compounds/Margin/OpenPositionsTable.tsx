@@ -1,9 +1,4 @@
-import type {
-  MarginOpenPositionsData,
-  useMarginOpenPositionsBySymbolQuery,
-  useMarginOpenPositionsQuery,
-} from "~/domains/margin/hooks";
-
+import { Decimal } from "@cosmjs/math";
 import {
   Button,
   ChevronDownIcon,
@@ -21,6 +16,11 @@ import { isNil } from "rambda";
 import { MouseEventHandler, useCallback, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
+import type {
+  MarginOpenPositionsData,
+  useMarginOpenPositionsBySymbolQuery,
+  useMarginOpenPositionsQuery,
+} from "~/domains/margin/hooks";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { ModalMTPClose } from "./ModalMTPClose";
@@ -36,13 +36,15 @@ import { ModalMTPClose } from "./ModalMTPClose";
  * ********************************************************************************************
  */
 
+import { usePoolQuery } from "~/domains/clp/hooks/usePool";
+import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import { ROWAN } from "~/domains/assets";
+import { TooltipInterestPaid, TooltipLiquidationRatio, TooltipNpv } from "./tooltips";
 import { NoResultsRow, PaginationContainer, PillUpdating } from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
 import { findNextOrderAndSortBy, SORT_BY } from "./_tables";
 import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
-import { TooltipInterestPaid, TooltipLiquidationRatio, TooltipNpv } from "./tooltips";
 import { useEnhancedPoolQuery } from "~/domains/clp";
-import { Decimal } from "@cosmjs/math";
 
 const isTruthy = (target: any) => !isNil(target);
 
@@ -99,6 +101,7 @@ export type OpenPositionsTableProps = {
   classNamePaginationContainer?: string;
   hideColumns?: HideColsUnion[];
 };
+
 const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   const router = useRouter();
   const tokenRegistryQuery = useTokenRegistryQuery();
@@ -107,10 +110,6 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
 
   const { hideColumns, classNamePaginationContainer } = props;
   const headers = OPEN_POSITIONS_HEADER_ITEMS;
-
-  const poolSymbol = String(router.query["pool"]);
-
-  const { data: pool } = useEnhancedPoolQuery(poolSymbol);
 
   const [positionToClose, setPositionToClose] = useState<{
     isOpen: boolean;
@@ -166,7 +165,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     return <FlashMessageLoading size="full-page" />;
   }
   if (openPositionsQuery.isSuccess && tokenRegistryQuery.isSuccess && walletAddressQuery.isSuccess) {
-    const { findBySymbolOrDenom } = tokenRegistryQuery;
+    const { findBySymbolOrDenom, data: registry } = tokenRegistryQuery;
     const { results, pagination } = openPositionsQuery.data;
 
     return (
@@ -269,176 +268,16 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
             </thead>
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((x) => {
-                const item = x as MarginOpenPositionsData;
-
-                let custodyAsset;
-                let collateralAsset;
-                try {
-                  custodyAsset = findBySymbolOrDenom(item.custody_asset);
-                  collateralAsset = findBySymbolOrDenom(item.collateral_asset);
-                } catch (err) {}
-
-                if (!custodyAsset || !collateralAsset) {
-                  console.group("Open Positions Missing Custody or Collateral Asset Error");
-                  console.log({ item: x });
-                  console.groupEnd();
-                  return (
-                    <tr>
-                      {Array.from({ length: headers.length }, () => {
-                        return (
-                          <td className="px-4 py-3">
-                            <HtmlUnicode name="EmDash" />
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                }
-
-                // upnl = currentCustodyAmount * currentPrice - (openCollateralAmount + openLiabilities)
-
-                const currentPriceAsDecimal = Decimal.fromAtomics(
-                  item.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
-                  18,
-                );
-
-                const currentPriceAsNumber = currentPriceAsDecimal.toFloatApproximation();
-
-                const currentPositionAsNumber = Number(item.currentCustodyAmount ?? item.openCustodyAmount);
-
-                const openCollateralAmount = Number(item.collateral_amount);
-                const openLiabilities = Number(item.liabilities);
-
-                const custodyAmount = Number(item.custody_amount ?? "0");
-                const currentInterestPaidCustody = Number(item.current_interest_paid_custody ?? "0");
-
-                const unrealizedPnl =
-                  currentPositionAsNumber * currentPriceAsNumber - (openCollateralAmount + openLiabilities);
-
-                const unrealizedPLSign = Math.sign(unrealizedPnl);
-
-                return (
-                  <tr
-                    key={item.id}
-                    data-testid={item.id}
-                    className={clsx({
-                      "italic text-gray-300": item._optimistic,
-                    })}
-                  >
-                    <td className="px-4 py-3">
-                      {isTruthy(item.date_opened) ? (
-                        formatDateISO(new Date(item.date_opened))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    {hideColumns?.includes(HEADERS_TITLES.POOL) ? null : (
-                      <td className="px-4 py-3">
-                        {isTruthy(item.pool) ? (
-                          removeFirstCharsUC(item.pool).toUpperCase()
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </td>
-                    )}
-                    <td className="px-4 py-3">
-                      {isTruthy(item.position) ? item.position : <HtmlUnicode name="EmDash" />}
-                    </td>
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {isTruthy(item.custody_amount) ? (
-                        formatNumberAsDecimal(custodyAmount, 4)
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      {isTruthy(item.custody_asset) ? (
-                        removeFirstCharsUC(item.custody_asset.toUpperCase())
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {isTruthy(item.leverage) ? (
-                        `${formatNumberAsDecimal(Number(item.leverage))}x`
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      {isTruthy(unrealizedPnl) && Number.isNaN(unrealizedPnl) === false ? (
-                        <div
-                          className={clsx("flex flex-row items-center justify-end tabular-nums", {
-                            "text-green-400": unrealizedPLSign === 1 && unrealizedPnl > 0,
-                            "text-red-400": unrealizedPLSign === -1 && unrealizedPnl < 0,
-                          })}
-                        >
-                          <span className="mr-1">
-                            {unrealizedPLSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
-                            {formatNumberAsDecimal(unrealizedPnl, 6)}
-                          </span>
-                          <AssetIcon symbol={item.collateral_asset} network="sifchain" size="sm" />
-                        </div>
-                      ) : (
-                        <div className="text-right">
-                          <HtmlUnicode name="EmDash" />
-                        </div>
-                      )}
-                    </td>
-                    {hideColumns?.includes(HEADERS_TITLES.INTEREST_RATE) ? null : (
-                      <td className="px-4 py-3 text-right tabular-nums">
-                        {isTruthy(item.interest_rate) ? (
-                          `${formatNumberAsDecimal(Number(item.interest_rate), 8)}%`
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </td>
-                    )}
-                    {hideColumns?.includes(HEADERS_TITLES.PAID_INTEREST) ? null : (
-                      <td className="px-4 py-3">
-                        {isTruthy(currentInterestPaidCustody) ? (
-                          <div className="flex flex-row items-center justify-end tabular-nums">
-                            <span className="mr-1">
-                              {formatNumberAsDecimal(currentInterestPaidCustody, 6) ?? <HtmlUnicode name="EmDash" />}
-                            </span>
-                            <AssetIcon symbol={item.custody_asset} network="sifchain" size="sm" />
-                          </div>
-                        ) : (
-                          <HtmlUnicode name="EmDash" />
-                        )}
-                      </td>
-                    )}
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {isTruthy(item.current_health) ? (
-                        formatNumberAsDecimal(Number(item.current_health), 4)
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      {isTruthy(item.date_opened) ? (
-                        createDurationLabel(formatIntervalToDuration(new Date(item.date_opened), new Date()))
-                      ) : (
-                        <HtmlUnicode name="EmDash" />
-                      )}
-                    </td>
-                    <td className="px-4">
-                      {isTruthy(item._optimistic) ? null : (
-                        <Button
-                          variant="secondary"
-                          as="button"
-                          size="xs"
-                          className="rounded font-normal"
-                          data-id={item.id}
-                        >
-                          Close
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+              {results.map((x) => (
+                <OpenPositionRow
+                  key={x.id}
+                  position={x}
+                  custodyAsset={findBySymbolOrDenom(x.custody_asset)}
+                  collateralAsset={findBySymbolOrDenom(x.collateral_asset)}
+                  headers={headers}
+                  hideColumns={hideColumns}
+                />
+              ))}
             </tbody>
           </table>
         </div>
@@ -469,5 +308,158 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
   console.groupEnd();
   return <FlashMessage5xxError size="full-page" />;
 };
+
+type OpenPositionRowProps = {
+  position: MarginOpenPositionsData;
+  custodyAsset?: EnhancedRegistryAsset;
+  collateralAsset?: EnhancedRegistryAsset;
+  headers: typeof OPEN_POSITIONS_HEADER_ITEMS;
+  hideColumns?: string[];
+};
+
+function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hideColumns }: OpenPositionRowProps) {
+  const poolDenom = (position.custody_asset === "rowan" ? collateralAsset?.denom : custodyAsset?.denom) ?? "";
+
+  const { data: poolData } = usePoolQuery(poolDenom);
+
+  const pool = poolData?.pool;
+
+  if (!custodyAsset || !collateralAsset || !pool) {
+    // console.group("Open Positions Missing Custody, Collateral asset or pool");
+    // console.log({ item: position });
+    // console.groupEnd();
+    return (
+      <tr>
+        {Array.from({ length: headers.length }, (_, i) => {
+          return (
+            <td className="px-4 py-3" key={`col-${i}`}>
+              <HtmlUnicode name="EmDash" />
+            </td>
+          );
+        })}
+      </tr>
+    );
+  }
+
+  const currentPriceAsDecimal = Decimal.fromAtomics(
+    position.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
+    ROWAN.decimals,
+  );
+
+  const currentPriceAsNumber = currentPriceAsDecimal.toFloatApproximation();
+
+  const currentPositionAsNumber = Number(position.currentCustodyAmount ?? position.openCustodyAmount);
+
+  const openCollateralAmount = Number(position.collateral_amount);
+  const openLiabilities = Number(position.liabilities);
+
+  const custodyAmount = Number(position.custody_amount ?? "0");
+  const currentInterestPaidCustody = Number(position.current_interest_paid_custody ?? "0");
+
+  const unrealizedPnl = currentPositionAsNumber * currentPriceAsNumber - (openCollateralAmount + openLiabilities);
+
+  const unrealizedPLSign = Math.sign(unrealizedPnl);
+
+  return (
+    <tr
+      key={position.id}
+      data-testid={position.id}
+      className={clsx({
+        "italic text-gray-300": position._optimistic,
+      })}
+    >
+      <td className="px-4 py-3">
+        {isTruthy(position.date_opened) ? formatDateISO(new Date(position.date_opened)) : <HtmlUnicode name="EmDash" />}
+      </td>
+      {hideColumns?.includes(HEADERS_TITLES.POOL) ? null : (
+        <td className="px-4 py-3">
+          {isTruthy(position.pool) ? removeFirstCharsUC(position.pool).toUpperCase() : <HtmlUnicode name="EmDash" />}
+        </td>
+      )}
+      <td className="px-4 py-3">{isTruthy(position.position) ? position.position : <HtmlUnicode name="EmDash" />}</td>
+      <td className="px-4 py-3 text-right tabular-nums">
+        {isTruthy(position.custody_amount) ? formatNumberAsDecimal(custodyAmount, 4) : <HtmlUnicode name="EmDash" />}
+      </td>
+      <td className="px-4 py-3">
+        {isTruthy(position.custody_asset) ? (
+          removeFirstCharsUC(position.custody_asset.toUpperCase())
+        ) : (
+          <HtmlUnicode name="EmDash" />
+        )}
+      </td>
+      <td className="px-4 py-3 text-right tabular-nums">
+        {isTruthy(position.leverage) ? (
+          `${formatNumberAsDecimal(Number(position.leverage))}x`
+        ) : (
+          <HtmlUnicode name="EmDash" />
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {isTruthy(unrealizedPnl) && Number.isNaN(unrealizedPnl) === false ? (
+          <div
+            className={clsx("flex flex-row items-center justify-end tabular-nums", {
+              "text-green-400": unrealizedPLSign === 1 && unrealizedPnl > 0,
+              "text-red-400": unrealizedPLSign === -1 && unrealizedPnl < 0,
+            })}
+          >
+            <span className="mr-1">
+              {unrealizedPLSign === 1 ? <HtmlUnicode name="PlusSign" /> : null}
+              {formatNumberAsDecimal(unrealizedPnl, 6)}
+            </span>
+            <AssetIcon symbol={position.collateral_asset} network="sifchain" size="sm" />
+          </div>
+        ) : (
+          <div className="text-right">
+            <HtmlUnicode name="EmDash" />
+          </div>
+        )}
+      </td>
+      {hideColumns?.includes(HEADERS_TITLES.INTEREST_RATE) ? null : (
+        <td className="px-4 py-3 text-right tabular-nums">
+          {isTruthy(position.interest_rate) ? (
+            `${formatNumberAsDecimal(Number(position.interest_rate), 8)}%`
+          ) : (
+            <HtmlUnicode name="EmDash" />
+          )}
+        </td>
+      )}
+      {hideColumns?.includes(HEADERS_TITLES.PAID_INTEREST) ? null : (
+        <td className="px-4 py-3">
+          {isTruthy(currentInterestPaidCustody) ? (
+            <div className="flex flex-row items-center justify-end tabular-nums">
+              <span className="mr-1">
+                {formatNumberAsDecimal(currentInterestPaidCustody, 6) ?? <HtmlUnicode name="EmDash" />}
+              </span>
+              <AssetIcon symbol={position.custody_asset} network="sifchain" size="sm" />
+            </div>
+          ) : (
+            <HtmlUnicode name="EmDash" />
+          )}
+        </td>
+      )}
+      <td className="px-4 py-3 text-right tabular-nums">
+        {isTruthy(position.current_health) ? (
+          formatNumberAsDecimal(Number(position.current_health), 4)
+        ) : (
+          <HtmlUnicode name="EmDash" />
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {isTruthy(position.date_opened) ? (
+          createDurationLabel(formatIntervalToDuration(new Date(position.date_opened), new Date()))
+        ) : (
+          <HtmlUnicode name="EmDash" />
+        )}
+      </td>
+      <td className="px-4">
+        {isTruthy(position._optimistic) ? null : (
+          <Button variant="secondary" as="button" size="xs" className="rounded font-normal" data-id={position.id}>
+            Close
+          </Button>
+        )}
+      </td>
+    </tr>
+  );
+}
 
 export default OpenPositionsTable;
