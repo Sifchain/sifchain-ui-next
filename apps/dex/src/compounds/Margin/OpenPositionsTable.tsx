@@ -38,6 +38,7 @@ import { ModalMTPClose } from "./ModalMTPClose";
 
 import { usePoolQuery } from "~/domains/clp/hooks/usePool";
 import type { EnhancedRegistryAsset } from "~/domains/tokenRegistry/hooks/useTokenRegistry";
+import { ROWAN } from "~/domains/assets";
 import { TooltipInterestPaid, TooltipLiquidationRatio, TooltipNpv } from "./tooltips";
 import { NoResultsRow, PaginationContainer, PillUpdating } from "./_components";
 import { createDurationLabel, formatDateISO, formatIntervalToDuration } from "./_intl";
@@ -340,7 +341,7 @@ function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hid
 
   const currentPriceAsDecimal = Decimal.fromAtomics(
     position.collateral_asset === "rowan" ? pool?.swapPriceExternal ?? "0" : pool?.swapPriceNative ?? "0",
-    18,
+    ROWAN.decimals,
   );
 
   const currentPriceAsNumber = currentPriceAsDecimal.toFloatApproximation();
