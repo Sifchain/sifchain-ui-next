@@ -417,7 +417,7 @@ function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hid
       {hideColumns?.includes(HEADERS_TITLES.INTEREST_RATE) ? null : (
         <td className="px-4 py-3 text-right tabular-nums">
           {isTruthy(position.interest_rate) ? (
-            `${formatNumberAsDecimal(Number(position.interest_rate), 8)}%`
+            `${formatNumberAsDecimal(Number(position.interest_rate) * 100, 8)}%`
           ) : (
             <HtmlUnicode name="EmDash" />
           )}
