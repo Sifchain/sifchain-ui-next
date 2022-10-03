@@ -45,14 +45,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     props.data.custody_asset,
     props.data.collateral_asset,
     currentCustodyAmount,
-    1,
+    1, // leverage = 1 => standard swap
   );
 
   const { data: swapRateData } = useMarginPositionSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     "1",
-    1,
+    1, // leverage = 1 => standard swap
   );
 
   const swapRateAsNumber = Decimal.fromAtomics(
@@ -107,14 +107,19 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const swapResultAsDecimal = closingPositionAsDecimal.plus(closingPositionFeeAsDecimal);
 
     const openingPositionAsNumber = Number(props.data.custody_amount ?? "0");
-    const openingValueAsNumber = openingPositionAsNumber * positionTokenQuery.data.priceUsd;
+    const openingPriceAsNumber = Number(props.data.custody_entry_price ?? "0");
+
+    const openingValueAsNumber = openingPositionAsNumber * openingPriceAsNumber;
     const totalInterestPaidAsNumber = Number(props.data.current_interest_paid_custody ?? "0");
     const currentPositionAsNumber = Number(currentCustodyAmount);
     const currentPriceAsNumber = Number(positionTokenQuery.data.priceUsd ?? "0");
     const currentValueAsNumber = currentPositionAsNumber * currentPriceAsNumber;
 
+    const collateralAmountAsNumber = Number(props.data.collateral_amount);
+
     const resultingPaymentAsDecimal = closingPositionAsDecimal.minus(liabilitiesAsDecimal);
-    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - Number(props.data.collateral_amount);
+    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - collateralAmountAsNumber;
+
     const tradePnlSign = Math.sign(tradePnlAsNumber);
     const tradePnlAbs = Math.abs(tradePnlAsNumber);
 
@@ -131,7 +136,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               </>,
             ]}
             details={[
-              ["Opening price", formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)],
+              ["Opening price", formatNumberAsCurrency(openingPriceAsNumber, 4)],
               ["Opening value", formatNumberAsCurrency(openingValueAsNumber, 4)],
             ]}
           />
@@ -165,7 +170,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Closing position",
-
               <>
                 {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
                 <TokenDisplaySymbol symbol={props.data.collateral_asset} />
@@ -174,7 +178,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             details={[
               [
                 "Current swap rate",
-
                 <>
                   1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
                   {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
@@ -221,7 +224,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                 "Collateral",
                 <>
                   <HtmlUnicode name="MinusSign" />
-                  {formatNumberAsDecimal(Number(props.data.collateral_amount), 4)}{" "}
+                  {formatNumberAsDecimal(collateralAmountAsNumber, 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
