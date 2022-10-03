@@ -12,7 +12,7 @@ import {
   FlashMessage5xxError,
   FlashMessage,
 } from "@sifchain/ui";
-import { SyntheticEvent, useCallback } from "react";
+import { SyntheticEvent, useCallback, useRef } from "react";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
@@ -23,8 +23,21 @@ import { HtmlUnicode } from "./_trade";
 
 const isTruthy = (target: any) => !isNil(target);
 
+type MTPData = Pick<
+  MarginOpenPositionsData,
+  | "custody_asset"
+  | "custody_amount"
+  | "current_custody_amount"
+  | "collateral_asset"
+  | "id"
+  | "collateral_amount"
+  | "liabilities"
+  | "custody_entry_price"
+  | "current_interest_paid_custody"
+>;
+
 type ModalMTPCloseProps = {
-  data: MarginOpenPositionsData;
+  data: MTPData;
   isOpen: boolean;
   onClose: () => void;
   onMutationError?: (_error: Error) => void;
@@ -86,7 +99,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     confirmClosePosition.reset();
   }, [confirmClosePosition, props]);
 
-  let content = <FlashMessageLoading size="full-page" />;
+  const content = useRef<JSX.Element | null>(null);
 
   if (
     collateralTokenQuery.isSuccess &&
@@ -123,7 +136,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const tradePnlSign = Math.sign(tradePnlAsNumber);
     const tradePnlAbs = Math.abs(tradePnlAsNumber);
 
-    content = (
+    content.current = (
       <>
         <section className="grid gap-3">
           <AssetHeading symbol={props.data.custody_asset} />
@@ -273,11 +286,16 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       </>
     );
   }
+
   if (collateralTokenQuery.isError || positionTokenQuery.isError) {
     console.group("Modal MTP Close Error");
     console.log({ collateralTokenQuery, positionTokenQuery });
     console.groupEnd();
-    content = <FlashMessage5xxError size="full-page" />;
+    content.current = <FlashMessage5xxError size="full-page" />;
+  }
+
+  if (!content.current) {
+    content.current = <FlashMessageLoading size="full-page" />;
   }
 
   return (
@@ -288,7 +306,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       onTransitionEnd={onTransitionEnd}
       onClose={props.onClose}
     >
-      {content}
+      {content.current}
     </Modal>
   );
 }
