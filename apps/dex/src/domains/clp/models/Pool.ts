@@ -90,13 +90,13 @@ export default class Pool {
   extractDebt(X: BigNumber, Y: BigNumber, toRowan: boolean) {
     if (toRowan) {
       return {
-        Y: Y.plus(this.nativeCustody).plus(this.nativeLiabilities),
-        X: X.plus(this.externalCustody).plus(this.externalLiabilities),
+        Y: Y.plus(this.nativeLiabilities),
+        X: X.plus(this.externalLiabilities),
       };
     }
     return {
-      X: X.plus(this.nativeCustody).plus(this.nativeLiabilities),
-      Y: Y.plus(this.externalCustody).plus(this.externalLiabilities),
+      X: X.plus(this.nativeLiabilities),
+      Y: Y.plus(this.externalLiabilities),
     };
   }
 
