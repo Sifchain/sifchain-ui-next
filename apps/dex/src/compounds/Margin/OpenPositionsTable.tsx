@@ -321,7 +321,6 @@ function OpenPositionRow({ position, custodyAsset, collateralAsset, headers, hid
   const poolDenom = (position.custody_asset === ROWAN.symbol ? collateralAsset?.denom : custodyAsset?.denom) ?? "";
 
   const { data: poolData } = usePoolQuery(poolDenom, {
-    enabled: Boolean(poolDenom),
     refetchInterval: 60_000,
   });
 
