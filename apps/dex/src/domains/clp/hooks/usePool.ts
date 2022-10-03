@@ -5,7 +5,13 @@ import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 
-export function usePoolQuery(denom: string) {
+export function usePoolQuery(
+  denom: string,
+  options: {
+    refetchInterval?: number;
+    enabled?: boolean;
+  } = {},
+) {
   const { indexedByDenom } = useTokenRegistryQuery();
   const { data: poolRes } = useSifnodeQuery("clp.getPool", [{ symbol: denom }]);
   const { data: env } = useDexEnvironment();
@@ -33,6 +39,7 @@ export function usePoolQuery(denom: string) {
     },
     {
       enabled: externalToken !== undefined && poolRes !== undefined && env !== undefined,
+      ...options,
     },
   );
 }
