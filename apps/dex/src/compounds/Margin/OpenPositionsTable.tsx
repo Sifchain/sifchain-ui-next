@@ -13,7 +13,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isNil } from "rambda";
-import { MouseEventHandler, useCallback, useState } from "react";
+import { MouseEventHandler, useCallback, useMemo, useState } from "react";
 
 import AssetIcon from "~/compounds/AssetIcon";
 import type {
@@ -118,6 +118,10 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
     isOpen: false,
     value: null,
   });
+
+  const selectedPosition = useMemo(() => {
+    return openPositionsQuery.data?.results.find((x) => x.id === positionToClose.value?.id);
+  }, [positionToClose.value?.id, openPositionsQuery.data]);
 
   const onClickTable = useCallback<MouseEventHandler<HTMLTableElement>>(
     (event) => {
@@ -290,15 +294,24 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
           {openPositionsQuery.isRefetching ? <PillUpdating /> : null}
           <PaginationContainer pagination={pagination} />
         </div>
-        {positionToClose.value && (
-          <ModalMTPClose
-            data={positionToClose.value}
-            isOpen={positionToClose.isOpen}
-            onClose={onModalClose}
-            onMutationSuccess={onModalMutationSuccess}
-            onTransitionEnd={onModalTransitionEnd}
-          />
-        )}
+        <ModalMTPClose
+          data={
+            selectedPosition ??
+            positionToClose.value ?? {
+              id: "",
+              collateral_asset: "",
+              custody_asset: "",
+              collateral_amount: "0",
+              custody_amount: "0",
+              liabilities: "0",
+              custody_entry_price: "0",
+            }
+          }
+          isOpen={positionToClose.isOpen}
+          onClose={onModalClose}
+          onMutationSuccess={onModalMutationSuccess}
+          onTransitionEnd={onModalTransitionEnd}
+        />
       </section>
     );
   }

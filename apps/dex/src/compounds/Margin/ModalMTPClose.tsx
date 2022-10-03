@@ -12,7 +12,7 @@ import {
   FlashMessage5xxError,
   FlashMessage,
 } from "@sifchain/ui";
-import { SyntheticEvent, useCallback } from "react";
+import { SyntheticEvent, useCallback, useRef } from "react";
 import Long from "long";
 
 import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
@@ -23,8 +23,21 @@ import { HtmlUnicode } from "./_trade";
 
 const isTruthy = (target: any) => !isNil(target);
 
+type MTPData = Pick<
+  MarginOpenPositionsData,
+  | "custody_asset"
+  | "custody_amount"
+  | "current_custody_amount"
+  | "collateral_asset"
+  | "id"
+  | "collateral_amount"
+  | "liabilities"
+  | "custody_entry_price"
+  | "current_interest_paid_custody"
+>;
+
 type ModalMTPCloseProps = {
-  data: MarginOpenPositionsData;
+  data: MTPData;
   isOpen: boolean;
   onClose: () => void;
   onMutationError?: (_error: Error) => void;
@@ -45,14 +58,14 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     props.data.custody_asset,
     props.data.collateral_asset,
     currentCustodyAmount,
-    1,
+    1, // leverage = 1 => standard swap
   );
 
   const { data: swapRateData } = useMarginPositionSimulationQuery(
     props.data.custody_asset,
     props.data.collateral_asset,
     "1",
-    1,
+    1, // leverage = 1 => standard swap
   );
 
   const swapRateAsNumber = Decimal.fromAtomics(
@@ -86,7 +99,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     confirmClosePosition.reset();
   }, [confirmClosePosition, props]);
 
-  let content = <FlashMessageLoading size="full-page" />;
+  const content = useRef<JSX.Element | null>(null);
 
   if (
     collateralTokenQuery.isSuccess &&
@@ -107,18 +120,23 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
     const swapResultAsDecimal = closingPositionAsDecimal.plus(closingPositionFeeAsDecimal);
 
     const openingPositionAsNumber = Number(props.data.custody_amount ?? "0");
-    const openingValueAsNumber = openingPositionAsNumber * positionTokenQuery.data.priceUsd;
+    const openingPriceAsNumber = Number(props.data.custody_entry_price ?? "0");
+
+    const openingValueAsNumber = openingPositionAsNumber * openingPriceAsNumber;
     const totalInterestPaidAsNumber = Number(props.data.current_interest_paid_custody ?? "0");
     const currentPositionAsNumber = Number(currentCustodyAmount);
     const currentPriceAsNumber = Number(positionTokenQuery.data.priceUsd ?? "0");
     const currentValueAsNumber = currentPositionAsNumber * currentPriceAsNumber;
 
+    const collateralAmountAsNumber = Number(props.data.collateral_amount);
+
     const resultingPaymentAsDecimal = closingPositionAsDecimal.minus(liabilitiesAsDecimal);
-    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - Number(props.data.collateral_amount);
+    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - collateralAmountAsNumber;
+
     const tradePnlSign = Math.sign(tradePnlAsNumber);
     const tradePnlAbs = Math.abs(tradePnlAsNumber);
 
-    content = (
+    content.current = (
       <>
         <section className="grid gap-3">
           <AssetHeading symbol={props.data.custody_asset} />
@@ -131,7 +149,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
               </>,
             ]}
             details={[
-              ["Opening price", formatNumberAsCurrency(Number(props.data.custody_entry_price), 4)],
+              ["Opening price", formatNumberAsCurrency(openingPriceAsNumber, 4)],
               ["Opening value", formatNumberAsCurrency(openingValueAsNumber, 4)],
             ]}
           />
@@ -165,7 +183,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
           <TradeDetails
             heading={[
               "Closing position",
-
               <>
                 {formatNumberAsDecimal(finalPositionWithLiabilitiesAsNumber, 4)}{" "}
                 <TokenDisplaySymbol symbol={props.data.collateral_asset} />
@@ -174,7 +191,6 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             details={[
               [
                 "Current swap rate",
-
                 <>
                   1 <TokenDisplaySymbol symbol={props.data.custody_asset} /> <HtmlUnicode name="AlmostEqualTo" />{" "}
                   {formatNumberAsDecimal(swapRateAsNumber, 4)}{" "}
@@ -221,7 +237,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
                 "Collateral",
                 <>
                   <HtmlUnicode name="MinusSign" />
-                  {formatNumberAsDecimal(Number(props.data.collateral_amount), 4)}{" "}
+                  {formatNumberAsDecimal(collateralAmountAsNumber, 4)}{" "}
                   <TokenDisplaySymbol symbol={props.data.collateral_asset} />
                 </>,
               ],
@@ -270,11 +286,16 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       </>
     );
   }
+
   if (collateralTokenQuery.isError || positionTokenQuery.isError) {
     console.group("Modal MTP Close Error");
     console.log({ collateralTokenQuery, positionTokenQuery });
     console.groupEnd();
-    content = <FlashMessage5xxError size="full-page" />;
+    content.current = <FlashMessage5xxError size="full-page" />;
+  }
+
+  if (!content.current) {
+    content.current = <FlashMessageLoading size="full-page" />;
   }
 
   return (
@@ -285,7 +306,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
       onTransitionEnd={onTransitionEnd}
       onClose={props.onClose}
     >
-      {content}
+      {content.current}
     </Modal>
   );
 }
