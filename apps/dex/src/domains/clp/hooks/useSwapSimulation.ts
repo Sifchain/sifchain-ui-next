@@ -3,6 +3,7 @@ import { runCatching } from "@sifchain/common";
 import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
+import { ROWAN } from "~/domains/assets";
 
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
 import { useSifStargateClient } from "~/hooks/useSifStargateClient";
@@ -36,7 +37,7 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
       const pool = fromToken?.pool ?? toToken?.pool;
 
       const [__, result] = runCatching(() => {
-        if (!pool || !fromToken || !toToken || !pmtpParams || !swapFeeRateResult) {
+        if (!pool?.externalAsset || !fromToken || !toToken || !pmtpParams || !swapFeeRateResult) {
           throw new Error("Pool or amount is not defined");
         }
 
@@ -44,15 +45,15 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
           Decimal.fromAtomics(x, 18).toString(),
         );
 
-        const externalAssetDecimals = toDenom === "rowan" ? fromToken.decimals : toToken.decimals;
-        const nativeAssetDecimals = toDenom === "rowan" ? toToken.decimals : fromToken.decimals;
+        const externalAssetDecimals = toDenom === "rowan" ? fromToken.decimals : ROWAN.decimals;
+        const nativeAssetDecimals = toDenom === "rowan" ? ROWAN.decimals : fromToken.decimals;
 
         const params = {
           swapFeeRate,
           currentRatioShiftingRate: pmtpPeriodBlockRate,
           externalAssetDecimals: externalAssetDecimals,
           nativeAssetDecimals: nativeAssetDecimals,
-          isMarginEnabled: marginEnabledPools.has(toDenom) || marginEnabledPools.has(fromDenom),
+          isMarginEnabled: marginEnabledPools.has(pool.externalAsset.symbol),
         };
 
         const fromPoolInstance = new Pool(pool, params);

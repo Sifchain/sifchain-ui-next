@@ -111,16 +111,15 @@ export default class Pool {
 
     const x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
 
-    return calculateSwapWithFee(
-      {
-        inputAmount: x.atomics,
-        inputBalanceInPool: X.toString(),
-        outputBalanceInPool: Y.toString(),
-        swapFeeRate: this.swapFeeRate.toString(),
-        currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
-      },
-      toRowan,
-    );
+    const swapParams = {
+      inputAmount: x.atomics,
+      inputBalanceInPool: X.toString(),
+      outputBalanceInPool: Y.toString(),
+      swapFeeRate: this.swapFeeRate.toString(),
+      currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
+    };
+
+    return calculateSwapWithFee(swapParams, toRowan);
   }
 
   calculateSwapToRowan(params: { inputAmount: string; inputDenom: string }) {
@@ -134,20 +133,19 @@ export default class Pool {
 
     const x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
 
-    return calculateSwapWithFee(
-      {
-        inputAmount: x.atomics,
-        inputBalanceInPool: X.toString(),
-        outputBalanceInPool: Y.toString(),
-        swapFeeRate: this.swapFeeRate.toString(),
-        currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
-      },
-      toRowan,
-    );
+    const swapParams = {
+      inputAmount: x.atomics,
+      inputBalanceInPool: X.toString(),
+      outputBalanceInPool: Y.toString(),
+      swapFeeRate: this.swapFeeRate.toString(),
+      currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
+    };
+
+    return calculateSwapWithFee(swapParams, toRowan);
   }
 
   calculateSwap(params: { inputAmount: string; inputDenom: string }) {
-    return params.inputDenom === "rowan" ? this.calculateSwapFromRowan(params) : this.calculateSwapToRowan(params);
+    return params.inputDenom === ROWAN.symbol ? this.calculateSwapFromRowan(params) : this.calculateSwapToRowan(params);
   }
 
   calculateMarginPosition(params: { inputAmount: string; inputDenom: string; leverage: number }) {
