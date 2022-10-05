@@ -77,7 +77,7 @@ importers:
       postcss: ^8.4.16
       prettier: ^2.7.1
       prettier-plugin-tailwindcss: ^0.1.13
-      rambda: ^7.2.1
+      rambda: ^7.3.0
       react: 18.1.0
       react-cookie: ^4.1.1
       react-dom: 18.1.0
@@ -121,7 +121,7 @@ importers:
       ky: 0.30.0
       long: 5.2.0
       next: 12.3.1_ef5jwxihqo6n7gxfmzogljlgcm
-      rambda: 7.2.1
+      rambda: 7.3.0
       react: 18.1.0
       react-cookie: 4.1.1_react@18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -506,7 +506,7 @@ importers:
       lodash.debounce: ^4.0.8
       lodash.throttle: ^4.1.1
       postcss: ^8.4.16
-      rambda: ^7.2.1
+      rambda: ^7.3.0
       react-jazzicon: ^1.0.4
       react-toastify: ^9.0.8
       tailwind-styled-components: 2.1.6
@@ -525,7 +525,7 @@ importers:
       clsx: 1.2.1
       lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
-      rambda: 7.2.1
+      rambda: 7.3.0
       react-jazzicon: 1.0.4
       react-toastify: 9.0.8
       walletconnect-qrcode-modal: 0.7.28
@@ -18578,8 +18578,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /rambda/7.2.1:
-    resolution: {integrity: sha512-Wswj8ZvzdI3VhaGPkZAxaCTwuMmGtgWt7Zxsgyo4P+iTmVnkojvyWaOep5q3ZjMIecW0wtQa66GWxaKkZ24RAA==}
+  /rambda/7.3.0:
+    resolution: {integrity: sha512-RFVofZYaG2TaVcxjnM0ejdVWf/59rFq1f57OGnjP3GT/bthzFw0GVr5rkP9PKbVlEuF/Y7bOVPLfiiYfxq/EWQ==}
     dev: false
 
   /ramda/0.28.0:
