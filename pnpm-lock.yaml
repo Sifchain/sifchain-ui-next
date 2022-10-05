@@ -34,8 +34,8 @@ importers:
 
   apps/dex:
     specifiers:
-      '@cosmjs/math': ^0.28.13
-      '@cosmjs/stargate': ^0.28.13
+      '@cosmjs/math': ^0.29.0
+      '@cosmjs/stargate': ^0.29.0
       '@headlessui/react': ^1.6.6
       '@heroicons/react': 2.0.10
       '@sifchain/common': workspace:*
@@ -95,8 +95,8 @@ importers:
       zustand: 4.0.0
       zustand-immer-store: ^0.9.4
     dependencies:
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/stargate': 0.28.13_22kvxa7zeyivx4jp72v2w3pkvy
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/stargate': 0.29.0_22kvxa7zeyivx4jp72v2w3pkvy
       '@headlessui/react': 1.6.6_ef5jwxihqo6n7gxfmzogljlgcm
       '@heroicons/react': 2.0.10_react@18.1.0
       '@sifchain/common': link:../../packages/common
@@ -271,7 +271,7 @@ importers:
 
   packages/common:
     specifiers:
-      '@cosmjs/stargate': ^0.28.13
+      '@cosmjs/stargate': ^0.29.0
       '@keplr-wallet/types': ^0.10.16
       '@tsconfig/node16-strictest-esm': ^1.0.3
       '@types/big.js': ^6.1.5
@@ -290,7 +290,7 @@ importers:
       url-join-ts: ^1.0.5
       vitest: ^0.23.4
     dependencies:
-      '@cosmjs/stargate': 0.28.13
+      '@cosmjs/stargate': 0.29.0
       big.js: 6.2.1
       decimal.js-light: 2.5.1
       js-cookie: 3.0.1
@@ -312,8 +312,8 @@ importers:
 
   packages/cosmos-connect:
     specifiers:
-      '@cosmjs/proto-signing': ^0.28.13
-      '@cosmjs/stargate': ^0.28.13
+      '@cosmjs/proto-signing': ^0.29.0
+      '@cosmjs/stargate': ^0.29.0
       '@keplr-wallet/common': ^0.10.20
       '@keplr-wallet/stores': ^0.10.20
       '@keplr-wallet/types': ^0.10.20
@@ -329,8 +329,8 @@ importers:
       react: ^18.2.0
       zx: ^7.0.8
     dependencies:
-      '@cosmjs/proto-signing': 0.28.13
-      '@cosmjs/stargate': 0.28.13
+      '@cosmjs/proto-signing': 0.29.0
+      '@cosmjs/stargate': 0.29.0
       '@keplr-wallet/common': 0.10.20
       '@keplr-wallet/stores': 0.10.20
       '@keplr-wallet/wc-client': 0.10.20
@@ -434,10 +434,10 @@ importers:
 
   packages/stargate:
     specifiers:
-      '@cosmjs/math': ^0.28.13
-      '@cosmjs/proto-signing': ^0.28.13
-      '@cosmjs/stargate': ^0.28.13
-      '@cosmjs/tendermint-rpc': ^0.28.13
+      '@cosmjs/math': ^0.29.0
+      '@cosmjs/proto-signing': ^0.29.0
+      '@cosmjs/stargate': ^0.29.0
+      '@cosmjs/tendermint-rpc': ^0.29.0
       '@sifchain/math': workspace:*
       '@sifchain/proto-types': workspace:*
       '@tsconfig/node16-strictest-esm': ^1.0.3
@@ -451,10 +451,10 @@ importers:
       typescript: 4.8.4
       vitest: ^0.23.4
     dependencies:
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/proto-signing': 0.28.13
-      '@cosmjs/stargate': 0.28.13
-      '@cosmjs/tendermint-rpc': 0.28.13
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/proto-signing': 0.29.0
+      '@cosmjs/stargate': 0.29.0
+      '@cosmjs/tendermint-rpc': 0.29.0
       '@sifchain/math': link:../math
       '@sifchain/proto-types': link:../proto-types
       bignumber.js: 9.1.0
@@ -2504,13 +2504,13 @@ packages:
       protobufjs: 6.11.3
     dev: false
 
-  /@cosmjs/amino/0.28.13:
-    resolution: {integrity: sha512-IHnH2zGwaY69qT4mVAavr/pfzx6YE+ud1NHJbvVePlbGiz68CXTi5LHR+K0lrKB5mQ7E+ZErWz2mw5U/x+V1wQ==}
+  /@cosmjs/amino/0.29.0:
+    resolution: {integrity: sha512-/ZUVx6nRN5YE36H3SDq9+i8g2nZ8DJQnN9fVRC8rSHQKauNkoEuK4NxTNcQ2o2EBLUT0kyYAFY2550HVsPMrgw==}
     dependencies:
-      '@cosmjs/crypto': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/utils': 0.28.13
+      '@cosmjs/crypto': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/utils': 0.29.0
     dev: false
 
   /@cosmjs/crypto/0.24.1:
@@ -2529,12 +2529,12 @@ packages:
       sha.js: 2.4.11
       unorm: 1.6.0
 
-  /@cosmjs/crypto/0.28.13:
-    resolution: {integrity: sha512-ynKfM0q/tMBQMHJby6ad8lR3gkgBKaelQhIsCZTjClsnuC7oYT9y3ThSZCUWr7Pa9h0J8ahU2YV2oFWFVWJQzQ==}
+  /@cosmjs/crypto/0.29.0:
+    resolution: {integrity: sha512-MPJoebRGh7AcZgbfR25ci7iV+XzJiKwVq4wL8n6M5P2QdrIv7DqqniyFXcBbn9dQjMLMHnOSgT9LRv+VXzUVCA==}
     dependencies:
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/utils': 0.28.13
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/utils': 0.29.0
       '@noble/hashes': 1.1.2
       bn.js: 5.2.1
       elliptic: 6.5.4
@@ -2548,8 +2548,8 @@ packages:
       bech32: 1.1.4
       readonly-date: 1.0.0
 
-  /@cosmjs/encoding/0.28.13:
-    resolution: {integrity: sha512-jtXbAYtV77rLHxoIrjGFsvgGjeTKttuHRv6cvuy3toCZzY7JzTclKH5O2g36IIE4lXwD9xwuhGJ2aa6A3dhNkA==}
+  /@cosmjs/encoding/0.29.0:
+    resolution: {integrity: sha512-6HDBtid/YLbyXapY6PdMMIigAtGKyD1w0dUCLU1dOIkPf1q3y43kqoA7WnLkRw0g0/lZY1VGM2fX+2RWU0wxYg==}
     dependencies:
       base64-js: 1.5.1
       bech32: 1.1.4
@@ -2563,10 +2563,10 @@ packages:
       xstream: 11.14.0
     dev: false
 
-  /@cosmjs/json-rpc/0.28.13:
-    resolution: {integrity: sha512-fInSvg7x9P6p+GWqet+TMhrMTM3OWWdLJOGS5w2ryubMjgpR1rLiAx77MdTNkArW+/6sUwku0sN4veM4ENQu6A==}
+  /@cosmjs/json-rpc/0.29.0:
+    resolution: {integrity: sha512-noCt91X+dSYjW1BYbp5jFaYaA/PWIQFXOgl4ZDW0ecGOAj8xh6/D/Vd8bDO97CQgJ1KVw0pyAqVhmrBOBUo1sA==}
     dependencies:
-      '@cosmjs/stream': 0.28.13
+      '@cosmjs/stream': 0.29.0
       xstream: 11.14.0
     dev: false
 
@@ -2587,8 +2587,8 @@ packages:
     dependencies:
       bn.js: 4.12.0
 
-  /@cosmjs/math/0.28.13:
-    resolution: {integrity: sha512-PDpL8W/kbyeWi0mQ2OruyqE8ZUAdxPs1xCbDX3WXJwy2oU+X2UTbkuweJHVpS9CIqmZulBoWQAmlf6t6zr1N/g==}
+  /@cosmjs/math/0.29.0:
+    resolution: {integrity: sha512-ufRRmyDQtJUrH8r1V4N7Q6rTOk9ZX7XIXjJto7cfXP8kcxm7IJXKYk+r0EfDnNHFkxTidYvW/1YXeeNoy8xZYw==}
     dependencies:
       bn.js: 5.2.1
     dev: false
@@ -2602,15 +2602,15 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@cosmjs/proto-signing/0.28.13:
-    resolution: {integrity: sha512-nSl/2ZLsUJYz3Ad0RY3ihZUgRHIow2OnYqKsESMu+3RA/jTi9bDYhiBu8mNMHI0xrEJry918B2CyI56pOUHdPQ==}
+  /@cosmjs/proto-signing/0.29.0:
+    resolution: {integrity: sha512-zAdgDz5vRGAfJ5yyKYuTL7qg5UNUT7v4iV1/ZP8ZQn2fLh9QVxViAIovF4r/Y3EEI4JS5uYj/f8UeHMHQSu8hw==}
     dependencies:
-      '@cosmjs/amino': 0.28.13
-      '@cosmjs/crypto': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/utils': 0.28.13
-      cosmjs-types: 0.4.1
+      '@cosmjs/amino': 0.29.0
+      '@cosmjs/crypto': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/utils': 0.29.0
+      cosmjs-types: 0.5.0
       long: 4.0.0
     dev: false
 
@@ -2626,10 +2626,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/socket/0.28.13:
-    resolution: {integrity: sha512-lavwGxQ5VdeltyhpFtwCRVfxeWjH5D5mmN7jgx9nuCf3XSFbTcOYxrk2pQ4usenu1Q1KZdL4Yl5RCNrJuHD9Ug==}
+  /@cosmjs/socket/0.29.0:
+    resolution: {integrity: sha512-y7cOBp6YJ2Sn/DZne1eiJ6PVkgZlAi48d0Bz6hVuZ6CliutG0BzM/F3bSLxdw8m2fXNU+lYsi4uLPd0epf5Hig==}
     dependencies:
-      '@cosmjs/stream': 0.28.13
+      '@cosmjs/stream': 0.29.0
       isomorphic-ws: 4.0.1_ws@7.5.9
       ws: 7.5.9
       xstream: 11.14.0
@@ -2638,10 +2638,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/socket/0.28.13_22kvxa7zeyivx4jp72v2w3pkvy:
-    resolution: {integrity: sha512-lavwGxQ5VdeltyhpFtwCRVfxeWjH5D5mmN7jgx9nuCf3XSFbTcOYxrk2pQ4usenu1Q1KZdL4Yl5RCNrJuHD9Ug==}
+  /@cosmjs/socket/0.29.0_22kvxa7zeyivx4jp72v2w3pkvy:
+    resolution: {integrity: sha512-y7cOBp6YJ2Sn/DZne1eiJ6PVkgZlAi48d0Bz6hVuZ6CliutG0BzM/F3bSLxdw8m2fXNU+lYsi4uLPd0epf5Hig==}
     dependencies:
-      '@cosmjs/stream': 0.28.13
+      '@cosmjs/stream': 0.29.0
       isomorphic-ws: 4.0.1_ws@7.5.9
       ws: 7.5.9_22kvxa7zeyivx4jp72v2w3pkvy
       xstream: 11.14.0
@@ -2650,18 +2650,18 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/stargate/0.28.13:
-    resolution: {integrity: sha512-dVBMazDz8/eActHsRcZjDHHptOBMqvibj5CFgEtZBp22gP6ASzoAUXTlkSVk5FBf4sfuUHoff6st134/+PGMAg==}
+  /@cosmjs/stargate/0.29.0:
+    resolution: {integrity: sha512-BsV3iA3vMclMm/B1LYO0djBYCALr/UIvL6u9HGvM7QvpdtpQiAvskuS4PieVO/gtF9iCCBJLPqa0scwFIgvDyg==}
     dependencies:
       '@confio/ics23': 0.6.8
-      '@cosmjs/amino': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/proto-signing': 0.28.13
-      '@cosmjs/stream': 0.28.13
-      '@cosmjs/tendermint-rpc': 0.28.13
-      '@cosmjs/utils': 0.28.13
-      cosmjs-types: 0.4.1
+      '@cosmjs/amino': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/proto-signing': 0.29.0
+      '@cosmjs/stream': 0.29.0
+      '@cosmjs/tendermint-rpc': 0.29.0
+      '@cosmjs/utils': 0.29.0
+      cosmjs-types: 0.5.0
       long: 4.0.0
       protobufjs: 6.11.3
       xstream: 11.14.0
@@ -2671,18 +2671,18 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/stargate/0.28.13_22kvxa7zeyivx4jp72v2w3pkvy:
-    resolution: {integrity: sha512-dVBMazDz8/eActHsRcZjDHHptOBMqvibj5CFgEtZBp22gP6ASzoAUXTlkSVk5FBf4sfuUHoff6st134/+PGMAg==}
+  /@cosmjs/stargate/0.29.0_22kvxa7zeyivx4jp72v2w3pkvy:
+    resolution: {integrity: sha512-BsV3iA3vMclMm/B1LYO0djBYCALr/UIvL6u9HGvM7QvpdtpQiAvskuS4PieVO/gtF9iCCBJLPqa0scwFIgvDyg==}
     dependencies:
       '@confio/ics23': 0.6.8
-      '@cosmjs/amino': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/proto-signing': 0.28.13
-      '@cosmjs/stream': 0.28.13
-      '@cosmjs/tendermint-rpc': 0.28.13_22kvxa7zeyivx4jp72v2w3pkvy
-      '@cosmjs/utils': 0.28.13
-      cosmjs-types: 0.4.1
+      '@cosmjs/amino': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/proto-signing': 0.29.0
+      '@cosmjs/stream': 0.29.0
+      '@cosmjs/tendermint-rpc': 0.29.0_22kvxa7zeyivx4jp72v2w3pkvy
+      '@cosmjs/utils': 0.29.0
+      cosmjs-types: 0.5.0
       long: 4.0.0
       protobufjs: 6.11.3
       xstream: 11.14.0
@@ -2698,8 +2698,8 @@ packages:
       xstream: 11.14.0
     dev: false
 
-  /@cosmjs/stream/0.28.13:
-    resolution: {integrity: sha512-AnjtfwT8NwPPkd3lhZhjOlOzT0Kn9bgEu2IPOZjQ1nmG2bplsr6TJmnwn0dJxHT7UGtex17h6whKB5N4wU37Wg==}
+  /@cosmjs/stream/0.29.0:
+    resolution: {integrity: sha512-KAJ9sNoXhF19wtkoJf3O2y4YXfklDZgmXhDotgAejLrw2ixoVfTodMHvnl6tpw3ZnmXKibTfUaNXWZD++sG6uQ==}
     dependencies:
       xstream: 11.14.0
     dev: false
@@ -2722,16 +2722,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/tendermint-rpc/0.28.13:
-    resolution: {integrity: sha512-GB+ZmfuJIGQm0hsRtLYjeR3lOxF7Z6XyCBR0cX5AAYOZzSEBJjevPgUHD6tLn8zIhvzxaW3/VKnMB+WmlxdH4w==}
+  /@cosmjs/tendermint-rpc/0.29.0:
+    resolution: {integrity: sha512-G+42oGh+tw8/KV0gLAGzNCTe/6mkf7VUE5noSTbsxbeliFR7Lt4i6H2aqvWzmlZFeRxunR7AsQr4wakvlVNWyg==}
     dependencies:
-      '@cosmjs/crypto': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/json-rpc': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/socket': 0.28.13
-      '@cosmjs/stream': 0.28.13
-      '@cosmjs/utils': 0.28.13
+      '@cosmjs/crypto': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/json-rpc': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/socket': 0.29.0
+      '@cosmjs/stream': 0.29.0
+      '@cosmjs/utils': 0.29.0
       axios: 0.21.4
       readonly-date: 1.0.0
       xstream: 11.14.0
@@ -2741,16 +2741,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmjs/tendermint-rpc/0.28.13_22kvxa7zeyivx4jp72v2w3pkvy:
-    resolution: {integrity: sha512-GB+ZmfuJIGQm0hsRtLYjeR3lOxF7Z6XyCBR0cX5AAYOZzSEBJjevPgUHD6tLn8zIhvzxaW3/VKnMB+WmlxdH4w==}
+  /@cosmjs/tendermint-rpc/0.29.0_22kvxa7zeyivx4jp72v2w3pkvy:
+    resolution: {integrity: sha512-G+42oGh+tw8/KV0gLAGzNCTe/6mkf7VUE5noSTbsxbeliFR7Lt4i6H2aqvWzmlZFeRxunR7AsQr4wakvlVNWyg==}
     dependencies:
-      '@cosmjs/crypto': 0.28.13
-      '@cosmjs/encoding': 0.28.13
-      '@cosmjs/json-rpc': 0.28.13
-      '@cosmjs/math': 0.28.13
-      '@cosmjs/socket': 0.28.13_22kvxa7zeyivx4jp72v2w3pkvy
-      '@cosmjs/stream': 0.28.13
-      '@cosmjs/utils': 0.28.13
+      '@cosmjs/crypto': 0.29.0
+      '@cosmjs/encoding': 0.29.0
+      '@cosmjs/json-rpc': 0.29.0
+      '@cosmjs/math': 0.29.0
+      '@cosmjs/socket': 0.29.0_22kvxa7zeyivx4jp72v2w3pkvy
+      '@cosmjs/stream': 0.29.0
+      '@cosmjs/utils': 0.29.0
       axios: 0.21.4
       readonly-date: 1.0.0
       xstream: 11.14.0
@@ -2763,8 +2763,8 @@ packages:
   /@cosmjs/utils/0.24.1:
     resolution: {integrity: sha512-VA3WFx1lMFb7esp9BqHWkDgMvHoA3D9w+uDRvWhVRpUpDc7RYHxMbWExASjz+gNblTCg556WJGzF64tXnf9tdQ==}
 
-  /@cosmjs/utils/0.28.13:
-    resolution: {integrity: sha512-dVeMBiyg+46x7XBZEfJK8yTihphbCFpjVYmLJVqmTsHfJwymQ65cpyW/C+V/LgWARGK8hWQ/aX9HM5Ao8QmMSg==}
+  /@cosmjs/utils/0.29.0:
+    resolution: {integrity: sha512-NiJk3ISX+FU1cQcTTgmJcY84A8mV/p8L5CRewp/2jc/lUmo8j9lMGbX17U7NxVQ9RX5RmrwgdjYnBASzhRCVmA==}
     dev: false
 
   /@cspotcode/source-map-support/0.8.1:
@@ -10065,13 +10065,6 @@ packages:
       path-type: 4.0.0
       yaml: 1.10.2
     dev: true
-
-  /cosmjs-types/0.4.1:
-    resolution: {integrity: sha512-I7E/cHkIgoJzMNQdFF0YVqPlaTqrqKHrskuSTIqlEyxfB5Lf3WKCajSXVK2yHOfOFfSux/RxEdpMzw/eO4DIog==}
-    dependencies:
-      long: 4.0.0
-      protobufjs: 6.11.3
-    dev: false
 
   /cosmjs-types/0.5.0:
     resolution: {integrity: sha512-Qy2yxDp5HasBUnBV5OL9EOuTJw94LAbCWfiRb5QcW1sqh93KSSY5PpNMB3rTsxwuPcf/k3CNRY02DeQMjrsJuA==}
