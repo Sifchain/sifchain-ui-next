@@ -7,7 +7,7 @@ import {
   createAuthzAminoConverters,
   createBankAminoConverters,
   createDistributionAminoConverters,
-  createFreegrantAminoConverters,
+  createFeegrantAminoConverters,
   createGovAminoConverters,
   createIbcAminoConverters,
   createStakingAminoConverters,
@@ -73,7 +73,7 @@ export const createDefaultTypes = (prefix: string) =>
     ...createGovAminoConverters(),
     ...createStakingAminoConverters(prefix),
     ...createIbcAminoConverters(),
-    ...createFreegrantAminoConverters(),
+    ...createFeegrantAminoConverters(),
     ...createSifchainAminoConverters(),
   });
 

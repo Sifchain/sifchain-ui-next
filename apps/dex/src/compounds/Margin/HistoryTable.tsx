@@ -187,8 +187,7 @@ const HistoryTable = (props: HistoryTableProps) => {
             </thead>
             <tbody className="bg-gray-850">
               {results.length <= 0 && <NoResultsRow colSpan={headers.length} />}
-              {results.map((x) => {
-                const item = x as MarginHistoryData;
+              {results.map((item) => {
                 const realizedPL = Number(item.realized_pnl ?? "0");
                 const realizedPLSign = Math.sign(Number(item.realized_pnl));
 
@@ -201,15 +200,14 @@ const HistoryTable = (props: HistoryTableProps) => {
                   console.group("History Missing Custody or Collateral Asset Error");
                   console.log({ item });
                   console.groupEnd();
+
                   return (
-                    <tr>
-                      {Array.from({ length: headers.length }, () => {
-                        return (
-                          <td className="px-4 py-3">
-                            <HtmlUnicode name="EmDash" />
-                          </td>
-                        );
-                      })}
+                    <tr key={item.id}>
+                      {headers.map((x) => (
+                        <td key={x.order_by} className="px-4 py-3">
+                          <HtmlUnicode name="EmDash" />
+                        </td>
+                      ))}
                     </tr>
                   );
                 }
