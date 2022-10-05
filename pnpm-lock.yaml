@@ -210,7 +210,7 @@ importers:
     specifiers:
       '@heroicons/react': 2.0.11
       '@sifchain/ui': workspace:*
-      '@tanstack/react-query': ^4.2.3
+      '@tanstack/react-query': ^4.10.1
       '@tanstack/react-query-devtools': ^4.2.3
       '@types/cors': ^2.8.12
       '@types/node': 18.0.0
@@ -240,7 +240,7 @@ importers:
     dependencies:
       '@heroicons/react': 2.0.11_react@18.2.0
       '@sifchain/ui': link:../../packages/ui
-      '@tanstack/react-query': 4.2.3_biqbaboplfbrettd7655fr4n2y
+      '@tanstack/react-query': 4.10.1_biqbaboplfbrettd7655fr4n2y
       clsx: 1.2.1
       ky: 0.30.0
       next: 12.3.1_biqbaboplfbrettd7655fr4n2y
@@ -249,7 +249,7 @@ importers:
       tailwind-styled-components: 2.1.6_biqbaboplfbrettd7655fr4n2y
       tsconfig: link:../../packages/tsconfig
     devDependencies:
-      '@tanstack/react-query-devtools': 4.2.3_7jugwuuqrrr4f74u7dtzjsintq
+      '@tanstack/react-query-devtools': 4.2.3_u34amavde33a6d2g2dyykucmvy
       '@types/cors': 2.8.12
       '@types/node': 18.0.0
       '@types/react': 18.0.14
@@ -6421,9 +6421,6 @@ packages:
   /@tanstack/query-core/4.10.1:
     resolution: {integrity: sha512-UZRYzjgQSfYhQ+cJX0CspAbzutf8p93gR1xFjQuH3OYcb/7t3WnHkdb/qC9mbqrfWXN/JAbBTJlTU/XQHc5HbA==}
 
-  /@tanstack/query-core/4.2.3:
-    resolution: {integrity: sha512-zdt5lYWs1dZaA3IxJbCgtAfHZJScRZONpiLL7YkeOkrme5MfjQqTpjq7LYbzpyuwPOh2Jx68le0PLl57JFv5hQ==}
-
   /@tanstack/react-query-devtools/4.10.1_ppwllhspfqlhllf24z4iyhl7je:
     resolution: {integrity: sha512-aPsFBr9zbylnQxQoCNzPF1teN+NVGdeU1xQO515FM3gq6uISUWbqirVj/mE6HHJJpH/zi0j6HD1StD5h1XdNmg==}
     peerDependencies:
@@ -6439,7 +6436,7 @@ packages:
       use-sync-external-store: 1.2.0_react@18.1.0
     dev: true
 
-  /@tanstack/react-query-devtools/4.2.3_7jugwuuqrrr4f74u7dtzjsintq:
+  /@tanstack/react-query-devtools/4.2.3_u34amavde33a6d2g2dyykucmvy:
     resolution: {integrity: sha512-0PH8n824BnFyMrtv7q5uLS0b7jYg2tDH8vU4etkSYzV1uL4RJjiqMh7Gyi8qhYCwM+khlrkRYlNZvE0cxlp3SQ==}
     peerDependencies:
       '@tanstack/react-query': 4.2.3
@@ -6447,12 +6444,29 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@tanstack/match-sorter-utils': 8.1.1
-      '@tanstack/react-query': 4.2.3_biqbaboplfbrettd7655fr4n2y
+      '@tanstack/react-query': 4.10.1_biqbaboplfbrettd7655fr4n2y
       '@types/use-sync-external-store': 0.0.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: true
+
+  /@tanstack/react-query/4.10.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-6GaLYAsAu/4aX6HR4krpOej9qbKWXe0X0eccikpv5hAw4CoAAPG29Pydql1nTl9cYF2zd21unVm4yApklFY0AA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.10.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
 
   /@tanstack/react-query/4.10.1_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution: {integrity: sha512-6GaLYAsAu/4aX6HR4krpOej9qbKWXe0X0eccikpv5hAw4CoAAPG29Pydql1nTl9cYF2zd21unVm4yApklFY0AA==}
@@ -6470,24 +6484,6 @@ packages:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       use-sync-external-store: 1.2.0_react@18.1.0
-
-  /@tanstack/react-query/4.2.3_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-JLaMOxoJTkiAu7QpevRCt2uI/0vd3E8K/rSlCuRgWlcW5DeJDFpDS5kfzmLO5MOcD97fgsJRrDbxDORxR1FdJA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@tanstack/query-core': 4.2.3
-      '@types/use-sync-external-store': 0.0.3
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      use-sync-external-store: 1.2.0_react@18.2.0
 
   /@testing-library/dom/8.17.1:
     resolution: {integrity: sha512-KnH2MnJUzmFNPW6RIKfd+zf2Wue8mEKX0M3cpX6aKl5ZXrJM1/c/Pc8c2xDNYQCnJO48Sm5ITbMXgqTr3h4jxQ==}
