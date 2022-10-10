@@ -18,7 +18,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 
-import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -44,7 +43,7 @@ import { TradeActions } from "./TradeActions";
  *
  * ********************************************************************************************
  */
-import { AssetHeading, PoolOverview, TradeDetails, TradeReviewSeparator } from "./_components";
+import { AssetHeading, PoolOverview, TradeAssetField, TradeDetails, TradeReviewSeparator } from "./_components";
 import { formatNumberAsDecimal } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
@@ -630,47 +629,23 @@ const Trade = (props: TradeProps) => {
         <article className="flex flex-col rounded bg-gray-900 text-xs lg:col-span-2">
           <ul className="flex flex-col p-4">
             <li className="flex flex-col">
-              <div className="mb-1 flex flex-row text-xs">
-                <span className="mr-auto">Collateral</span>
-                <span className="text-gray-300">
-                  Balance:
-                  <span className="ml-1">{formatNumberAsDecimal(collateralBalance)}</span>
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedCollateral && selectedCollateral.symbol ? (
-                    <>
-                      <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharsUC(selectedCollateral.symbol)}</span>
-                    </>
-                  ) : (
-                    <RacetrackSpinnerIcon />
-                  )}
-                </div>
-                <input
-                  type="number"
-                  placeholder="0"
-                  step="0.01"
-                  min={COLLATERAL_MIN_VALUE}
-                  max={COLLATERAL_MAX_VALUE}
-                  value={inputCollateral.value}
-                  onInput={onInputCollateral}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
-                    "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
-                  })}
-                />
-              </div>
-              {inputCollateral.error ? (
-                <span className="radious col-span-6 my-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
-                  {inputCollateral.error}
-                </span>
-              ) : (
-                <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="AlmostEqualTo" />
-                  <span className="ml-1">{formatNumberAsCurrency(collateralDollarValue, 4)}</span>
-                </span>
-              )}
+              <TradeAssetField
+                label="Collateral"
+                balance={formatNumberAsDecimal(collateralBalance)}
+                symbol={selectedCollateral.symbol}
+                dollarValue={formatNumberAsCurrency(collateralDollarValue, 4)}
+                min={COLLATERAL_MIN_VALUE}
+                max={COLLATERAL_MAX_VALUE}
+                value={inputCollateral.value}
+                errorMessage={inputCollateral.error}
+                onInput={onInputCollateral}
+                onMax={() => {
+                  setInputCollateral({
+                    value: String(collateralBalance ?? 0),
+                    error: "",
+                  });
+                }}
+              />
             </li>
             <li className="relative flex items-center justify-center py-5">
               <div className="h-[2px] w-full bg-gray-800" />
@@ -690,45 +665,17 @@ const Trade = (props: TradeProps) => {
               </button>
             </li>
             <li className="flex flex-col">
-              <div className="mb-1 flex flex-row text-xs">
-                <span className="mr-auto">Position</span>
-                <span className="text-gray-300">
-                  Balance:
-                  <span className="ml-1">{formatNumberAsDecimal(positionBalance)}</span>
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedPosition && selectedPosition.symbol ? (
-                    <>
-                      <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharsUC(selectedPosition.symbol)}</span>
-                    </>
-                  ) : null}
-                </div>
-                <input
-                  type="number"
-                  placeholder="0"
-                  step="0.01"
-                  min={POSITION_MIN_VALUE}
-                  max={POSITION_MAX_VALUE}
-                  value={inputPosition.value}
-                  onInput={onInputPosition}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
-                    "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
-                  })}
-                />
-              </div>
-              {inputPosition.error ? (
-                <span className="radious col-span-6 mt-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
-                  {inputPosition.error}
-                </span>
-              ) : (
-                <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="AlmostEqualTo" />
-                  <span className="ml-1">{formatNumberAsCurrency(positionDollarValue, 4)}</span>
-                </span>
-              )}
+              <TradeAssetField
+                label="Position"
+                balance={formatNumberAsDecimal(positionBalance)}
+                symbol={selectedPosition.symbol}
+                dollarValue={formatNumberAsCurrency(positionDollarValue, 4)}
+                min={POSITION_MIN_VALUE}
+                max={POSITION_MAX_VALUE}
+                value={inputPosition.value}
+                errorMessage={inputPosition.error}
+                onInput={onInputPosition}
+              />
             </li>
             <li className="mt-4 grid grid-cols-6 gap-2">
               <p className="col-span-3 self-end rounded bg-gray-500 p-2 text-center text-sm font-semibold text-gray-200">
