@@ -22,9 +22,7 @@ describe("Sifchain's client", () => {
     const tokenEntries = await queryClients.tokenRegistry.entries({}).then((x) => x.registry?.entries);
 
     const rowan = tokenEntries?.find((x) => x.denom === "rowan");
-    const juno = tokenEntries?.find(
-      (x) => x.denom === "ibc/330D65554F859FB20E13413C88951CFE774DD2D83F593417A0552C0607C92225",
-    );
+    const juno = tokenEntries?.find((x) => x.baseDenom === "ujuno");
 
     if (!rowan || !juno) {
       throw new Error("rowan or juno not found");

@@ -130,25 +130,33 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
       const [_, fromAmountDecimal] = runCatching(() => Decimal.fromUserInput(amount, fromToken?.decimals ?? 0));
 
       const [__, result] = runCatching(() => {
-        const fromCoin = {
-          denom: fromToken?.denom ?? fromToken?.symbol ?? "",
-          amount: fromAmountDecimal?.atomics ?? "0",
-          poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
-        };
-
-        const toCoin = {
-          denom: toToken?.denom ?? toToken?.symbol ?? "",
-          poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
-        };
-
         return stargateClient?.simulateSwapSync(
-          fromCoin,
-          toCoin,
-          pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0",
-          slippage,
-          Maybe.of(swapFeeRateResult).mapOr("0", (x) => Decimal.fromAtomics(x.swapFeeRate, 18).toString()),
+          {
+            denom: fromToken?.denom ?? fromToken?.symbol ?? "",
+            amount: fromAmountDecimal?.atomics ?? "0",
+            nativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
+            externalAssetBalance: fromPool?.externalAssetBalance ?? "0",
+            nativeCustody: fromPool?.nativeCustody ?? "0",
+            externalCustody: fromPool?.externalCustody ?? "0",
+            nativeLiabilities: fromPool?.nativeLiabilities ?? "0",
+            externalLiabilities: fromPool?.externalLiabilities ?? "0",
+          },
+          {
+            denom: toToken?.denom ?? toToken?.symbol ?? "",
+            nativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
+            externalAssetBalance: toPool?.externalAssetBalance ?? "0",
+            nativeCustody: toPool?.nativeCustody ?? "0",
+            externalCustody: toPool?.externalCustody ?? "0",
+            nativeLiabilities: toPool?.nativeLiabilities ?? "0",
+            externalLiabilities: toPool?.externalLiabilities ?? "0",
+          },
+          {
+            swapFeeRate: Maybe.of(swapFeeRateResult).mapOr("0", ({ swapFeeRate }) =>
+              Decimal.fromAtomics(swapFeeRate, 18).toString(),
+            ),
+            slippage: slippage.toString(),
+            currentRatioShiftingRate: pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0",
+          },
         );
       });
 

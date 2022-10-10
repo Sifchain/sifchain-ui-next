@@ -1,6 +1,4 @@
-import type { IAsset } from "@sifchain/common";
-
-export const ROWAN: IAsset = {
+export const ROWAN = {
   symbol: "rowan",
   name: "Rowan",
   decimals: 18,
