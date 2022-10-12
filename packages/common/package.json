@@ -18,7 +18,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@cosmjs/stargate": "^0.29.0",
+    "@cosmjs/stargate": "^0.29.1",
     "big.js": "^6.2.1",
     "decimal.js-light": "^2.5.1",
     "js-cookie": "^3.0.1",
