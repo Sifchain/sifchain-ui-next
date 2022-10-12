@@ -184,10 +184,11 @@ export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL24hChange = props.pool.stats.tvl_24h_change || 0;
   const volume = props.pool.stats.volume || 0;
   const volume24hChange = props.pool.stats.volume_24h_change || 0;
-  const health = props.pool.stats.health ? String(Number(props.pool.stats.health) * 100).slice(0, 7) : "0";
+  const health = props.pool.stats.health ? Number(props.pool.stats.health) : 0;
   const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
   const asset24hChange = props.pool.stats.asset_24h_change || 0;
   const marginApr = props.pool.stats.margin_apr;
+
   return (
     <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
       <li className="2xl:place-self-normal mb-4 px-4 lg:col-span-2 lg:mb-0 lg:w-full lg:place-self-center">
@@ -242,9 +243,9 @@ export function PoolOverview(props: PoolOverviewProps) {
           </span>
         </div>
         <div className="flex flex-col">
-          <span className="flex flex-row items-center text-gray-300">Margin APR</span>
+          <span className="flex flex-row items-center text-gray-300">Margin APY</span>
           {marginApr ? (
-            <span className="text-sm font-semibold">{formatNumberAsDecimal(Number(marginApr), 6)}%</span>
+            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr, 6)}%</span>
           ) : (
             <HtmlUnicode name="EmDash" />
           )}
@@ -254,7 +255,7 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">Pool Health</span>
             <TooltipPoolHealth />
           </span>
-          <span className="text-sm font-semibold">{health}%</span>
+          <span className="text-sm font-semibold">{formatNumberAsPercent(health, 4)}</span>
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">

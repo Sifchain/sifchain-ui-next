@@ -44,7 +44,7 @@ import { TradeActions } from "./TradeActions";
  * ********************************************************************************************
  */
 import { AssetHeading, PoolOverview, TradeAssetField, TradeDetails, TradeReviewSeparator } from "./_components";
-import { formatNumberAsDecimal } from "./_intl";
+import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
@@ -338,6 +338,8 @@ const Trade = (props: TradeProps) => {
     1 / Number(inputLeverage.value),
   );
 
+  const [priceImpact, setPriceImpact] = useState(0);
+
   const calculatePosition = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
       const input = BigNumber(inputAmount);
@@ -345,6 +347,8 @@ const Trade = (props: TradeProps) => {
 
       const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals);
       const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals);
+
+      setPriceImpact(swap?.priceImpact ?? 0);
 
       return {
         value: value.toString(),
@@ -478,16 +482,24 @@ const Trade = (props: TradeProps) => {
     return minimumCollateral;
   }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals]);
 
-  const isCollateralValid = !inputCollateral.value || Number(inputCollateral.value) >= minimumCollateral;
-
   useEffect(() => {
-    if (!isCollateralValid) {
+    const isCollateralValid = !inputCollateral.value;
+
+    if (!isCollateralValid && Number(inputCollateral.value) < minimumCollateral) {
       setInputCollateral({
         value: inputCollateral.value,
         error: `Minimum collateral is ${formatNumberAsDecimal(minimumCollateral, 12)}`,
       });
+      return;
     }
-  }, [inputCollateral.value, isCollateralValid, minimumCollateral]);
+
+    if (!isCollateralValid && priceImpact > 0.01) {
+      setInputCollateral({
+        value: inputCollateral.value,
+        error: `Price impact is too high: ${formatNumberAsPercent(priceImpact)}`,
+      });
+    }
+  }, [inputCollateral.value, minimumCollateral, priceImpact]);
 
   /**
    * ********************************************************************************************
@@ -786,6 +798,7 @@ const Trade = (props: TradeProps) => {
                           {removeFirstCharsUC(selectedPosition.symbol)}
                         </>,
                       ],
+                      ["Price impact", <>{formatNumberAsPercent(priceImpact)}</>],
                     ]}
                   />
                 </section>
