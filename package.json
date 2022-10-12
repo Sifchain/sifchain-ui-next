@@ -16,7 +16,8 @@
     "storybook": "pnpm -C ./packages/ui run storybook ",
     "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
-    "e2e": "pnpm -C ./apps/e2e run test"
+    "e2e": "pnpm -C ./apps/e2e run test",
+    "changeset": "changeset version"
   },
   "keywords": [],
   "license": "Apache-2.0",

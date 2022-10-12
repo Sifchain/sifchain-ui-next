@@ -513,11 +513,6 @@ export class SifSigningStargateClient extends SigningStargateClient {
     };
     const isSwappingToNativeCoin = this.#isNativeCoin(toCoin.denom);
 
-    // // eslint-disable-next-line
-    // // @ts-ignore
-    // // eslint-disable-next-line
-    // console.log("swapParams", { swapParams });
-
     const { swap, fee } = calculateSwapWithFee(swapParams, isSwappingToNativeCoin);
 
     const priceImpact = calculatePriceImpact(fromCoin.amount, fromCoin.poolBalance);
