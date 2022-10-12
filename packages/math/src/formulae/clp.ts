@@ -1,13 +1,13 @@
 import BigNumber from "bignumber.js";
 import { calculateSlipAdjustment } from "./common";
 
-export const calculatePoolUnits = (
+export function calculatePoolUnits(
   nativeAmount: BigNumber.Value,
   externalAmount: BigNumber.Value,
   pooledNativeAmount: BigNumber.Value,
   pooledExternalAmount: BigNumber.Value,
   poolUnits: BigNumber.Value,
-) => {
+) {
   const na = new BigNumber(nativeAmount);
   const ea = new BigNumber(externalAmount);
   const pna = new BigNumber(pooledNativeAmount);
@@ -36,4 +36,4 @@ export const calculatePoolUnits = (
   const denominator = new BigNumber(2).times(pooledExternalAmount).times(pooledNativeAmount);
 
   return numerator.div(denominator).times(slipAdjustmentCalc);
-};
+}

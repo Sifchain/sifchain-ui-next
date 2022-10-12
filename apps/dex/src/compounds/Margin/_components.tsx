@@ -4,42 +4,43 @@ import type { useEnhancedPoolsQuery } from "~/domains/clp";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import clsx from "clsx";
 import {
   ArrowDownIcon,
   ChartIcon,
   ExternalLink,
   formatNumberAsCurrency,
   formatNumberAsDecimal,
+  RacetrackSpinnerIcon,
   TokenEntry,
   TokenSelector as BaseTokenSelector,
 } from "@sifchain/ui";
+import clsx from "clsx";
 
 import { TooltipInterestRate, TooltipLiquidationThreshold, TooltipPoolHealth } from "./tooltips";
 
-import { formatNumberAsPercent } from "./_intl";
-import { removeFirstCharsUC, HtmlUnicode } from "./_trade";
 import type { FC, ReactNode } from "react";
 import AssetIcon from "../AssetIcon";
+import { formatNumberAsPercent } from "./_intl";
+import { HtmlUnicode, removeFirstCharsUC } from "./_trade";
 
 type NoResultsTrProps = {
   colSpan: number;
 };
-export function NoResultsRow(props: NoResultsTrProps) {
-  return (
-    <tr>
-      <td colSpan={props.colSpan} className="p-20 text-center text-gray-400">
-        No results for your wallet address.
-      </td>
-    </tr>
-  );
-}
+
+export const NoResultsRow: FC<NoResultsTrProps> = (props) => (
+  <tr>
+    <td colSpan={props.colSpan} className="p-20 text-center text-gray-400">
+      No results for your wallet address.
+    </td>
+  </tr>
+);
 
 type PaginationShowItemsProps = {
   limit: number;
   offset: number;
   total: number;
 };
+
 export function PaginationShowItems({ limit, offset, total }: PaginationShowItemsProps) {
   const initial = offset + limit;
 
@@ -183,10 +184,11 @@ export function PoolOverview(props: PoolOverviewProps) {
   const poolTVL24hChange = props.pool.stats.tvl_24h_change || 0;
   const volume = props.pool.stats.volume || 0;
   const volume24hChange = props.pool.stats.volume_24h_change || 0;
-  const health = props.pool.stats.health ? String(Number(props.pool.stats.health) * 100).slice(0, 7) : "0";
+  const health = props.pool.stats.health ? Number(props.pool.stats.health) : 0;
   const rowan24hChange = props.pool.stats.rowan_24h_change || 0;
   const asset24hChange = props.pool.stats.asset_24h_change || 0;
   const marginApr = props.pool.stats.margin_apr;
+
   return (
     <ul className="py-4 lg:grid lg:grid-cols-7 lg:gap-5">
       <li className="2xl:place-self-normal mb-4 px-4 lg:col-span-2 lg:mb-0 lg:w-full lg:place-self-center">
@@ -241,9 +243,9 @@ export function PoolOverview(props: PoolOverviewProps) {
           </span>
         </div>
         <div className="flex flex-col">
-          <span className="flex flex-row items-center text-gray-300">Margin APR</span>
+          <span className="flex flex-row items-center text-gray-300">Margin APY</span>
           {marginApr ? (
-            <span className="text-sm font-semibold">{formatNumberAsDecimal(Number(marginApr), 6)}%</span>
+            <span className="text-sm font-semibold">{formatNumberAsDecimal(marginApr, 6)}%</span>
           ) : (
             <HtmlUnicode name="EmDash" />
           )}
@@ -253,7 +255,7 @@ export function PoolOverview(props: PoolOverviewProps) {
             <span className="mr-1">Pool Health</span>
             <TooltipPoolHealth />
           </span>
-          <span className="text-sm font-semibold">{health}%</span>
+          <span className="text-sm font-semibold">{formatNumberAsPercent(health, 4)}</span>
         </div>
         <div className="flex flex-col">
           <span className="flex flex-row items-center text-gray-300">
@@ -334,4 +336,77 @@ export const TradeReviewSeparator = ({ className = "" }) => (
       <ArrowDownIcon className="text-lg" />
     </div>
   </div>
+);
+
+type TradeAssetFieldProps = JSX.IntrinsicElements["input"] & {
+  balance: string;
+  symbol: string;
+  errorMessage?: string;
+  dollarValue?: string;
+  label?: string;
+  onMax?: () => void;
+};
+
+export const TradeAssetField: FC<TradeAssetFieldProps> = ({
+  balance,
+  symbol,
+  dollarValue,
+  errorMessage,
+  className,
+  onMax,
+  label,
+  ...inputProps
+}) => (
+  <fieldset className="flex flex-col">
+    <div className="mb-1 flex flex-row text-xs">
+      <span className="mr-auto">{label}</span>
+      <a
+        className="text-gray-300"
+        role={onMax ? "button" : undefined}
+        title={onMax ? "Set max value" : undefined}
+        onClick={(e) => {
+          e.preventDefault();
+          onMax?.();
+        }}
+      >
+        Balance:
+        <span className="ml-1">{balance}</span>
+      </a>
+    </div>
+    <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
+        {symbol ? (
+          <>
+            <AssetIcon symbol={symbol} network="sifchain" size="sm" />
+            <span>{removeFirstCharsUC(symbol)}</span>
+          </>
+        ) : (
+          <RacetrackSpinnerIcon />
+        )}
+      </div>
+      <input
+        type="number"
+        placeholder="0"
+        step="0.01"
+        className={clsx(
+          "rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white",
+          {
+            "ring ring-red-600 focus:ring focus:ring-red-600": Boolean(errorMessage),
+          },
+          className,
+        )}
+        {...inputProps}
+      />
+    </div>
+    {errorMessage ? (
+      <span className="radious col-span-6 my-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
+        {errorMessage}
+      </span>
+    ) : (
+      <span className="mt-1 text-right text-gray-300">
+        <HtmlUnicode name="AlmostEqualTo" />
+        <span className="ml-1">{dollarValue}</span>
+      </span>
+    )}
+  </fieldset>
 );
