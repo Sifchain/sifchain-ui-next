@@ -343,8 +343,8 @@ const Trade = (props: TradeProps) => {
       const input = BigNumber(inputAmount);
       const swap = calculateSwap(input.toString(), Number(leverage));
 
-      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedPosition.decimals);
-      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedPosition.decimals);
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals);
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals);
 
       return {
         value: value.toString(),
@@ -359,8 +359,8 @@ const Trade = (props: TradeProps) => {
       const input = BigNumber(inputAmount);
       const swap = calculateReverseSwap(input.toString(), 1 / Number(leverage));
 
-      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedCollateral.decimals);
-      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedCollateral.decimals);
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals);
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals);
 
       const valuePlusFee = value.plus(fee);
       const currentPercentage = 100 - Number(swapFeeRate) * 100;
