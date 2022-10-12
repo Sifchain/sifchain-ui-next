@@ -69,7 +69,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   );
 
   const swapRateAsNumber = Decimal.fromAtomics(
-    swapRateData?.swap ?? "0",
+    swapRateData?.rawReceiving ?? "0",
     collateralTokenQuery?.data?.decimals ?? 0,
   ).toFloatApproximation();
 
@@ -110,8 +110,11 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
   ) {
     const collateralDecimals = collateralTokenQuery.data.decimals ?? 0;
 
-    const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionSwap.swap, collateralDecimals);
-    const closingPositionFeeAsDecimal = Decimal.fromAtomics(closingPositionSwap.fee ?? "0", collateralDecimals);
+    const closingPositionAsDecimal = Decimal.fromAtomics(closingPositionSwap.rawReceiving, collateralDecimals);
+    const closingPositionFeeAsDecimal = Decimal.fromAtomics(
+      closingPositionSwap.liquidityProviderFee ?? "0",
+      collateralDecimals,
+    );
 
     const liabilitiesAsDecimal = Decimal.fromUserInput(props.data.liabilities, collateralDecimals);
 
