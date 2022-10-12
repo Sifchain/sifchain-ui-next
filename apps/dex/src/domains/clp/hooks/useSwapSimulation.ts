@@ -1,7 +1,9 @@
 import { Decimal } from "@cosmjs/math";
 import { runCatching } from "@sifchain/common";
+import type { SifSigningStargateClient } from "@sifchain/stargate";
 import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
+import type { ArgumentTypes } from "rambda";
 import { useCallback, useMemo } from "react";
 
 import { ROWAN } from "~/domains/assets";
@@ -15,6 +17,8 @@ const COMMON_OPTIONS = {
   refetchInterval: 6000,
   enabled: true,
 };
+
+type SimulateSwapSyncArgs = ArgumentTypes<SifSigningStargateClient["simulateSwapSync"]>;
 
 export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: string, fromAmount: string, leverage = 0) {
   const { data: fromToken } = useEnhancedTokenQuery(fromDenom, COMMON_OPTIONS);
@@ -45,8 +49,8 @@ export function useMarginPositionSimulationQuery(fromDenom: string, toDenom: str
           Decimal.fromAtomics(x, 18).toString(),
         );
 
-        const externalAssetDecimals = toDenom === "rowan" ? fromToken.decimals : ROWAN.decimals;
-        const nativeAssetDecimals = toDenom === "rowan" ? ROWAN.decimals : fromToken.decimals;
+        const externalAssetDecimals = toDenom === ROWAN.symbol ? fromToken.decimals : ROWAN.decimals;
+        const nativeAssetDecimals = toDenom === ROWAN.symbol ? ROWAN.decimals : fromToken.decimals;
 
         const params = {
           swapFeeRate,
@@ -123,7 +127,7 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
   const { data: swapFeeRateResult } = useSifnodeQuery("clp.getSwapFeeRate", [{}], COMMON_OPTIONS);
   const { data: marginParamsResult } = useSifnodeQuery("margin.getParams", [{}], COMMON_OPTIONS);
 
-  const currentPmtpPeriodBlockRate = pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0";
+  const pmtpPeriodBlockRate = pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0";
 
   const swapFeeRate = Maybe.of(swapFeeRateResult?.swapFeeRate).mapOr("0", (x) => Decimal.fromAtomics(x, 18).toString());
 
@@ -140,85 +144,37 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
       const [_, fromAmountDecimal] = runCatching(() => Decimal.fromUserInput(amount, fromToken?.decimals ?? 0));
 
       const [__, result] = runCatching(() => {
-        const fromCoin = {
-          denom: fromToken?.denom ?? fromToken?.symbol ?? "",
-          amount: fromAmountDecimal?.atomics ?? "0",
-          poolNativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: fromPool?.externalAssetBalance ?? "0",
-        };
-
-        if (fromDenom === "rowan" || toDenom === "rowan") {
-          const pool = fromDenom === "rowan" ? toPool : fromPool;
-
-          if (!pool?.externalAsset || !fromToken || !toToken || !pmtpParams || !swapFeeRateResult) {
-            throw new Error("Pool or amount is not defined");
-          }
-
-          const externalAssetDecimals = toDenom === "rowan" ? fromToken.decimals : ROWAN.decimals;
-          const nativeAssetDecimals = toDenom === "rowan" ? ROWAN.decimals : fromToken.decimals;
-
-          const params = {
-            swapFeeRate,
-            currentRatioShiftingRate: currentPmtpPeriodBlockRate,
-            externalAssetDecimals: externalAssetDecimals,
-            nativeAssetDecimals: nativeAssetDecimals,
-            isMarginEnabled: marginEnabledPools.has(pool.externalAsset?.symbol ?? ""),
-          };
-
-          const poolInstance = new Pool(pool, params);
-
-          const swapResult = poolInstance.calculateSwap({
-            inputAmount: amount,
-            inputDenom: fromDenom,
-          });
-
-          return Maybe.of(swapResult).mapOr(
-            {
-              rawReceiving: "0",
-              minimumReceiving: "0",
-              liquidityProviderFee: "0",
-              priceImpact: 0,
-            },
-            ({ swap, fee }) => ({
-              rawReceiving: swap.plus(fee).integerValue().toFixed(0),
-              minimumReceiving: swap.minus(swap.times(slippage)).integerValue().toFixed(0),
-              liquidityProviderFee: fee.integerValue().toFixed(0),
-              priceImpact: 0,
-            }),
-          );
+        if (!stargateClient) {
+          throw new Error("Stargate client is not defined");
         }
 
-        const toCoin = {
-          denom: toToken?.denom ?? toToken?.symbol ?? "",
-          poolNativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
-          poolExternalAssetBalance: toPool?.externalAssetBalance ?? "0",
+        const fromCoin: SimulateSwapSyncArgs[0] = {
+          denom: fromToken?.denom ?? fromToken?.symbol ?? "",
+          amount: fromAmountDecimal?.atomics ?? "0",
+          nativeAssetBalance: fromPool?.nativeAssetBalance ?? "0",
+          externalAssetBalance: fromPool?.externalAssetBalance ?? "0",
+          ...fromPool, // pass on additional pool data
+          isMarginEnabled: marginEnabledPools.has(fromPool?.externalAsset?.symbol ?? ""),
         };
 
-        return stargateClient?.simulateSwapSync(
-          fromCoin, // X
-          toCoin, // Y
-          currentPmtpPeriodBlockRate,
+        const toCoin: SimulateSwapSyncArgs[1] = {
+          denom: toToken?.denom ?? toToken?.symbol ?? "",
+          nativeAssetBalance: toPool?.nativeAssetBalance ?? "0",
+          externalAssetBalance: toPool?.externalAssetBalance ?? "0",
+          ...toPool, // pass on additional pool data
+          isMarginEnabled: marginEnabledPools.has(toPool?.externalAsset?.symbol ?? ""),
+        };
+
+        return stargateClient.simulateSwapSync(fromCoin, toCoin, {
+          pmtpBlockRate: pmtpPeriodBlockRate,
+          swapFeeRate,
           slippage,
-          Maybe.of(swapFeeRateResult).mapOr("0", (x) => Decimal.fromAtomics(x.swapFeeRate, 18).toString()),
-        );
+        });
       });
 
       return result;
     },
-    [
-      fromAmount,
-      fromToken,
-      toToken,
-      fromDenom,
-      toDenom,
-      stargateClient,
-      currentPmtpPeriodBlockRate,
-      slippage,
-      swapFeeRateResult,
-      pmtpParams,
-      swapFeeRate,
-      marginEnabledPools,
-    ],
+    [fromAmount, fromToken, toToken, swapFeeRate, stargateClient, marginEnabledPools, pmtpPeriodBlockRate, slippage],
   );
 
   const derivedQuery = useQuery(
