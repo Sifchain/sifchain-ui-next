@@ -61,7 +61,7 @@ describe("Pool", () => {
 
     const parsedResult = Decimal.fromAtomics(rawSwapResult, subject.nativeAssetDecimals).toString();
 
-    expect(parsedResult).toBe("82595.050355982503421577");
+    expect(parsedResult).toBe("65053.835223436027514509");
   });
 
   test("Pool.calculateSwap (closing position)", () => {
@@ -92,6 +92,6 @@ describe("Pool", () => {
 
     const parsedResult = Decimal.fromAtomics(rawSwapResult, 18).toString();
 
-    expect(parsedResult).toBe("9971.243500760376076756");
+    expect(parsedResult).toBe("10860.552646080672871532");
   });
 });
