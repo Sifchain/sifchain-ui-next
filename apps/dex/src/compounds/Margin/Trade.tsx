@@ -496,7 +496,7 @@ const Trade = (props: TradeProps) => {
     if (!isCollateralValid && priceImpact > 0.01) {
       setInputCollateral({
         value: inputCollateral.value,
-        error: `Price impact is too high: ${formatNumberAsPercent(priceImpact)}`,
+        error: `Price impact is too high (${formatNumberAsPercent(priceImpact)}). Please reduce the collateral amount`,
       });
     }
   }, [inputCollateral.value, minimumCollateral, priceImpact]);
