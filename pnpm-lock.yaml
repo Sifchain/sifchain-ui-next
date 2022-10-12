@@ -196,12 +196,12 @@ importers:
 
   apps/e2e:
     specifiers:
-      '@playwright/test': ^1.25.1
+      '@playwright/test': ^1.27.1
       '@tsconfig/node18-strictest-esm': ^1.0.1
       '@types/node': ^18.7.15
       dotenv: ^16.0.2
     devDependencies:
-      '@playwright/test': 1.25.1
+      '@playwright/test': 1.27.1
       '@tsconfig/node18-strictest-esm': 1.0.1
       '@types/node': 18.7.15
       dotenv: 16.0.2
@@ -4577,13 +4577,13 @@ packages:
     resolution: {integrity: sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==}
     dev: false
 
-  /@playwright/test/1.25.1:
-    resolution: {integrity: sha512-IJ4X0yOakXtwkhbnNzKkaIgXe6df7u3H3FnuhI9Jqh+CdO0e/lYQlDLYiyI9cnXK8E7UAppAWP+VqAv6VX7HQg==}
+  /@playwright/test/1.27.1:
+    resolution: {integrity: sha512-mrL2q0an/7tVqniQQF6RBL2saskjljXzqNcCOVMUjRIgE6Y38nCNaP+Dc2FBW06bcpD3tqIws/HT9qiMHbNU0A==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 18.7.15
-      playwright-core: 1.25.1
+      playwright-core: 1.27.1
     dev: true
 
   /@pmmmwh/react-refresh-webpack-plugin/0.5.7_metx475lqcp4j5c75za4zf7xbi:
@@ -18318,8 +18318,8 @@ packages:
       find-up: 5.0.0
     dev: true
 
-  /playwright-core/1.25.1:
-    resolution: {integrity: sha512-lSvPCmA2n7LawD2Hw7gSCLScZ+vYRkhU8xH0AapMyzwN+ojoDqhkH/KIEUxwNu2PjPoE/fcE0wLAksdOhJ2O5g==}
+  /playwright-core/1.27.1:
+    resolution: {integrity: sha512-9EmeXDncC2Pmp/z+teoVYlvmPWUC6ejSSYZUln7YaP89Z6lpAaiaAnqroUt/BoLo8tn7WYShcfaCh+xofZa44Q==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
