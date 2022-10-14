@@ -372,12 +372,6 @@ importers:
       ts-node: 10.9.1_62wwqupym3vtw4mnbkwur73zyu
       typescript: 4.8.4
 
-  packages/evm/build/commonjs/generated:
-    specifiers: {}
-
-  packages/evm/build/module/generated:
-    specifiers: {}
-
   packages/evm/src/generated:
     specifiers: {}
 
