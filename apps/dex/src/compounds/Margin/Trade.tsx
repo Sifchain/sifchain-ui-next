@@ -58,7 +58,7 @@ import {
   removeFirstCharsUC,
 } from "./_trade";
 
-const FLIP_ASSETS_DISABLED = true;
+const FLIP_ASSETS_DISABLED = false;
 
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;

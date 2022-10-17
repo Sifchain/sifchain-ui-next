@@ -345,7 +345,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const [[firstPoolRes, secondPoolRes], pmtpParamsRes, swapFeeRateRes, marginParamsRes] = await Promise.all([
       getPoolPair(),
       queryClient.clp.getPmtpParams({}),
-      queryClient.clp.getSwapFeeRate({}),
+      queryClient.clp.getSwapFeeParams({}),
       queryClient.margin.getParams({}),
     ]);
 

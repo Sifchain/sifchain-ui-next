@@ -56,19 +56,19 @@ export interface Params {
   healthGainFactor: string;
   epochLength: Long;
   pools: string[];
-  forceCloseThreshold: string;
   removalQueueThreshold: string;
   maxOpenPositions: Long;
   poolOpenThreshold: string;
   forceCloseFundPercentage: string;
-  forceCloseInsuranceFundAddress: string;
+  forceCloseFundAddress: string;
   incrementalInterestPaymentFundPercentage: string;
-  incrementalInterestPaymentInsuranceFundAddress: string;
+  incrementalInterestPaymentFundAddress: string;
   sqModifier: string;
   safetyFactor: string;
   closedPools: string[];
   incrementalInterestPaymentEnabled: boolean;
   whitelistingEnabled: boolean;
+  rowanCollateralEnabled: boolean;
 }
 
 export interface MTP {
@@ -147,19 +147,19 @@ function createBaseParams(): Params {
     healthGainFactor: "",
     epochLength: Long.ZERO,
     pools: [],
-    forceCloseThreshold: "",
     removalQueueThreshold: "",
     maxOpenPositions: Long.UZERO,
     poolOpenThreshold: "",
     forceCloseFundPercentage: "",
-    forceCloseInsuranceFundAddress: "",
+    forceCloseFundAddress: "",
     incrementalInterestPaymentFundPercentage: "",
-    incrementalInterestPaymentInsuranceFundAddress: "",
+    incrementalInterestPaymentFundAddress: "",
     sqModifier: "",
     safetyFactor: "",
     closedPools: [],
     incrementalInterestPaymentEnabled: false,
     whitelistingEnabled: false,
+    rowanCollateralEnabled: false,
   };
 }
 
@@ -189,9 +189,6 @@ export const Params = {
     for (const v of message.pools) {
       writer.uint32(66).string(v!);
     }
-    if (message.forceCloseThreshold !== "") {
-      writer.uint32(74).string(message.forceCloseThreshold);
-    }
     if (message.removalQueueThreshold !== "") {
       writer.uint32(82).string(message.removalQueueThreshold);
     }
@@ -204,14 +201,14 @@ export const Params = {
     if (message.forceCloseFundPercentage !== "") {
       writer.uint32(106).string(message.forceCloseFundPercentage);
     }
-    if (message.forceCloseInsuranceFundAddress !== "") {
-      writer.uint32(114).string(message.forceCloseInsuranceFundAddress);
+    if (message.forceCloseFundAddress !== "") {
+      writer.uint32(114).string(message.forceCloseFundAddress);
     }
     if (message.incrementalInterestPaymentFundPercentage !== "") {
       writer.uint32(122).string(message.incrementalInterestPaymentFundPercentage);
     }
-    if (message.incrementalInterestPaymentInsuranceFundAddress !== "") {
-      writer.uint32(130).string(message.incrementalInterestPaymentInsuranceFundAddress);
+    if (message.incrementalInterestPaymentFundAddress !== "") {
+      writer.uint32(130).string(message.incrementalInterestPaymentFundAddress);
     }
     if (message.sqModifier !== "") {
       writer.uint32(138).string(message.sqModifier);
@@ -227,6 +224,9 @@ export const Params = {
     }
     if (message.whitelistingEnabled === true) {
       writer.uint32(168).bool(message.whitelistingEnabled);
+    }
+    if (message.rowanCollateralEnabled === true) {
+      writer.uint32(176).bool(message.rowanCollateralEnabled);
     }
     return writer;
   },
@@ -262,9 +262,6 @@ export const Params = {
         case 8:
           message.pools.push(reader.string());
           break;
-        case 9:
-          message.forceCloseThreshold = reader.string();
-          break;
         case 10:
           message.removalQueueThreshold = reader.string();
           break;
@@ -278,13 +275,13 @@ export const Params = {
           message.forceCloseFundPercentage = reader.string();
           break;
         case 14:
-          message.forceCloseInsuranceFundAddress = reader.string();
+          message.forceCloseFundAddress = reader.string();
           break;
         case 15:
           message.incrementalInterestPaymentFundPercentage = reader.string();
           break;
         case 16:
-          message.incrementalInterestPaymentInsuranceFundAddress = reader.string();
+          message.incrementalInterestPaymentFundAddress = reader.string();
           break;
         case 17:
           message.sqModifier = reader.string();
@@ -300,6 +297,9 @@ export const Params = {
           break;
         case 21:
           message.whitelistingEnabled = reader.bool();
+          break;
+        case 22:
+          message.rowanCollateralEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -319,19 +319,16 @@ export const Params = {
       healthGainFactor: isSet(object.healthGainFactor) ? String(object.healthGainFactor) : "",
       epochLength: isSet(object.epochLength) ? Long.fromValue(object.epochLength) : Long.ZERO,
       pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => String(e)) : [],
-      forceCloseThreshold: isSet(object.forceCloseThreshold) ? String(object.forceCloseThreshold) : "",
       removalQueueThreshold: isSet(object.removalQueueThreshold) ? String(object.removalQueueThreshold) : "",
       maxOpenPositions: isSet(object.maxOpenPositions) ? Long.fromValue(object.maxOpenPositions) : Long.UZERO,
       poolOpenThreshold: isSet(object.poolOpenThreshold) ? String(object.poolOpenThreshold) : "",
       forceCloseFundPercentage: isSet(object.forceCloseFundPercentage) ? String(object.forceCloseFundPercentage) : "",
-      forceCloseInsuranceFundAddress: isSet(object.forceCloseInsuranceFundAddress)
-        ? String(object.forceCloseInsuranceFundAddress)
-        : "",
+      forceCloseFundAddress: isSet(object.forceCloseFundAddress) ? String(object.forceCloseFundAddress) : "",
       incrementalInterestPaymentFundPercentage: isSet(object.incrementalInterestPaymentFundPercentage)
         ? String(object.incrementalInterestPaymentFundPercentage)
         : "",
-      incrementalInterestPaymentInsuranceFundAddress: isSet(object.incrementalInterestPaymentInsuranceFundAddress)
-        ? String(object.incrementalInterestPaymentInsuranceFundAddress)
+      incrementalInterestPaymentFundAddress: isSet(object.incrementalInterestPaymentFundAddress)
+        ? String(object.incrementalInterestPaymentFundAddress)
         : "",
       sqModifier: isSet(object.sqModifier) ? String(object.sqModifier) : "",
       safetyFactor: isSet(object.safetyFactor) ? String(object.safetyFactor) : "",
@@ -340,6 +337,7 @@ export const Params = {
         ? Boolean(object.incrementalInterestPaymentEnabled)
         : false,
       whitelistingEnabled: isSet(object.whitelistingEnabled) ? Boolean(object.whitelistingEnabled) : false,
+      rowanCollateralEnabled: isSet(object.rowanCollateralEnabled) ? Boolean(object.rowanCollateralEnabled) : false,
     };
   },
 
@@ -357,18 +355,16 @@ export const Params = {
     } else {
       obj.pools = [];
     }
-    message.forceCloseThreshold !== undefined && (obj.forceCloseThreshold = message.forceCloseThreshold);
     message.removalQueueThreshold !== undefined && (obj.removalQueueThreshold = message.removalQueueThreshold);
     message.maxOpenPositions !== undefined &&
       (obj.maxOpenPositions = (message.maxOpenPositions || Long.UZERO).toString());
     message.poolOpenThreshold !== undefined && (obj.poolOpenThreshold = message.poolOpenThreshold);
     message.forceCloseFundPercentage !== undefined && (obj.forceCloseFundPercentage = message.forceCloseFundPercentage);
-    message.forceCloseInsuranceFundAddress !== undefined &&
-      (obj.forceCloseInsuranceFundAddress = message.forceCloseInsuranceFundAddress);
+    message.forceCloseFundAddress !== undefined && (obj.forceCloseFundAddress = message.forceCloseFundAddress);
     message.incrementalInterestPaymentFundPercentage !== undefined &&
       (obj.incrementalInterestPaymentFundPercentage = message.incrementalInterestPaymentFundPercentage);
-    message.incrementalInterestPaymentInsuranceFundAddress !== undefined &&
-      (obj.incrementalInterestPaymentInsuranceFundAddress = message.incrementalInterestPaymentInsuranceFundAddress);
+    message.incrementalInterestPaymentFundAddress !== undefined &&
+      (obj.incrementalInterestPaymentFundAddress = message.incrementalInterestPaymentFundAddress);
     message.sqModifier !== undefined && (obj.sqModifier = message.sqModifier);
     message.safetyFactor !== undefined && (obj.safetyFactor = message.safetyFactor);
     if (message.closedPools) {
@@ -379,6 +375,7 @@ export const Params = {
     message.incrementalInterestPaymentEnabled !== undefined &&
       (obj.incrementalInterestPaymentEnabled = message.incrementalInterestPaymentEnabled);
     message.whitelistingEnabled !== undefined && (obj.whitelistingEnabled = message.whitelistingEnabled);
+    message.rowanCollateralEnabled !== undefined && (obj.rowanCollateralEnabled = message.rowanCollateralEnabled);
     return obj;
   },
 
@@ -393,7 +390,6 @@ export const Params = {
     message.epochLength =
       object.epochLength !== undefined && object.epochLength !== null ? Long.fromValue(object.epochLength) : Long.ZERO;
     message.pools = object.pools?.map((e) => e) || [];
-    message.forceCloseThreshold = object.forceCloseThreshold ?? "";
     message.removalQueueThreshold = object.removalQueueThreshold ?? "";
     message.maxOpenPositions =
       object.maxOpenPositions !== undefined && object.maxOpenPositions !== null
@@ -401,15 +397,15 @@ export const Params = {
         : Long.UZERO;
     message.poolOpenThreshold = object.poolOpenThreshold ?? "";
     message.forceCloseFundPercentage = object.forceCloseFundPercentage ?? "";
-    message.forceCloseInsuranceFundAddress = object.forceCloseInsuranceFundAddress ?? "";
+    message.forceCloseFundAddress = object.forceCloseFundAddress ?? "";
     message.incrementalInterestPaymentFundPercentage = object.incrementalInterestPaymentFundPercentage ?? "";
-    message.incrementalInterestPaymentInsuranceFundAddress =
-      object.incrementalInterestPaymentInsuranceFundAddress ?? "";
+    message.incrementalInterestPaymentFundAddress = object.incrementalInterestPaymentFundAddress ?? "";
     message.sqModifier = object.sqModifier ?? "";
     message.safetyFactor = object.safetyFactor ?? "";
     message.closedPools = object.closedPools?.map((e) => e) || [];
     message.incrementalInterestPaymentEnabled = object.incrementalInterestPaymentEnabled ?? false;
     message.whitelistingEnabled = object.whitelistingEnabled ?? false;
+    message.rowanCollateralEnabled = object.rowanCollateralEnabled ?? false;
     return message;
   },
 };
