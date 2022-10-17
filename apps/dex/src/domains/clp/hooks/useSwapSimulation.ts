@@ -24,7 +24,7 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
   const { data: toToken } = useEnhancedTokenQuery(toDenom, COMMON_OPTIONS);
   const { data: stargateClient } = useSifStargateClient();
   const { data: pmtpParams } = useSifnodeQuery("clp.getPmtpParams", [{}], COMMON_OPTIONS);
-  const { data: swapFeeRateResult } = useSifnodeQuery("clp.getSwapFeeRate", [{}], COMMON_OPTIONS);
+  const { data: swapFeeRateResult } = useSifnodeQuery("clp.getSwapFeeParams", [{}], COMMON_OPTIONS);
   const { data: marginParamsResult } = useSifnodeQuery("margin.getParams", [{}], COMMON_OPTIONS);
 
   const pmtpBlockRate = pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0";
