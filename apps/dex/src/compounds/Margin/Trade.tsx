@@ -58,8 +58,6 @@ import {
   removeFirstCharsUC,
 } from "./_trade";
 
-const FLIP_ASSETS_DISABLED = true;
-
 const calculateBorrowAmount = (collateralTokenAmount: number, leverage: number) => {
   return collateralTokenAmount * leverage - collateralTokenAmount;
 };
@@ -103,6 +101,7 @@ const TradeTab: NextPage = () => {
   ) {
     const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
+
     const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
       allowedPools.includes(pool.asset.denom as string),
     );
@@ -127,9 +126,9 @@ export default TradeTab;
  * ********************************************************************************************
  */
 type TradeProps = {
-  enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
-  enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
-  govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
+  enhancedPools: NonNullable<ReturnType<typeof useEnhancedPoolsQuery>["data"]>;
+  enhancedRowan: NonNullable<ReturnType<typeof useEnhancedTokenQuery>["data"]>;
+  govParams: NonNullable<NonNullable<ReturnType<typeof useMarginParamsQuery>["data"]>["params"]>;
 };
 
 const ROWAN_DENOM = "rowan";
@@ -615,6 +614,8 @@ const Trade = (props: TradeProps) => {
     }
   };
 
+  const isRowanCollateralEnabled = props.govParams.rowanCollateralEnabled;
+
   return (
     <>
       <Head>
@@ -664,16 +665,16 @@ const Trade = (props: TradeProps) => {
               <button
                 type="button"
                 onClick={onClickSwitch}
-                disabled={FLIP_ASSETS_DISABLED}
+                disabled={!isRowanCollateralEnabled}
                 className={clsx(
                   "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
                   {
-                    "hover:scale-125": !FLIP_ASSETS_DISABLED,
+                    "hover:scale-125": isRowanCollateralEnabled,
                   },
                 )}
               >
-                {FLIP_ASSETS_DISABLED ? <ArrowDownIcon /> : <SwapIcon />}
+                {!isRowanCollateralEnabled ? <ArrowDownIcon /> : <SwapIcon />}
               </button>
             </li>
             <li className="flex flex-col">

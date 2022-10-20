@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/stargate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "@cosmjs/stargate client for sifnode",
   "main": "build/commonjs/index.js",
   "exports": {
@@ -14,9 +14,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@cosmjs/math": "^0.29.0",
-    "@cosmjs/proto-signing": "^0.29.0",
-    "@cosmjs/stargate": "^0.29.0",
+    "@cosmjs/math": "^0.29.1",
+    "@cosmjs/proto-signing": "^0.29.1",
+    "@cosmjs/stargate": "^0.29.1",
     "@cosmjs/tendermint-rpc": "^0.29.0",
     "@sifchain/math": "workspace:*",
     "@sifchain/proto-types": "workspace:*",
