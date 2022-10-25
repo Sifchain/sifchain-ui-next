@@ -217,18 +217,7 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                     itemActive,
                     currentSortBy: pagination.sort_by,
                   });
-                  const linkTagA = (
-                    <a className="flex flex-row items-center">
-                      {header.title}
-                      {itemActive && (
-                        <ChevronDownIcon
-                          className={clsx("ml-1 transition-transform", {
-                            "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                          })}
-                        />
-                      )}
-                    </a>
-                  );
+
                   const linkNextEl = (
                     <Link
                       href={{
@@ -239,8 +228,16 @@ const OpenPositionsTable = (props: OpenPositionsTableProps) => {
                         },
                       }}
                       scroll={false}
+                      className="flex flex-row items-center"
                     >
-                      {linkTagA}
+                      {header.title}
+                      {itemActive && (
+                        <ChevronDownIcon
+                          className={clsx("ml-1 transition-transform", {
+                            "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                          })}
+                        />
+                      )}
                     </Link>
                   );
                   return (

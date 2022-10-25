@@ -127,8 +127,8 @@ export function PaginationContainer({ pagination }: PaginationContainerProps) {
         pages={pages}
         page={page}
         renderFirst={() => (
-          <Link href={{ query: { ...router.query, offset: 0 } }} scroll={false}>
-            <a className="mr-1">First</a>
+          <Link href={{ query: { ...router.query, offset: 0 } }} scroll={false} className="mr-1">
+            First
           </Link>
         )}
         renderLast={() => (
@@ -137,21 +137,22 @@ export function PaginationContainer({ pagination }: PaginationContainerProps) {
               query: { ...router.query, offset: paginationTotal - paginationLimit },
             }}
             scroll={false}
+            className="ml-1"
           >
-            <a className="ml-1">Last</a>
+            Last
           </Link>
         )}
         renderItem={(page) => {
           const offset = String(paginationLimit * page - paginationLimit);
           return (
-            <Link href={{ query: { ...router.query, offset } }} scroll={false}>
-              <a
-                className={clsx(classNamePaginationItem, {
-                  "bg-gray-400": pagination.offset === offset,
-                })}
-              >
-                {page}
-              </a>
+            <Link
+              href={{ query: { ...router.query, offset } }}
+              scroll={false}
+              className={clsx(classNamePaginationItem, {
+                "bg-gray-400": pagination.offset === offset,
+              })}
+            >
+              {page}
             </Link>
           );
         }}
