@@ -4,7 +4,7 @@ import type { SifSigningStargateClient } from "@sifchain/stargate";
 import { Maybe } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber } from "bignumber.js";
-import type { ArgumentTypes } from "rambda";
+import { ArgumentTypes, propEq } from "rambda";
 import { useCallback, useMemo } from "react";
 
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
@@ -29,7 +29,10 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
 
   const pmtpBlockRate = pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0";
 
-  const swapFeeRate = Maybe.of(swapFeeRateResult?.swapFeeRate).mapOr("0", (x) => Decimal.fromAtomics(x, 18).toString());
+  const poolSwapFeeRate = swapFeeRateResult?.tokenParams.find(propEq("asset", fromDenom));
+  const swapFeeRate = Maybe.of(poolSwapFeeRate).mapOr(swapFeeRateResult?.defaultSwapFeeRate, (x) =>
+    Decimal.fromAtomics(x.swapFeeRate, 18).toString(),
+  );
 
   const marginEnabledPools = useMemo(
     () => new Set(marginParamsResult?.params?.pools || []),
@@ -62,7 +65,7 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
         };
 
         return stargateClient?.simulateSwapSync(fromCoin, toCoin, {
-          pmtpBlockRate: pmtpBlockRate,
+          pmtpBlockRate,
           swapFeeRate,
           slippage,
         });

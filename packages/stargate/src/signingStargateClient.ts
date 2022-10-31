@@ -353,6 +353,12 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const secondPoolSymbol = secondPoolRes.pool?.externalAsset?.symbol ?? "";
     const marginEnabledPools = marginParamsRes.params?.pools ?? [];
 
+    const externalAsset = (firstPoolRes.pool?.externalAsset ?? secondPoolRes.pool?.externalAsset)?.symbol ?? "";
+
+    const swapFeeRate =
+      swapFeeRateRes.tokenParams.find((p) => p.asset === externalAsset)?.swapFeeRate ??
+      swapFeeRateRes.defaultSwapFeeRate;
+
     const result = this.#simulateAutoCompositePoolSwap(
       {
         ...fromCoin,
@@ -371,7 +377,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
         isMarginEnabled: marginEnabledPools.includes(secondPoolSymbol),
       },
       {
-        swapFeeRate: swapFeeRateRes.swapFeeRate,
+        swapFeeRate,
         pmtpBlockRate: pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
         slippage,
       },
