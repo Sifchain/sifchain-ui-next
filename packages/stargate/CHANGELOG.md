@@ -1,5 +1,16 @@
 # @sifchain/stargate
 
+## 1.1.0
+
+### Minor Changes
+
+- 5cf66e25: Support new clp queries for pool specific swapFeeRate
+
+### Patch Changes
+
+- Updated dependencies [5cf66e25]
+  - @sifchain/proto-types@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes
