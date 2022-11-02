@@ -1,5 +1,12 @@
 # hello
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [75424c4b]
+  - @sifchain/evm@0.1.2
+
 ## 3.0.2
 
 ### Patch Changes
