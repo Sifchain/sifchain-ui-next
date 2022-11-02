@@ -128,7 +128,7 @@ const BalancesPage: NextPage = () => {
           <div className="flex items-center justify-between pb-6 md:pb-8">
             <h2 className="text-2xl font-bold text-white">Balances</h2>
             <Link href={`balances?action=import&denom=cusdc`}>
-              <Button as="a">
+              <Button>
                 <ArrowDownIcon /> Import
               </Button>
             </Link>
@@ -250,10 +250,12 @@ const BalancesPage: NextPage = () => {
                 <td className="w-0">
                   <div className="flex gap-3">
                     {actions.map(({ label, href }, index) => (
-                      <Link key={index} href={href(balance.denom)}>
-                        <a className="first:bg-gray-750 h-full flex-1 rounded px-4 py-3 text-center hover:bg-gray-700">
-                          <span>{label}</span>
-                        </a>
+                      <Link
+                        key={index}
+                        href={href(balance.denom)}
+                        className="first:bg-gray-750 h-full flex-1 rounded px-4 py-3 text-center hover:bg-gray-700"
+                      >
+                        <span>{label}</span>
                       </Link>
                     ))}
                   </div>
@@ -269,11 +271,13 @@ const BalancesPage: NextPage = () => {
         onClose={useCallback(() => setSelectedDenom(undefined), [])}
       >
         {actions.map(({ label, Icon, href }, index) => (
-          <Link key={index} href={href(selectedDenom ?? "")}>
-            <a className="flex w-full items-center gap-2 rounded px-2 py-3 hover:bg-gray-700">
-              <Icon />
-              <span>{label}</span>
-            </a>
+          <Link
+            key={index}
+            href={href(selectedDenom ?? "")}
+            className="flex w-full items-center gap-2 rounded px-2 py-3 hover:bg-gray-700"
+          >
+            <Icon />
+            <span>{label}</span>
           </Link>
         ))}
       </Modal>

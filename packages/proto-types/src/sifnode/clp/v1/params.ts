@@ -73,13 +73,13 @@ export interface ProviderDistributionParams {
 }
 
 export interface SwapFeeParams {
-  swapFeeRate: string;
+  defaultSwapFeeRate: string;
   tokenParams: SwapFeeTokenParams[];
 }
 
 export interface SwapFeeTokenParams {
   asset: string;
-  minSwapFee: string;
+  swapFeeRate: string;
 }
 
 function createBaseParams(): Params {
@@ -918,13 +918,13 @@ export const ProviderDistributionParams = {
 };
 
 function createBaseSwapFeeParams(): SwapFeeParams {
-  return { swapFeeRate: "", tokenParams: [] };
+  return { defaultSwapFeeRate: "", tokenParams: [] };
 }
 
 export const SwapFeeParams = {
   encode(message: SwapFeeParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.swapFeeRate !== "") {
-      writer.uint32(10).string(message.swapFeeRate);
+    if (message.defaultSwapFeeRate !== "") {
+      writer.uint32(10).string(message.defaultSwapFeeRate);
     }
     for (const v of message.tokenParams) {
       SwapFeeTokenParams.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -940,7 +940,7 @@ export const SwapFeeParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.swapFeeRate = reader.string();
+          message.defaultSwapFeeRate = reader.string();
           break;
         case 2:
           message.tokenParams.push(SwapFeeTokenParams.decode(reader, reader.uint32()));
@@ -955,7 +955,7 @@ export const SwapFeeParams = {
 
   fromJSON(object: any): SwapFeeParams {
     return {
-      swapFeeRate: isSet(object.swapFeeRate) ? String(object.swapFeeRate) : "",
+      defaultSwapFeeRate: isSet(object.defaultSwapFeeRate) ? String(object.defaultSwapFeeRate) : "",
       tokenParams: Array.isArray(object?.tokenParams)
         ? object.tokenParams.map((e: any) => SwapFeeTokenParams.fromJSON(e))
         : [],
@@ -964,7 +964,7 @@ export const SwapFeeParams = {
 
   toJSON(message: SwapFeeParams): unknown {
     const obj: any = {};
-    message.swapFeeRate !== undefined && (obj.swapFeeRate = message.swapFeeRate);
+    message.defaultSwapFeeRate !== undefined && (obj.defaultSwapFeeRate = message.defaultSwapFeeRate);
     if (message.tokenParams) {
       obj.tokenParams = message.tokenParams.map((e) => (e ? SwapFeeTokenParams.toJSON(e) : undefined));
     } else {
@@ -975,14 +975,14 @@ export const SwapFeeParams = {
 
   fromPartial<I extends Exact<DeepPartial<SwapFeeParams>, I>>(object: I): SwapFeeParams {
     const message = createBaseSwapFeeParams();
-    message.swapFeeRate = object.swapFeeRate ?? "";
+    message.defaultSwapFeeRate = object.defaultSwapFeeRate ?? "";
     message.tokenParams = object.tokenParams?.map((e) => SwapFeeTokenParams.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseSwapFeeTokenParams(): SwapFeeTokenParams {
-  return { asset: "", minSwapFee: "" };
+  return { asset: "", swapFeeRate: "" };
 }
 
 export const SwapFeeTokenParams = {
@@ -990,8 +990,8 @@ export const SwapFeeTokenParams = {
     if (message.asset !== "") {
       writer.uint32(10).string(message.asset);
     }
-    if (message.minSwapFee !== "") {
-      writer.uint32(18).string(message.minSwapFee);
+    if (message.swapFeeRate !== "") {
+      writer.uint32(18).string(message.swapFeeRate);
     }
     return writer;
   },
@@ -1007,7 +1007,7 @@ export const SwapFeeTokenParams = {
           message.asset = reader.string();
           break;
         case 2:
-          message.minSwapFee = reader.string();
+          message.swapFeeRate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1020,21 +1020,21 @@ export const SwapFeeTokenParams = {
   fromJSON(object: any): SwapFeeTokenParams {
     return {
       asset: isSet(object.asset) ? String(object.asset) : "",
-      minSwapFee: isSet(object.minSwapFee) ? String(object.minSwapFee) : "",
+      swapFeeRate: isSet(object.swapFeeRate) ? String(object.swapFeeRate) : "",
     };
   },
 
   toJSON(message: SwapFeeTokenParams): unknown {
     const obj: any = {};
     message.asset !== undefined && (obj.asset = message.asset);
-    message.minSwapFee !== undefined && (obj.minSwapFee = message.minSwapFee);
+    message.swapFeeRate !== undefined && (obj.swapFeeRate = message.swapFeeRate);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<SwapFeeTokenParams>, I>>(object: I): SwapFeeTokenParams {
     const message = createBaseSwapFeeTokenParams();
     message.asset = object.asset ?? "";
-    message.minSwapFee = object.minSwapFee ?? "";
+    message.swapFeeRate = object.swapFeeRate ?? "";
     return message;
   },
 };

@@ -156,22 +156,19 @@ const HistoryTable = (props: HistoryTableProps) => {
                             },
                           }}
                           scroll={false}
+                          className={clsx("flex flex-row items-center", {
+                            "font-semibold text-white": itemActive,
+                            "justify-end": isRightAligned,
+                          })}
                         >
-                          <a
-                            className={clsx("flex flex-row items-center", {
-                              "font-semibold text-white": itemActive,
-                              "justify-end": isRightAligned,
-                            })}
-                          >
-                            {header.title}
-                            {itemActive && (
-                              <ChevronDownIcon
-                                className={clsx("ml-1 transition-transform", {
-                                  "-rotate-180": pagination.sort_by === SORT_BY.ASC,
-                                })}
-                              />
-                            )}
-                          </a>
+                          {header.title}
+                          {itemActive && (
+                            <ChevronDownIcon
+                              className={clsx("ml-1 transition-transform", {
+                                "-rotate-180": pagination.sort_by === SORT_BY.ASC,
+                              })}
+                            />
+                          )}
                         </Link>
                         {header.title === HEADERS_TITLES.PAID_INTEREST ? (
                           <>

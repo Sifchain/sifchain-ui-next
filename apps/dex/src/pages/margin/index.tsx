@@ -75,8 +75,8 @@ const Margin: NextPage = () => {
             activeTab={activeTab}
             items={TABS_CONTENT}
             renderItem={(title, slug) => (
-              <Link href={{ query: { tab: slug, ...qsPool } }}>
-                <a className="flex py-2">{title}</a>
+              <Link href={{ query: { tab: slug, ...qsPool } }} className="flex py-2">
+                {title}
               </Link>
             )}
           />

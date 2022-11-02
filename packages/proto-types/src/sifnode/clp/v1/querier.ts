@@ -134,7 +134,7 @@ export interface ProviderDistributionParamsRes {
 export interface SwapFeeParamsReq {}
 
 export interface SwapFeeParamsRes {
-  swapFeeRate: string;
+  defaultSwapFeeRate: string;
   tokenParams: SwapFeeTokenParams[];
 }
 
@@ -1647,13 +1647,13 @@ export const SwapFeeParamsReq = {
 };
 
 function createBaseSwapFeeParamsRes(): SwapFeeParamsRes {
-  return { swapFeeRate: "", tokenParams: [] };
+  return { defaultSwapFeeRate: "", tokenParams: [] };
 }
 
 export const SwapFeeParamsRes = {
   encode(message: SwapFeeParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.swapFeeRate !== "") {
-      writer.uint32(10).string(message.swapFeeRate);
+    if (message.defaultSwapFeeRate !== "") {
+      writer.uint32(10).string(message.defaultSwapFeeRate);
     }
     for (const v of message.tokenParams) {
       SwapFeeTokenParams.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -1669,7 +1669,7 @@ export const SwapFeeParamsRes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.swapFeeRate = reader.string();
+          message.defaultSwapFeeRate = reader.string();
           break;
         case 2:
           message.tokenParams.push(SwapFeeTokenParams.decode(reader, reader.uint32()));
@@ -1684,7 +1684,7 @@ export const SwapFeeParamsRes = {
 
   fromJSON(object: any): SwapFeeParamsRes {
     return {
-      swapFeeRate: isSet(object.swapFeeRate) ? String(object.swapFeeRate) : "",
+      defaultSwapFeeRate: isSet(object.defaultSwapFeeRate) ? String(object.defaultSwapFeeRate) : "",
       tokenParams: Array.isArray(object?.tokenParams)
         ? object.tokenParams.map((e: any) => SwapFeeTokenParams.fromJSON(e))
         : [],
@@ -1693,7 +1693,7 @@ export const SwapFeeParamsRes = {
 
   toJSON(message: SwapFeeParamsRes): unknown {
     const obj: any = {};
-    message.swapFeeRate !== undefined && (obj.swapFeeRate = message.swapFeeRate);
+    message.defaultSwapFeeRate !== undefined && (obj.defaultSwapFeeRate = message.defaultSwapFeeRate);
     if (message.tokenParams) {
       obj.tokenParams = message.tokenParams.map((e) => (e ? SwapFeeTokenParams.toJSON(e) : undefined));
     } else {
@@ -1704,7 +1704,7 @@ export const SwapFeeParamsRes = {
 
   fromPartial<I extends Exact<DeepPartial<SwapFeeParamsRes>, I>>(object: I): SwapFeeParamsRes {
     const message = createBaseSwapFeeParamsRes();
-    message.swapFeeRate = object.swapFeeRate ?? "";
+    message.defaultSwapFeeRate = object.defaultSwapFeeRate ?? "";
     message.tokenParams = object.tokenParams?.map((e) => SwapFeeTokenParams.fromPartial(e)) || [];
     return message;
   },
