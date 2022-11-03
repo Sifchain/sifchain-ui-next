@@ -2,7 +2,7 @@
   "$schema": "./_assets.ethereum.schema.json",
   "assets": [
     {
-      "address": "0x82D50AD3C1091866E258Fd0f1a7cC9674609D254",
+      "address": "0x7C970aAD43c1ec26825040Bdb7cDfc2fDf5217d1",
       "decimals": 18,
       "homeNetwork": "ethereum",
       "imageUrl": "https://assets.coingecko.com/coins/images/14044/small/EROWAN.png?1614656300",

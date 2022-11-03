@@ -7,11 +7,11 @@ import {
   createAuthzAminoConverters,
   createBankAminoConverters,
   createDistributionAminoConverters,
-  createFreegrantAminoConverters,
+  createFeegrantAminoConverters,
   createGovAminoConverters,
   createIbcAminoConverters,
   createStakingAminoConverters,
-  defaultRegistryTypes as defaultStargateTypes,
+  defaultRegistryTypes,
   SignerData,
   SigningStargateClient,
   SigningStargateClientOptions,
@@ -20,7 +20,8 @@ import {
   StdFee,
 } from "@cosmjs/stargate";
 import { HttpEndpoint, Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { calculatePriceImpact, SwapParams, calculateSwapWithFee } from "@sifchain/math";
+import { calculatePriceImpact, calculateSwapWithFee, SwapParams } from "@sifchain/math";
+import type { PoolRes } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import * as clpTx from "@sifchain/proto-types/sifnode/clp/v1/tx";
 import * as dispensationTx from "@sifchain/proto-types/sifnode/dispensation/v1/tx";
 import * as ethBridgeTx from "@sifchain/proto-types/sifnode/ethbridge/v1/tx";
@@ -73,15 +74,45 @@ export const createDefaultTypes = (prefix: string) =>
     ...createGovAminoConverters(),
     ...createStakingAminoConverters(prefix),
     ...createIbcAminoConverters(),
-    ...createFreegrantAminoConverters(),
+    ...createFeegrantAminoConverters(),
     ...createSifchainAminoConverters(),
   });
 
 export const createDefaultRegistry = () => {
-  const registry = new Registry(defaultStargateTypes);
+  const registry = new Registry(defaultRegistryTypes);
   MODULES.flatMap(generateTypeUrlAndTypeRecords).forEach((x) => registry.register(x.typeUrl, x.type));
   return registry;
 };
+
+type ClpPool = NonNullable<PoolRes["pool"]>;
+
+export type SwapPoolParams = Pick<ClpPool, "nativeAssetBalance" | "externalAssetBalance"> & {
+  nativeLiabilities?: ClpPool["nativeLiabilities"];
+  externalLiabilities?: ClpPool["externalLiabilities"];
+  isMarginEnabled?: boolean;
+};
+
+export type SwapOptions = {
+  pmtpBlockRate?: string | undefined;
+  swapFeeRate?: string | undefined;
+  slippage?: number | string | undefined;
+};
+
+/**
+ * Extract native balance adjusted with liabilities when margin enabled
+ */
+const extractNativeBalance = (pool: SwapPoolParams) =>
+  pool.isMarginEnabled && pool.nativeLiabilities
+    ? BigNumber(pool.nativeAssetBalance).plus(pool.nativeLiabilities).toFixed(0)
+    : pool.nativeAssetBalance;
+
+/**
+ * Extract external balance adjusted with liabilities when margin enabled
+ */
+const extractExternalBalance = (pool: SwapPoolParams) =>
+  pool.isMarginEnabled && pool.externalLiabilities
+    ? BigNumber(pool.externalAssetBalance).plus(pool.externalLiabilities).toFixed(0)
+    : pool.externalAssetBalance;
 
 export class SifSigningStargateClient extends SigningStargateClient {
   /**
@@ -318,28 +349,20 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   /**
-   * requires pre-fetched pool balances & PMTP block rate
-   * useful when lots of swap simulation are required (i.e. text box with real-time update)
+   * Requires pre-fetched pool balances & PMTP block rate.
+   * Useful when lots of swap simulations are required (i.e. text box with real-time update)
+   *
    * @param fromCoin
    * @param toCoin
-   * @param pmtpBlockRate
-   * @param slippage
+   * @param options
    * @returns
    */
   simulateSwapSync(
-    fromCoin: Coin & {
-      poolExternalAssetBalance: string;
-      poolNativeAssetBalance: string;
-    },
-    toCoin: Omit<Coin, "amount"> & {
-      poolExternalAssetBalance: string;
-      poolNativeAssetBalance: string;
-    },
-    pmtpBlockRate?: string,
-    slippage?: number | string,
-    swapFeeRate?: string,
+    fromCoin: Coin & SwapPoolParams,
+    toCoin: Omit<Coin, "amount"> & SwapPoolParams,
+    options?: SwapOptions,
   ) {
-    const result = this.#simulateAutoCompositePoolSwap(fromCoin, toCoin, pmtpBlockRate, swapFeeRate, slippage);
+    const result = this.#simulateAutoCompositePoolSwap(fromCoin, toCoin, options);
 
     return {
       rawReceiving: result.rawReceiving.integerValue().toFixed(0),
@@ -350,7 +373,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   /**
-   * asynchronous method for simulating swap
+   * Asynchronous method for simulating swap
    * if lots of swap simulations are required,
    * use {@link simulateSwapSync} instead
    * @param fromCoin
@@ -367,14 +390,16 @@ export class SifSigningStargateClient extends SigningStargateClient {
 
     // use one pool when it's rowan -> coin or coin -> rowan
     // else 2 pools are required
-    const [firstPoolRes, secondPoolRes] = await (async () => {
+
+    const getPoolPair = async (): Promise<[PoolRes, PoolRes]> => {
+      // rowan -> coin
       if (this.#isNativeCoin(fromCoin)) {
         const poolRes = await queryClient.clp.getPool({
           symbol: toCoin.denom,
         });
         return [poolRes, poolRes];
       }
-
+      // coin -> rowan
       if (this.#isNativeCoin(toCoin.denom)) {
         const poolRes = await queryClient.clp.getPool({
           symbol: fromCoin.denom,
@@ -387,44 +412,57 @@ export class SifSigningStargateClient extends SigningStargateClient {
         queryClient.clp.getPool({ symbol: fromCoin.denom }),
         queryClient.clp.getPool({ symbol: toCoin.denom }),
       ]);
-    })();
+    };
 
-    const [pmtpParamsRes, swapFeeRateRes] = await Promise.all([
+    // fetch required chain data in parallel
+    const [[firstPoolRes, secondPoolRes], pmtpParamsRes, swapFeeRateRes, marginParamsRes] = await Promise.all([
+      getPoolPair(),
       queryClient.clp.getPmtpParams({}),
-      queryClient.clp.getSwapFeeRate({}),
+      queryClient.clp.getSwapFeeParams({}),
+      queryClient.margin.getParams({}),
     ]);
 
-    const swapResult = this.#simulateAutoCompositePoolSwap(
+    const firstPoolSymbol = firstPoolRes.pool?.externalAsset?.symbol ?? "";
+    const secondPoolSymbol = secondPoolRes.pool?.externalAsset?.symbol ?? "";
+    const marginEnabledPools = marginParamsRes.params?.pools ?? [];
+
+    const externalAsset = (firstPoolRes.pool?.externalAsset ?? secondPoolRes.pool?.externalAsset)?.symbol ?? "";
+
+    const swapFeeRate =
+      swapFeeRateRes.tokenParams.find((p) => p.asset === externalAsset)?.swapFeeRate ??
+      swapFeeRateRes.defaultSwapFeeRate;
+
+    const result = this.#simulateAutoCompositePoolSwap(
       {
         ...fromCoin,
-        poolNativeAssetBalance: firstPoolRes.pool?.nativeAssetBalance ?? "0",
-        poolExternalAssetBalance: firstPoolRes.pool?.externalAssetBalance ?? "0",
+        nativeAssetBalance: firstPoolRes.pool?.nativeAssetBalance ?? "0",
+        externalAssetBalance: firstPoolRes.pool?.externalAssetBalance ?? "0",
+        nativeLiabilities: firstPoolRes.pool?.nativeLiabilities ?? "0",
+        externalLiabilities: firstPoolRes.pool?.externalLiabilities ?? "0",
+        isMarginEnabled: marginEnabledPools.includes(firstPoolSymbol),
       },
       {
         ...toCoin,
-        poolNativeAssetBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
-        poolExternalAssetBalance: secondPoolRes.pool?.externalAssetBalance ?? "0",
+        nativeAssetBalance: secondPoolRes.pool?.nativeAssetBalance ?? "0",
+        externalAssetBalance: secondPoolRes.pool?.externalAssetBalance ?? "0",
+        nativeLiabilities: secondPoolRes.pool?.nativeLiabilities ?? "0",
+        externalLiabilities: secondPoolRes.pool?.externalLiabilities ?? "0",
+        isMarginEnabled: marginEnabledPools.includes(secondPoolSymbol),
       },
-      pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
-      swapFeeRateRes.swapFeeRate,
-      slippage,
+      {
+        swapFeeRate,
+        pmtpBlockRate: pmtpParamsRes.pmtpRateParams?.pmtpPeriodBlockRate,
+        slippage,
+      },
     );
 
-    return this.#parseSwapResult(swapResult, toCoin.denom);
+    return this.#parseSwapResult(result, toCoin.denom);
   }
 
   #simulateAutoCompositePoolSwap(
-    fromCoin: Coin & {
-      poolExternalAssetBalance: string;
-      poolNativeAssetBalance: string;
-    },
-    toCoin: Omit<Coin, "amount"> & {
-      poolExternalAssetBalance: string;
-      poolNativeAssetBalance: string;
-    },
-    pmtpBlockRate?: string,
-    swapFeeRate?: string,
-    slippage?: number | string,
+    fromCoin: Coin & SwapPoolParams,
+    toCoin: Omit<Coin, "amount"> & SwapPoolParams,
+    params?: SwapOptions,
   ) {
     if (fromCoin.denom === toCoin.denom) {
       throw new Error("Can't swap to the same coin");
@@ -434,35 +472,46 @@ export class SifSigningStargateClient extends SigningStargateClient {
     if (this.#isNativeCoin(fromCoin.denom)) {
       return this.#simulateSwap(
         {
-          amount: fromCoin.amount,
-          poolBalance: fromCoin.poolNativeAssetBalance,
           denom: fromCoin.denom,
+          amount: fromCoin.amount,
+          // X
+          poolBalance:
+            fromCoin.isMarginEnabled && fromCoin.nativeLiabilities
+              ? BigNumber(fromCoin.nativeAssetBalance).plus(fromCoin.nativeLiabilities).toFixed(0)
+              : fromCoin.nativeAssetBalance,
         },
         {
-          poolBalance: toCoin.poolExternalAssetBalance,
           denom: toCoin.denom,
+          // Y
+          poolBalance:
+            toCoin.isMarginEnabled && toCoin.externalLiabilities
+              ? BigNumber(toCoin.externalAssetBalance).plus(toCoin.externalLiabilities).toFixed(0)
+              : toCoin.externalAssetBalance,
         },
-        pmtpBlockRate,
-        swapFeeRate,
-        slippage,
+        params,
       );
     }
+
+    const fromCoinNativeBalanceAdjusted = extractNativeBalance(fromCoin);
+    const fromCoinExternalBalanceAdjusted = extractExternalBalance(fromCoin);
+    const toCoinNativeBalanceAdjusted = extractNativeBalance(toCoin);
+    const toCoinExternalBalanceAdjusted = extractExternalBalance(toCoin);
 
     // coin -> rowan
     if (this.#isNativeCoin(toCoin.denom)) {
       return this.#simulateSwap(
         {
-          amount: fromCoin.amount,
-          poolBalance: fromCoin.poolExternalAssetBalance,
           denom: fromCoin.denom,
+          amount: fromCoin.amount,
+          // X
+          poolBalance: fromCoinExternalBalanceAdjusted,
         },
         {
-          poolBalance: toCoin.poolNativeAssetBalance,
           denom: toCoin.denom,
+          // Y
+          poolBalance: toCoinNativeBalanceAdjusted,
         },
-        pmtpBlockRate,
-        swapFeeRate,
-        slippage,
+        params,
       );
     }
 
@@ -470,44 +519,47 @@ export class SifSigningStargateClient extends SigningStargateClient {
     const firstSwap = this.#simulateSwap(
       {
         amount: fromCoin.amount,
-        poolBalance: fromCoin.poolExternalAssetBalance,
+        poolBalance: fromCoinExternalBalanceAdjusted,
         denom: fromCoin.denom,
       },
       {
-        poolBalance: fromCoin.poolNativeAssetBalance,
+        poolBalance: fromCoinNativeBalanceAdjusted,
         denom: NATIVE_ASSET_DENOM,
       },
-      pmtpBlockRate,
-      swapFeeRate,
+      {
+        pmtpBlockRate: params?.pmtpBlockRate,
+        swapFeeRate: params?.swapFeeRate,
+        // no slippage for first swap
+      },
     );
 
     const firstSwapConvertedLpFee = this.#simulateSwap(
       {
-        amount: firstSwap.liquidityProviderFee.toString(),
-        poolBalance: toCoin.poolNativeAssetBalance,
         denom: toCoin.denom,
+        amount: firstSwap.liquidityProviderFee.toString(),
+        poolBalance: toCoinNativeBalanceAdjusted,
       },
       {
-        poolBalance: toCoin.poolExternalAssetBalance,
         denom: toCoin.denom,
+        poolBalance: toCoinExternalBalanceAdjusted,
       },
-      pmtpBlockRate,
-      swapFeeRate,
+      {
+        pmtpBlockRate: params?.pmtpBlockRate,
+        swapFeeRate: params?.swapFeeRate,
+      },
     );
 
     const secondSwap = this.#simulateSwap(
       {
-        amount: firstSwap.rawReceiving.toString(),
-        poolBalance: toCoin.poolNativeAssetBalance,
         denom: toCoin.denom,
+        amount: firstSwap.rawReceiving.toString(),
+        poolBalance: toCoinNativeBalanceAdjusted,
       },
       {
-        poolBalance: toCoin.poolExternalAssetBalance,
         denom: toCoin.denom,
+        poolBalance: toCoinExternalBalanceAdjusted,
       },
-      pmtpBlockRate,
-      swapFeeRate,
-      slippage,
+      params,
     );
 
     return {
@@ -527,10 +579,10 @@ export class SifSigningStargateClient extends SigningStargateClient {
       poolBalance: string;
       denom: string;
     },
-    pmtpBlockRate?: string,
-    swapFeeRate?: string,
-    slippage?: number | string,
+    params?: SwapOptions,
   ) {
+    const { pmtpBlockRate, swapFeeRate, slippage } = params ?? {};
+
     const swapParams: SwapParams = {
       inputAmount: fromCoin.amount,
       inputBalanceInPool: fromCoin.poolBalance,
@@ -539,13 +591,14 @@ export class SifSigningStargateClient extends SigningStargateClient {
       swapFeeRate: swapFeeRate ?? "0",
     };
     const isSwappingToNativeCoin = this.#isNativeCoin(toCoin.denom);
+
     const { swap, fee } = calculateSwapWithFee(swapParams, isSwappingToNativeCoin);
 
     const priceImpact = calculatePriceImpact(fromCoin.amount, fromCoin.poolBalance);
 
     return {
-      rawReceiving: swap,
       priceImpact,
+      rawReceiving: swap,
       liquidityProviderFee: fee,
       minimumReceiving: BigNumber.max(
         0,
@@ -580,8 +633,8 @@ export class SifSigningStargateClient extends SigningStargateClient {
       throw new Error(`No token record found for denom ${toCoinDenom}`);
     }
 
-    const toCosmJsDecimal = (bn: BigNumber) =>
-      Decimal.fromAtomics(bn.integerValue().toFixed(0).toString(), tokenRecord.decimals.toNumber());
+    const toCosmJsDecimal = (x: BigNumber) =>
+      Decimal.fromAtomics(x.integerValue().toFixed(0).toString(), tokenRecord.decimals.toNumber());
 
     return {
       rawReceiving: toCosmJsDecimal(result.rawReceiving),
@@ -613,6 +666,7 @@ export class SifSigningStargateClient extends SigningStargateClient {
   }
 
   #isNativeCoin(coin: Coin | string) {
-    return typeof coin === "string" ? coin === NATIVE_ASSET_DENOM : coin.denom === NATIVE_ASSET_DENOM;
+    const denom = typeof coin === "string" ? coin : coin.denom;
+    return denom === NATIVE_ASSET_DENOM;
   }
 }

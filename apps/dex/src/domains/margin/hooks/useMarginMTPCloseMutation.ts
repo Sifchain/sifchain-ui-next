@@ -124,6 +124,7 @@ export function useMarginMTPCloseMutation({ _optimisticCustodyAmount }: UseMargi
           );
           queryClient.invalidateQueries(["margin.getMarginOpenPositionBySymbol"]);
           queryClient.invalidateQueries(["margin.getMarginOpenPosition"]);
+          queryClient.invalidateQueries(["all-balances"]);
         }
       }
     },

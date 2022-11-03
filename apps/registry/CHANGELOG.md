@@ -1,5 +1,19 @@
 # @sifchain/registry
 
+## 0.1.3
+
+### Patch Changes
+
+- 75424c4b: Update testnet/devnet peggy contract addresses
+
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [fb39705e]
+- Updated dependencies [2f9c9b69]
+  - @sifchain/ui@1.0.1
+
 ## 0.1.1
 
 ### Patch Changes

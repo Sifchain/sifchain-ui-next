@@ -1,7 +1,6 @@
 /* eslint-disable */
-import { Pool } from "./pool";
+import { Pool, LiquidityProvider, PmtpEpoch, Asset, LiquidityProviderData } from "./types";
 import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
-import { LiquidityProvider, PmtpEpoch, Asset, LiquidityProviderData } from "./types";
 import {
   Params,
   RewardParams,
@@ -10,6 +9,7 @@ import {
   LiquidityProtectionParams,
   LiquidityProtectionRateParams,
   ProviderDistributionParams,
+  SwapFeeTokenParams,
 } from "./params";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
@@ -131,10 +131,11 @@ export interface ProviderDistributionParamsRes {
   params?: ProviderDistributionParams;
 }
 
-export interface SwapFeeRateReq {}
+export interface SwapFeeParamsReq {}
 
-export interface SwapFeeRateRes {
-  swapFeeRate: string;
+export interface SwapFeeParamsRes {
+  defaultSwapFeeRate: string;
+  tokenParams: SwapFeeTokenParams[];
 }
 
 function createBasePoolReq(): PoolReq {
@@ -1606,19 +1607,19 @@ export const ProviderDistributionParamsRes = {
   },
 };
 
-function createBaseSwapFeeRateReq(): SwapFeeRateReq {
+function createBaseSwapFeeParamsReq(): SwapFeeParamsReq {
   return {};
 }
 
-export const SwapFeeRateReq = {
-  encode(_: SwapFeeRateReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const SwapFeeParamsReq = {
+  encode(_: SwapFeeParamsReq, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SwapFeeRateReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SwapFeeParamsReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSwapFeeRateReq();
+    const message = createBaseSwapFeeParamsReq();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1630,42 +1631,48 @@ export const SwapFeeRateReq = {
     return message;
   },
 
-  fromJSON(_: any): SwapFeeRateReq {
+  fromJSON(_: any): SwapFeeParamsReq {
     return {};
   },
 
-  toJSON(_: SwapFeeRateReq): unknown {
+  toJSON(_: SwapFeeParamsReq): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SwapFeeRateReq>, I>>(_: I): SwapFeeRateReq {
-    const message = createBaseSwapFeeRateReq();
+  fromPartial<I extends Exact<DeepPartial<SwapFeeParamsReq>, I>>(_: I): SwapFeeParamsReq {
+    const message = createBaseSwapFeeParamsReq();
     return message;
   },
 };
 
-function createBaseSwapFeeRateRes(): SwapFeeRateRes {
-  return { swapFeeRate: "" };
+function createBaseSwapFeeParamsRes(): SwapFeeParamsRes {
+  return { defaultSwapFeeRate: "", tokenParams: [] };
 }
 
-export const SwapFeeRateRes = {
-  encode(message: SwapFeeRateRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.swapFeeRate !== "") {
-      writer.uint32(10).string(message.swapFeeRate);
+export const SwapFeeParamsRes = {
+  encode(message: SwapFeeParamsRes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.defaultSwapFeeRate !== "") {
+      writer.uint32(10).string(message.defaultSwapFeeRate);
+    }
+    for (const v of message.tokenParams) {
+      SwapFeeTokenParams.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SwapFeeRateRes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SwapFeeParamsRes {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSwapFeeRateRes();
+    const message = createBaseSwapFeeParamsRes();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.swapFeeRate = reader.string();
+          message.defaultSwapFeeRate = reader.string();
+          break;
+        case 2:
+          message.tokenParams.push(SwapFeeTokenParams.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1675,21 +1682,30 @@ export const SwapFeeRateRes = {
     return message;
   },
 
-  fromJSON(object: any): SwapFeeRateRes {
+  fromJSON(object: any): SwapFeeParamsRes {
     return {
-      swapFeeRate: isSet(object.swapFeeRate) ? String(object.swapFeeRate) : "",
+      defaultSwapFeeRate: isSet(object.defaultSwapFeeRate) ? String(object.defaultSwapFeeRate) : "",
+      tokenParams: Array.isArray(object?.tokenParams)
+        ? object.tokenParams.map((e: any) => SwapFeeTokenParams.fromJSON(e))
+        : [],
     };
   },
 
-  toJSON(message: SwapFeeRateRes): unknown {
+  toJSON(message: SwapFeeParamsRes): unknown {
     const obj: any = {};
-    message.swapFeeRate !== undefined && (obj.swapFeeRate = message.swapFeeRate);
+    message.defaultSwapFeeRate !== undefined && (obj.defaultSwapFeeRate = message.defaultSwapFeeRate);
+    if (message.tokenParams) {
+      obj.tokenParams = message.tokenParams.map((e) => (e ? SwapFeeTokenParams.toJSON(e) : undefined));
+    } else {
+      obj.tokenParams = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SwapFeeRateRes>, I>>(object: I): SwapFeeRateRes {
-    const message = createBaseSwapFeeRateRes();
-    message.swapFeeRate = object.swapFeeRate ?? "";
+  fromPartial<I extends Exact<DeepPartial<SwapFeeParamsRes>, I>>(object: I): SwapFeeParamsRes {
+    const message = createBaseSwapFeeParamsRes();
+    message.defaultSwapFeeRate = object.defaultSwapFeeRate ?? "";
+    message.tokenParams = object.tokenParams?.map((e) => SwapFeeTokenParams.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1707,7 +1723,7 @@ export interface Query {
   GetPmtpParams(request: PmtpParamsReq): Promise<PmtpParamsRes>;
   GetLiquidityProtectionParams(request: LiquidityProtectionParamsReq): Promise<LiquidityProtectionParamsRes>;
   GetProviderDistributionParams(request: ProviderDistributionParamsReq): Promise<ProviderDistributionParamsRes>;
-  GetSwapFeeRate(request: SwapFeeRateReq): Promise<SwapFeeRateRes>;
+  GetSwapFeeParams(request: SwapFeeParamsReq): Promise<SwapFeeParamsRes>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1726,7 +1742,7 @@ export class QueryClientImpl implements Query {
     this.GetPmtpParams = this.GetPmtpParams.bind(this);
     this.GetLiquidityProtectionParams = this.GetLiquidityProtectionParams.bind(this);
     this.GetProviderDistributionParams = this.GetProviderDistributionParams.bind(this);
-    this.GetSwapFeeRate = this.GetSwapFeeRate.bind(this);
+    this.GetSwapFeeParams = this.GetSwapFeeParams.bind(this);
   }
   GetPool(request: PoolReq): Promise<PoolRes> {
     const data = PoolReq.encode(request).finish();
@@ -1800,10 +1816,10 @@ export class QueryClientImpl implements Query {
     return promise.then((data) => ProviderDistributionParamsRes.decode(new _m0.Reader(data)));
   }
 
-  GetSwapFeeRate(request: SwapFeeRateReq): Promise<SwapFeeRateRes> {
-    const data = SwapFeeRateReq.encode(request).finish();
-    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetSwapFeeRate", data);
-    return promise.then((data) => SwapFeeRateRes.decode(new _m0.Reader(data)));
+  GetSwapFeeParams(request: SwapFeeParamsReq): Promise<SwapFeeParamsRes> {
+    const data = SwapFeeParamsReq.encode(request).finish();
+    const promise = this.rpc.request("sifnode.clp.v1.Query", "GetSwapFeeParams", data);
+    return promise.then((data) => SwapFeeParamsRes.decode(new _m0.Reader(data)));
   }
 }
 

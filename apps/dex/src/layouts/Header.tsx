@@ -78,11 +78,9 @@ const Header = () => {
           {({ open }) => (
             <>
               <section className="shadow-inset-border flex items-center justify-between md:grid md:place-items-center md:shadow-none">
-                <Link href={linkLogo}>
-                  <a className="flex items-center gap-4 p-2 md:p-1">
-                    <SifchainLogoSmall className="inline-block text-[44px]" />
-                    {isMarginStandaloneOn && <h1 className="pl-3 text-2xl font-semibold">Margin</h1>}
-                  </a>
+                <Link href={linkLogo} className="flex items-center gap-4 p-2 md:p-1">
+                  <SifchainLogoSmall className="inline-block text-[44px]" />
+                  {isMarginStandaloneOn && <h1 className="pl-3 text-2xl font-semibold">Margin</h1>}
                 </Link>
                 <div className="md:hidden">
                   <Disclosure.Button className="p-4">
@@ -121,18 +119,17 @@ const Nav = ({ visibleItems = 3 }) => {
       <ul className="4xl:gap-8 grid items-center gap-2 md:flex md:gap-4 xl:gap-5">
         {menuItems.slice(0, visibleItems).map(({ title, href }) => (
           <li key={title}>
-            <Link href={href}>
-              <a
-                role="navigation"
-                className={clsx(
-                  "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
-                  {
-                    "bg-gray-600": currentPath === href,
-                  },
-                )}
-              >
-                <span className="text-sm font-semibold text-gray-200">{title}</span>
-              </a>
+            <Link
+              href={href}
+              role="navigation"
+              className={clsx(
+                "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
+                {
+                  "bg-gray-600": currentPath === href,
+                },
+              )}
+            >
+              <span className="text-sm font-semibold text-gray-200">{title}</span>
             </Link>
           </li>
         ))}
@@ -150,18 +147,17 @@ const Nav = ({ visibleItems = 3 }) => {
                 <Menu.Items as={SurfaceB} className="absolute top-7 right-0 z-10 grid gap-2 p-2">
                   {menuItems.slice(visibleItems).map(({ title, href }) => (
                     <Menu.Item key={title}>
-                      <Link href={href}>
-                        <a
-                          role="navigation"
-                          className={clsx(
-                            "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
-                            {
-                              "bg-gray-600": currentPath === href,
-                            },
-                          )}
-                        >
-                          <span className="text-sm font-semibold text-gray-200">{title}</span>
-                        </a>
+                      <Link
+                        href={href}
+                        role="navigation"
+                        className={clsx(
+                          "flex items-center gap-4 rounded-md p-2 transition-all hover:bg-gray-800 hover:opacity-80",
+                          {
+                            "bg-gray-600": currentPath === href,
+                          },
+                        )}
+                      >
+                        <span className="text-sm font-semibold text-gray-200">{title}</span>
                       </Link>
                     </Menu.Item>
                   ))}

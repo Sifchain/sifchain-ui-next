@@ -3,6 +3,8 @@ import { calculateSwapWithFee } from "@sifchain/math";
 import type { PoolRes } from "@sifchain/proto-types/sifnode/clp/v1/querier";
 import BigNumber from "bignumber.js";
 
+import { ROWAN } from "~/domains/assets";
+
 export type ClpPool = Pick<
   NonNullable<PoolRes["pool"]>,
   | "nativeAssetBalance"
@@ -71,7 +73,7 @@ export default class Pool {
   }
 
   extractValues(inputDenom: string) {
-    if (inputDenom === "rowan") {
+    if (inputDenom === ROWAN.symbol) {
       return {
         Y: this.externalAssetBalance,
         X: this.nativeAssetBalance,
@@ -88,13 +90,13 @@ export default class Pool {
   extractDebt(X: BigNumber, Y: BigNumber, toRowan: boolean) {
     if (toRowan) {
       return {
-        Y: Y.plus(this.nativeCustody).plus(this.nativeLiabilities),
-        X: X.plus(this.externalCustody).plus(this.externalLiabilities),
+        Y: Y.plus(this.nativeLiabilities),
+        X: X.plus(this.externalLiabilities),
       };
     }
     return {
-      X: X.plus(this.nativeCustody).plus(this.nativeLiabilities),
-      Y: Y.plus(this.externalCustody).plus(this.externalLiabilities),
+      X: X.plus(this.nativeLiabilities),
+      Y: Y.plus(this.externalLiabilities),
     };
   }
 
@@ -109,16 +111,15 @@ export default class Pool {
 
     const x = Decimal.fromUserInput(params.inputAmount, this.nativeAssetDecimals);
 
-    return calculateSwapWithFee(
-      {
-        inputAmount: x.atomics,
-        inputBalanceInPool: X.toString(),
-        outputBalanceInPool: Y.toString(),
-        swapFeeRate: this.swapFeeRate.toString(),
-        currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
-      },
-      toRowan,
-    );
+    const swapParams = {
+      inputAmount: x.atomics,
+      inputBalanceInPool: X.toString(),
+      outputBalanceInPool: Y.toString(),
+      swapFeeRate: this.swapFeeRate.toString(),
+      currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
+    };
+
+    return calculateSwapWithFee(swapParams, toRowan);
   }
 
   calculateSwapToRowan(params: { inputAmount: string; inputDenom: string }) {
@@ -132,20 +133,19 @@ export default class Pool {
 
     const x = Decimal.fromUserInput(params.inputAmount, this.externalAssetDecimals);
 
-    return calculateSwapWithFee(
-      {
-        inputAmount: x.atomics,
-        inputBalanceInPool: X.toString(),
-        outputBalanceInPool: Y.toString(),
-        swapFeeRate: this.swapFeeRate.toString(),
-        currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
-      },
-      toRowan,
-    );
+    const swapParams = {
+      inputAmount: x.atomics,
+      inputBalanceInPool: X.toString(),
+      outputBalanceInPool: Y.toString(),
+      swapFeeRate: this.swapFeeRate.toString(),
+      currentRatioShiftingRate: this.currentRatioShiftingRate.toString(),
+    };
+
+    return calculateSwapWithFee(swapParams, toRowan);
   }
 
   calculateSwap(params: { inputAmount: string; inputDenom: string }) {
-    return params.inputDenom === "rowan" ? this.calculateSwapFromRowan(params) : this.calculateSwapToRowan(params);
+    return params.inputDenom === ROWAN.symbol ? this.calculateSwapFromRowan(params) : this.calculateSwapToRowan(params);
   }
 
   calculateMarginPosition(params: { inputAmount: string; inputDenom: string; leverage: number }) {

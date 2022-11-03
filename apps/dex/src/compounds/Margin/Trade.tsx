@@ -1,9 +1,7 @@
-import type { IAsset } from "@sifchain/common";
-import type { NextPage } from "next";
-import type { ChangeEvent, SyntheticEvent } from "react";
-
 import { Decimal } from "@cosmjs/math";
+import type { IAsset } from "@sifchain/common";
 import {
+  ArrowDownIcon,
   FlashMessage,
   FlashMessage5xxError,
   FlashMessageLoading,
@@ -15,11 +13,11 @@ import {
 } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 
-import AssetIcon from "~/compounds/AssetIcon";
 import OpenPositionsTable from "~/compounds/Margin/OpenPositionsTable";
 import { ROWAN } from "~/domains/assets";
 import { useAllBalancesQuery } from "~/domains/bank/hooks/balances";
@@ -45,8 +43,8 @@ import { TradeActions } from "./TradeActions";
  *
  * ********************************************************************************************
  */
-import { AssetHeading, PoolOverview, TradeDetails, TradeReviewSeparator } from "./_components";
-import { formatNumberAsDecimal } from "./_intl";
+import { AssetHeading, PoolOverview, TradeAssetField, TradeDetails, TradeReviewSeparator } from "./_components";
+import { formatNumberAsDecimal, formatNumberAsPercent } from "./_intl";
 import {
   COLLATERAL_MAX_VALUE,
   COLLATERAL_MIN_VALUE,
@@ -103,6 +101,7 @@ const TradeTab: NextPage = () => {
   ) {
     const { params } = govParamsQuery.data;
     const allowedPools = params.pools;
+
     const filteredEnhancedPools = enhancedPoolsQuery.data.filter((pool) =>
       allowedPools.includes(pool.asset.denom as string),
     );
@@ -127,9 +126,9 @@ export default TradeTab;
  * ********************************************************************************************
  */
 type TradeProps = {
-  enhancedPools: Exclude<ReturnType<typeof useEnhancedPoolsQuery>["data"], undefined>;
-  enhancedRowan: Exclude<ReturnType<typeof useEnhancedTokenQuery>["data"], undefined>;
-  govParams: Exclude<Exclude<ReturnType<typeof useMarginParamsQuery>["data"], undefined>["params"], undefined>;
+  enhancedPools: NonNullable<ReturnType<typeof useEnhancedPoolsQuery>["data"]>;
+  enhancedRowan: NonNullable<ReturnType<typeof useEnhancedTokenQuery>["data"]>;
+  govParams: NonNullable<NonNullable<ReturnType<typeof useMarginParamsQuery>["data"]>["params"]>;
 };
 
 const ROWAN_DENOM = "rowan";
@@ -187,7 +186,8 @@ const Trade = (props: TradeProps) => {
       }
     }
 
-    return pools.find((pool) => pool.asset.denom === "cusdc");
+    // defaults to CUSDC with fallback to first pool in the list
+    return pools.find((pool) => pool.asset.denom === "cusdc") ?? pools[0];
   }, [pools, qsPool]);
 
   const openPositionsBySymbolQuery = useMarginOpenPositionsBySymbolQuery({
@@ -337,13 +337,17 @@ const Trade = (props: TradeProps) => {
     1 / Number(inputLeverage.value),
   );
 
+  const [priceImpact, setPriceImpact] = useState(0);
+
   const calculatePosition = useCallback(
     (inputAmount: string, leverage = inputLeverage.value) => {
       const input = BigNumber(inputAmount);
       const swap = calculateSwap(input.toString(), Number(leverage));
 
-      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedPosition.decimals);
-      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedPosition.decimals);
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedPosition.decimals);
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedPosition.decimals);
+
+      setPriceImpact(swap?.priceImpact ?? 0);
 
       return {
         value: value.toString(),
@@ -358,8 +362,8 @@ const Trade = (props: TradeProps) => {
       const input = BigNumber(inputAmount);
       const swap = calculateReverseSwap(input.toString(), 1 / Number(leverage));
 
-      const fee = Decimal.fromAtomics(swap?.fee ?? "0", selectedCollateral.decimals);
-      const value = Decimal.fromAtomics(swap?.swap ?? "0", selectedCollateral.decimals);
+      const fee = Decimal.fromAtomics(swap?.liquidityProviderFee ?? "0", selectedCollateral.decimals);
+      const value = Decimal.fromAtomics(swap?.rawReceiving ?? "0", selectedCollateral.decimals);
 
       const valuePlusFee = value.plus(fee);
       const currentPercentage = 100 - Number(swapFeeRate) * 100;
@@ -388,9 +392,22 @@ const Trade = (props: TradeProps) => {
       const $target = event.target;
       if ($target instanceof HTMLInputElement) {
         const payload = inputValidatorCollateral($target, collateralBalance);
-        setInputCollateral(payload);
 
         const positionSwap = calculatePosition(payload.value);
+
+        if (positionSwap.value === "0" && !payload.error) {
+          // if the resulting position value is 0 and the collateral value passes the input validations,
+          // then the collateral value is too small,
+          // this is an edge case and shouldn't happen with real positions
+
+          setInputCollateral({
+            value: payload.value,
+            error: "Collateral amount is still too small. Please enter a larger number.",
+          });
+        } else {
+          setInputCollateral(payload);
+        }
+
         setOpenPositionFee(positionSwap.fee);
         setInputPosition({
           value: positionSwap.value,
@@ -450,6 +467,38 @@ const Trade = (props: TradeProps) => {
     },
     [calculatePosition, inputCollateral.value, maxLeverageDecimal],
   );
+
+  const minimumCollateral = useMemo(() => {
+    const interestMinAsNumber = Decimal.fromAtomics(
+      props.govParams.interestRateMin,
+      ROWAN.decimals,
+    ).toFloatApproximation();
+
+    const collateralDecimalsFactor = 10 ** selectedCollateral.decimals;
+
+    const minimumCollateral = 1 / ((Number(inputLeverage.value) - 1) * interestMinAsNumber) / collateralDecimalsFactor;
+
+    return minimumCollateral;
+  }, [props.govParams.interestRateMin, inputLeverage.value, selectedCollateral.decimals]);
+
+  useEffect(() => {
+    const isCollateralValid = !inputCollateral.value;
+
+    if (!isCollateralValid && Number(inputCollateral.value) < minimumCollateral) {
+      setInputCollateral({
+        value: inputCollateral.value,
+        error: `Minimum collateral is ${formatNumberAsDecimal(minimumCollateral, 12)}`,
+      });
+      return;
+    }
+
+    if (!isCollateralValid && priceImpact > 0.01) {
+      setInputCollateral({
+        value: inputCollateral.value,
+        error: `Price impact is too high (${formatNumberAsPercent(priceImpact)}). Please reduce the collateral amount`,
+      });
+    }
+  }, [inputCollateral.value, minimumCollateral, priceImpact]);
 
   /**
    * ********************************************************************************************
@@ -565,6 +614,8 @@ const Trade = (props: TradeProps) => {
     }
   };
 
+  const isRowanCollateralEnabled = props.govParams.rowanCollateralEnabled;
+
   return (
     <>
       <Head>
@@ -578,7 +629,7 @@ const Trade = (props: TradeProps) => {
             rowanPriceUsd={enhancedRowan.priceUsd}
             onChangePoolSelector={onChangePoolSelector}
             safetyFactor={safetyFactor}
-            interestRate={`${formatNumberAsDecimal(Number(poolActive.stats.interestRate), 8)}%`}
+            interestRate={`${formatNumberAsDecimal(Number(poolActive.stats.interestRate) * 100, 8)}%`}
           />
         ) : (
           <div className="flex items-center justify-center rounded p-4 text-4xl">
@@ -591,101 +642,53 @@ const Trade = (props: TradeProps) => {
         <article className="flex flex-col rounded bg-gray-900 text-xs lg:col-span-2">
           <ul className="flex flex-col p-4">
             <li className="flex flex-col">
-              <div className="mb-1 flex flex-row text-xs">
-                <span className="mr-auto">Collateral</span>
-                <span className="text-gray-300">
-                  Balance:
-                  <span className="ml-1">{formatNumberAsDecimal(collateralBalance)}</span>
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedCollateral && selectedCollateral.symbol ? (
-                    <>
-                      <AssetIcon symbol={selectedCollateral.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharsUC(selectedCollateral.symbol)}</span>
-                    </>
-                  ) : (
-                    <RacetrackSpinnerIcon />
-                  )}
-                </div>
-                <input
-                  type="number"
-                  placeholder="0"
-                  step="0.01"
-                  min={COLLATERAL_MIN_VALUE}
-                  max={COLLATERAL_MAX_VALUE}
-                  value={inputCollateral.value}
-                  onInput={onInputCollateral}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
-                    "ring ring-red-600 focus:ring focus:ring-red-600": inputCollateral.error,
-                  })}
-                />
-              </div>
-              {inputCollateral.error ? (
-                <span className="radious col-span-6 my-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
-                  {inputCollateral.error}
-                </span>
-              ) : (
-                <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="AlmostEqualTo" />
-                  <span className="ml-1">{formatNumberAsCurrency(collateralDollarValue, 4)}</span>
-                </span>
-              )}
+              <TradeAssetField
+                label="Collateral"
+                balance={formatNumberAsDecimal(collateralBalance)}
+                symbol={selectedCollateral.symbol}
+                dollarValue={formatNumberAsCurrency(collateralDollarValue, 4)}
+                min={COLLATERAL_MIN_VALUE}
+                max={COLLATERAL_MAX_VALUE}
+                value={inputCollateral.value}
+                errorMessage={inputCollateral.error}
+                onInput={onInputCollateral}
+                onMax={() => {
+                  setInputCollateral({
+                    value: String(collateralBalance ?? 0),
+                    error: "",
+                  });
+                }}
+              />
             </li>
             <li className="relative flex items-center justify-center py-5">
               <div className="h-[2px] w-full bg-gray-800" />
               <button
                 type="button"
                 onClick={onClickSwitch}
+                disabled={!isRowanCollateralEnabled}
                 className={clsx(
-                  "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform hover:scale-125",
+                  "absolute rounded-full border-2 border-gray-800 bg-gray-900 p-3 text-lg transition-transform",
                   switchCollateralAndPosition ? "rotate-180" : "rotate-0",
+                  {
+                    "hover:scale-125": isRowanCollateralEnabled,
+                  },
                 )}
               >
-                <SwapIcon />
+                {!isRowanCollateralEnabled ? <ArrowDownIcon /> : <SwapIcon />}
               </button>
             </li>
             <li className="flex flex-col">
-              <div className="mb-1 flex flex-row text-xs">
-                <span className="mr-auto">Position</span>
-                <span className="text-gray-300">
-                  Balance:
-                  <span className="ml-1">{formatNumberAsDecimal(positionBalance)}</span>
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-row items-center gap-2.5 rounded bg-gray-700 p-2 text-sm font-semibold text-white">
-                  {selectedPosition && selectedPosition.symbol ? (
-                    <>
-                      <AssetIcon symbol={selectedPosition.symbol} network="sifchain" size="sm" />
-                      <span>{removeFirstCharsUC(selectedPosition.symbol)}</span>
-                    </>
-                  ) : null}
-                </div>
-                <input
-                  type="number"
-                  placeholder="0"
-                  step="0.01"
-                  min={POSITION_MIN_VALUE}
-                  max={POSITION_MAX_VALUE}
-                  value={inputPosition.value}
-                  onInput={onInputPosition}
-                  className={clsx("rounded border-0 bg-gray-700 text-right text-sm font-semibold placeholder-white", {
-                    "ring ring-red-600 focus:ring focus:ring-red-600": inputPosition.error,
-                  })}
-                />
-              </div>
-              {inputPosition.error ? (
-                <span className="radious col-span-6 mt-2 rounded border border-red-700 bg-red-200 p-2 text-right text-red-700">
-                  {inputPosition.error}
-                </span>
-              ) : (
-                <span className="mt-1 text-right text-gray-300">
-                  <HtmlUnicode name="AlmostEqualTo" />
-                  <span className="ml-1">{formatNumberAsCurrency(positionDollarValue, 4)}</span>
-                </span>
-              )}
+              <TradeAssetField
+                label="Position"
+                balance={formatNumberAsDecimal(positionBalance)}
+                symbol={selectedPosition.symbol}
+                dollarValue={formatNumberAsCurrency(positionDollarValue, 4)}
+                min={POSITION_MIN_VALUE}
+                max={POSITION_MAX_VALUE}
+                value={inputPosition.value}
+                errorMessage={inputPosition.error}
+                onInput={onInputPosition}
+              />
             </li>
             <li className="mt-4 grid grid-cols-6 gap-2">
               <p className="col-span-3 self-end rounded bg-gray-500 p-2 text-center text-sm font-semibold text-gray-200">
@@ -796,6 +799,7 @@ const Trade = (props: TradeProps) => {
                           {removeFirstCharsUC(selectedPosition.symbol)}
                         </>,
                       ],
+                      ["Price impact", <>{formatNumberAsPercent(priceImpact)}</>],
                     ]}
                   />
                 </section>

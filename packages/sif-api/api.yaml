@@ -4,7 +4,7 @@ info:
   version: 0.0.5
 servers:
   # Added by API Auto Mocking Plugin
-  - url: https://data.sifchain.finance/beta
+  - url: https://proxies.sifchain.finance/api/vanir/testnet/beta
     description: AWS API Gateway
 
 tags:

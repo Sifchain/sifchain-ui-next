@@ -27,7 +27,7 @@ export const getTestnetSdk = (defaultSigner: Signer) =>
   enhanceSdk({
     peggy: {
       bridgeBank: getContract(
-        "0x6CfD69783E3fFb44CBaaFF7F509a4fcF0d8e2835",
+        "0x0A7f48AF978A29B63F45e17095E3A6475bBAe1bB",
         mainnetPeggyBridgeBankAbi,
         defaultSigner,
       ) as BridgeBank,
@@ -38,7 +38,7 @@ export const getDevnetSdk = (defaultSigner: Signer) =>
   enhanceSdk({
     peggy: {
       bridgeBank: getContract(
-        "0x96DC6f02C66Bbf2dfbA934b8DafE7B2c08715A73",
+        "0x0A7f48AF978A29B63F45e17095E3A6475bBAe1bB",
         mainnetPeggyBridgeBankAbi,
         defaultSigner,
       ) as BridgeBank,

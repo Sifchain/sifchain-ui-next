@@ -5,10 +5,10 @@
   "sifRpcUrl": "http://localhost:3000/api/sifchain-local/rpc",
   "web3Provider": "metamask",
   "nativeAsset": "rowan",
-  "vanirUrl": "https://data.sifchain.finance/beta",
+  "vanirUrl": "https://proxies.sifchain.finance/api/vanir/testnet/beta",
   "registryUrl": "https://registry.sifchain.network",
   "blockExplorerUrl": "https://blockexplorer.sifchain.finance",
-  "bridgebankContractAddress": "0x30753E4A8aad7F8597332E813735Def5dD395028",
+  "bridgebankContractAddress": "0x0A7f48AF978A29B63F45e17095E3A6475bBAe1bB",
   "keplrChainConfig": {
     "chainName": "Sifchain Local",
     "chainId": "localnet",

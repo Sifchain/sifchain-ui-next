@@ -1,6 +1,6 @@
 {
   "name": "@sifchain/math",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Formulae and calculation utilities for Sifchain",
   "main": "build/commonjs/index.js",
   "exports": {
@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "^1.0.3",
-    "@vitest/ui": "^0.22.1",
-    "typescript": "4.7.4",
-    "vitest": "^0.23.2"
+    "@vitest/ui": "^0.23.4",
+    "typescript": "4.8.4",
+    "vitest": "^0.24.1"
   }
 }
