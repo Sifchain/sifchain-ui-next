@@ -1,15 +1,17 @@
 import { Decimal } from "@cosmjs/math";
 import { useAccounts, useConnectionUpdatedAt, useSigner, useStargateClient } from "@sifchain/cosmos-connect";
-import { invariant, type StringIndexed } from "@sifchain/ui";
+import type { StringIndexed } from "@sifchain/ui";
 import { caseInsensitiveRecord, memoizeWith } from "@sifchain/utils";
 import { useQuery } from "@tanstack/react-query";
 import { identity, indexBy, prop } from "rambda";
 import { useMemo } from "react";
+import invariant from "tiny-invariant";
+
 import { useLiquidityProvidersQuery } from "~/domains/clp/hooks";
 import { useDexEnvironment } from "~/domains/core/envs";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
-import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 import { useQueryWithNonQueryKeyDeps } from "~/hooks/useQueryWithNonSerializableDeps";
+import { useSifStargateClient } from "~/hooks/useSifStargateClient";
 
 type Balance = {
   amount?: Decimal;
