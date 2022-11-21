@@ -1,15 +1,18 @@
 import { Button, Fieldset, Input, RacetrackSpinnerIcon } from "@sifchain/ui";
 import BigNumber from "bignumber.js";
 import { clamp } from "rambda";
-import { ChangeEventHandler, FormEventHandler, useCallback, useMemo } from "react";
+import { ChangeEventHandler, FormEvent, FormEventHandler, useCallback, useMemo } from "react";
 import { useLiquidityProviderQuery } from "~/domains/clp";
 import useUnlockLiquidity from "~/domains/clp/formHooks/useUnlockLiquidity";
 import useUnlockLiquidityMutation from "~/domains/clp/hooks/useUnlockLiquidityMutation";
 import { useTokenRegistryQuery } from "~/domains/tokenRegistry";
 import type { ManageLiquidityModalProps } from "./types";
+import {useRewardParams} from "~/domains/clp/hooks/useRewardParams";
+import useRemoveLiquidityMutation from "~/domains/clp/hooks/useRemoveLiquidityMutation";
 
 const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
   const liquidityProviderQuery = useLiquidityProviderQuery(props.denom);
+  const rewardParams = useRewardParams();
 
   const { indexedByDenom } = useTokenRegistryQuery();
   const externalToken = indexedByDenom[props.denom];
@@ -22,6 +25,8 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
     externalAssetAmount,
   } = useUnlockLiquidity(props.denom);
 
+  const removeLiquidityMutation = useRemoveLiquidityMutation();
+
   const buttonMessage = useMemo(() => {
     if (!unlockLiquidityMutation.isReady) {
       return "Please connect Sifchain wallet";
@@ -29,16 +34,21 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
     if (unlockLiquidityMutation.isError || unlockLiquidityMutation.isSuccess) {
       return "Close";
     }
+    var msg = "Unbond liquidity"
+    if (rewardParams.data?.params?.liquidityRemovalLockPeriod.isZero()) {
+        msg = "Remove liquidity"
+    }
 
-    return <>{unlockLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Unbond liquidity</>;
+    return <>{unlockLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}{msg}</>;
   }, [
     unlockLiquidityMutation.isError,
     unlockLiquidityMutation.isLoading,
     unlockLiquidityMutation.isReady,
     unlockLiquidityMutation.isSuccess,
+    rewardParams,
   ]);
 
-  const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+  const onSubmitUnlock = useCallback<FormEventHandler<HTMLFormElement>>(
     (event) => {
       event.preventDefault();
 
@@ -57,6 +67,27 @@ const UnlockLiquidityForm = (props: ManageLiquidityModalProps) => {
     },
     [liquidityProviderQuery.data?.liquidityProvider?.unlocks, props, units, unlockLiquidityMutation],
   );
+
+  const onSubmitRemove = useCallback<FormEventHandler<HTMLFormElement>>(
+      (event) => {
+          event.preventDefault();
+
+          if (removeLiquidityMutation.isSuccess || removeLiquidityMutation.isError) {
+              props.onClose(false);
+          } else {
+              removeLiquidityMutation.mutate({ denom: props.denom, units });
+          }
+      },
+      [props, units, removeLiquidityMutation],
+  );
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (rewardParams.data?.params?.liquidityRemovalLockPeriod.isZero()) {
+      return onSubmitRemove(event);
+    } else {
+      return onSubmitUnlock(event);
+    }
+  };
 
   const onChangePercentageInput = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
