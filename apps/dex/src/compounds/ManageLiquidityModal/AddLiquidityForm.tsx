@@ -1,5 +1,5 @@
-import { Button, PlusIcon, RacetrackSpinnerIcon } from "@sifchain/ui";
-import { FormEventHandler, useCallback, useMemo } from "react";
+import { Button, PlusIcon, RacetrackSpinnerIcon, LockIcon, SettingsIcon } from "@sifchain/ui";
+import { FormEventHandler, useCallback, useMemo, useState } from "react";
 import { useBalanceQuery } from "~/domains/bank/hooks/balances";
 import useAddLiquidity from "~/domains/clp/formHooks/useAddLiquidity";
 import useAddLiquidityMutation from "~/domains/clp/hooks/useAddLiquidityMutation";
@@ -9,6 +9,7 @@ import TokenAmountFieldset from "../TokenAmountFieldset";
 import type { ManageLiquidityModalProps } from "./types";
 
 const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
+  const [symmetric, setSymmetric] = useState<boolean>(false);
   const { data } = useSifnodeQuery("margin.getParams", [{}]);
   const isPoolUsedForMargin = useMemo(
     () => data?.params?.pools.includes(props.denom),
@@ -22,7 +23,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
     nativeAmountDecimal,
     externalAmountDecimal,
     poolShare,
-  } = useAddLiquidity(props.denom);
+  } = useAddLiquidity(props.denom, symmetric);
   const addLiquidityMutation = useAddLiquidityMutation();
 
   const { data: nativeBalance } = useBalanceQuery(env?.sifChainId ?? "", env?.nativeAsset.symbol.toLowerCase() ?? "", {
@@ -58,6 +59,10 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
 
     return <>{addLiquidityMutation.isLoading && <RacetrackSpinnerIcon />}Add liquidity</>;
   }, [addLiquidityMutation.isError, addLiquidityMutation.isLoading, addLiquidityMutation.isSuccess, validationError]);
+
+  const toggleSymmetry = useCallback(() => {
+    setSymmetric(!symmetric);
+  }, [setSymmetric, symmetric]);
 
   const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     (event) => {
@@ -96,7 +101,7 @@ const AddLiquidityForm = (props: ManageLiquidityModalProps) => {
       />
       <div className="my-[-1em] flex items-center justify-center">
         <div className="rounded-full border-2 border-gray-800 bg-black p-3">
-          <PlusIcon />
+          { (symmetric) ? <LockIcon onClick={toggleSymmetry}/>  : <SettingsIcon onClick={toggleSymmetry}/> }
         </div>
       </div>
       <TokenAmountFieldset
