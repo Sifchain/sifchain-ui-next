@@ -1,6 +1,7 @@
-import { invariant } from "@sifchain/ui";
-import { differenceInMilliseconds, parseISO } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
+import { differenceInMilliseconds, parseISO } from "date-fns";
+import invariant from "tiny-invariant";
+
 import { useSifStargateClient } from "./useSifStargateClient";
 
 export const useBlockTimeQuery = () => {

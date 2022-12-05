@@ -1,9 +1,10 @@
 import type * as MarginTX from "@sifchain/proto-types/sifnode/margin/v1/tx";
 
-import { DEFAULT_FEE } from "@sifchain/stargate";
-import { invariant, toast } from "@sifchain/ui";
 import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
+import { DEFAULT_FEE } from "@sifchain/stargate";
+import { toast } from "@sifchain/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import invariant from "tiny-invariant";
 
 import { useSifSignerAddressQuery } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
@@ -101,7 +102,7 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
       });
     },
     async onSuccess(data) {
-      if (data && data.rawLog) {
+      if (data?.rawLog) {
         let payload;
         try {
           payload = JSON.parse(data.rawLog) as MTPOpenResponse;
@@ -167,7 +168,7 @@ export function useMarginMTPOpenMutation(props: UseMarginMTPOpenMutationProps) {
         const { message } = error as Error;
         toast.error(message);
       } else if (data !== undefined && isDeliverTxSuccess(data)) {
-        toast.success(`Successfully opened margin position`);
+        toast.success("Successfully opened margin position");
       }
     },
   });

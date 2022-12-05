@@ -156,7 +156,9 @@ const SwapPage: NextPage = () => {
       return "Loading";
     }
 
-    if (!isNilOrWhitespace(validationError?.message)) return validationError?.message;
+    if (!isNilOrWhitespace(validationError?.message)) {
+      return validationError?.message;
+    }
 
     return "Swap";
   }, [isReady, validationError?.message]);
@@ -268,7 +270,7 @@ const SwapPage: NextPage = () => {
           disabled: swapMutation.isLoading,
           onClick: () => {
             switch (swapMutation.status) {
-              case "idle":
+              case "idle": {
                 swapMutation.mutate({
                   fromDenom: fromToken?.denom ?? "",
                   toDenom: toToken?.denom ?? "",
@@ -276,6 +278,7 @@ const SwapPage: NextPage = () => {
                   minimumReceiving: swapSimulationResult?.minimumReceiving ?? "0",
                 });
                 break;
+              }
               case "loading":
                 return;
               default:
