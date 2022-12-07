@@ -20,7 +20,7 @@ import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 import { HtmlUnicode } from "./_trade";
 
-const isTruthy = (target: any) => !isNil(target);
+const isTruthy = (target: unknown) => !isNil(target);
 
 type MTPData = Pick<
   MarginOpenPositionsData,
