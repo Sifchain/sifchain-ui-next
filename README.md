@@ -23,7 +23,7 @@ _Sifchain's User Interface_
 
 ## Development
 
-This monorepo is powered by [pnpm](https://pnpm.io/) and [turborepo](https://turborepo.org/docs)
+This monorepo is powered by [pnpm](https://pnpm.io/) and [turborepo](https://turborepo.org/docs). So make sure you have [`pnpm installed`](https://pnpm.io/installation) before you run this commands:
 
 | script                 | description                                           |
 | ---------------------- | ----------------------------------------------------- |
