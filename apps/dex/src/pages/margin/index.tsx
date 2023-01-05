@@ -6,6 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
+
 import { useFeatureFlag, withRedirectOnMount } from "~/lib/featureFlags";
 
 const TABS = {
@@ -131,8 +132,9 @@ export default dynamic(
             <FlashMessageLoading size="full-page" className="border-gold-800 mt-4 rounded border" />
           </div>
         ),
-      }) as any,
-    ),
+      }),
+      // rome-ignore lint/suspicious/noExplicitAny: <explanation>
+    ) as any,
   {
     ssr: false,
   },
