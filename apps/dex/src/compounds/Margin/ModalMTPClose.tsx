@@ -1,27 +1,26 @@
 import type { MarginOpenPositionsData } from "~/domains/margin/hooks";
-
-import clsx from "clsx";
-import { isNil } from "rambda";
 import { Decimal } from "@cosmjs/math";
 import {
-  FlashMessageLoading,
   Button,
+  FlashMessage,
+  FlashMessage5xxError,
+  FlashMessageLoading,
   formatNumberAsCurrency,
   formatNumberAsDecimal,
   Modal,
-  FlashMessage5xxError,
-  FlashMessage,
 } from "@sifchain/ui";
-import { SyntheticEvent, useCallback, useRef } from "react";
+import clsx from "clsx";
 import Long from "long";
+import { isNil } from "rambda";
+import { SyntheticEvent, useCallback, useRef } from "react";
 
-import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 import { useEnhancedTokenQuery, useMarginPositionSimulationQuery } from "~/domains/clp/hooks";
+import { useMarginMTPCloseMutation } from "~/domains/margin/hooks";
 
 import { AssetHeading, TokenDisplaySymbol, TradeDetails, TradeReviewSeparator } from "./_components";
 import { HtmlUnicode } from "./_trade";
 
-const isTruthy = (target: any) => !isNil(target);
+const isTruthy = (target: unknown) => !isNil(target);
 
 type MTPData = Pick<
   MarginOpenPositionsData,
@@ -44,6 +43,7 @@ type ModalMTPCloseProps = {
   onMutationSuccess?: () => void;
   onTransitionEnd?: () => void;
 };
+
 export function ModalMTPClose(props: ModalMTPCloseProps) {
   const currentCustodyAmount = props.data.current_custody_amount ?? "0";
 
@@ -133,8 +133,10 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
 
     const collateralAmountAsNumber = Number(props.data.collateral_amount);
 
-    const resultingPaymentAsDecimal = closingPositionAsDecimal.minus(liabilitiesAsDecimal);
-    const tradePnlAsNumber = resultingPaymentAsDecimal.toFloatApproximation() - collateralAmountAsNumber;
+    const resultingPayment =
+      closingPositionAsDecimal.toFloatApproximation() - liabilitiesAsDecimal.toFloatApproximation();
+
+    const tradePnlAsNumber = resultingPayment - collateralAmountAsNumber;
 
     const tradePnlSign = Math.sign(tradePnlAsNumber);
     const tradePnlAbs = Math.abs(tradePnlAsNumber);
@@ -231,8 +233,7 @@ export function ModalMTPClose(props: ModalMTPCloseProps) {
             heading={[
               "Resulting payment",
               <>
-                {formatNumberAsDecimal(resultingPaymentAsDecimal.toFloatApproximation(), 4)}{" "}
-                <TokenDisplaySymbol symbol={props.data.collateral_asset} />
+                {formatNumberAsDecimal(resultingPayment, 4)} <TokenDisplaySymbol symbol={props.data.collateral_asset} />
               </>,
             ]}
             details={[

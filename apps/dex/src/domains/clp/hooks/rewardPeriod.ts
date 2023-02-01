@@ -1,5 +1,6 @@
-import { invariant } from "@sifchain/ui";
 import { addMilliseconds } from "date-fns";
+import invariant from "tiny-invariant";
+
 import { useQuery } from "@tanstack/react-query";
 import { useBlockTimeQuery } from "~/hooks/useBlockTime";
 import useSifnodeQuery from "~/hooks/useSifnodeQuery";
@@ -26,7 +27,9 @@ export const useCurrentRewardPeriodQuery = () => {
         return startBlock <= currentHeight && currentHeight < endBlock;
       });
 
-      if (currentRewardPeriod === undefined) return;
+      if (currentRewardPeriod === undefined) {
+        return;
+      }
 
       const blocksRemainingTilInactive = currentRewardPeriod.rewardPeriodEndBlock.toNumber() - currentHeight;
       const estimatedRewardPeriodEndDate = addMilliseconds(new Date(), blocksRemainingTilInactive * blockTime);

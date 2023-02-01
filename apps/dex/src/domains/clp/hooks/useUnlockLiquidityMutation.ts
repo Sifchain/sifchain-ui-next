@@ -1,8 +1,10 @@
 import { isDeliverTxFailure, isDeliverTxSuccess } from "@cosmjs/stargate";
 import { DEFAULT_FEE } from "@sifchain/stargate";
-import { invariant, toast } from "@sifchain/ui";
-import { isNil } from "rambda";
+import { toast } from "@sifchain/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { isNil } from "rambda";
+import invariant from "tiny-invariant";
+
 import { useSifSigner } from "~/hooks/useSifSigner";
 import { useSifSigningStargateClient } from "~/hooks/useSifStargateClient";
 import { LIQUIDITY_PROVIDERS_QUERY_KEY, LIQUIDITY_PROVIDER_QUERY_KEY } from "./liquidityProvider";
@@ -48,12 +50,14 @@ const useUnlockLiquidityMutation = () => {
           return;
         }
 
-        if (data === undefined) return;
+        if (data === undefined) {
+          return;
+        }
 
         if (Boolean(error) || isDeliverTxFailure(data)) {
           toast.error(data?.rawLog ?? "Failed to unbond liquidity");
         } else if (data !== undefined && isDeliverTxSuccess(data)) {
-          toast.success(`Successfully unbonded liquidity`);
+          toast.success("Successfully unbonded liquidity");
           queryClient.invalidateQueries([LIQUIDITY_PROVIDER_QUERY_KEY]);
           queryClient.invalidateQueries([LIQUIDITY_PROVIDERS_QUERY_KEY]);
         }

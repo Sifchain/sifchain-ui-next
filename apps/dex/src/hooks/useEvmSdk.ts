@@ -1,7 +1,8 @@
 import { getDevnetSdk, getMainnetSdk, getTestnetSdk } from "@sifchain/evm";
-import { invariant } from "@sifchain/ui";
 import type { Signer } from "ethers";
+import invariant from "tiny-invariant";
 import { useSigner } from "wagmi";
+
 import { useDexEnvKind } from "~/domains/core/envs";
 import { useQueryWithNonQueryKeyDeps } from "./useQueryWithNonSerializableDeps";
 

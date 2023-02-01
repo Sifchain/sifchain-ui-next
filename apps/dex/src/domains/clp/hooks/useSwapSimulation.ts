@@ -30,8 +30,9 @@ export function useSwapSimulationQuery(fromDenom: string, toDenom: string, fromA
   const pmtpBlockRate = pmtpParams?.pmtpRateParams?.pmtpPeriodBlockRate ?? "0";
 
   const poolSwapFeeRate = swapFeeRateResult?.tokenParams.find(propEq("asset", fromDenom));
-  const swapFeeRate = Maybe.of(poolSwapFeeRate).mapOr(swapFeeRateResult?.defaultSwapFeeRate, (x) =>
-    Decimal.fromAtomics(x.swapFeeRate, 18).toString(),
+
+  const swapFeeRate = Maybe.of(poolSwapFeeRate?.swapFeeRate ?? swapFeeRateResult?.defaultSwapFeeRate).mapOr("0", (x) =>
+    Decimal.fromAtomics(x, 18).toString(),
   );
 
   const marginEnabledPools = useMemo(

@@ -28,7 +28,7 @@ const usePoolsPageData = () => {
           .times(x.priceToken ?? 0)
           .toNumber();
 
-        if (liquidityProvider?.liquidityProvider === undefined || pool === undefined)
+        if (liquidityProvider?.liquidityProvider === undefined || pool === undefined) {
           return {
             ...x,
             denom: token?.denom,
@@ -43,6 +43,7 @@ const usePoolsPageData = () => {
             liquidityProviderPoolValue: 0,
             unlock: undefined,
           };
+        }
 
         const rowanPoolValue = new BigNumber(tokenStatsQuery.data.rowanUSD ?? 0).times(
           liquidityProvider.nativeAssetBalance.toString(),
