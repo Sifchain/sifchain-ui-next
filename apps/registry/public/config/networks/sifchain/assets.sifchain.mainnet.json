@@ -997,14 +997,14 @@
       "symbol": "USCRT"
     },
     {
-      "symbol": "uusdc",
-      "displaySymbol": "axlusdc",
       "decimals": 6,
-      "name": "axlusdc",
-      "network": "sifchain",
-      "label": "USD Coin (Axelar)",
+      "displaySymbol": "axlusdc",
+      "homeNetwork": "osmosis",
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "homeNetwork": "osmosis"
+      "label": "USD Coin (Axelar)",
+      "name": "USD Coin (Axelar)",
+      "network": "sifchain",
+      "symbol": "UUSDC"
     }
   ]
 }
