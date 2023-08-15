@@ -31,7 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "long": "^5.2.0",
-    "protobufjs": "^7.0.0"
+    "protobufjs": "^7.2.4"
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "^1.0.3",
