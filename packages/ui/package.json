@@ -56,7 +56,7 @@
     "autoprefixer": "^10.4.13",
     "babel-loader": "^9.1.0",
     "commander": "^9.4.0",
-    "postcss": "^8.4.18",
+    "postcss": "^8.4.31",
     "tailwind-styled-components": "2.1.6",
     "tailwindcss": "^3.2.4",
     "tsconfig": "workspace:*",
