@@ -7,6 +7,10 @@
     "import": "./build/module/index.js",
     "require": "./build/commonjs/index.js"
   },
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "readmeFile": "./README.md"
+  },
   "scripts": {
     "codegen": "swagger-codegen generate -i api.yaml -l typescript-fetch -o src/generated/typescriptFetch",
     "build": "rimraf build && pnpm tsc -m commonjs --outDir build/commonjs && pnpm tsc -m esnext --outDir build/module",

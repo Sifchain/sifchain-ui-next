@@ -17,6 +17,7 @@
     "build-storybook": "turbo run build-storybook",
     "docs:dev": "pnpm -C ./apps/docs dev",
     "e2e": "pnpm -C ./apps/e2e run test",
+    "docsgen": "pnpm typedoc",
     "changeset": "changeset version"
   },
   "keywords": [],
@@ -28,12 +29,14 @@
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "eslint": "^8.26.0",
+    "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
     "rimraf": "^3.0.2",
     "turbo": "^1.6.1",
+    "typedoc": "^0.23.15",
     "typescript": "4.8.4"
   }
 }

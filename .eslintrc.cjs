@@ -5,7 +5,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ],
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "eslint-plugin-tsdoc"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     tsconfigRootDir: __dirname,
@@ -25,6 +25,7 @@ module.exports = {
     ".turbo/",
     "dist/",
     "build/",
+    "packages/docs/",
     "packages/evm/src/generated/",
     "packages/proto-types/cosmos/",
     "packages/proto-types/gogoproto/",

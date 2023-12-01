@@ -23,8 +23,12 @@ const setupBareExtension =
     const clientWithUncapitalizedMethods = Object.fromEntries(
       Object.getOwnPropertyNames(Object.getPrototypeOf(baseClient))
         .filter((x) => x !== "constructor")
-        .filter((x) => typeof (baseClient as any)[x] === "function")
-        .map((x) => [x[0]?.toLowerCase() + x.slice(1), ((baseClient as any)[x] as Function).bind(baseClient)]),
+        .filter((x) => typeof baseClient[x as keyof TClient] === "function")
+        .map((x) => [
+          `${x[0]?.toLowerCase() ?? ""}${x.slice(1)}`,
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          (baseClient[x as keyof TClient] as unknown as Function).bind(baseClient),
+        ]),
     ) as {
       [P in keyof TClient as P extends string ? Uncapitalize<P> : P]: TClient[P];
     };
@@ -55,6 +59,10 @@ const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>
 
 export type SifQueryClient = ReturnType<typeof createQueryClientFromTmClient>;
 
+/**
+ * Create read-only Sifchain query client
+ * @param endpoint
+ */
 export function createQueryClient(endpoint: string | HttpEndpoint): Promise<SifQueryClient>;
 export function createQueryClient(tmClient: Tendermint34Client): SifQueryClient;
 export function createQueryClient(endpointOrTmClient: string | HttpEndpoint | Tendermint34Client): any {
