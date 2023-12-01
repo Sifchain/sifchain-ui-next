@@ -997,14 +997,24 @@
       "symbol": "USCRT"
     },
     {
-      "decimals": 6,
+      "symbol": "UAXLUSDC",
       "displaySymbol": "axlusdc",
-      "homeNetwork": "osmosis",
-      "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "label": "USD Coin (Axelar)",
-      "name": "USD Coin (Axelar)",
+      "decimals": 6,
+      "name": "axlusdc",
       "network": "sifchain",
-      "symbol": "UUSDC"
+      "label": "USD Coin (Axelar)",
+      "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      "homeNetwork": "osmosis"
+    },
+    {
+      "symbol": "UUSDC",
+      "displaySymbol": "uusdc",
+      "decimals": 6,
+      "name": "USD Coin (Noble)",
+      "network": "sifchain",
+      "label": "USD Coin (Noble)",
+      "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      "homeNetwork": "noble"
     }
   ]
 }
