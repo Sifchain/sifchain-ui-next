@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import {
   createProtobufRpcClient,
   QueryClient,
@@ -12,6 +14,7 @@ import { QueryClientImpl as DispensationQueryClient } from "@sifchain/proto-type
 import { QueryClientImpl as EthBridgeQueryClient } from "@sifchain/proto-types/sifnode/ethbridge/v1/query";
 import { QueryClientImpl as TokenRegistryQueryClient } from "@sifchain/proto-types/sifnode/tokenregistry/v1/query";
 import { QueryClientImpl as MarginQueryClient } from "@sifchain/proto-types/sifnode/margin/v1/query";
+import { QueryClientImpl as EpochsQueryClient } from "@sifchain/proto-types/sifnode/epochs/v1/query";
 import type { Rpc, StringLiteral } from "./types";
 
 const setupBareExtension =
@@ -23,8 +26,8 @@ const setupBareExtension =
     const clientWithUncapitalizedMethods = Object.fromEntries(
       Object.getOwnPropertyNames(Object.getPrototypeOf(baseClient))
         .filter((x) => x !== "constructor")
-        .filter((x) => typeof (baseClient as any)[x] === "function")
-        .map((x) => [x[0]?.toLowerCase() + x.slice(1), ((baseClient as any)[x] as Function).bind(baseClient)]),
+        .filter((x) => typeof (baseClient as never)[x] === "function")
+        .map((x) => [x[0]?.toLowerCase() + x.slice(1), ((baseClient as never)[x] as Function).bind(baseClient)]),
     ) as {
       [P in keyof TClient as P extends string ? Uncapitalize<P> : P]: TClient[P];
     };
@@ -48,6 +51,7 @@ const createQueryClientFromTmClient = (tmClient: Tendermint34Client) =>
     setupBareExtension("ethBridge", EthBridgeQueryClient),
     setupBareExtension("tokenRegistry", TokenRegistryQueryClient),
     setupBareExtension("margin", MarginQueryClient),
+    setupBareExtension("epochs", EpochsQueryClient),
   );
 
 const createQueryClientFromEndpoint = async (endpoint: string | HttpEndpoint) =>

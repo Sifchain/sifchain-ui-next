@@ -537,6 +537,10 @@ importers:
         specifier: 4.8.4
         version: 4.8.4
 
+  packages/evm/build/commonjs/generated: {}
+
+  packages/evm/build/module/generated: {}
+
   packages/evm/src/generated: {}
 
   packages/math:
