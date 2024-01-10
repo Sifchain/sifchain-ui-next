@@ -1008,7 +1008,7 @@
     },
     {
       "symbol": "UUSDC",
-      "displaySymbol": "USDC (Noble)",
+      "displaySymbol": "uusdc",
       "decimals": 6,
       "name": "USD Coin (Noble)",
       "network": "sifchain",
