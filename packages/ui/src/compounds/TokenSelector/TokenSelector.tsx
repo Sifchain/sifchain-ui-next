@@ -132,7 +132,7 @@ export const TokenSelector: FC<TokenSelectorProps> = (props) => {
                 size={props.size}
               />
               <span className="block overflow-hidden text-ellipsis whitespace-nowrap uppercase text-white">
-                {selectedToken.displaySymbol}
+                {selectedToken.label ?? selectedToken.displaySymbol}
               </span>
             </>
           ) : (
