@@ -1012,7 +1012,7 @@
       "decimals": 6,
       "name": "USD Coin (Noble)",
       "network": "sifchain",
-      "label": "USD Coin (Noble)",
+      "label": "USDC (Noble)",
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       "homeNetwork": "noble"
     }
